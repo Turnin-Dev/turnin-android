@@ -1,0 +1,66 @@
+// 1. KtLint 설정을 위한 configuration 생성
+val ktlint by configurations.creating
+
+// 2. ktlint 의존성 추가
+dependencies {
+    ktlint("com.pinterest.ktlint:ktlint-cli:1.4.1") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
+    ktlint("io.nlopez.compose.rules:ktlint:0.4.22") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
+}
+
+// 3. 스타일 검사 Task
+tasks.register<JavaExec>("ktlintCheck") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = "Check Kotlin code style"
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args(
+        "**/src/**/*.kt",
+        "**/*.kts",
+        "!**/build/**",
+        "!:some-module-name/**", // 특정 모듈 제외하고 싶으면 수정
+    )
+}
+
+// 4. 자동 포맷 Task
+tasks.register<JavaExec>("ktlintFormat") {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description =
+        "Check Kotlin code style and format"
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+    )
+    args(
+        "-F",
+        "**/src/**/*.kt",
+        "**/*.kts",
+        "!**/build/**",
+        "!:some-module-name/**",
+    )
+}
+
+// 5. pre-commit hook 자동 설치 Task
+tasks.register("installKtlintGitHookToPreCommit") {
+    doLast {
+        val preCommitScript =
+            """
+            #!/bin/bash
+            ./gradlew ktlintFormat
+            if [ $? -ne 0 ]; then exit 1; fi
+            """.trimIndent()
+
+        val hookFile = File(rootProject.rootDir, ".git/hooks/pre-commit")
+        hookFile.writeText(preCommitScript)
+        hookFile.setExecutable(true)
+        println("✅ pre-commit hook installed to: .git/hooks/pre-commit")
+    }
+}
