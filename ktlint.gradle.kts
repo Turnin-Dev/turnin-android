@@ -23,44 +23,38 @@ tasks.register<JavaExec>("ktlintCheck") {
     mainClass.set("com.pinterest.ktlint.Main")
     args(
         "**/src/**/*.kt",
-        "**/*.kts",
+        "**.kts",
         "!**/build/**",
-        "!:some-module-name/**", // 특정 모듈 제외하고 싶으면 수정
+        // "!:some-module-name/**", // <- ! exclude specific module from formatting
     )
 }
 
 // 4. 자동 포맷 Task
 tasks.register<JavaExec>("ktlintFormat") {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description =
-        "Check Kotlin code style and format"
+    description = "Check Kotlin code style and format"
     classpath = ktlint
     mainClass.set("com.pinterest.ktlint.Main")
-    jvmArgs(
-        "--add-opens=java.base/java.lang=ALL-UNNAMED",
-    )
+    jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
     args(
         "-F",
         "**/src/**/*.kt",
-        "**/*.kts",
+        "**.kts",
         "!**/build/**",
-        "!:some-module-name/**",
+        // "!:some-module-name/**", // <- ! exclude specific module from formatting
     )
 }
 
 // 5. pre-commit hook 자동 설치 Task
-tasks.register("installKtlintGitHookToPreCommit") {
-    doLast {
-        val preCommitScript =
-            """
-            #!/bin/bash
-            ./gradlew ktlintFormat
-            if [ $? -ne 0 ]; then exit 1; fi
-            """.trimIndent()
+tasks.register<Copy>("installKtlintGitHookToPreCommit") {
+    val preCommitContent =
+        """
+        #!/bin/bash
+        ./gradlew ktlintFormat
+        if [ $? -ne 0 ]; then exit 1; fi
+        """.trimIndent()
 
-        val hookFile = File(rootProject.rootDir, ".git/hooks/pre-commit")
-        hookFile.writeText(preCommitScript)
-        hookFile.setExecutable(true)
-        println("✅ pre-commit hook installed to: .git/hooks/pre-commit")
-    }
+    val preCommitFile = File(rootProject.rootDir, ".git/hooks/pre-commit")
+    preCommitFile.writeText(preCommitContent)
+    preCommitFile.setExecutable(true)
 }
