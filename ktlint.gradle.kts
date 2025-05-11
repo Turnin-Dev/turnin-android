@@ -50,8 +50,8 @@ tasks.register<Copy>("installKtlintGitHookToPreCommit") {
     val preCommitContent =
         """
         #!/bin/bash
-        ./gradlew ktlintFormat
-        if [ $? -ne 0 ]; then exit 1; fi
+        git diff --name-only -z --cached --relative -- '*.kt' '*.kts' | ktlint --relative --patterns-from-stdin=''
+        if [ ${'$'}? -ne 0 ]; then exit 1; fi
         """.trimIndent()
 
     val preCommitFile = File(rootProject.rootDir, ".git/hooks/pre-commit")
