@@ -9,6 +9,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 private val LocalColorScheme = staticCompositionLocalOf { peekrLightColor }
 private val LocalTypography = staticCompositionLocalOf { PeekrTypography() }
+private val LocalShape = staticCompositionLocalOf { PeekrShape() }
 
 @Stable
 object PeekrTheme {
@@ -49,6 +50,7 @@ fun PeekrAppTheme(
     CompositionLocalProvider(
         LocalColorScheme provides colorScheme,
         LocalTypography provides typography,
+        LocalShape provides PeekrShape(),
     ) {
         content()
     }
