@@ -2,10 +2,16 @@ package com.peekr.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.peekr.designsystem.R
 
 @Immutable
 data class PeekrTypography(
@@ -31,7 +37,7 @@ fun title1(): TextStyle = TextStyle(
     lineHeight = 39.sp,
     letterSpacing = -(0.0025).em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -42,7 +48,7 @@ fun title2(): TextStyle = TextStyle(
     lineHeight = 36.sp,
     letterSpacing = 0.01.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -53,7 +59,7 @@ fun headline1(): TextStyle = TextStyle(
     lineHeight = 30.sp,
     letterSpacing = -(0.025).em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -64,7 +70,7 @@ fun headline2(): TextStyle = TextStyle(
     lineHeight = 27.sp,
     letterSpacing = -(0.001).em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -75,7 +81,7 @@ fun headline3(): TextStyle = TextStyle(
     lineHeight = 24.sp,
     letterSpacing = 0.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -86,7 +92,7 @@ fun headline4(): TextStyle = TextStyle(
     lineHeight = 21.sp,
     letterSpacing = 0.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -97,7 +103,7 @@ fun body1(): TextStyle = TextStyle(
     lineHeight = 24.sp,
     letterSpacing = 0.005.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -108,7 +114,7 @@ fun body2(): TextStyle = TextStyle(
     lineHeight = 21.75.sp,
     letterSpacing = 0.01.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -119,7 +125,7 @@ fun body3Normal(): TextStyle = TextStyle(
     lineHeight = 20.3.sp,
     letterSpacing = 0.01.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -130,7 +136,7 @@ fun body3Many(): TextStyle = TextStyle(
     lineHeight = 20.3.sp,
     letterSpacing = -(0.025).em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -141,7 +147,7 @@ fun body4(): TextStyle = TextStyle(
     lineHeight = 18.2.sp,
     letterSpacing = 0.01.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -152,7 +158,7 @@ fun label1(): TextStyle = TextStyle(
     lineHeight = 18.2.sp,
     letterSpacing = 0.02.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -163,7 +169,7 @@ fun label2(): TextStyle = TextStyle(
     lineHeight = 15.4.sp,
     letterSpacing = 0.03.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
@@ -174,7 +180,20 @@ fun caption1(): TextStyle = TextStyle(
     lineHeight = 18.sp,
     letterSpacing = 0.003.em,
     fontWeight = FontWeight.Normal,
-    fontFamily = Pretendard,
+    fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
     platformStyle = platformTextStyle,
 )
+
+private val pretendard = FontFamily(
+    Font(R.font.pretendard_regular, FontWeight.Normal, FontStyle.Normal),
+    Font(R.font.pretendard_medium, FontWeight.Medium, FontStyle.Normal),
+    Font(R.font.pretendard_semibold, FontWeight.SemiBold, FontStyle.Normal),
+)
+
+private val lineHeightStyle = LineHeightStyle(
+    alignment = LineHeightStyle.Alignment.Center,
+    trim = LineHeightStyle.Trim.None,
+)
+
+private val platformTextStyle = PlatformTextStyle(includeFontPadding = false)
