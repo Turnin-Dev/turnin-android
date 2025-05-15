@@ -1,26 +1,39 @@
 package com.peekr.designsystem.theme
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 private fun PeekrSampleScreen() {
@@ -30,21 +43,81 @@ private fun PeekrSampleScreen() {
         } else {
             "Light"
         }
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal)
-                .padding(ContentPadding)
-                .padding(top = 80.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(top = 80.dp),
+            contentPadding = PaddingValues(ContentPadding),
             verticalArrangement = Arrangement.spacedBy(ContentPadding),
             horizontalAlignment = Alignment.Start,
         ) {
-            Header("Typography")
-            TypographySample()
-            Header("Color Scheme ($isDarkMode)")
-            ColorSchemeSample()
+            stickyHeader { Header("Typography") }
+            item { TypographySample() }
+            stickyHeader { Header("Color Scheme ($isDarkMode)") }
+            item { ColorSchemeSample() }
+            stickyHeader { Header("Shape") }
+            item { ShapeSample() }
+            stickyHeader { Header("Shadow") }
+            item { ShadowSample() }
+            stickyHeader { Header("Etc") }
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ShadowSample() {
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .peekrShadow(
+                type = PeekrShadowType.Normal,
+                shape = CircleShape,
+            ).background(PeekrTheme.colorScheme.backgroundNormal, CircleShape)
+            .clip(CircleShape)
+            .clickable(
+                indication = ripple(),
+                interactionSource = remember { MutableInteractionSource() },
+            ) { },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text("Shadow", color = PeekrTheme.colorScheme.textNormal)
+    }
+}
+
+@Composable
+private fun ShapeSample() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(ContentPadding),
+    ) {
+        ShapeElement("ExtraSmall", PeekrTheme.shape.extraSmall)
+        ShapeElement("Small", PeekrTheme.shape.small)
+        ShapeElement("Medium", PeekrTheme.shape.medium)
+        ShapeElement("Large", PeekrTheme.shape.large)
+        ShapeElement("ExtraLarge", PeekrTheme.shape.extraLarge)
+        ShapeElement("Modal", PeekrTheme.shape.modal)
+    }
+}
+
+@Composable
+private fun ShapeElement(text: String, shapeSize: Int) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(shapeSize.dp))
+            .size(100.dp)
+            .background(PeekrTheme.colorScheme.backgroundNormal)
+            .border(1.dp, PeekrTheme.colorScheme.textStrong, RoundedCornerShape(shapeSize.dp))
+            .clickable(
+                indication = ripple(),
+                interactionSource = remember { MutableInteractionSource() },
+            ) { },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text, color = PeekrTheme.colorScheme.textNormal)
     }
 }
 
