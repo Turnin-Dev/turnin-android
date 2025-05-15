@@ -22,6 +22,11 @@ object PeekrTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
+
+    val shape: PeekrShape
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalShape.current
 }
 
 @Composable
