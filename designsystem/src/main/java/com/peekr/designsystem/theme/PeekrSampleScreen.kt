@@ -1,5 +1,6 @@
 package com.peekr.designsystem.theme
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -58,19 +59,30 @@ private fun PeekrSampleScreen() {
             ShapeSample()
             Header("Shadow")
             ShadowSample(Modifier.align(Alignment.CenterHorizontally))
+            Header("Etc")
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ShadowSample(modifier: Modifier) {
     Box(
-        modifier
-            .clip(CircleShape)
+        modifier = modifier
             .size(100.dp)
-            .peekrShadow(PeekrShadowType.Normal)
-            .background(PeekrTheme.colorScheme.backgroundNormal),
-    )
+            .peekrShadow(
+                type = PeekrShadowType.Normal,
+                shape = CircleShape,
+            ).background(PeekrTheme.colorScheme.backgroundNormal, CircleShape)
+            .clip(CircleShape)
+            .clickable(
+                indication = ripple(),
+                interactionSource = remember { MutableInteractionSource() },
+            ) { },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text("Shadow", color = PeekrTheme.colorScheme.textNormal)
+    }
 }
 
 @Composable
@@ -96,6 +108,7 @@ private fun ShapeElement(text: String, shapeSize: Int) {
         modifier = Modifier
             .clip(RoundedCornerShape(shapeSize.dp))
             .size(100.dp)
+            .background(PeekrTheme.colorScheme.backgroundNormal)
             .border(1.dp, PeekrTheme.colorScheme.textStrong, RoundedCornerShape(shapeSize.dp))
             .clickable(
                 indication = ripple(),
@@ -103,7 +116,7 @@ private fun ShapeElement(text: String, shapeSize: Int) {
             ) { },
         contentAlignment = Alignment.Center,
     ) {
-        Text(text)
+        Text(text, color = PeekrTheme.colorScheme.textNormal)
     }
 }
 
