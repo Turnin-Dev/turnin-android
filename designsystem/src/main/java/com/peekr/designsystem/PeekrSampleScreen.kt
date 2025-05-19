@@ -1,4 +1,4 @@
-package com.peekr.designsystem.theme
+package com.peekr.designsystem
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -32,6 +32,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.peekr.designsystem.theme.PeekrAppTheme
+import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.designsystem.util.PeekrShadowType
+import com.peekr.designsystem.util.peekrShadow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
