@@ -1,75 +1,37 @@
 package com.peekr.designsystem.component.icon
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.designsystem.util.click.ClickMode
-import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.designsystem.util.icon.PeekrIconType
-
-/** [PeekrIcon] 와 함께 사용하는 아이콘 사이즈 */
-enum class PeekrIconSize(
-    val size: Dp,
-) {
-    Large(32.dp),
-    Medium(28.dp),
-    Normal(24.dp),
-    Small(20.dp),
-    Tiny(16.dp),
-}
 
 /**
  * Peekr Icon
  *
- * @param icon [PeekrIconType]
- * @param iconSize [PeekrIconSize]
+ * @param icon 아이콘
  * @param contentDescription 아이콘 설명
  * @param modifier [Modifier]
- * @param enabled 아이콘 활성화 여부
+ * @param iconSize 아이콘 사이즈
  * @param tint 아이콘 색상
- * @param onClick 아이콘 클릭 시
+ *
+ * @see PeekrIconType
+ * @see PeekrIconSize
  */
 @Composable
 fun PeekrIcon(
     icon: PeekrIconType,
-    iconSize: PeekrIconSize,
     contentDescription: String,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    tint: Color = if (enabled) {
-        PeekrTheme.colorScheme.textNormal
-    } else {
-        PeekrTheme.colorScheme.interactionDisable
-    },
-    onClick: () -> Unit,
+    iconSize: PeekrIconSize = PeekrIconSize.Normal,
+    tint: Color = PeekrTheme.colorScheme.textNormal,
 ) {
     Icon(
-        modifier = Modifier
-            .clip(CircleShape)
-            .clickableSingle(
-                clickMode = ClickMode.Throttle,
-                enabled = enabled,
-                onClick = { },
-            ).padding(iconSize.getTouchTargetPadding())
-            .size(iconSize.size),
+        modifier = modifier.size(iconSize.size),
         imageVector = icon.imageVector,
         contentDescription = contentDescription,
         tint = tint,
     )
-}
-
-private fun PeekrIconSize.getTouchTargetPadding(): Dp = when (this) {
-    PeekrIconSize.Large -> 14.dp
-    PeekrIconSize.Medium -> 12.dp
-    PeekrIconSize.Normal -> 10.dp
-    PeekrIconSize.Small -> 8.dp
-    PeekrIconSize.Tiny -> 6.dp
 }
