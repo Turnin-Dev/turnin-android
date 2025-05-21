@@ -25,7 +25,7 @@ import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.designsystem.util.click.ClickEventProcessor
 import com.peekr.designsystem.util.click.ThrottleClickEventProcessor
 import com.peekr.designsystem.util.click.getThrottle
-import com.peekr.designsystem.util.icon.PeekrIcon
+import com.peekr.designsystem.util.icon.PeekrIconType
 
 /**
  * PeekrButton 스타일(사이즈)
@@ -88,7 +88,7 @@ fun PeekrSolidButton(
     text: String,
     style: PeekrButtonStyle,
     modifier: Modifier = Modifier,
-    icon: PeekrIcon? = null,
+    icon: PeekrIconType? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -118,7 +118,7 @@ fun PeekrOutlinedButton(
     text: String,
     style: PeekrButtonStyle,
     modifier: Modifier = Modifier,
-    icon: PeekrIcon? = null,
+    icon: PeekrIconType? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -198,7 +198,7 @@ private fun CoreButton(
     style: PeekrButtonStyle,
     text: String,
     modifier: Modifier = Modifier,
-    icon: PeekrIcon? = null,
+    icon: PeekrIconType? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {

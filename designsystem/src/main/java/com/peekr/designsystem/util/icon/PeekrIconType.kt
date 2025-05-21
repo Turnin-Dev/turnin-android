@@ -12,7 +12,7 @@ import androidx.compose.ui.res.vectorResource
  * @param iconRes 아이콘 리소스
  */
 @Immutable
-class PeekrIcon(
+class PeekrIconType(
     @DrawableRes private val iconRes: Int,
 ) {
     val imageVector: ImageVector
