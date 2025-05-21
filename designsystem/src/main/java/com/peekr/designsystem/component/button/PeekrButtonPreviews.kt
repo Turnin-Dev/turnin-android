@@ -1,0 +1,220 @@
+package com.peekr.designsystem.component.button
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.peekr.designsystem.theme.PeekrAppTheme
+import com.peekr.designsystem.util.icon.Arrow2Left
+import com.peekr.designsystem.util.icon.PeekrIcons
+
+@Preview(widthDp = 500)
+@Composable
+private fun SolidButton_Default() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 500)
+@Composable
+private fun SolidButton_Icon() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 500)
+@Composable
+private fun SolidButton_Disabled() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                enabled = false,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                enabled = false,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                enabled = false,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                enabled = false,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 500)
+@Composable
+private fun OutlinedButton_Default() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 500)
+@Composable
+private fun OutlinedButton_Icon() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                icon = PeekrIcons.Default.Normal.Arrow2Left,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 500)
+@Composable
+private fun OutlinedButton_Disabled() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                enabled = false,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                enabled = false,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                enabled = false,
+                onClick = {},
+            )
+            PeekrOutlinedButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                enabled = false,
+                onClick = {},
+            )
+        }
+    }
+}

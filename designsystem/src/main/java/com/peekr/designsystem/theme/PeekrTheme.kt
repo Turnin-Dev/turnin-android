@@ -1,6 +1,8 @@
 package com.peekr.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -52,10 +54,12 @@ fun PeekrAppTheme(
         caption1 = caption1(),
     )
 
+    @OptIn(ExperimentalMaterial3Api::class)
     CompositionLocalProvider(
         LocalColorScheme provides colorScheme,
         LocalTypography provides typography,
         LocalShape provides PeekrShape(),
+        LocalRippleConfiguration provides PeekrRipple,
     ) {
         content()
     }
