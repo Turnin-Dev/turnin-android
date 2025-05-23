@@ -1,0 +1,101 @@
+package com.peekr.designsystem.component.avatar
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.request.ImageRequest
+import com.peekr.designsystem.R
+import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.designsystem.util.icon.PeekrIcons
+import com.peekr.designsystem.util.icon.Profile
+
+/**
+ * 프로필 이미지에 사용하는 아바타
+ *
+ * @param model [AsyncImage]에서 사용 가능한 이미지 모델
+ * @param contentDescription 이미지 설명
+ * @param modifier [Modifier]
+ */
+@Composable
+fun PeekrAvatar(
+    model: Any?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val imageRequester = remember(model) {
+        ImageRequest
+            .Builder(context)
+            .data(model)
+            .crossfade(true)
+            .build()
+    }
+    var placeholderState by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(Color(0xFFDCDCDC))
+            .clickable {},
+        contentAlignment = Alignment.Center,
+    ) {
+        if (placeholderState) {
+            AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
+        }
+        AsyncImage(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape),
+            model = imageRequester,
+            contentDescription = contentDescription,
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
+            onState = { state ->
+                placeholderState = state.getPlaceholderResult()
+            },
+        )
+    }
+}
+
+@Composable
+private fun AvatarPlaceholder(modifier: Modifier = Modifier) {
+    Box(
+        modifier.background(Color(0xFFDCDCDC)),
+        Alignment.Center,
+    ) {
+        Icon(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            imageVector = PeekrIcons.Filled.Profile.imageVector,
+            tint = PeekrTheme.colorScheme.staticWhite,
+            contentDescription = stringResource(R.string.avatar_placeholder_content_desc),
+        )
+    }
+}
+
+private fun AsyncImagePainter.State.getPlaceholderResult(): Boolean = when (this) {
+    AsyncImagePainter.State.Empty -> true
+    is AsyncImagePainter.State.Error -> true
+    is AsyncImagePainter.State.Loading -> true
+    is AsyncImagePainter.State.Success -> false
+}

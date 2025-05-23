@@ -17,3 +17,4 @@ ktlint_standard_multiline-expression-wrapping = disabled
 # 함수 정의 시 반환 값 Line을 새로운 Line에서 시작 (off)
 ktlint_standard_function-signature = disabled
 ktlint_standard_block-comment-initial-star-alignment = disabled
+ktlint_standard_class-signature = disabled

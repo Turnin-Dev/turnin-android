@@ -1,4 +1,4 @@
-package com.peekr.designsystem.component.icon
+package com.peekr.designsystem.component.button
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,13 +8,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.peekr.designsystem.component.icon.PeekrIconSize
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.util.icon.Home
 import com.peekr.designsystem.util.icon.PeekrIcons
 
 @Preview(showBackground = true)
 @Composable
-private fun Icon_Size() {
+private fun IconButton_Size() {
     PeekrAppTheme {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -22,7 +23,7 @@ private fun Icon_Size() {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
-                PeekrIcon(
+                PeekrIconButton(
                     icon = PeekrIcons.Filled.Home,
                     iconSize = iconSize,
                     contentDescription = "",
@@ -35,7 +36,7 @@ private fun Icon_Size() {
 
 @Preview(showBackground = true)
 @Composable
-private fun Icon_Disabled() {
+private fun IconButton_Disabled() {
     PeekrAppTheme {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -43,7 +44,7 @@ private fun Icon_Disabled() {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
-                PeekrIcon(
+                PeekrIconButton(
                     icon = PeekrIcons.Filled.Home,
                     iconSize = iconSize,
                     contentDescription = "",
