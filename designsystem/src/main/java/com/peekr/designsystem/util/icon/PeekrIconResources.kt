@@ -10,7 +10,7 @@ val PeekrIcons.Filled.Home: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_home)
 
 val PeekrIcons.Filled.Profile: PeekrIconType
-    get() = PeekrIconType(R.drawable.ic_filled_home)
+    get() = PeekrIconType(R.drawable.ic_filled_profile)
 
 val PeekrIcons.Filled.People: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_people)

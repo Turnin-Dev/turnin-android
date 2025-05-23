@@ -5,7 +5,10 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ClickableSingleTest">
+      <SelectionState runConfigName="AvatarPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="Avatar_Size">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
