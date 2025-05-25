@@ -31,7 +31,7 @@ import com.peekr.designsystem.util.icon.PeekrIconType
 fun PeekrIconButton(
     icon: PeekrIconType,
     iconSize: PeekrIconSize,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     tint: Color = if (enabled) {
