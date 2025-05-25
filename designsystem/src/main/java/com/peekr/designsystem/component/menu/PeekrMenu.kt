@@ -25,6 +25,8 @@ import com.peekr.designsystem.theme.PeekrTheme
  * @param onCancel 취소 클릭 시 (null이 아닐 때만 취소 항목 활성화)
  *
  * @see [com.peekr.designsystem.component.modal.PeekrModalBottomSheet]
+ *
+ * @sample PeekrMenuPreviews
  */
 @Composable
 fun PeekrMenu(
