@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
@@ -54,6 +55,7 @@ fun PeekrModalBottomSheet(
         containerColor = PeekrTheme.colorScheme.backgroundNormal,
         contentColor = PeekrTheme.colorScheme.textNormal,
         scrimColor = ScrimColor,
+        shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         properties = ModalBottomSheetProperties(shouldDismissOnBackPress),
     ) {
