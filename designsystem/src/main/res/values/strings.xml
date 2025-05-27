@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!-- Avatar -->
+    <!-- Avatar -->
     <string name="avatar_placeholder_content_desc">사진</string>
-<!-- TopBar -->
+    <!-- TopBar -->
     <string name="top_bar_btn_back_pressed">뒤로 가기</string>
     <string name="top_bar_logo">로고</string>
+    <!-- Menu -->
+    <string name="menu_btn_cancel">취소</string>
+    <!-- Logo -->
+    <string name="logo_content_desc">로고</string>
 </resources>
