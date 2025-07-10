@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 /** 계정 관련 리포지토리 */
 interface AccountRepository {
     /** 로그인 */
-    suspend fun login(login: Login): Flow<Result<Boolean, ErrorType>>
+    fun login(login: Login): Flow<Result<Boolean, ErrorType>>
 }
