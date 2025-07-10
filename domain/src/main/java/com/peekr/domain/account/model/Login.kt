@@ -1,4 +1,4 @@
-package com.peekr.domain.model.account
+package com.peekr.domain.account.model
 
 /**
  * 로그인 시 사용 한다.
