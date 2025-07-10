@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Peekr"
 include(":app")
 include(":designsystem")
+include(":domain")
