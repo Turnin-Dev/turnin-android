@@ -1,8 +1,8 @@
-package com.peekr.domain.repository
+package com.peekr.domain.account.repository
 
-import com.peekr.domain.model.account.Login
-import com.peekr.domain.util.ErrorType
-import com.peekr.domain.util.Result
+import com.peekr.domain.account.model.Login
+import com.peekr.domain.shared.util.ErrorType
+import com.peekr.domain.shared.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 계정 관련 리포지토리 */

@@ -1,4 +1,4 @@
-package com.peekr.domain.util
+package com.peekr.domain.shared.util
 
 typealias BaseError = Error
 

@@ -1,9 +1,9 @@
-package com.peekr.domain.usecase.account
+package com.peekr.domain.account.usecase
 
-import com.peekr.domain.model.account.Login
-import com.peekr.domain.repository.AccountRepository
-import com.peekr.domain.util.ErrorType
-import com.peekr.domain.util.Result
+import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.repository.AccountRepository
+import com.peekr.domain.shared.util.ErrorType
+import com.peekr.domain.shared.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
