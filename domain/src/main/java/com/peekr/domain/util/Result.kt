@@ -1,0 +1,27 @@
+package com.peekr.domain.util
+
+typealias BaseError = Error
+
+/** 도메인 로직에서 사용하는 결과 래퍼 클래스 */
+sealed interface Result<out T, out E : BaseError> {
+    /**
+     * 성공 시
+     *
+     * @param data 성공 후 반환할 데이터
+     */
+    data class Success<out T, out E : BaseError>(val data: T) : Result<T, E>
+
+    /**
+     * 실패 시
+     *
+     * @param error 에러 타입
+     * @param message 에러 메시지
+     */
+    data class Error<out T, out E : BaseError>(
+        val error: E,
+        val message: String,
+    ) : Result<T, E>
+
+    /** 로딩 시 */
+    data object Loading : Result<Nothing, Nothing>
+}
