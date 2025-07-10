@@ -18,3 +18,6 @@ ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_function-signature = disabled
 ktlint_standard_block-comment-initial-star-alignment = disabled
 ktlint_standard_class-signature = disabled
+# 어노테이션 관련 규칙 비활성화
+ktlint_standard_annotation = disabled
+ktlint_standard_spacing-between-declarations-with-annotations = disabled
