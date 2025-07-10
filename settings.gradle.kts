@@ -23,3 +23,4 @@ rootProject.name = "Peekr"
 include(":app")
 include(":designsystem")
 include(":domain")
+include(":data")
