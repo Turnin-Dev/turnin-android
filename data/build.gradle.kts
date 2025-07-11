@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -16,6 +20,9 @@ android {
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "com.team.data.TestRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
     }
 
     buildTypes {
@@ -24,6 +31,11 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
