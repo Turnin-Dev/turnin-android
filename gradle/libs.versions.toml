@@ -19,6 +19,8 @@ hilt = "2.50"
 androidxTestRunner = "1.6.2"
 androidxTestCore = "1.6.1"
 robolectric = "4.10.3"
+googleGMS = "4.4.3"
+firebaseBom = "33.16.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,8 +39,8 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 # add testing
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTestRunner" }
-androidx-test-core  = { module = "androidx.test:core", version.ref = "androidxTestCore" }
-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric"}
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 # Coil
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 # Coroutine
@@ -56,6 +58,8 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -65,4 +69,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
 

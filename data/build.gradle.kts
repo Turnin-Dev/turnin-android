@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.gms)
 }
 
 android {
@@ -51,6 +52,9 @@ dependencies {
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
