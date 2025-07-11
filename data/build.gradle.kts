@@ -1,8 +1,13 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.gms)
 }
 
 android {
@@ -15,6 +20,9 @@ android {
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "com.team.data.TestRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
     }
 
     buildTypes {
@@ -23,6 +31,11 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -51,6 +64,14 @@ dependencies {
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    // Credential Manager
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
