@@ -77,6 +77,14 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    // Kakao SDK
+    implementation(libs.kakao.sdk.v2.all)
+    implementation(libs.kakao.sdk.v2.user)
+    implementation(libs.kakao.sdk.v2.talk)
+    implementation(libs.kakao.sdk.v2.share)
+    implementation(libs.kakao.sdk.v2.friend)
+    implementation(libs.kakao.sdk.v2.navi)
+    implementation(libs.kakao.sdk.v2.cert)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
