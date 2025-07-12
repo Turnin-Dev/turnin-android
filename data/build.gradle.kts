@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.gms)
 }
 
 android {
@@ -23,6 +22,12 @@ android {
 
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 
     buildTypes {
@@ -77,6 +82,7 @@ dependencies {
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.mockK)
     testImplementation(libs.robolectric)
 }
