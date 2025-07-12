@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +21,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", properties.getProperty("KAKAO_NATIVE_APP_KEY"))
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = "KAKAO_NATIVE_APP_KEY"
     }
 
     buildTypes {
@@ -61,4 +69,11 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+
+    // Kakao SDK
+    implementation(libs.kakao.sdk.v2.all)
+    implementation(libs.kakao.sdk.v2.user)
+    implementation(libs.kakao.sdk.v2.talk)
+    implementation(libs.kakao.sdk.v2.share)
+    implementation(libs.kakao.sdk.v2.cert)
 }

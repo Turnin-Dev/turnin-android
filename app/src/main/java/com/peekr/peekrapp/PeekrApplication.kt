@@ -7,6 +7,7 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
+import com.kakao.sdk.common.KakaoSdk
 
 class PeekrApplication : Application(), ImageLoaderFactory {
     // 약 10MB 정도
@@ -17,6 +18,9 @@ class PeekrApplication : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Kakao SDK 초기화
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
     }
 
     override fun newImageLoader(): ImageLoader = ImageLoader
