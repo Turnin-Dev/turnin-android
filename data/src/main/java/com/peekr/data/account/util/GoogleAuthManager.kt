@@ -22,11 +22,9 @@ import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import kotlinx.coroutines.tasks.await
 
-class GoogleAuthManager(
-    private val context: Context,
-    private val credentialManager: CredentialManager,
-) : AuthManager {
+class GoogleAuthManager(private val context: Context) : AuthManager {
     private val auth = Firebase.auth
+    private val credentialManager = CredentialManager.create(context)
 
     override suspend fun signIn(): Result<UserUID, ErrorType> = try {
         val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
