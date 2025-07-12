@@ -18,6 +18,7 @@ material = "1.12.0"
 hilt = "2.50"
 androidxTestRunner = "1.6.2"
 androidxTestCore = "1.6.1"
+androidXArchCoreTest = "2.2.0"
 robolectric = "4.10.3"
 googleGMS = "4.4.3"
 firebaseBom = "33.16.0"
@@ -43,6 +44,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTestRunner" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTestCore" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidXArchCoreTest" }
 # Coil
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 # Coroutine

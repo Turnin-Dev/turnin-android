@@ -25,6 +25,12 @@ android {
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -77,6 +83,7 @@ dependencies {
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.mockK)
     testImplementation(libs.robolectric)
 }
