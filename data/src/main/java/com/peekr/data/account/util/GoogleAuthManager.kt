@@ -20,67 +20,75 @@ import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
 class GoogleAuthManager(private val context: Context) : AuthManager {
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.create(context)
 
-    override suspend fun signIn(): Result<UserUID, ErrorType> = try {
-        val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
-            .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
-            .build()
+    override suspend fun signIn(): Flow<Result<UserUID, ErrorType>> = flow {
+        try {
+            val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
+                .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                .build()
 
-        val credentialRequest: GetCredentialRequest = GetCredentialRequest
-            .Builder()
-            .addCredentialOption(googleIdOption)
-            .build()
+            val credentialRequest: GetCredentialRequest = GetCredentialRequest
+                .Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
 
-        val credentialResponse = credentialManager.getCredential(
-            request = credentialRequest,
-            context = context,
-        )
+            val credentialResponse = credentialManager.getCredential(
+                request = credentialRequest,
+                context = context,
+            )
 
-        signInWithCredentialResponse(credentialResponse)
-    } catch (e: GoogleIdTokenParsingException) {
-        // Google ID Token 파싱 예외
-        Result.Error(ErrorType.Auth.IdTokenParsing, e.message)
-    } catch (e: GetCredentialCancellationException) {
-        // 인증이 취소될 때 예외
-        Result.Error(ErrorType.Auth.Cancellation, e.message)
-    } catch (e: Exception) {
-        // 이 외의 예외
-        Result.Error(ErrorType.Auth.Unexpected, e.message)
+            emit(signInWithCredentialResponse(credentialResponse))
+        } catch (e: GoogleIdTokenParsingException) {
+            // Google ID Token 파싱 예외
+            emit(Result.Error(ErrorType.Auth.IdTokenParsing, e.message))
+        } catch (e: GetCredentialCancellationException) {
+            // 인증이 취소될 때 예외
+            emit(Result.Error(ErrorType.Auth.Cancellation, e.message))
+        } catch (e: Exception) {
+            // 이 외의 예외
+            emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
+        }
     }
 
-    override suspend fun signOut(): Result<Unit, ErrorType> = try {
-        auth.signOut()
-        credentialManager.clearCredentialState(
-            ClearCredentialStateRequest(),
-        )
-        Result.Success(Unit)
-    } catch (e: Exception) {
-        Result.Error(ErrorType.Auth.Unexpected, e.message)
+    override suspend fun signOut(): Flow<Result<Unit, ErrorType>> = flow {
+        try {
+            auth.signOut()
+            credentialManager.clearCredentialState(
+                ClearCredentialStateRequest(),
+            )
+            emit(Result.Success(Unit))
+        } catch (e: Exception) {
+            emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
+        }
     }
 
-    override suspend fun deleteAccount(): Result<Unit, ErrorType> {
+    override suspend fun deleteAccount(): Flow<Result<Unit, ErrorType>> = flow {
         val currentUser = auth.currentUser
 
-        if (currentUser == null) return Result.Error(ErrorType.Auth.UserNotFound)
+        if (currentUser == null) {
+            emit(Result.Error(ErrorType.Auth.UserNotFound))
+        } else {
+            try {
+                val task = currentUser.delete()
 
-        return try {
-            val task = currentUser.delete()
-
-            if (task.isComplete && task.isSuccessful) {
-                credentialManager.clearCredentialState(
-                    ClearCredentialStateRequest(),
-                )
-                Result.Success(Unit)
-            } else {
-                Result.Error(ErrorType.Auth.DeleteAccountFailed)
+                if (task.isComplete && task.isSuccessful) {
+                    credentialManager.clearCredentialState(
+                        ClearCredentialStateRequest(),
+                    )
+                    emit(Result.Success(Unit))
+                } else {
+                    emit(Result.Error(ErrorType.Auth.DeleteAccountFailed))
+                }
+            } catch (e: Exception) {
+                emit(Result.Error(ErrorType.Auth.DeleteAccountFailed, e.message))
             }
-        } catch (e: Exception) {
-            Result.Error(ErrorType.Auth.Unexpected, e.message)
         }
     }
 
