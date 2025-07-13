@@ -25,6 +25,7 @@ firebaseBom = "33.16.0"
 googleId = "1.1.1"
 credentials = "1.5.0"
 kakaoSdk = "2.21.4"
+timber = "5.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,8 @@ kakao-sdk-v2-share = { module = "com.kakao.sdk:v2-share", version.ref = "kakaoSd
 kakao-sdk-v2-friend = { module = "com.kakao.sdk:v2-friend", version.ref = "kakaoSdk" }
 kakao-sdk-v2-navi = { module = "com.kakao.sdk:v2-navi", version.ref = "kakaoSdk" }
 kakao-sdk-v2-cert = { module = "com.kakao.sdk:v2-cert", version.ref = "kakaoSdk" }
+# Logging
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

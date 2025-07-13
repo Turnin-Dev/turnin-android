@@ -84,6 +84,9 @@ dependencies {
     implementation(libs.kakao.sdk.v2.share)
     implementation(libs.kakao.sdk.v2.cert)
 
+    // Logging
+    implementation(libs.timber)
+
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
