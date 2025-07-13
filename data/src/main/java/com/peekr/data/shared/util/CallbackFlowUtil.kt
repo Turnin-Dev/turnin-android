@@ -8,8 +8,6 @@ fun <E> SendChannel<E>.trySendAndClose(
     channelResult: ((ChannelResult<Unit>) -> Unit)? = null,
 ) {
     val result = trySend(element)
-    channelResult?.let {
-        it(result)
-    }
+    channelResult?.invoke(result)
     close()
 }
