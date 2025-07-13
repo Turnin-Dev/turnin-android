@@ -6,6 +6,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import com.peekr.data.shared.util.trySendAndClose
 import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.shared.util.ErrorType
@@ -27,8 +28,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                         login(context)
                     } else {
                         // 2. another error
-                        trySend(Result.Error(ErrorType.Auth.KakaoSignInError))
-                        close()
+                        trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignInError))
                     }
                 } else {
                     // 3. token validity check successful (renew if necessary)
@@ -46,10 +46,9 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     override suspend fun signOut(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.logout { e ->
             if (e == null) {
-                trySend(Result.Success(Unit))
+                trySendAndClose(Result.Success(Unit))
             } else {
-                trySend(Result.Error(ErrorType.Auth.KakaoSignOutError, e.message))
-                close()
+                trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignOutError, e.message))
             }
         }
 
@@ -59,10 +58,9 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     override suspend fun deleteAccount(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.unlink { e ->
             if (e == null) {
-                trySend(Result.Success(Unit))
+                trySendAndClose(Result.Success(Unit))
             } else {
-                trySend(Result.Error(ErrorType.Auth.KakaoDeleteAccountError, e.message))
-                close()
+                trySendAndClose(Result.Error(ErrorType.Auth.KakaoDeleteAccountError, e.message))
             }
         }
 
@@ -85,8 +83,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
             } else if (token != null) { // 로그인 성공
                 loginSuccess()
             } else {
-                trySend(Result.Error(ErrorType.Auth.Unexpected))
-                close()
+                trySendAndClose(Result.Error(ErrorType.Auth.Unexpected))
             }
         }
 
@@ -95,8 +92,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         error: Throwable?,
     ) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySend(Result.Error(ErrorType.Auth.Cancellation))
-            close()
+            trySendAndClose(Result.Error(ErrorType.Auth.Cancellation))
         } else {
             loginWithKakaoAccount(context)
         }
@@ -109,14 +105,14 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
             } else if (token != null) { // 로그인 성공
                 loginSuccess()
             } else {
-                trySend(Result.Error(ErrorType.Auth.Unexpected))
-                close()
+                trySendAndClose(Result.Error(ErrorType.Auth.Unexpected))
             }
         }
 
     private fun ProducerScope<UserUIDResult>.loginWithKakaoAccountError(error: Throwable?) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySend(Result.Error(ErrorType.Auth.Cancellation))
+            trySendAndClose(Result.Error(ErrorType.Auth.Cancellation))
+        } else {
             close()
         }
     }
@@ -125,10 +121,9 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         UserApiClient.instance.me { user, error ->
             if (user?.id != null) {
                 val userUID = UserUID(user.id.toString())
-                trySend(Result.Success(userUID))
+                trySendAndClose(Result.Success(userUID))
             } else {
-                trySend(Result.Error(ErrorType.Auth.UserNotFound))
-                close()
+                trySendAndClose(Result.Error(ErrorType.Auth.UserNotFound))
             }
         }
     }
