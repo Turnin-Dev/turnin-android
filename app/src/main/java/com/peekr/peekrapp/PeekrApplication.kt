@@ -8,6 +8,9 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.kakao.sdk.common.KakaoSdk
+import com.peekr.peekrapp.util.DebugTree
+import com.peekr.peekrapp.util.ReleaseTree
+import timber.log.Timber
 
 class PeekrApplication : Application(), ImageLoaderFactory {
     // 약 10MB 정도
@@ -21,6 +24,9 @@ class PeekrApplication : Application(), ImageLoaderFactory {
 
         // Kakao SDK 초기화
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+
+        // Timber 초기화
+        initTimber()
     }
 
     override fun newImageLoader(): ImageLoader = ImageLoader
@@ -44,4 +50,12 @@ class PeekrApplication : Application(), ImageLoaderFactory {
             }
         }.respectCacheHeaders(true) // 서버의 캐시 제어 헤더 사용 여부
         .build()
+
+    private fun initTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(DebugTree())
+        } else {
+            Timber.plant(ReleaseTree())
+        }
+    }
 }
