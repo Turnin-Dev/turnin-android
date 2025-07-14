@@ -9,7 +9,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 
 class SocialLoginUseCase @Inject constructor(
     private val authManagerFactory: AuthManagerFactory,
@@ -18,9 +17,7 @@ class SocialLoginUseCase @Inject constructor(
         val authManager = authManagerFactory.create(provider)
         return authManager
             .signIn()
-            .onStart {
-                // Logging
-            }.map { result ->
+            .map { result ->
                 when (result) {
                     is Result.Success -> {
                         val login = Login(provider = provider, providerId = result.data)
