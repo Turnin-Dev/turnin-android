@@ -13,6 +13,14 @@ import kotlinx.coroutines.flow.map
 class SocialLoginUseCase @Inject constructor(
     private val authManagerFactory: AuthManagerFactory,
 ) {
+    /**
+     * Initiates a social login flow for the specified provider and emits the result.
+     *
+     * Returns a [Flow] that emits a [Result] containing a [Login] object on success, or an [ErrorType] on failure.
+     *
+     * @param provider The social login provider to use for authentication.
+     * @return A flow emitting the result of the social login operation.
+     */
     operator fun invoke(provider: SocialLoginProvider): Flow<Result<Login, ErrorType>> {
         val authManager = authManagerFactory.create(provider)
         return authManager
