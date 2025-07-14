@@ -9,7 +9,7 @@ sealed interface Result<out T, out E : BaseError> {
      *
      * @param data 성공 후 반환할 데이터
      */
-    data class Success<out T, out E : BaseError>(val data: T) : Result<T, E>
+    data class Success<out T>(val data: T) : Result<T, Nothing>
 
     /**
      * 실패 시
@@ -17,8 +17,8 @@ sealed interface Result<out T, out E : BaseError> {
      * @param error 에러 타입
      * @param message 에러 메시지
      */
-    data class Error<out T, out E : BaseError>(
+    data class Error<out E : BaseError>(
         val error: E,
         val message: String? = null,
-    ) : Result<T, E>
+    ) : Result<Nothing, E>
 }
