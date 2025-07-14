@@ -2,7 +2,7 @@ package com.peekr.domain.shared.util
 
 typealias BaseError = Error
 
-/** 도메인 로직에서 사용하는 결과 래퍼 클래스 */
+/** 결과 래퍼 클래스 */
 sealed interface Result<out T, out E : BaseError> {
     /**
      * 성공 시
