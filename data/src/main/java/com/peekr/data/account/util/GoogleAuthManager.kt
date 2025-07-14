@@ -23,6 +23,7 @@ import com.peekr.domain.shared.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class GoogleAuthManager(private val context: Context) : AuthManager {
     private val auth = Firebase.auth
@@ -46,13 +47,12 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
 
             emit(signInWithCredentialResponse(credentialResponse))
         } catch (e: GoogleIdTokenParsingException) {
-            // Google ID Token 파싱 예외
+            Timber.e(e, "Cannot parsing google id token.")
             emit(Result.Error(ErrorType.Auth.IdTokenParsing, e.message))
         } catch (e: GetCredentialCancellationException) {
-            // 인증이 취소될 때 예외
             emit(Result.Error(ErrorType.Auth.Cancellation, e.message))
         } catch (e: Exception) {
-            // 이 외의 예외
+            Timber.e(e, "Unexpected error during Google sign-in.")
             emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
         }
     }
@@ -63,8 +63,10 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             credentialManager.clearCredentialState(
                 ClearCredentialStateRequest(),
             )
+            Timber.i("Google sign-out Succeeded.")
             emit(Result.Success(Unit))
         } catch (e: Exception) {
+            Timber.e(e, "Failed to Google sign-out")
             emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
         }
     }
@@ -82,11 +84,13 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                     credentialManager.clearCredentialState(
                         ClearCredentialStateRequest(),
                     )
+                    Timber.i("Google account deleted.")
                     emit(Result.Success(Unit))
                 } else {
                     emit(Result.Error(ErrorType.Auth.DeleteAccountFailed))
                 }
             } catch (e: Exception) {
+                Timber.e(e, "Failed to delete Google account.")
                 emit(Result.Error(ErrorType.Auth.DeleteAccountFailed, e.message))
             }
         }
@@ -99,17 +103,20 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     val firebaseUser = getFirebaseUser(credential)
                     firebaseUser?.let {
+                        Timber.i("Firebase user fetched successfully.")
                         val userUID = UserUID(firebaseUser.uid)
                         Result.Success(userUID)
                     } ?: Result.Error(ErrorType.Auth.UserNotFound)
                 } else {
                     // 올바르지 않은 형태의 토큰
+                    Timber.w("Google token type invalid.")
                     Result.Error(ErrorType.Auth.TokenTypeInvalid)
                 }
             }
 
             else -> {
                 // 올바르지 않은 형태의 토큰
+                Timber.w("Google token type invalid.")
                 Result.Error(ErrorType.Auth.TokenTypeInvalid)
             }
         }

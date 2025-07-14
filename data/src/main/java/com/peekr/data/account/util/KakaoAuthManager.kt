@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import timber.log.Timber
 
 private typealias UserUIDResult = Result<UserUID, ErrorType>
 
@@ -25,18 +26,22 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                 if (error != null) {
                     if (error is KakaoSdkError && error.isInvalidTokenError()) {
                         // 1. Login Required
+                        Timber.i("Kakao login required")
                         login(context)
                     } else {
                         // 2. another error
+                        Timber.i("Weird error during Kakao sign-in")
                         trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignInError))
                     }
                 } else {
                     // 3. token validity check successful (renew if necessary)
+                    Timber.i("Kakao login required")
                     login(context)
                 }
             }
         } else {
             // 1. Login Required
+            Timber.i("Kakao login required")
             login(context)
         }
 
@@ -46,8 +51,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     override suspend fun signOut(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.logout { e ->
             if (e == null) {
+                Timber.i("Kakao sign-out succeeded.")
                 trySendAndClose(Result.Success(Unit))
             } else {
+                Timber.e(e, "Kakao sign-out failed.")
                 trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignOutError, e.message))
             }
         }
@@ -58,8 +65,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     override suspend fun deleteAccount(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.unlink { e ->
             if (e == null) {
+                Timber.i("Kakao account deleted.")
                 trySendAndClose(Result.Success(Unit))
             } else {
+                Timber.e(e, "Failed to delete Kakao account.")
                 trySendAndClose(Result.Error(ErrorType.Auth.KakaoDeleteAccountError, e.message))
             }
         }
@@ -79,8 +88,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     private fun ProducerScope<UserUIDResult>.loginWithKakaoTalk(context: Context) =
         UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
             if (error != null) { // 로그인 실패/에러
+                Timber.i("'Login with KakaoTalk' failed.")
                 loginWithKakaoTalkError(context, error)
             } else if (token != null) { // 로그인 성공
+                Timber.i("'Login with KakaoTalk' succeeded.")
                 loginSuccess()
             } else {
                 trySendAndClose(Result.Error(ErrorType.Auth.Unexpected))
@@ -101,8 +112,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     private fun ProducerScope<UserUIDResult>.loginWithKakaoAccount(context: Context) =
         UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
             if (error != null) { // 로그인 실패/에러
+                Timber.i("'Login with KakaoAccount' failed.")
                 loginWithKakaoAccountError(error)
             } else if (token != null) { // 로그인 성공
+                Timber.i("'Login with KakaoAccount' succeeded.")
                 loginSuccess()
             } else {
                 trySendAndClose(Result.Error(ErrorType.Auth.Unexpected))
@@ -120,9 +133,11 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     private fun ProducerScope<UserUIDResult>.loginSuccess() {
         UserApiClient.instance.me { user, error ->
             if (user?.id != null) {
+                Timber.i("Kakao Login succeeded")
                 val userUID = UserUID(user.id.toString())
                 trySendAndClose(Result.Success(userUID))
             } else {
+                Timber.i("Kakao user not found.")
                 trySendAndClose(Result.Error(ErrorType.Auth.UserNotFound))
             }
         }
