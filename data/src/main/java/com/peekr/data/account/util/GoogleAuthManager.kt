@@ -29,7 +29,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.create(context)
 
-    override suspend fun signIn(): Flow<Result<UserUID, ErrorType>> = flow {
+    override fun signIn(): Flow<Result<UserUID, ErrorType>> = flow {
         try {
             val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
                 .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
@@ -57,7 +57,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
         }
     }
 
-    override suspend fun signOut(): Flow<Result<Unit, ErrorType>> = flow {
+    override fun signOut(): Flow<Result<Unit, ErrorType>> = flow {
         try {
             auth.signOut()
             credentialManager.clearCredentialState(
@@ -71,7 +71,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
         }
     }
 
-    override suspend fun deleteAccount(): Flow<Result<Unit, ErrorType>> = flow {
+    override fun deleteAccount(): Flow<Result<Unit, ErrorType>> = flow {
         val currentUser = auth.currentUser
 
         if (currentUser == null) {

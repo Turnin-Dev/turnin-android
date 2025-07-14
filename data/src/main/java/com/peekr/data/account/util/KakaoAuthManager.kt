@@ -20,7 +20,7 @@ import timber.log.Timber
 private typealias UserUIDResult = Result<UserUID, ErrorType>
 
 class KakaoAuthManager(private val context: Context) : AuthManager {
-    override suspend fun signIn(): Flow<Result<UserUID, ErrorType>> = callbackFlow {
+    override fun signIn(): Flow<Result<UserUID, ErrorType>> = callbackFlow {
         if (AuthApiClient.instance.hasToken()) {
             UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                 if (error != null) {
@@ -48,7 +48,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         awaitClose()
     }
 
-    override suspend fun signOut(): Flow<Result<Unit, ErrorType>> = callbackFlow {
+    override fun signOut(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.logout { e ->
             if (e == null) {
                 Timber.i("Kakao sign-out succeeded.")
@@ -62,7 +62,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         awaitClose()
     }
 
-    override suspend fun deleteAccount(): Flow<Result<Unit, ErrorType>> = callbackFlow {
+    override fun deleteAccount(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.unlink { e ->
             if (e == null) {
                 Timber.i("Kakao account deleted.")
