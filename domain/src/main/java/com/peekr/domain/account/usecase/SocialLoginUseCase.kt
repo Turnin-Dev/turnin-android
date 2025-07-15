@@ -13,14 +13,17 @@ import kotlinx.coroutines.flow.map
 /**
  * 소셜로그인 플랫폼에 맞게 로그인을 수행한다.
  *
- * `AuthManager` 를 통해 로그인을 진행하고
- * 로그인 결과 값(사용자 ID)과 로그인을 진행한 플랫폼을 최종 반환 값([Login])으로 반환한다.
+ * `AuthManager` 를 통해 로그인을 진행하고 로그인 결과 값(사용자 ID)과
+ * 로그인을 진행한 플랫폼을 [Login] 객체로 반환한다.
  *
- * 해당 반환 값을 [LoginUseCase]의 인자로 넣어 호출하면 로그인 과정이 마무리 된다.
+ * 반환된 [Login] 객체는 [LoginUseCase]에 전달하여 최종 로그인 과정을 마무리한다.
+ *
+ * @return [Result] – 성공 시 [Login], 실패 시 [ErrorType] 정보 포함
  */
 class SocialLoginUseCase @Inject constructor(
     private val authManagerFactory: AuthManagerFactory,
 ) {
+    /** @param provider 로그인에 사용할 소셜 플랫폼 */
     operator fun invoke(provider: SocialLoginProvider): Flow<Result<Login, ErrorType>> {
         val authManager = authManagerFactory.create(provider)
         return authManager
