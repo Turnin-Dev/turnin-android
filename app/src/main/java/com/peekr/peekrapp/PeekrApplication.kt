@@ -10,8 +10,10 @@ import coil.util.DebugLogger
 import com.kakao.sdk.common.KakaoSdk
 import com.peekr.peekrapp.util.DebugTree
 import com.peekr.peekrapp.util.ReleaseTree
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class PeekrApplication : Application(), ImageLoaderFactory {
     // 약 10MB 정도
     private val imageCacheMaxSize: Long = 10 * 1024 * 1024
