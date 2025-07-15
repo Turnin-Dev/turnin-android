@@ -87,6 +87,11 @@ dependencies {
     // Logging
     implementation(libs.timber)
 
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.mock)
+    implementation(libs.retrofit.converter.moshi)
+
     // Serialization
     implementation(libs.moshi)
 
