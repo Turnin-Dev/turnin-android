@@ -1,12 +1,9 @@
 package com.peekr.data.account.di
 
 import android.content.Context
-import com.peekr.data.account.util.AuthManagerFactoryImpl
 import com.peekr.data.account.util.GoogleAuthManager
 import com.peekr.data.account.util.KakaoAuthManager
 import com.peekr.domain.account.util.AuthManager
-import com.peekr.domain.account.util.AuthManagerFactory
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AccountModule {
+class AccountModule {
     @GoogleAuth
     @Singleton
     @Provides
@@ -31,13 +28,6 @@ object AccountModule {
     fun provideKakaoAuthManager(
         @ApplicationContext context: Context,
     ): AuthManager = KakaoAuthManager(context)
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-interface AccountBindModule {
-    @Binds
-    fun bindsAuthManagerFactory(impl: AuthManagerFactoryImpl): AuthManagerFactory
 }
 
 // ------------------------------ Qualifier ------------------------------
