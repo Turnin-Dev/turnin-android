@@ -87,6 +87,9 @@ dependencies {
     // Logging
     implementation(libs.timber)
 
+    // Serialization
+    implementation(libs.moshi)
+
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
