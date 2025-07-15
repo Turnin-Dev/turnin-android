@@ -1,5 +1,6 @@
 package com.peekr.data.account.model.request
 
+import com.peekr.domain.account.model.SocialLoginProvider
 import com.squareup.moshi.JsonClass
 
 /**
@@ -10,6 +11,6 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class LoginRequest(
-    val provider: String,
+    val provider: SocialLoginProvider,
     val providerId: String,
 )

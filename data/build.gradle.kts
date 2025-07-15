@@ -92,11 +92,11 @@ dependencies {
 
     // Retrofit
     implementation(libs.retrofit)
-    implementation(libs.retrofit.mock)
     implementation(libs.retrofit.converter.moshi)
+    testImplementation(libs.retrofit.mock)
 
     // Serialization
-    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
