@@ -11,7 +11,9 @@ import timber.log.Timber
 /**
  * Retry Function, Exponential Backoff With Jitter
  *
- * @param attempt 재시도 횟수 'Ex) attempt = 2, 총 재시도 횟수는 3(attempt+1)번'
+ * 재시도 횟수는 ([attempt] + 1(마지막 시도))번 이다.
+ *
+ * @param attempt 재시도 횟수
  * @param initialDelayMillis 초기 딜레이
  * @param maxDelayMillis 최대 딜레이
  * @param factor factor 밑 (지수는 attempt - 1)
@@ -43,5 +45,10 @@ suspend fun <T> retry(
     // 마지막 시도 부분
     // 만약, attempt 가 2인 경우
     // 총 재시도 횟수는 3이다. (attempt + 마지막 시도)
-    return block()
+    try {
+        return block()
+    } catch (e: Exception) {
+        Timber.e("The number of retries has been exceeded: ${e.localizedMessage}")
+        throw e
+    }
 }

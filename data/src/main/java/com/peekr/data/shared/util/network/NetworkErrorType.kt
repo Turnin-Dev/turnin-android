@@ -17,7 +17,6 @@ sealed interface NetworkErrorType {
 
     /** Exception 에러 타입 */
     enum class Exception : NetworkErrorType {
-        HTTP,
         IO,
         TIMEOUT,
         JSON_DATA,
