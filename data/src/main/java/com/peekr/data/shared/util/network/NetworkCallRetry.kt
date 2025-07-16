@@ -1,4 +1,4 @@
-package com.peekr.data.shared.util
+package com.peekr.data.shared.util.network
 
 import kotlin.math.pow
 import kotlin.random.Random
