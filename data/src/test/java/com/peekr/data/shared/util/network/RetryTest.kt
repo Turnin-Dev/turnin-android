@@ -3,7 +3,8 @@ package com.peekr.data.shared.util.network
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -34,7 +35,9 @@ class RetryTest {
         // Given
         val expectedResult = "success"
         val mockBlock = mockk<suspend () -> String>()
-        coEvery { mockBlock() } throws IOException("Network error") andThen expectedResult
+        coEvery { mockBlock() } throws
+            SocketTimeoutException() andThen
+            expectedResult
 
         // When
         val result = retry(attempt = 2, block = mockBlock)
@@ -86,8 +89,8 @@ class RetryTest {
         val testScheduler = testScheduler
         val mockBlock = mockk<suspend () -> String>()
         coEvery { mockBlock() } throws
-            IOException("Error 1") andThenThrows
-            IOException("Error 2") andThen
+            SocketTimeoutException() andThenThrows
+            SocketTimeoutException() andThen
             expectedResult
 
         // When
@@ -112,7 +115,9 @@ class RetryTest {
         // Given
         val expectedResult = "success"
         val mockBlock = mockk<suspend () -> String>()
-        coEvery { mockBlock() } throws IOException("Error") andThen expectedResult
+        coEvery { mockBlock() } throws
+            SocketTimeoutException() andThen
+            expectedResult
 
         // When
         val result = retry(
@@ -134,8 +139,8 @@ class RetryTest {
         val expectedResult = "success"
         val mockBlock = mockk<suspend () -> String>()
         coEvery { mockBlock() } throws
-            IOException("IO Error") andThenThrows
-            RuntimeException("Runtime Error") andThen
+            SocketTimeoutException() andThenThrows
+            UnknownHostException() andThen
             expectedResult
 
         // When
@@ -151,7 +156,9 @@ class RetryTest {
         // Given
         val expectedResult = "success"
         val mockBlock = mockk<suspend () -> String>()
-        coEvery { mockBlock() } throws IOException("Error") andThen expectedResult
+        coEvery { mockBlock() } throws
+            SocketTimeoutException() andThen
+            expectedResult
 
         // When
         val result = retry(attempt = 1, block = mockBlock)
@@ -167,10 +174,10 @@ class RetryTest {
         val expectedResult = "success"
         val mockBlock = mockk<suspend () -> String>()
         coEvery { mockBlock() } throws
-            IOException("Error 1") andThenThrows
-            IOException("Error 2") andThenThrows
-            IOException("Error 3") andThenThrows
-            IOException("Error 4") andThen
+            SocketTimeoutException("Error 1") andThenThrows
+            SocketTimeoutException("Error 2") andThenThrows
+            SocketTimeoutException("Error 3") andThenThrows
+            SocketTimeoutException("Error 4") andThen
             expectedResult
 
         // When
@@ -187,8 +194,8 @@ class RetryTest {
         val testScheduler = testScheduler
         val mockBlock = mockk<suspend () -> String>()
         coEvery { mockBlock() } throws
-            IOException("Error 1") andThenThrows
-            IOException("Error 2") andThen
+            SocketTimeoutException("Error 1") andThenThrows
+            SocketTimeoutException("Error 2") andThen
             "success"
 
         // When
@@ -229,8 +236,8 @@ class RetryTest {
         coEvery { mockBlock() } answers {
             callCount++
             when (callCount) {
-                1 -> throw IOException("First failure")
-                2 -> throw RuntimeException("Second failure")
+                1 -> throw SocketTimeoutException("First failure")
+                2 -> throw SocketTimeoutException("Second failure")
                 else -> "Final success"
             }
         }
