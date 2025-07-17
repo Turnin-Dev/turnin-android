@@ -8,6 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -109,18 +110,18 @@ class NetworkCallTest {
         assertEquals(errorResponse.message, result.message)
     }
 
-//    @Test
-//    fun `networkCall 타임아웃 예외 테스트`() = runTest {
-//        // given
-//        server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE))
-//
-//        // when
-//        val result = networkCall { apiService.testCall() }
-//
-//        // then
-//        assertTrue(result is NetworkResult.Error)
-//        assertEquals(NetworkErrorType.Exception.TIMEOUT, (result as NetworkResult.Error).error)
-//    }
+    @Test
+    fun `networkCall 타임아웃 예외 테스트`() = runTest {
+        // given
+        server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE))
+
+        // when
+        val result = networkCall { apiService.testCall() }
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(NetworkErrorType.Exception.TIMEOUT, (result as NetworkResult.Error).error)
+    }
 
     @Test
     fun `networkCall JSON 파싱 에러 테스트`() = runTest {
