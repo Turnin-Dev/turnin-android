@@ -10,6 +10,8 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -102,9 +104,77 @@ class NetworkCallTest {
         val result = networkCall { apiService.testCall() }
 
         // then
-        Assert.assertTrue(result is NetworkResult.Error)
-        Assert.assertEquals(expectedCode, (result as NetworkResult.Error).status)
-        Assert.assertEquals(errorResponse.message, result.message)
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(expectedCode, (result as NetworkResult.Error).status)
+        assertEquals(errorResponse.message, result.message)
+    }
+
+//    @Test
+//    fun `networkCall 타임아웃 예외 테스트`() = runTest {
+//        // given
+//        server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE))
+//
+//        // when
+//        val result = networkCall { apiService.testCall() }
+//
+//        // then
+//        assertTrue(result is NetworkResult.Error)
+//        assertEquals(NetworkErrorType.Exception.TIMEOUT, (result as NetworkResult.Error).error)
+//    }
+
+    @Test
+    fun `networkCall JSON 파싱 에러 테스트`() = runTest {
+        // given
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody("""{ "code": "should-be-int", "messaage": 878787 }""")
+            },
+        )
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody("""{ "mesjlkjlksage": "success" }""")
+            },
+        )
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody("""{ "mesjlkjlksage": "success" }""")
+            },
+        )
+
+        // when
+        val result = networkCall { apiService.testCall() }
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(NetworkErrorType.Exception.JSON_DATA, (result as NetworkResult.Error).error)
+    }
+
+    @Test
+    fun `networkCall 예외 발생 시 재시도 동작 확인`() = runTest {
+        // given
+        val jsonTestData =
+            """
+            {
+                "message": "테스트"
+            }
+            """.trimIndent()
+        server.enqueue(MockResponse().setResponseCode(500))
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(jsonTestData)
+            },
+        )
+
+        // when
+        val result = networkCall { apiService.testCall() }
+
+        // then
+        assertTrue(result is NetworkResult.Success)
+        assertEquals(2, server.requestCount)
     }
 
     companion object {

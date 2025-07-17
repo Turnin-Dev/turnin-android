@@ -1,5 +1,7 @@
 package com.peekr.data.shared.util.error
 
+import com.squareup.moshi.JsonClass
+
 /**
  * 통합 에러 응답 바디
  *
@@ -16,6 +18,7 @@ package com.peekr.data.shared.util.error
  * @property message 에러 메시지
  * @property status 에러 코드 (보통 HTTP 상태 코드 형태)
  */
+@JsonClass(generateAdapter = true)
 data class CommonErrorResponse(
     val code: String,
     val message: String,

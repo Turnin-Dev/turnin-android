@@ -8,7 +8,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -51,7 +50,6 @@ class NetworkCallWithoutResponseKtTest {
             }
             """.trimIndent()
         val adapter = moshi.adapter(TestModel::class.java)
-        val expectedResponse = adapter.fromJson(jsonTestData)
 
         server.enqueue(
             MockResponse().apply {
@@ -65,7 +63,6 @@ class NetworkCallWithoutResponseKtTest {
 
         // then
         assertTrue(result is NetworkResult.Success)
-        assertNotNull(expectedResponse)
     }
 
     @Test
@@ -80,19 +77,5 @@ class NetworkCallWithoutResponseKtTest {
         // then
         assertTrue(result is NetworkResult.Error)
         assertEquals(expectedCode, (result as NetworkResult.Error).status)
-    }
-
-    companion object {
-        private const val ERROR_CODE = "A001"
-        private const val ERROR_MESSAGE = "Login failed"
-        private const val STATUS = 400
-        private val ERROR_RESPONSE =
-            """
-            {
-              "code": "$ERROR_CODE",
-              "message": "$ERROR_MESSAGE",
-              "status": $STATUS
-            }
-            """.trimIndent()
     }
 }

@@ -243,4 +243,19 @@ class RetryTest {
         assertEquals(3, callCount)
         coVerify(exactly = 3) { mockBlock() }
     }
+
+    @Test
+    fun `음수 attempt 값 처리 테스트`() = runTest {
+        // Given
+        val mockBlock = mockk<suspend () -> String>()
+        coEvery { mockBlock() } returns "success"
+
+        // When
+        val exception = runCatching {
+            retry(attempt = -1, block = mockBlock)
+        }.exceptionOrNull()
+
+        // Then
+        assertTrue(exception is IllegalArgumentException)
+    }
 }

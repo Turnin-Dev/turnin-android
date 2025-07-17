@@ -26,9 +26,11 @@ suspend fun <T> retry(
     factor: Double = 2.0,
     block: suspend () -> T,
 ): T {
+    require(attempt >= 0) { "attempt must be positive." }
+
     repeat(attempt) {
         val temp =
-            maxDelayMillis.coerceAtMost(initialDelayMillis * factor.pow(attempt - 1).toLong())
+            maxDelayMillis.coerceAtMost(initialDelayMillis * factor.pow(it).toLong())
         val fullJitterDelay = (temp / 2) + Random.nextLong(0, temp / 2)
         Timber.d("Network call retry delay: $fullJitterDelay")
 
@@ -45,10 +47,5 @@ suspend fun <T> retry(
     // 마지막 시도 부분
     // 만약, attempt 가 2인 경우
     // 총 재시도 횟수는 3이다. (attempt + 마지막 시도)
-    try {
-        return block()
-    } catch (e: Exception) {
-        Timber.e("The number of retries has been exceeded: ${e.localizedMessage}")
-        throw e
-    }
+    return block()
 }

@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,27 +33,29 @@ class DataModule {
             }
         }
 
-    // TODO: timeout 설정
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient = OkHttpClient
+        .Builder()
+        .addInterceptor(httpLoggingInterceptor)
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .callTimeout(60, TimeUnit.SECONDS)
+        .build()
+
     @Singleton
     @Provides
     fun provideRetrofitBuilder(
         moshi: Moshi,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-    ): Retrofit.Builder {
-        val client = OkHttpClient
-            .Builder()
-            .addInterceptor(httpLoggingInterceptor)
-//            .callTimeout(1, TimeUnit.MINUTES)
-//            .readTimeout(3, TimeUnit.SECONDS)
-//            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-
-        return Retrofit
-            .Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BuildConfig.PEEKR_LOCAL_SERVER_URL)
-            .client(client)
-    }
+        okHttpClient: OkHttpClient,
+    ): Retrofit.Builder = Retrofit
+        .Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .baseUrl(BuildConfig.PEEKR_LOCAL_SERVER_URL)
+        .client(okHttpClient)
 
     @Singleton
     @Provides

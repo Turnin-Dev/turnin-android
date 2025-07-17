@@ -12,7 +12,7 @@ sealed interface NetworkResult<out T> {
     data class Success<out T>(val data: T) : NetworkResult<T>
 
     /**
-     * 네트워크 호출 성공 시
+     * 네트워크 호출 실패 시
      *
      * @property error 에러 타입
      * @property code 에러 코드
