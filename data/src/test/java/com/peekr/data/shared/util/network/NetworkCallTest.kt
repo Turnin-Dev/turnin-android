@@ -10,8 +10,8 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -68,9 +68,9 @@ class NetworkCallTest {
         val result = networkCall { apiService.testCall() }
 
         // then
-        Assert.assertTrue(result is NetworkResult.Success)
-        Assert.assertNotNull(expectedResponse)
-        Assert.assertEquals(
+        assertTrue(result is NetworkResult.Success)
+        assertNotNull(expectedResponse)
+        assertEquals(
             expectedResponse,
             (result as NetworkResult.Success).data,
         )
@@ -86,8 +86,8 @@ class NetworkCallTest {
         val result = networkCall { apiService.testCall() }
 
         // then
-        Assert.assertTrue(result is NetworkResult.Error)
-        Assert.assertEquals(expectedCode, (result as NetworkResult.Error).status)
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(expectedCode, (result as NetworkResult.Error).status)
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.peekr.data.shared.util.network
 
-import java.io.IOException
+import java.net.SocketTimeoutException
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -14,8 +14,8 @@ class RetryIntegrationTest {
         val networkCall: suspend () -> String = {
             callCount++
             when (callCount) {
-                1 -> throw IOException("Network timeout")
-                2 -> throw IOException("Connection refused")
+                1 -> throw SocketTimeoutException("Network timeout")
+                2 -> throw SocketTimeoutException("Connection refused")
                 else -> "Network response"
             }
         }
@@ -41,7 +41,7 @@ class RetryIntegrationTest {
         val businessLogic: suspend () -> Int = {
             attemptCount++
             if (attemptCount <= 2) {
-                throw IllegalStateException("Service temporarily unavailable")
+                throw SocketTimeoutException("Service temporarily unavailable")
             }
             42 // 성공 결과
         }

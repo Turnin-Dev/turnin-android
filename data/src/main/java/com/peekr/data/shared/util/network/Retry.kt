@@ -1,12 +1,15 @@
 package com.peekr.data.shared.util.network
 
+import com.peekr.data.shared.util.network.NetworkRetryPolicy.NON_RETRYABLE_STATUS_CODES
+import com.peekr.data.shared.util.network.NetworkRetryPolicy.RETRYABLE_STATUS_CODES
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.util.concurrent.TimeoutException
 import kotlin.math.pow
 import kotlin.random.Random
 import kotlinx.coroutines.delay
+import retrofit2.HttpException
 import timber.log.Timber
-
-// TODO 매개변수들 다른 서비스들 참고해서 실제 수치로 변경하기
-// TODO 주의사항: 올바른 사용자 인증 정보가 제공되기 전까지는 승인되지 않는 HTTP 요청은 다시 시도해서는 안됨 (By Google)
 
 /**
  * Retry Function, Exponential Backoff With Jitter
@@ -29,19 +32,29 @@ suspend fun <T> retry(
     require(attempt >= 0) { "attempt must be positive." }
 
     repeat(attempt) {
-        val temp =
-            maxDelayMillis.coerceAtMost(initialDelayMillis * factor.pow(it).toLong())
-        val fullJitterDelay = (temp / 2) + Random.nextLong(0, temp / 2)
-        Timber.d("Network call retry delay: $fullJitterDelay")
-
         try {
             return block()
         } catch (e: Exception) {
-            // logging or analysis
-            Timber.e("Network call exception: ${e.localizedMessage}")
-        }
+            // 인증 관련 요청인 경우 즉시 실패 처리
+            if (e is HttpException && e.code() in NON_RETRYABLE_STATUS_CODES) {
+                Timber.w("Authentication failed with status ${e.code()}, not retrying")
+                throw e
+            }
 
-        delay(fullJitterDelay)
+            // 재시도 불가능한 예외 체크
+            if (!isRetryableException(e)) {
+                Timber.w("Non-retryable exception: ${e.localizedMessage}")
+                throw e
+            }
+
+            // 재시도
+            if (it < attempt - 1) {
+                val fullJitterDelay =
+                    calculateFullJitterDelay(it, initialDelayMillis, maxDelayMillis, factor)
+                Timber.d("retry delay: $fullJitterDelay ms")
+                delay(fullJitterDelay)
+            }
+        }
     }
 
     // 마지막 시도 부분
@@ -49,3 +62,29 @@ suspend fun <T> retry(
     // 총 재시도 횟수는 3이다. (attempt + 마지막 시도)
     return block()
 }
+
+/** FullJitterDelay 계산하는 함수 */
+private fun calculateFullJitterDelay(
+    attempt: Int,
+    initialDelayMillis: Long,
+    maxDelayMillis: Long,
+    factor: Double,
+): Long {
+    val temp =
+        maxDelayMillis.coerceAtMost(initialDelayMillis * factor.pow(attempt).toLong())
+    val fullJitterDelay = (temp / 2) + Random.nextLong(0, temp / 2)
+    Timber.d("Network call retry delay: $fullJitterDelay")
+    return fullJitterDelay
+}
+
+/** 재시도 가능한 예외인지 확인 */
+private fun isRetryableException(exception: Exception): Boolean =
+    when (exception) {
+        is HttpException -> exception.code() in RETRYABLE_STATUS_CODES
+        is SocketTimeoutException,
+        is UnknownHostException,
+        is TimeoutException,
+        -> true
+
+        else -> false
+    }

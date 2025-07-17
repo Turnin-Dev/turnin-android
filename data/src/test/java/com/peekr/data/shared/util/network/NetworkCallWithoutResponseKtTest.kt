@@ -49,7 +49,6 @@ class NetworkCallWithoutResponseKtTest {
                 "message": "테스트"
             }
             """.trimIndent()
-        val adapter = moshi.adapter(TestModel::class.java)
 
         server.enqueue(
             MockResponse().apply {

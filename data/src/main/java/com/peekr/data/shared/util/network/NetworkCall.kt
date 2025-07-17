@@ -55,15 +55,7 @@ private suspend fun <T, R> executeNetworkCall(
     call: suspend () -> Response<T>,
     handle: (Response<T>) -> NetworkResult<R>,
 ): NetworkResult<R> = try {
-    val response = retry {
-        val res = call()
-        // TODO: 재시도할 코드 추가해주기
-        if (res.code() == 500) {
-            throw NetworkCallException("Internal Server Error")
-        } else {
-            res
-        }
-    }
+    val response = retry { call().throwIfStatusUnsuccessful() }
     handle(response)
 } catch (e: HttpException) {
     handleHttpException(e)
@@ -162,3 +154,11 @@ private fun mapHttpStatusToErrorType(statusCode: Int): NetworkErrorType = when (
 private fun <T> parseServerError(response: Response<T>): CommonErrorResponse? = runCatching {
     response.errorBody()?.source()?.let { source -> moshiAdapter.fromJson(source) }
 }.getOrNull()
+
+/** 상태에 맞는 예외 발생 함수 */
+private fun <T> Response<T>.throwIfStatusUnsuccessful(): Response<T> {
+    if (!isSuccessful && code() in NetworkRetryPolicy.RETRYABLE_STATUS_CODES) {
+        throw HttpException(this)
+    }
+    return this
+}
