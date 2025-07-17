@@ -18,7 +18,7 @@ object NetworkRetryPolicy {
     val RETRYABLE_STATUS_CODES = setOf(
         HttpURLConnection.HTTP_INTERNAL_ERROR, // 500
         HttpURLConnection.HTTP_BAD_GATEWAY, // 502
-        HttpURLConnection.HTTP_UNAVAILABLE, // 504
+        HttpURLConnection.HTTP_UNAVAILABLE, // 503
         HttpURLConnection.HTTP_GATEWAY_TIMEOUT, // 504
         429, // Too Many Requests
     )

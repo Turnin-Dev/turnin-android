@@ -48,7 +48,8 @@ suspend fun <T> retry(
             }
 
             // 재시도
-            if (it < attempt - 1) {
+            val isLastAttempt = it < attempt - 1
+            if (isLastAttempt) {
                 val fullJitterDelay =
                     calculateFullJitterDelay(it, initialDelayMillis, maxDelayMillis, factor)
                 Timber.d("retry delay: $fullJitterDelay ms")
