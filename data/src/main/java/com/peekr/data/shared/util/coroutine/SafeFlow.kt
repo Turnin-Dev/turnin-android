@@ -12,22 +12,29 @@ import timber.log.Timber
 
 fun <T> safeResultFlow(
     dispatcher: CoroutineDispatcher,
-    error: ErrorType = ErrorType.Exception.Unexpected,
+    enableLogging: Boolean = true,
+    errorMapper: (Throwable) -> ErrorType = { ErrorType.Exception.Unexpected },
     block: suspend FlowCollector<Result<T, ErrorType>>.() -> Unit,
 ): Flow<Result<T, ErrorType>> = flow(block)
     .flowOn(dispatcher)
     .catch { exception ->
-        Timber.e(exception, "Exception in flow: ${exception.message}")
-        emit(Result.Error(error = error, message = exception.message))
+        if (enableLogging) {
+            Timber.e(exception, "Exception in flow: ${exception.message}")
+        }
+        val mappedError = errorMapper(exception)
+        emit(Result.Error(error = mappedError, message = exception.message))
     }
 
 fun <T> safeFlow(
     dispatcher: CoroutineDispatcher,
-    onError: (Throwable) -> Unit = { it.printStackTrace() },
+    enableLogging: Boolean = true,
+    onError: suspend FlowCollector<T>.(Throwable) -> Unit = { it.printStackTrace() },
     block: suspend FlowCollector<T>.() -> Unit,
 ): Flow<T> = flow(block)
     .flowOn(dispatcher)
     .catch { exception ->
-        Timber.e(exception, "Exception in flow: ${exception.message}")
+        if (enableLogging) {
+            Timber.e(exception, "Exception in flow: ${exception.message}")
+        }
         onError(exception)
     }
