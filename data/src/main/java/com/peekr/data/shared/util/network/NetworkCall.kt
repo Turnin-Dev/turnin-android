@@ -60,17 +60,17 @@ private suspend fun <T, R> executeNetworkCall(
 } catch (e: HttpException) {
     handleHttpException(e)
 } catch (e: SocketTimeoutException) {
-    handleException(NetworkErrorType.Exception.TIMEOUT, e)
+    handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: JsonDataException) {
-    handleException(NetworkErrorType.Exception.JSON_DATA, e)
+    handleException(NetworkErrorType.Exception.JsonData, e)
 } catch (e: JsonEncodingException) {
-    handleException(NetworkErrorType.Exception.JSON_ENCODING, e)
+    handleException(NetworkErrorType.Exception.JsonEncoding, e)
 } catch (e: MalformedJsonException) {
-    handleException(NetworkErrorType.Exception.MALFORMED_JSON, e)
+    handleException(NetworkErrorType.Exception.MalformedJson, e)
 } catch (e: IOException) {
     handleException(NetworkErrorType.Exception.IO, e)
 } catch (e: TimeoutException) {
-    handleException(NetworkErrorType.Exception.TIMEOUT, e)
+    handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: Exception) {
     handleException(NetworkErrorType.Exception.Unexpected, e)
 }
@@ -144,9 +144,11 @@ private fun mapHttpStatusToErrorType(statusCode: Int): NetworkErrorType = when (
     403 -> NetworkErrorType.Network.Forbidden
     404 -> NetworkErrorType.Network.NotFound
     408 -> NetworkErrorType.Network.RequestTimeout
+    409 -> NetworkErrorType.Network.Conflict
     500 -> NetworkErrorType.Network.InternalServerError
     502 -> NetworkErrorType.Network.BadGateway
     503 -> NetworkErrorType.Network.ServiceUnavailable
+    504 -> NetworkErrorType.Network.GatewayTimeout
     else -> NetworkErrorType.Network.HttpError
 }
 

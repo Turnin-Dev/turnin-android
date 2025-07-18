@@ -120,7 +120,7 @@ class NetworkCallTest {
 
         // then
         assertTrue(result is NetworkResult.Error)
-        assertEquals(NetworkErrorType.Exception.TIMEOUT, (result as NetworkResult.Error).error)
+        assertEquals(NetworkErrorType.Exception.TimeOut, (result as NetworkResult.Error).error)
     }
 
     @Test
@@ -150,7 +150,7 @@ class NetworkCallTest {
 
         // then
         assertTrue(result is NetworkResult.Error)
-        assertEquals(NetworkErrorType.Exception.JSON_DATA, (result as NetworkResult.Error).error)
+        assertEquals(NetworkErrorType.Exception.JsonData, (result as NetworkResult.Error).error)
     }
 
     @Test

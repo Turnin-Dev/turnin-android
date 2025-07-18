@@ -5,6 +5,7 @@ import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.util.AuthManagerFactory
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
+import com.peekr.domain.shared.util.Result.Success
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -30,17 +31,16 @@ class SocialLoginUseCase @Inject constructor(
             .signIn()
             .map { result ->
                 when (result) {
+                    Result.Loading -> Result.Loading
                     is Result.Success -> {
                         val login = Login(provider = provider, providerId = result.data)
-                        Result.Success(login)
+                        Success(login)
                     }
 
-                    is Result.Error -> {
-                        result
-                    }
+                    is Result.Error -> result
                 }
             }.catch { e ->
-                emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
+                emit(Result.Error(error = ErrorType.Auth.Unexpected, message = e.message))
             }
     }
 }
