@@ -23,4 +23,6 @@ sealed interface Result<out T, out E : BaseError> {
         val message: String? = null,
         val detail: String? = null,
     ) : Result<Nothing, E>
+
+    data object Loading : Result<Nothing, Nothing>
 }
