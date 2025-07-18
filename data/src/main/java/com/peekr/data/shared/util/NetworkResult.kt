@@ -2,7 +2,11 @@ package com.peekr.data.shared.util
 
 import com.peekr.data.shared.util.network.NetworkErrorType
 
-/** 네트워크 호출 결과 래퍼 클래스 */
+/**
+ * 네트워크 호출 결과 래퍼 클래스
+ *
+ * `적용 범위`: 네트워크 호출 하는 모든 로직 (NetworkCall, NetworkDataSource 등)
+ */
 sealed interface NetworkResult<out T> {
     /**
      * 네트워크 호출 성공 시

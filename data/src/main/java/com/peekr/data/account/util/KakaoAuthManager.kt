@@ -6,7 +6,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
-import com.peekr.data.shared.util.trySendAndClose
+import com.peekr.data.shared.util.coroutine.trySendAndClose
 import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.shared.util.ErrorType
