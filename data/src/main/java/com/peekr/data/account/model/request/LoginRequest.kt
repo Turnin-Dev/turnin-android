@@ -1,5 +1,6 @@
 package com.peekr.data.account.model.request
 
+import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.squareup.moshi.JsonClass
 
@@ -14,3 +15,5 @@ data class LoginRequest(
     val provider: SocialLoginProvider,
     val providerId: String,
 )
+
+fun Login.toDataModel(): LoginRequest = LoginRequest(provider, providerId.uid)

@@ -1,5 +1,6 @@
 package com.peekr.data.account.model.response
 
+import com.peekr.domain.account.model.JWTToken
 import com.squareup.moshi.JsonClass
 
 /**
@@ -12,4 +13,9 @@ import com.squareup.moshi.JsonClass
 data class LoginResponse(
     val accessToken: String,
     val refreshToken: String,
-)
+) {
+    fun toDomainModel(): JWTToken = JWTToken(
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+    )
+}
