@@ -24,7 +24,12 @@ import kotlinx.coroutines.flow.map
 class SocialLoginUseCase @Inject constructor(
     private val authManagerFactory: AuthManagerFactory,
 ) {
-    /** @param provider 로그인에 사용할 소셜 플랫폼 */
+    /**
+     * 지정된 소셜 플랫폼을 통해 소셜 로그인을 수행하고 결과를 Flow로 반환합니다.
+     *
+     * @param provider 로그인에 사용할 소셜 플랫폼
+     * @return 로그인 진행 상태, 성공 시 로그인 정보, 실패 시 오류 정보를 포함하는 Flow
+     */
     operator fun invoke(provider: SocialLoginProvider): Flow<Result<Login, ErrorType>> {
         val authManager = authManagerFactory.create(provider)
         return authManager

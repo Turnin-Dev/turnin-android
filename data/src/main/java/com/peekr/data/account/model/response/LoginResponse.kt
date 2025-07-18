@@ -14,6 +14,11 @@ data class LoginResponse(
     val accessToken: String,
     val refreshToken: String,
 ) {
+    /**
+     * 현재 LoginResponse 객체를 JWTToken 도메인 모델로 변환합니다.
+     *
+     * @return accessToken과 refreshToken 값을 포함하는 JWTToken 객체
+     */
     fun toDomainModel(): JWTToken = JWTToken(
         accessToken = accessToken,
         refreshToken = refreshToken,

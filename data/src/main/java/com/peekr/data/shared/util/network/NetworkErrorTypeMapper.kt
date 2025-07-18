@@ -2,6 +2,13 @@ package com.peekr.data.shared.util.network
 
 import com.peekr.domain.shared.util.ErrorType
 
+/**
+ * NetworkErrorType 값을 해당하는 ErrorType 값으로 변환합니다.
+ *
+ * 데이터 계층의 네트워크 오류 타입을 도메인 계층의 오류 타입으로 매핑할 때 사용됩니다.
+ *
+ * @return 매핑된 ErrorType 값
+ */
 fun NetworkErrorType.toErrorType(): ErrorType = when (this) {
     // ------------------------------ Exception ------------------------------
     NetworkErrorType.Exception.IO -> ErrorType.Exception.IO

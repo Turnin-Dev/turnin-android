@@ -16,4 +16,9 @@ data class LoginRequest(
     val providerId: String,
 )
 
+/**
+ * Login 도메인 모델을 LoginRequest 데이터 모델로 변환합니다.
+ *
+ * @return 변환된 LoginRequest 인스턴스
+ */
 fun Login.toDataModel(): LoginRequest = LoginRequest(provider, providerId.uid)

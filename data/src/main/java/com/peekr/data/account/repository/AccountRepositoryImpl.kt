@@ -19,7 +19,13 @@ class AccountRepositoryImpl @Inject constructor(
     private val accountNetworkDataSource: AccountNetworkDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AccountRepository {
-    override fun login(login: Login): Flow<Result<JWTToken, ErrorType>> =
+    /**
+         * 로그인 요청을 수행하고 JWT 토큰 또는 오류 정보를 Flow로 반환합니다.
+         *
+         * @param login 로그인에 필요한 도메인 모델 정보.
+         * @return 로그인 진행 상태 및 결과(JWT 토큰 또는 오류 타입)를 순차적으로 방출하는 Flow.
+         */
+        override fun login(login: Login): Flow<Result<JWTToken, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
             when (val result = accountNetworkDataSource.login(login.toDataModel())) {

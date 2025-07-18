@@ -44,12 +44,14 @@ suspend fun <T> networkCallWithoutResponse(call: suspend () -> Response<T>): Net
     executeNetworkCall(call) { response -> handleResponseWithoutBody(response) }
 
 /**
- * 공통 네트워크 호출 로직
+ * 네트워크 호출을 실행하고 결과를 처리한다.
  *
- * @param call suspend function 이어야 하며, 반환 값은 Response 타입
- * @param handle [Response]응답을 처리하고 [T]타입에서 -> [R]타입으로 반환한다.
- * @return [NetworkResult]
- * @see NetworkErrorType
+ * suspend 함수 형태의 네트워크 요청을 실행하며, 응답을 지정된 핸들러로 가공하여 `NetworkResult`로 반환한다.
+ * 네트워크 오류, HTTP 예외, JSON 파싱 오류 등 다양한 예외 상황을 적절한 에러 타입으로 변환한다.
+ *
+ * @param call suspend 함수로, Retrofit의 `Response<T>`를 반환해야 한다.
+ * @param handle 네트워크 응답을 받아 `NetworkResult<R>`로 변환하는 처리 함수.
+ * @return 네트워크 호출 결과를 나타내는 `NetworkResult<R>`.
  */
 private suspend fun <T, R> executeNetworkCall(
     call: suspend () -> Response<T>,
@@ -137,7 +139,12 @@ private fun parseServerErrorFromException(e: HttpException): CommonErrorResponse
         ?.let { source -> moshiAdapter.fromJson(source) }
 }.getOrNull()
 
-/** HTTP 상태 코드를 에러 타입으로 변환 */
+/**
+ * HTTP 상태 코드를 해당하는 네트워크 에러 타입으로 매핑합니다.
+ *
+ * @param statusCode HTTP 응답 상태 코드
+ * @return 상태 코드에 대응하는 [NetworkErrorType.Network] 값
+ */
 private fun mapHttpStatusToErrorType(statusCode: Int): NetworkErrorType = when (statusCode) {
     400 -> NetworkErrorType.Network.BadRequest
     401 -> NetworkErrorType.Network.Unauthorized

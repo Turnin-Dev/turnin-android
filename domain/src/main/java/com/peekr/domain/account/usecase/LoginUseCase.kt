@@ -16,7 +16,12 @@ import kotlinx.coroutines.flow.Flow
  * @return [Result] – 성공 시 `true`, 실패 시 [ErrorType]
  */
 class LoginUseCase @Inject constructor(private val accountRepository: AccountRepository) {
-    /** @param login 플랫폼·사용자 식별 정보를 담은 객체 */
+    /**
+         * 로그인 요청을 수행하고 JWT 토큰 또는 오류를 반환하는 플로우를 반환합니다.
+         *
+         * @param login 플랫폼 및 사용자 식별 정보를 포함한 로그인 정보 객체
+         * @return 성공 시 JWT 토큰, 실패 시 오류 타입을 담은 Result를 방출하는 Flow
+         */
     operator fun invoke(login: Login): Flow<Result<JWTToken, ErrorType>> =
         accountRepository.login(login)
     // 로그인 성공 시 토큰 저장
