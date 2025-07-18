@@ -144,9 +144,11 @@ private fun mapHttpStatusToErrorType(statusCode: Int): NetworkErrorType = when (
     403 -> NetworkErrorType.Network.Forbidden
     404 -> NetworkErrorType.Network.NotFound
     408 -> NetworkErrorType.Network.RequestTimeout
+    409 -> NetworkErrorType.Network.Conflict
     500 -> NetworkErrorType.Network.InternalServerError
     502 -> NetworkErrorType.Network.BadGateway
     503 -> NetworkErrorType.Network.ServiceUnavailable
+    504 -> NetworkErrorType.Network.GatewayTimeout
     else -> NetworkErrorType.Network.HttpError
 }
 

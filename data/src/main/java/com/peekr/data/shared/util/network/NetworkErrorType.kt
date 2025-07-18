@@ -8,11 +8,13 @@ sealed interface NetworkErrorType {
         Unauthorized,
         Forbidden,
         NotFound,
+        Conflict,
         RequestTimeout,
         InternalServerError,
         BadGateway,
         ServiceUnavailable,
         HttpError,
+        GatewayTimeout,
     }
 
     /** Exception 에러 타입 */

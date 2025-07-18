@@ -28,10 +28,12 @@ sealed interface ErrorType : Error {
         Forbidden,
         NotFound,
         RequestTimeout,
+        Conflict,
         InternalServerError,
         BadGateway,
         ServiceUnavailable,
         HttpError,
+        GatewayTimeout,
     }
 
     /** 예외 타입 */
