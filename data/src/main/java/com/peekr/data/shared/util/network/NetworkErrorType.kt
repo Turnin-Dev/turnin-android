@@ -18,10 +18,10 @@ sealed interface NetworkErrorType {
     /** Exception 에러 타입 */
     enum class Exception : NetworkErrorType {
         IO,
-        TIMEOUT,
-        JSON_DATA,
-        JSON_ENCODING,
-        MALFORMED_JSON,
+        TimeOut,
+        JsonData,
+        JsonEncoding,
+        MalformedJson,
         Unexpected,
     }
 }
