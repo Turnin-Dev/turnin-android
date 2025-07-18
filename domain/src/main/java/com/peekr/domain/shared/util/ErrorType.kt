@@ -19,4 +19,9 @@ sealed interface ErrorType : Error {
         // Etc
         Unexpected,
     }
+
+    /** 예외 타입 */
+    enum class Exception : ErrorType {
+        Unexpected,
+    }
 }
