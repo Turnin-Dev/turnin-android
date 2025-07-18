@@ -101,6 +101,9 @@ dependencies {
     // Serialization
     implementation(libs.moshi.kotlin)
 
+    // DataStore
+    implementation(libs.androidx.dataStore.preference)
+
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
