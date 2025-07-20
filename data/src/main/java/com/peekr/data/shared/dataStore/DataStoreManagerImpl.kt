@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.map
 class DataStoreManagerImpl(private val dataStore: DataStore<Preferences>) : DataStoreManager {
     override suspend fun saveStringData(key: DataStoreKey, value: String) {
         dataStoreTryCatch {
-            val preferenceKey = stringPreferencesKey(key.name)
-            dataStore.edit { preferences -> preferences[preferenceKey] = value }
+            val pKey = stringPreferencesKey(key.name)
+            dataStore.edit { preferences -> preferences[pKey] = value }
         }
     }
 
@@ -64,7 +64,7 @@ class DataStoreManagerImpl(private val dataStore: DataStore<Preferences>) : Data
 
     override suspend fun deleteBooleanData(key: DataStoreKey) {
         dataStoreTryCatch {
-            val pKey = stringPreferencesKey(key.name)
+            val pKey = booleanPreferencesKey(key.name)
             dataStore.edit { preferences ->
                 preferences.remove(pKey)
             }
