@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
  * @see DataStoreKey DataStore 키 값 집합
  */
 interface DataStoreManager {
+    // ------------------------------ 일반 저장 & 읽기 메서드 ------------------------------
+
     /**
      * DataStore 에서 키 값을 통해 String 타입의 데이터를 저장하거나 수정한다.
      *
@@ -47,6 +49,27 @@ interface DataStoreManager {
      * @return Flow<Boolean>, 데이터가 없다면 null
      */
     fun getBooleanData(key: DataStoreKey): Flow<Boolean?>
+
+    // ------------------------------ 암호화 저장 & 읽기 메서드 ------------------------------
+
+    /**
+     * DataStore 에서 키 값을 통해 암호화된 String 타입의 데이터를 저장하거나 수정한다.
+     *
+     * @param key DataStore 키
+     * @param value 저장할 데이터
+     * @exception WritingDataException 데이터를 디스크에 쓸 때 발생할 수 있는 예외
+     */
+    suspend fun saveEncryptedStringData(key: DataStoreKey, value: String)
+
+    /**
+     * DataStore 에서 키 값을 통해 암호화된 String 타입의 데이터를 가져온다.
+     *
+     * @param key DataStore 키
+     * @return Flow<String>, 데이터가 없다면 null
+     */
+    fun getEncryptedStringData(key: DataStoreKey): Flow<String?>
+
+    // ------------------------------ 삭제 메서드 ------------------------------
 
     /**
      * DataStore 에서 키 값을 통해 String 타입의 데이터를 삭제한다.
