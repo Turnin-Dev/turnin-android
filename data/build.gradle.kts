@@ -31,6 +31,12 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+
+            all { test ->
+                // when logging required
+//                test.systemProperties["robolectric.logging.enabled"] = "true"
+                test.systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
+            }
         }
     }
 
@@ -108,6 +114,7 @@ dependencies {
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.mockK)
