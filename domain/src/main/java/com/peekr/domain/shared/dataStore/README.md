@@ -16,3 +16,23 @@ sequenceDiagram
     DataStoreManager(Impl) -->> Caller: Flow<String?>
 
 ```
+
+### DataStoreManager Encrypt Method Flow
+```mermaid
+sequenceDiagram
+    participant Caller
+    participant DataStoreManager
+    participant CryptoManager
+    participant DataStore
+    Caller ->> DataStoreManager: saveEncryptedStringData(key, value)
+    DataStoreManager ->> CryptoManager: encryptString(value)
+    CryptoManager -->> DataStoreManager: 암호화된 문자열
+    DataStoreManager ->> DataStore: 암호화된 문자열 저장
+    Caller ->> DataStoreManager: getEncryptedStringData(key)
+    DataStoreManager ->> DataStore: 암호화된 문자열 읽기
+    DataStore -->> DataStoreManager: 암호화된 문자열
+    DataStoreManager ->> CryptoManager: decryptString(암호화된 문자열)
+    CryptoManager -->> DataStoreManager: 복호화된 문자열
+    DataStoreManager -->> Caller: 복호화된 문자열 (Flow)
+
+```

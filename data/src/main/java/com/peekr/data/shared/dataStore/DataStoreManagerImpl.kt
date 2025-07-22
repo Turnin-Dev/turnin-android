@@ -81,7 +81,7 @@ class DataStoreManagerImpl(
                 encryptedValue?.let {
                     cryptoManager.decryptString(encryptedValue)
                 }
-            }
+            }.catch { emit(null) }
     }
 
     // ------------------------------ 삭제 메서드 ------------------------------
