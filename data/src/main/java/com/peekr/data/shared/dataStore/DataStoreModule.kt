@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.peekr.data.BuildConfig
+import com.peekr.data.shared.util.crypto.CryptoManager
 import com.peekr.domain.shared.dataStore.DataStoreManager
 import dagger.Module
 import dagger.Provides
@@ -22,5 +23,6 @@ class DataStoreModule {
     @Provides
     fun provideDataStoreManager(
         @ApplicationContext context: Context,
-    ): DataStoreManager = DataStoreManagerImpl(context.dataStore)
+        cryptoManager: CryptoManager,
+    ): DataStoreManager = DataStoreManagerImpl(context.dataStore, cryptoManager)
 }
