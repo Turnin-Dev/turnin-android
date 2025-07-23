@@ -66,6 +66,7 @@ interface DataStoreManager {
      *
      * @param key DataStore 키
      * @return Flow<String>, 데이터가 없다면 null
+     * @throws DecryptException 암호화된 값을 가져오고 복호화하는 과정에서 예외 발생 시
      */
     fun getEncryptedStringData(key: DataStoreKey): Flow<String?>
 

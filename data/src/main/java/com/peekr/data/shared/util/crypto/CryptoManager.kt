@@ -18,16 +18,19 @@ class CryptoManager(private val ioDispatcher: CoroutineDispatcher) {
      *
      * @param plainText 평문 텍스트
      * @return 암호화된 텍스트
-     * @throws EncryptException 암호화 실패 시
+     * @throws CryptoException (EncryptException) 암호화 실패 시
+     * @throws Exception 암호화 과정 중 [CryptoException] 이 외에 예외 발생 시
      */
     suspend fun encryptString(plainText: String): String = withContext(ioDispatcher) {
         try {
             val bytes = plainText.toByteArray()
             val encryptedBytes = Crypto.encrypt(bytes)
             Base64.getEncoder().encodeToString(encryptedBytes)
-        } catch (e: Exception) {
+        } catch (e: CryptoException) {
             Timber.e(e, "Encrypt Exception")
             throw EncryptException(e)
+        } catch (e: Exception) {
+            throw e
         }
     }
 
@@ -36,16 +39,19 @@ class CryptoManager(private val ioDispatcher: CoroutineDispatcher) {
      *
      * @param encryptedText 암호화된 텍스트
      * @return 복호화된 텍스트
-     * @throws DecryptException 복호화 실패 시
+     * @throws CryptoException (DecryptException) 복호화 실패 시
+     * @throws Exception 복호화 과정 중 [CryptoException] 이 외에 예외 발생 시
      */
     suspend fun decryptString(encryptedText: String): String = withContext(ioDispatcher) {
         try {
             val encryptedBytesDecoded = Base64.getDecoder().decode(encryptedText)
             val decryptedBytes = Crypto.decrypt(encryptedBytesDecoded)
             decryptedBytes.decodeToString()
-        } catch (e: Exception) {
+        } catch (e: CryptoException) {
             Timber.e(e, "Decrypt Exception")
             throw DecryptException(e)
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

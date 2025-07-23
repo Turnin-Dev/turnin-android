@@ -6,14 +6,17 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.peekr.data.shared.util.crypto.CryptoException
 import com.peekr.data.shared.util.crypto.CryptoManager
 import com.peekr.domain.shared.dataStore.DataStoreKey
 import com.peekr.domain.shared.dataStore.DataStoreManager
+import com.peekr.domain.shared.dataStore.DecryptException
 import com.peekr.domain.shared.dataStore.WritingDataException
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 class DataStoreManagerImpl(
     private val dataStore: DataStore<Preferences>,
@@ -79,9 +82,16 @@ class DataStoreManagerImpl(
             }.map { preferences ->
                 val encryptedValue = preferences[pKey]
                 encryptedValue?.let {
-                    cryptoManager.decryptString(encryptedValue)
+                    try {
+                        cryptoManager.decryptString(encryptedValue)
+                    } catch (e: CryptoException) {
+                        Timber.e(e, "DataStoreManager에서 복호화 과정 실패")
+                        throw DecryptException("DataStoreManager에서 복호화 과정 실패", e)
+                    } catch (e: Exception) {
+                        null
+                    }
                 }
-            }.catch { emit(null) }
+            }
     }
 
     // ------------------------------ 삭제 메서드 ------------------------------
@@ -120,7 +130,7 @@ class DataStoreManagerImpl(
         try {
             block()
         } catch (e: IOException) {
-            throw WritingDataException("[데이터를 디스크에 쓰는 과정에서 오류가 발생했습니다.]: ${e.message}")
+            throw WritingDataException("[데이터를 디스크에 쓰는 과정에서 오류가 발생했습니다.]: ${e.message}", e)
         }
     }
 }
