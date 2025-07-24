@@ -2,6 +2,9 @@ package com.peekr.data.shared.di
 
 import com.peekr.data.BuildConfig
 import com.peekr.data.account.network.AccountApi
+import com.peekr.data.shared.retrofit.TokenAuthenticator
+import com.peekr.data.shared.retrofit.TokenInterceptor
+import com.peekr.domain.shared.dataStore.DataStoreManager
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -18,6 +21,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
+    // ------------------------------ Serialization ------------------------------
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -33,6 +37,7 @@ class DataModule {
             }
         }
 
+    // ------------------------------ OkHttpClient & Interceptor ------------------------------
     @Singleton
     @Provides
     fun provideOkHttpClient(
@@ -46,6 +51,7 @@ class DataModule {
         .callTimeout(60, TimeUnit.SECONDS)
         .build()
 
+    // ------------------------------ Retrofit ------------------------------
     @Singleton
     @Provides
     fun provideRetrofitBuilder(
@@ -59,6 +65,13 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideAccountApi(retrofit: Retrofit.Builder): AccountApi =
-        retrofit.build().create(AccountApi::class.java)
+    fun provideTokenAuthenticator(
+        dataStoreManager: DataStoreManager,
+        accountApi: AccountApi,
+    ): TokenAuthenticator = TokenAuthenticator(dataStoreManager, accountApi)
+
+    @Singleton
+    @Provides
+    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
+        TokenInterceptor(dataStoreManager)
 }
