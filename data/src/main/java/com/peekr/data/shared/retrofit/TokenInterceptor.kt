@@ -23,18 +23,22 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
         val accessToken = runBlocking {
             dataStoreManager
                 .getEncryptedStringData(DataStoreKey.Auth.AccessToken)
-                .catch { emit("") }
+                .catch { emit(null) }
                 .first()
         } ?: return chain.proceed(chain.request())
 
-        // access-token is not null
+        if (accessToken.isEmpty()) {
+            return chain.proceed(chain.request())
+        }
+
+        // access-token is not null & not empty
         val requestBuilder = chain.request().newBuilder()
         requestBuilder.addHeader(AUTHENTICATION, "$BEARER $accessToken")
 
         val response = chain.proceed(requestBuilder.build())
 
-        // Two situations in which the logic below continues to be executed:
-        // 1. after Process(OkHttp's Authentication function) for HTTP Status 401
+        // The logic located below runs after two situations:
+        // 1. after process(OkHttp's Authentication function) for HTTP Status 401
         // 2. just receive response to a request with token
         if (response.isSuccessful) {
             loggingResponseCode(response.code, true)
