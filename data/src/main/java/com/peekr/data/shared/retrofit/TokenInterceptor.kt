@@ -14,6 +14,8 @@ import timber.log.Timber
 
 /**
  * HTTP 요청 시 자동으로 헤더에 토큰을 첨부해주는 토큰 인터셉터
+ *
+ * 만약, 토큰이 빈 문자열이거나 null이면 원본 요청으로 계속 진행한다.
  */
 class TokenInterceptor @Inject constructor(private val dataStoreManager: DataStoreManager) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -27,6 +29,7 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
                 .first()
         } ?: return chain.proceed(chain.request())
 
+        // just continue request when access-token is empty
         if (accessToken.isEmpty()) {
             return chain.proceed(chain.request())
         }
