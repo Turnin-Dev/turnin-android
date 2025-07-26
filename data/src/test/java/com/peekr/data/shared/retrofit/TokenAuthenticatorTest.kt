@@ -1,6 +1,6 @@
 package com.peekr.data.shared.retrofit
 
-import com.peekr.data.account.network.AccountApi
+import com.peekr.data.account.network.RefreshTokenApi
 import com.peekr.domain.shared.dataStore.DataStoreKey
 import com.peekr.domain.shared.dataStore.DataStoreManager
 import io.mockk.Runs
@@ -27,7 +27,7 @@ import org.junit.Test
 
 class TokenAuthenticatorTest {
     private val dataStoreManager: DataStoreManager = mockk()
-    private val accountApi: AccountApi = mockk()
+    private val refreshTokenApi: RefreshTokenApi = mockk()
     private lateinit var mockWebServer: MockWebServer
     private lateinit var tokenAuthenticator: TokenAuthenticator
     private lateinit var unauthorizedResponse: Response
@@ -41,7 +41,7 @@ class TokenAuthenticatorTest {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        tokenAuthenticator = TokenAuthenticator(dataStoreManager, accountApi)
+        tokenAuthenticator = TokenAuthenticator(dataStoreManager, refreshTokenApi)
 
         // 테스트용 Request 생성
         testRequest = Request
@@ -73,9 +73,9 @@ class TokenAuthenticatorTest {
     fun `토큰 갱신 성공 시 새로운 토큰으로 헤더가 추가된 Request 반환`() = runTest {
         // Given
         val newAccessToken = "newAccessToken"
-        val newRefreshToken = "newAccessToken"
+        val newRefreshToken = "newRefreshToken"
         coEvery {
-            accountApi.refresh()
+            refreshTokenApi.refresh()
         } returns retrofit2.Response.success(TokenResponse(newAccessToken, newRefreshToken))
 
         // When
@@ -96,7 +96,7 @@ class TokenAuthenticatorTest {
     fun `토큰 갱신 실패 시 기존 토큰 삭제 후 null 반환`() = runTest {
         // Given
         coEvery {
-            accountApi.refresh()
+            refreshTokenApi.refresh()
         } returns retrofit2.Response.error(
             404,
             "".toResponseBody("application/json".toMediaTypeOrNull()),
@@ -120,7 +120,7 @@ class TokenAuthenticatorTest {
     fun `토큰 갱신 응답 성공이지만 body가 비어있는 경우 기존 토큰 삭제`() = runTest {
         // Given
         coEvery {
-            accountApi.refresh()
+            refreshTokenApi.refresh()
         } returns retrofit2.Response.success(null)
 
         // When
@@ -140,7 +140,7 @@ class TokenAuthenticatorTest {
     @Test
     fun `네트워크 오류 시 예외 전파`() = runTest {
         // Given
-        coEvery { accountApi.refresh() } throws IOException()
+        coEvery { refreshTokenApi.refresh() } throws IOException()
 
         // When & Then
         try {
@@ -159,15 +159,8 @@ class TokenAuthenticatorTest {
     @Test
     fun `토큰 응답에서 빈 문자열 토큰 처리`() = runTest {
         // Given
-        val emptyTokenResponseJson =
-            """
-            {
-                "accessToken": "",
-                "refreshToken": ""
-            }
-            """.trimIndent()
         coEvery {
-            accountApi.refresh()
+            refreshTokenApi.refresh()
         } returns retrofit2.Response.success(TokenResponse("", ""))
 
         // When

@@ -153,7 +153,7 @@ class TokenInterceptorTest {
     }
 
     @Test
-    fun `intercept - 응답이 성공(201)인 경우 성공 로그 출력`() = runTest {
+    fun `응답이 성공(201)인 경우 성공 로그 출력`() = runTest {
         // Given
         val accessToken = "valid_token"
         every {
@@ -171,7 +171,7 @@ class TokenInterceptorTest {
     }
 
     @Test
-    fun `intercept - 응답이 실패(404)인 경우 실패 로그 출력`() = runTest {
+    fun `응답이 실패(404)인 경우 실패 로그 출력`() = runTest {
         // Given
         val accessToken = "valid_token"
         every {
@@ -287,7 +287,12 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { mockRequestBuilder.addHeader("Authorization", "Bearer test_access_token_123") }
+        verify {
+            mockRequestBuilder.addHeader(
+                RetrofitConstants.AUTHENTICATION,
+                "${RetrofitConstants.BEARER} test_access_token_123",
+            )
+        }
     }
 
     @Test

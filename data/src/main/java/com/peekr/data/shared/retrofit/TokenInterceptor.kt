@@ -52,27 +52,27 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
 
         return response
     }
-}
 
-private fun loggingResponseCode(code: Int, isSuccess: Boolean) {
-    when (code) {
-        200 -> {
-            Timber.d("Response is Successful (HTTP status code is 200 OK)")
-        }
+    private fun loggingResponseCode(code: Int, isSuccess: Boolean) {
+        when (code) {
+            200 -> {
+                Timber.d("Response is Successful (HTTP status code is 200 OK)")
+            }
 
-        201 -> {
-            Timber.d("Response is Successful (HTTP status code is 201 Created)")
-        }
+            201 -> {
+                Timber.d("Response is Successful (HTTP status code is 201 Created)")
+            }
 
-        404 -> {
-            Timber.d("Response is Failure (HTTP status code is 404 Not Found)")
-        }
+            404 -> {
+                Timber.d("Response is Failure (HTTP status code is 404 Not Found)")
+            }
 
-        else -> {
-            if (isSuccess) {
-                Timber.d("Response is Successful (HTTP status code is $code)")
-            } else {
-                Timber.d("Response is Failure (HTTP status code is $code)")
+            else -> {
+                if (isSuccess) {
+                    Timber.d("Response is Successful (HTTP status code is $code)")
+                } else {
+                    Timber.d("Response is Failure (HTTP status code is $code)")
+                }
             }
         }
     }
