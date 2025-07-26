@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
 
     // LifeCycle & Navigation
     implementation(libs.androidx.lifecycle.runtime.compose)
