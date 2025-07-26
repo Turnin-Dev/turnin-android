@@ -32,7 +32,7 @@ class LoginUseCase @Inject constructor(
                 when (result) {
                     is Result.Success -> {
                         dataStoreManager.saveEncryptedStringData(
-                            key = DataStoreKey.Auth.AccessToken,
+                            key = DataStoreKey.Auth.RefreshToken,
                             value = result.data.refreshToken,
                         )
                         result
