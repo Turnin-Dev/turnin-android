@@ -88,6 +88,7 @@ class DataStoreManagerImpl(
                     Timber.e(e, "DataStoreManager에서 복호화 과정 실패")
                     throw DecryptException("DataStoreManager에서 복호화 과정 실패", e)
                 } catch (e: Exception) {
+                    Timber.e(e, "DataStoreManager에서 복호화 과정 실패(정의된 이 외의 예외 발생)")
                     null
                 }
             }
