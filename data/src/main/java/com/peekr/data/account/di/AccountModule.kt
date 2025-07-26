@@ -2,11 +2,9 @@ package com.peekr.data.account.di
 
 import android.content.Context
 import com.peekr.data.account.network.AccountApi
-import com.peekr.data.account.network.RefreshTokenApi
 import com.peekr.data.account.util.GoogleAuthManager
 import com.peekr.data.account.util.KakaoAuthManager
 import com.peekr.data.shared.di.DefaultOkHttpClient
-import com.peekr.data.shared.di.TokenInterceptorOkHttpClient
 import com.peekr.domain.account.util.AuthManager
 import dagger.Module
 import dagger.Provides
@@ -42,14 +40,6 @@ class AccountModule {
         @DefaultOkHttpClient okHttpClient: OkHttpClient,
     ): AccountApi =
         retrofit.client(okHttpClient).build().create(AccountApi::class.java)
-
-    @Singleton
-    @Provides
-    fun provideRefreshTokenApi(
-        retrofit: Retrofit.Builder,
-        @TokenInterceptorOkHttpClient okHttpClient: OkHttpClient,
-    ): RefreshTokenApi =
-        retrofit.client(okHttpClient).build().create(RefreshTokenApi::class.java)
 }
 
 // ------------------------------ Qualifier ------------------------------

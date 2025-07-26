@@ -1,7 +1,7 @@
 package com.peekr.data.shared.di
 
 import com.peekr.data.BuildConfig
-import com.peekr.data.account.network.RefreshTokenApi
+import com.peekr.data.account.network.AccountApi
 import com.peekr.data.shared.retrofit.TokenAuthenticator
 import com.peekr.data.shared.retrofit.TokenInterceptor
 import com.peekr.domain.shared.dataStore.DataStoreManager
@@ -50,19 +50,6 @@ class DataModule {
         .commonTimeout()
         .build()
 
-    @TokenInterceptorOkHttpClient
-    @Singleton
-    @Provides
-    fun provideTokenInterceptorOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        tokenInterceptor: TokenInterceptor,
-    ): OkHttpClient = OkHttpClient
-        .Builder()
-        .addInterceptor(tokenInterceptor)
-        .addInterceptor(httpLoggingInterceptor)
-        .commonTimeout()
-        .build()
-
     // ------------------------------ Retrofit ------------------------------
     @Singleton
     @Provides
@@ -77,8 +64,8 @@ class DataModule {
     @Provides
     fun provideTokenAuthenticator(
         dataStoreManager: DataStoreManager,
-        refreshTokenApi: RefreshTokenApi,
-    ): TokenAuthenticator = TokenAuthenticator(dataStoreManager, refreshTokenApi)
+        accountApi: AccountApi,
+    ): TokenAuthenticator = TokenAuthenticator(dataStoreManager, accountApi)
 
     @Singleton
     @Provides
@@ -90,10 +77,6 @@ class DataModule {
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DefaultOkHttpClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class TokenInterceptorOkHttpClient
 
 // ------------------------------ Utils ------------------------------
 private fun OkHttpClient.Builder.commonTimeout(): OkHttpClient.Builder =

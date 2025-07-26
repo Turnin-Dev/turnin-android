@@ -1,6 +1,6 @@
 package com.peekr.data.shared.retrofit
 
-import com.peekr.data.account.network.RefreshTokenApi
+import com.peekr.data.account.network.AccountApi
 import com.peekr.data.shared.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.data.shared.retrofit.RetrofitConstants.BEARER
 import com.peekr.domain.shared.dataStore.DataStoreKey
@@ -16,7 +16,7 @@ import timber.log.Timber
 /** 인증 요청 시 응답의 HTTP 상태코드가 401일 때만 호출된다.  */
 class TokenAuthenticator @Inject constructor(
     private val dataStoreManager: DataStoreManager,
-    private val refreshTokenApi: RefreshTokenApi,
+    private val accountApi: AccountApi,
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? = runBlocking {
         Timber.d("TokenAuthenticator Triggered!")
@@ -49,5 +49,5 @@ class TokenAuthenticator @Inject constructor(
     }
 
     private suspend fun refreshToken(): retrofit2.Response<TokenResponse> =
-        refreshTokenApi.refresh()
+        accountApi.refresh()
 }
