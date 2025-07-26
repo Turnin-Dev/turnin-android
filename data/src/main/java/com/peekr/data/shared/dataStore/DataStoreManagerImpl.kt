@@ -37,29 +37,30 @@ class DataStoreManagerImpl(
         }
     }
 
-    override fun getStringData(key: DataStoreKey): Flow<String?> {
-        val pKey = stringPreferencesKey(key.name)
-        return dataStore.data
+    override fun getStringData(key: DataStoreKey): Flow<String?> =
+        dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
                     emit(emptyPreferences())
                 } else {
                     throw exception
                 }
-            }.map { preferences -> preferences[pKey] }
-    }
+            }.map { preferences ->
+                val pKey = stringPreferencesKey(key.name)
+                preferences[pKey]
+            }
 
-    override fun getBooleanData(key: DataStoreKey): Flow<Boolean?> {
-        val pKey = booleanPreferencesKey(key.name)
-        return dataStore.data
-            .catch { exception ->
-                if (exception is IOException) {
-                    emit(emptyPreferences())
-                } else {
-                    throw exception
-                }
-            }.map { preferences -> preferences[pKey] }
-    }
+    override fun getBooleanData(key: DataStoreKey): Flow<Boolean?> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            val pKey = booleanPreferencesKey(key.name)
+            preferences[pKey]
+        }
 
     // ------------------------------ 암호화 저장 & 읽기 메서드 ------------------------------
     override suspend fun saveEncryptedStringData(key: DataStoreKey, value: String) {
@@ -70,29 +71,27 @@ class DataStoreManagerImpl(
         }
     }
 
-    override fun getEncryptedStringData(key: DataStoreKey): Flow<String?> {
-        val pKey = stringPreferencesKey(key.name)
-        return dataStore.data
-            .catch { exception ->
-                if (exception is IOException) {
-                    emit(emptyPreferences())
-                } else {
-                    throw exception
-                }
-            }.map { preferences ->
-                val encryptedValue = preferences[pKey]
-                encryptedValue?.let {
-                    try {
-                        cryptoManager.decryptString(encryptedValue)
-                    } catch (e: CryptoException) {
-                        Timber.e(e, "DataStoreManager에서 복호화 과정 실패")
-                        throw DecryptException("DataStoreManager에서 복호화 과정 실패", e)
-                    } catch (e: Exception) {
-                        null
-                    }
+    override fun getEncryptedStringData(key: DataStoreKey): Flow<String?> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            val pKey = stringPreferencesKey(key.name)
+            val encryptedValue = preferences[pKey]
+            encryptedValue?.let {
+                try {
+                    cryptoManager.decryptString(encryptedValue)
+                } catch (e: CryptoException) {
+                    Timber.e(e, "DataStoreManager에서 복호화 과정 실패")
+                    throw DecryptException("DataStoreManager에서 복호화 과정 실패", e)
+                } catch (e: Exception) {
+                    null
                 }
             }
-    }
+        }
 
     // ------------------------------ 삭제 메서드 ------------------------------
     override suspend fun deleteStringData(key: DataStoreKey) {

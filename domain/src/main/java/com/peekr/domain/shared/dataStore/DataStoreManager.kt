@@ -75,6 +75,8 @@ interface DataStoreManager {
     /**
      * DataStore 에서 키 값을 통해 String 타입의 데이터를 삭제한다.
      *
+     * 다른 타입의 값이 들어있는 키를 이용해 삭제하더라도 오류가 발생하지는 않는다. (내부적으로 Map 처럼 작동하기 때문에)
+     *
      * @param key DataStore 키
      * @exception WritingDataException 데이터를 디스크에 쓸 때 발생할 수 있는 예외
      */
@@ -82,6 +84,8 @@ interface DataStoreManager {
 
     /**
      * DataStore 에서 키 값을 통해 Boolean 타입의 데이터를 삭제한다.
+     *
+     * 다른 타입의 값이 들어있는 키를 이용해 삭제하더라도 오류가 발생하지는 않는다. (내부적으로 Map 처럼 작동하기 때문에)
      *
      * @param key DataStore 키
      * @exception WritingDataException 데이터를 디스크에 쓸 때 발생할 수 있는 예외
