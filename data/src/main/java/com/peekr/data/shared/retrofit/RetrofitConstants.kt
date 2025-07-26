@@ -1,0 +1,6 @@
+package com.peekr.data.shared.retrofit
+
+object RetrofitConstants {
+    const val AUTHENTICATION = "Authorization"
+    const val BEARER = "Bearer"
+}
