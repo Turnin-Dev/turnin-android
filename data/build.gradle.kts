@@ -112,7 +112,7 @@ dependencies {
     implementation(libs.androidx.dataStore.preference)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
-    implementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     testImplementation(libs.androidx.test.core)
