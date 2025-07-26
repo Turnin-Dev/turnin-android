@@ -36,3 +36,31 @@ sequenceDiagram
     DataStoreManager -->> Caller: 복호화된 문자열 (Flow)
 
 ```
+
+### DataStoreManager Exception Flow
+```mermaid
+sequenceDiagram
+    participant Caller
+    participant DataStoreManagerImpl
+    participant DataStore
+    participant CryptoManager
+    participant Timber
+    alt 값 존재
+        DataStoreManagerImpl ->> CryptoManager: decrypt(value)
+        alt 복호화 성공
+            CryptoManager -->> DataStoreManagerImpl: 복호화된 값
+            DataStoreManagerImpl -->> Caller: 값 emit
+        else CryptoException 발생
+            CryptoManager -->> DataStoreManagerImpl: 예외 발생
+            DataStoreManagerImpl ->> Timber: 오류 로그 기록
+            DataStoreManagerImpl -->> Caller: DecryptException throw
+        else 기타 Exception 발생
+            CryptoManager -->> DataStoreManagerImpl: 예외 발생
+            DataStoreManagerImpl ->> Timber: 오류 로그 기록
+            DataStoreManagerImpl -->> Caller: null emit
+        end
+    else 값 없음
+        DataStoreManagerImpl -->> Caller: null emit
+    end
+
+```

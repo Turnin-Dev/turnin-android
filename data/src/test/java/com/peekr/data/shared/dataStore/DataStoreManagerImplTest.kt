@@ -1,5 +1,7 @@
 package com.peekr.data.shared.dataStore
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.peekr.data.shared.util.crypto.CryptoManager
 import com.peekr.data.shared.util.crypto.DecryptException
 import com.peekr.domain.shared.dataStore.DataStoreKey
@@ -29,12 +31,14 @@ class DataStoreManagerImplTest {
         .build()
 
     private lateinit var dataStoreManager: DataStoreManager
-    private val dataStoreFactory = TestDataStoreFactory(temporaryFolder)
-    private val dataStore = dataStoreFactory.create()
+    private lateinit var dataStoreFactory: TestDataStoreFactory
+    private lateinit var dataStore: DataStore<Preferences>
     private val cryptoManager: CryptoManager = mockk()
 
     @Before
     fun setUp() {
+        dataStoreFactory = TestDataStoreFactory(temporaryFolder)
+        dataStore = dataStoreFactory.create()
         dataStoreManager = DataStoreManagerImpl(dataStore, cryptoManager)
     }
 
