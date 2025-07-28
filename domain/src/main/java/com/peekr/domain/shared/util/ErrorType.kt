@@ -22,18 +22,17 @@ sealed interface ErrorType : Error {
 
     /** 네트워크에서 발생한 에러 타입 */
     enum class Network : ErrorType {
-        EmptyResponse,
-        BadRequest,
-        Unauthorized,
-        Forbidden,
-        NotFound,
-        RequestTimeout,
-        Conflict,
-        InternalServerError,
-        BadGateway,
-        ServiceUnavailable,
-        HttpError,
-        GatewayTimeout,
+        /** 허가되지 않은 인증 */
+        Unauthorized, // 401
+
+        /** 클라이언트에서 발생한 에러 */
+        ClientError,
+
+        /** 서버 상에서 발생한 에러 */
+        ServerError,
+
+        /** 알 수 없는 네트워크 에러 */
+        Unexpected,
     }
 
     /** 예외 타입 */
