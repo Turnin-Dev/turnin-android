@@ -24,8 +24,8 @@ enum class PeekrLogoType(
     @DrawableRes val res: Int,
     val ratio: Double,
 ) {
-    Default(res = R.drawable.logo_default, ratio = 1.4),
-    Text(res = R.drawable.logo_text, ratio = 0.3),
+    Default(res = R.drawable.logo_default, ratio = 1.44),
+    Text(res = R.drawable.logo_text, ratio = 0.382),
     Icon(res = R.drawable.logo_icon, ratio = 1.0),
 }
 

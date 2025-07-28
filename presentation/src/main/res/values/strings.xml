@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- name rule: (screen-name)_(element/type)_(detail/name) -->
+
+<!-- Login Screen -->
+    <string name="login_screen_btn_google">Google 로그인</string>
+    <string name="login_screen_btn_kakao">카카오 로그인</string>
+</resources>
