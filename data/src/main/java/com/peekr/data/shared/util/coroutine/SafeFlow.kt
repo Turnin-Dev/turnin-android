@@ -13,7 +13,7 @@ import timber.log.Timber
 fun <T> safeResultFlow(
     dispatcher: CoroutineDispatcher,
     enableLogging: Boolean = true,
-    errorMapper: (Throwable) -> ErrorType = { ErrorType.Exception.Unexpected },
+    errorMapper: (Throwable) -> ErrorType = { ErrorType.Unexpected(it) },
     block: suspend FlowCollector<Result<T, ErrorType>>.() -> Unit,
 ): Flow<Result<T, ErrorType>> = flow(block)
     .flowOn(dispatcher)

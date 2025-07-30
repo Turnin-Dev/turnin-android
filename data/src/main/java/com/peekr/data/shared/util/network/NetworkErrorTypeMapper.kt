@@ -9,18 +9,19 @@ fun NetworkErrorType.toErrorType(): ErrorType = when (this) {
     NetworkErrorType.Exception.JsonData -> ErrorType.Exception.Json
     NetworkErrorType.Exception.JsonEncoding -> ErrorType.Exception.Json
     NetworkErrorType.Exception.MalformedJson -> ErrorType.Exception.Json
-    NetworkErrorType.Exception.Unexpected -> ErrorType.Exception.Unexpected
     // ------------------------------ Network ------------------------------
-    NetworkErrorType.Network.EmptyResponse -> ErrorType.Network.EmptyResponse
-    NetworkErrorType.Network.BadRequest -> ErrorType.Network.BadRequest
     NetworkErrorType.Network.Unauthorized -> ErrorType.Network.Unauthorized
-    NetworkErrorType.Network.Forbidden -> ErrorType.Network.Forbidden
-    NetworkErrorType.Network.NotFound -> ErrorType.Network.NotFound
-    NetworkErrorType.Network.RequestTimeout -> ErrorType.Network.RequestTimeout
-    NetworkErrorType.Network.InternalServerError -> ErrorType.Network.InternalServerError
-    NetworkErrorType.Network.BadGateway -> ErrorType.Network.BadGateway
-    NetworkErrorType.Network.ServiceUnavailable -> ErrorType.Network.ServiceUnavailable
-    NetworkErrorType.Network.HttpError -> ErrorType.Network.HttpError
-    NetworkErrorType.Network.Conflict -> ErrorType.Network.Conflict
-    NetworkErrorType.Network.GatewayTimeout -> ErrorType.Network.GatewayTimeout
+    NetworkErrorType.Network.EmptyResponse -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.BadRequest -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.Forbidden -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.NotFound -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.RequestTimeout -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.HttpError -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.Conflict -> ErrorType.Network.ClientError
+    NetworkErrorType.Network.InternalServerError -> ErrorType.Network.ServerError
+    NetworkErrorType.Network.BadGateway -> ErrorType.Network.ServerError
+    NetworkErrorType.Network.ServiceUnavailable -> ErrorType.Network.ServerError
+    NetworkErrorType.Network.GatewayTimeout -> ErrorType.Network.ServerError
+    // ------------------------------ Unexpected ------------------------------
+    is NetworkErrorType.Unexpected -> ErrorType.Unexpected(this.cause)
 }

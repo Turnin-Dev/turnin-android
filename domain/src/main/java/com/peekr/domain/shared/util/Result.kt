@@ -16,7 +16,7 @@ sealed interface Result<out T, out E : BaseError> {
      *
      * @property error 에러 타입
      * @property message 에러 메시지
-     * @property detail 에러 부가 설명
+     * @property detail 에러 부가 설명 (보통 로그용으로 사용한다.)
      */
     data class Error<out E : BaseError>(
         val error: E,

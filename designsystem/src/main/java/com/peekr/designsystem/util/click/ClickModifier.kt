@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
  * @see debounceClickable
  */
 fun Modifier.clickableSingle(
-    clickMode: ClickMode,
+    clickMode: ClickMode = ClickMode.Throttle,
     delayTimeMs: Long? = null,
     interactionSource: MutableInteractionSource? = null,
     indication: Indication? = null,

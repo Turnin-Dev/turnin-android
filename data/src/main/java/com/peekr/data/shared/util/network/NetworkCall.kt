@@ -72,7 +72,7 @@ private suspend fun <T, R> executeNetworkCall(
 } catch (e: TimeoutException) {
     handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: Exception) {
-    handleException(NetworkErrorType.Exception.Unexpected, e)
+    handleException(NetworkErrorType.Unexpected(e), e)
 }
 
 /** 응답 처리 */

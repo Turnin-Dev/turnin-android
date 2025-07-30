@@ -25,7 +25,7 @@ import androidx.compose.ui.semantics.Role
  * @see debounceClickableWithoutRipple
  */
 fun Modifier.clickableSingleWithoutRipple(
-    clickMode: ClickMode,
+    clickMode: ClickMode = ClickMode.Throttle,
     delayTimeMs: Long? = null,
     enabled: Boolean = true,
     onClickLabel: String? = null,
