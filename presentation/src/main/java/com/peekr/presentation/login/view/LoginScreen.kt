@@ -32,7 +32,7 @@ import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.presentation.R
-import com.peekr.presentation.login.model.SocialLoginType
+import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.shared.logo.PeekrLogoWithText
 import com.peekr.presentation.shared.util.ScreenTokens
 
@@ -45,7 +45,7 @@ import com.peekr.presentation.shared.util.ScreenTokens
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    login: (SocialLoginType) -> Unit,
+    login: (UiSocialLoginProvider) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -58,13 +58,13 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(LoginButtonTokens.Height),
-                onClick = { login(SocialLoginType.Google) },
+                onClick = { login(UiSocialLoginProvider.Google) },
             )
             KakaoLoginButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(LoginButtonTokens.Height),
-                onClick = { login(SocialLoginType.Kakao) },
+                onClick = { login(UiSocialLoginProvider.Kakao) },
             )
         }
     }
