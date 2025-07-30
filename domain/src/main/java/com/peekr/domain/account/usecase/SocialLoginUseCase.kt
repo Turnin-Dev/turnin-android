@@ -40,7 +40,7 @@ class SocialLoginUseCase @Inject constructor(
                     is Result.Error -> result
                 }
             }.catch { e ->
-                emit(Result.Error(error = ErrorType.Auth.Unexpected, message = e.message))
+                emit(Result.Error(error = ErrorType.Unexpected(e), message = e.message))
             }
     }
 }

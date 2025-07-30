@@ -9,10 +9,9 @@ fun NetworkErrorType.toErrorType(): ErrorType = when (this) {
     NetworkErrorType.Exception.JsonData -> ErrorType.Exception.Json
     NetworkErrorType.Exception.JsonEncoding -> ErrorType.Exception.Json
     NetworkErrorType.Exception.MalformedJson -> ErrorType.Exception.Json
-    NetworkErrorType.Exception.Unexpected -> ErrorType.Exception.Unexpected
     // ------------------------------ Network ------------------------------
-    NetworkErrorType.Network.EmptyResponse -> ErrorType.Network.Unexpected
     NetworkErrorType.Network.Unauthorized -> ErrorType.Network.Unauthorized
+    NetworkErrorType.Network.EmptyResponse -> ErrorType.Network.ClientError
     NetworkErrorType.Network.BadRequest -> ErrorType.Network.ClientError
     NetworkErrorType.Network.Forbidden -> ErrorType.Network.ClientError
     NetworkErrorType.Network.NotFound -> ErrorType.Network.ClientError
@@ -23,4 +22,6 @@ fun NetworkErrorType.toErrorType(): ErrorType = when (this) {
     NetworkErrorType.Network.BadGateway -> ErrorType.Network.ServerError
     NetworkErrorType.Network.ServiceUnavailable -> ErrorType.Network.ServerError
     NetworkErrorType.Network.GatewayTimeout -> ErrorType.Network.ServerError
+    // ------------------------------ Unexpected ------------------------------
+    is NetworkErrorType.Unexpected -> ErrorType.Unexpected(this.cause)
 }

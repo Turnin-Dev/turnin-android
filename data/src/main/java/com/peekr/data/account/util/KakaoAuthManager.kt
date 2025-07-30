@@ -94,7 +94,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                 Timber.i("'Login with KakaoTalk' succeeded.")
                 loginSuccess()
             } else {
-                trySendAndClose(Result.Error(ErrorType.Auth.Unexpected))
+                trySendAndClose(Result.Error(ErrorType.Unexpected(error)))
             }
         }
 
@@ -118,7 +118,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                 Timber.i("'Login with KakaoAccount' succeeded.")
                 loginSuccess()
             } else {
-                trySendAndClose(Result.Error(ErrorType.Auth.Unexpected))
+                trySendAndClose(Result.Error(ErrorType.Unexpected(error)))
             }
         }
 

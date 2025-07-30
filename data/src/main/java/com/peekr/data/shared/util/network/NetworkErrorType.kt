@@ -24,6 +24,7 @@ sealed interface NetworkErrorType {
         JsonData,
         JsonEncoding,
         MalformedJson,
-        Unexpected,
     }
+
+    data class Unexpected(val cause: Throwable?) : NetworkErrorType
 }

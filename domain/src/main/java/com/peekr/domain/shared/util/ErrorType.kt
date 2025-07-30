@@ -15,9 +15,6 @@ sealed interface ErrorType : Error {
         KakaoSignInError,
         KakaoSignOutError,
         KakaoDeleteAccountError,
-
-        // Etc
-        Unexpected,
     }
 
     /** 네트워크에서 발생한 에러 타입 */
@@ -30,9 +27,6 @@ sealed interface ErrorType : Error {
 
         /** 서버 상에서 발생한 에러 */
         ServerError,
-
-        /** 알 수 없는 네트워크 에러 */
-        Unexpected,
     }
 
     /** 예외 타입 */
@@ -40,6 +34,7 @@ sealed interface ErrorType : Error {
         Json,
         TimeOut,
         IO,
-        Unexpected,
     }
+
+    data class Unexpected(val cause: Throwable?) : ErrorType
 }

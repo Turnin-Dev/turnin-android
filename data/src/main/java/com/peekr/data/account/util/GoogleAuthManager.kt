@@ -53,7 +53,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             emit(Result.Error(ErrorType.Auth.Cancellation, e.message))
         } catch (e: Exception) {
             Timber.e(e, "Unexpected error during Google sign-in.")
-            emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
+            emit(Result.Error(ErrorType.Unexpected(e), e.message))
         }
     }
 
@@ -67,7 +67,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             emit(Result.Success(Unit))
         } catch (e: Exception) {
             Timber.e(e, "Failed to Google sign-out")
-            emit(Result.Error(ErrorType.Auth.Unexpected, e.message))
+            emit(Result.Error(ErrorType.Unexpected(e), e.message))
         }
     }
 
