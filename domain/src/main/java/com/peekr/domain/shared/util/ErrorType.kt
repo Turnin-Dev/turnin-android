@@ -15,6 +15,12 @@ sealed interface ErrorType : Error {
         KakaoSignInError,
         KakaoSignOutError,
         KakaoDeleteAccountError,
+
+        // Token
+        SaveTokenFailed,
+
+        // Login
+        LoginFailed,
     }
 
     /** 네트워크에서 발생한 에러 타입 */
@@ -36,5 +42,6 @@ sealed interface ErrorType : Error {
         IO,
     }
 
+    /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
     data class Unexpected(val cause: Throwable?) : ErrorType
 }

@@ -13,6 +13,8 @@
     <string name="error_auth_kakao_sign_in_error">카카오 로그인 오류 발생</string>
     <string name="error_auth_kakao_sign_out_error">카카오 로그아웃 오류</string>
     <string name="error_auth_kakao_delete_account_error">카카오 계정 삭제 오류</string>
+    <string name="error_auth_save_token_failed">인증 정보 저장에 실패했습니다. 추후에 다시 로그인 해야할 수도 있습니다.</string>
+    <string name="error_auth_login_failed">로그인에 실패했습니다.</string>
     <!-- ErrorType - Exception -->
     <string name="error_exception_json">데이터가 손상되었습니다.</string>
     <string name="error_exception_timeout">시간이 초과되었습니다.</string>
