@@ -11,6 +11,7 @@ import com.peekr.presentation.shared.util.errorTypeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,7 +22,7 @@ class LoginViewModel @Inject constructor(
     private val loginIntegrationUseCase: LoginIntegrationUseCase,
 ) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
-    val loginState = _loginState.asStateFlow()
+    val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
 
     fun login(uiSocialLoginProvider: UiSocialLoginProvider) {
         val socialLoginProvider = uiSocialLoginProvider.toDomainModel()
