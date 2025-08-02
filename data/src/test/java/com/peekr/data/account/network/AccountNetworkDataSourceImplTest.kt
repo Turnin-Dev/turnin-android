@@ -96,15 +96,16 @@ class AccountNetworkDataSourceImplTest {
     fun `login() 실패 테스트 (알 수 없는 API 예외 발생)`() = runTest {
         // given
         val mockApi: AccountApi = mockk()
+        val exception = IllegalStateException()
         dataSource = AccountNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.login(any()) } throws IllegalStateException()
+        coEvery { mockApi.login(any()) } throws exception
 
         // when
         val result = dataSource.login(mockLoginRequest)
 
         // then
         assertTrue(result is NetworkResult.Error)
-        assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Exception.Unexpected)
+        assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Unexpected(exception))
     }
 
     @Test

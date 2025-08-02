@@ -62,12 +62,12 @@ class SafeFlowTest {
     fun `safeResultFlow - 예외 발생 시 Error 결과를 emit한다`() = testScope.runTest {
         // Given
         val exception = RuntimeException("Test exception")
-        val expectedErrorType = ErrorType.Exception.Unexpected
+        val expectedErrorType = ErrorType.Unexpected(exception)
 
         // When
         val flow = safeResultFlow<String>(
             dispatcher = testDispatcher,
-            errorMapper = { ErrorType.Exception.Unexpected },
+            errorMapper = { ErrorType.Unexpected(exception) },
         ) {
             throw exception
         }
@@ -128,7 +128,7 @@ class SafeFlowTest {
             errorMapper = { throwable ->
                 when (throwable) {
                     is IllegalArgumentException -> ErrorType.Exception.IO
-                    else -> ErrorType.Exception.Unexpected
+                    else -> ErrorType.Unexpected(throwable)
                 }
             },
         ) {
