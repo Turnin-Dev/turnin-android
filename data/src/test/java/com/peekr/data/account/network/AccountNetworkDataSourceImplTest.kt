@@ -141,7 +141,7 @@ class AccountNetworkDataSourceImplTest {
     }
 
     companion object {
-        private val mockLoginRequest = LoginRequest(SocialLoginProvider.Google, "123")
+        private val mockLoginRequest = LoginRequest(SocialLoginProvider.GOOGLE, "123")
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
         private val JWT_TOKEN_BODY =

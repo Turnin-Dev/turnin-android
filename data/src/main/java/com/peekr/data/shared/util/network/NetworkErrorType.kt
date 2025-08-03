@@ -15,6 +15,7 @@ sealed interface NetworkErrorType {
         ServiceUnavailable,
         HttpError,
         GatewayTimeout,
+        ConnectionFailed,
     }
 
     /** Exception 에러 타입 */

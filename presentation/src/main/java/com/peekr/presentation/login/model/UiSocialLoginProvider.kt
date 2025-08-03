@@ -9,7 +9,7 @@ enum class UiSocialLoginProvider {
     ;
 
     fun toDomainModel(): SocialLoginProvider = when (this) {
-        Google -> SocialLoginProvider.Google
-        Kakao -> SocialLoginProvider.Kakao
+        Google -> SocialLoginProvider.GOOGLE
+        Kakao -> SocialLoginProvider.KAKAO
     }
 }

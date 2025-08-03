@@ -58,7 +58,7 @@ class AccountRepositoryImplTest {
     }
 
     companion object {
-        private val mockLogin = Login(SocialLoginProvider.Google, UserUID("123"))
+        private val mockLogin = Login(SocialLoginProvider.GOOGLE, UserUID("123"))
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
         private val mockLoginResponse = LoginResponse(mockAccessToken, mockRefreshToken)

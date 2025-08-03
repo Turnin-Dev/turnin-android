@@ -43,13 +43,13 @@ class LoginIntegrationUseCaseTest {
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
 
         // when
-        val result = loginIntegrationUseCase(SocialLoginProvider.Google).last()
+        val result = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).last()
 
         // then
         assertTrue(result is Result.Success)
         assertTrue((result as Result.Success).data)
 
-        verify { socialLoginUseCase(SocialLoginProvider.Google) }
+        verify { socialLoginUseCase(SocialLoginProvider.GOOGLE) }
         verify { loginUseCase(MockLogin) }
         verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
     }
@@ -61,13 +61,13 @@ class LoginIntegrationUseCaseTest {
         every { socialLoginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
-        val result = loginIntegrationUseCase(SocialLoginProvider.Google).last()
+        val result = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).last()
 
         // then
         assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
 
-        verify { socialLoginUseCase(SocialLoginProvider.Google) }
+        verify { socialLoginUseCase(SocialLoginProvider.GOOGLE) }
         verify(exactly = 0) { loginUseCase(any()) }
         verify(exactly = 0) { saveRefreshTokenUseCase(any()) }
     }
@@ -80,13 +80,13 @@ class LoginIntegrationUseCaseTest {
         every { loginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
-        val result = loginIntegrationUseCase(SocialLoginProvider.Google).last()
+        val result = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).last()
 
         // then
         assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
 
-        verify { socialLoginUseCase(SocialLoginProvider.Google) }
+        verify { socialLoginUseCase(SocialLoginProvider.GOOGLE) }
         verify { loginUseCase(MockLogin) }
         verify(exactly = 0) { saveRefreshTokenUseCase(any()) }
     }
@@ -100,13 +100,13 @@ class LoginIntegrationUseCaseTest {
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
-        val result = loginIntegrationUseCase(SocialLoginProvider.Google).last()
+        val result = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).last()
 
         // then
         assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
 
-        verify { socialLoginUseCase(SocialLoginProvider.Google) }
+        verify { socialLoginUseCase(SocialLoginProvider.GOOGLE) }
         verify { loginUseCase(MockLogin) }
         verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
     }
@@ -117,12 +117,12 @@ class LoginIntegrationUseCaseTest {
         every { socialLoginUseCase(any()) } returns flowOf(Result.Loading)
 
         // when
-        val result = loginIntegrationUseCase(SocialLoginProvider.Google).last()
+        val result = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).last()
 
         // then
         assertTrue(result is Result.Loading)
 
-        verify { socialLoginUseCase(SocialLoginProvider.Google) }
+        verify { socialLoginUseCase(SocialLoginProvider.GOOGLE) }
         verify(exactly = 0) { loginUseCase(any()) }
         verify(exactly = 0) { saveRefreshTokenUseCase(any()) }
     }
@@ -135,13 +135,13 @@ class LoginIntegrationUseCaseTest {
         }
 
         // when
-        val result = loginIntegrationUseCase(SocialLoginProvider.Google).last()
+        val result = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).last()
 
         // then
         assertTrue(result is Result.Error)
         assertEquals(ErrorType.Auth.LoginFailed, (result as Result.Error).error)
 
-        verify { socialLoginUseCase(SocialLoginProvider.Google) }
+        verify { socialLoginUseCase(SocialLoginProvider.GOOGLE) }
     }
 
     @Test
@@ -156,7 +156,7 @@ class LoginIntegrationUseCaseTest {
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
 
         // when
-        val results = loginIntegrationUseCase(SocialLoginProvider.Google).toList()
+        val results = loginIntegrationUseCase(SocialLoginProvider.GOOGLE).toList()
 
         // then
         assertEquals(2, results.size)
@@ -166,7 +166,7 @@ class LoginIntegrationUseCaseTest {
     }
 
     companion object {
-        private val MockLogin = Login(SocialLoginProvider.Google, UserUID("123"))
+        private val MockLogin = Login(SocialLoginProvider.GOOGLE, UserUID("123"))
         private val MockJwtToken = JWTToken("aaa.bbb.ccc", "rrr.bbb.ccc")
     }
 }

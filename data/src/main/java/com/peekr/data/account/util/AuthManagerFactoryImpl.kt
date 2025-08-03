@@ -12,7 +12,7 @@ class AuthManagerFactoryImpl @Inject constructor(
     @KakaoAuth private val kakaoAuthManager: AuthManager,
 ) : AuthManagerFactory {
     override fun create(provider: SocialLoginProvider): AuthManager = when (provider) {
-        SocialLoginProvider.Google -> googleAuthManager
-        SocialLoginProvider.Kakao -> kakaoAuthManager
+        SocialLoginProvider.GOOGLE -> googleAuthManager
+        SocialLoginProvider.KAKAO -> kakaoAuthManager
     }
 }
