@@ -24,6 +24,11 @@ class LoginViewModel @Inject constructor(
     private val _loginState = MutableStateFlow(LoginState())
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
 
+    // TODO: 사용자 존재 여부를 확인하고 만약,
+    // 존재한다면 계속해서 로그인 진행
+    // 존재하지 않는다면 회원가입 진행
+    // (회원가입 진행은 회원가입 화면으로 넘기고 회원가입 뷰모델에서 로직 작성)
+
     fun login(uiSocialLoginProvider: UiSocialLoginProvider) {
         val socialLoginProvider = uiSocialLoginProvider.toDomainModel()
         loginIntegrationUseCase(socialLoginProvider)

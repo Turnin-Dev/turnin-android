@@ -6,6 +6,7 @@ import com.peekr.data.shared.di.IO
 import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.coroutine.safeResultFlow
 import com.peekr.data.shared.util.network.toErrorType
+import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.repository.AccountRepository
@@ -25,6 +26,20 @@ class AccountRepositoryImpl @Inject constructor(
             when (val result = accountNetworkDataSource.login(login.toDataModel())) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                }
+            }
+        }
+
+    override fun existsUser(existsUser: ExistsUser): Flow<Result<Boolean, ErrorType>> =
+        safeResultFlow(ioDispatcher) {
+            emit(Result.Loading)
+            when (val result = accountNetworkDataSource.existsUser(existsUser.toDataModel())) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.isExists))
                 }
 
                 is NetworkResult.Error -> {

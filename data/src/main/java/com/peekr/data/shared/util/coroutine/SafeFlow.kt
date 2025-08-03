@@ -10,6 +10,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 
+/**
+ * 안전하게 flow 빌더를 사용할 수 있다.
+ *
+ * [safeFlow]와 다른 점은 반환 값으로 [Result]를 반환한다.
+ *
+ * @param dispatcher [CoroutineDispatcher]
+ * @param enableLogging 로깅 활성화 여부 (기본은 `true`)
+ * @param errorMapper 에러 발생 시 사용할 매퍼
+ * @param block flow 빌더에서 실행할 로직
+ */
 fun <T> safeResultFlow(
     dispatcher: CoroutineDispatcher,
     enableLogging: Boolean = true,
@@ -25,6 +35,14 @@ fun <T> safeResultFlow(
         emit(Result.Error(error = mappedError, message = exception.message))
     }
 
+/**
+ * 안전하게 flow 빌더를 사용할 수 있다.
+ *
+ * @param dispatcher [CoroutineDispatcher]
+ * @param enableLogging 로깅 활성화 여부 (기본은 `true`)
+ * @param onError 에러 발생 시
+ * @param block flow 빌더에서 실행할 로직
+ */
 fun <T> safeFlow(
     dispatcher: CoroutineDispatcher,
     enableLogging: Boolean = true,
