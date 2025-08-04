@@ -28,11 +28,13 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.peekr.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.presentation.R
 import com.peekr.presentation.login.model.UiSocialLoginProvider
+import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.shared.logo.PeekrLogoWithText
 import com.peekr.presentation.shared.util.ScreenTokens
 
@@ -45,27 +47,34 @@ import com.peekr.presentation.shared.util.ScreenTokens
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    loginState: LoginState,
     login: (UiSocialLoginProvider) -> Unit,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(150.dp, alignment = Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        PeekrLogoWithText()
-        Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
-            GoogleLoginButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(LoginButtonTokens.Height),
-                onClick = { login(UiSocialLoginProvider.Google) },
-            )
-            KakaoLoginButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(LoginButtonTokens.Height),
-                onClick = { login(UiSocialLoginProvider.Kakao) },
-            )
+    Box(modifier) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(150.dp, alignment = Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            PeekrLogoWithText()
+            Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
+                GoogleLoginButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LoginButtonTokens.Height),
+                    onClick = { login(UiSocialLoginProvider.GOOGLE) },
+                )
+                KakaoLoginButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LoginButtonTokens.Height),
+                    onClick = { login(UiSocialLoginProvider.KAKAO) },
+                )
+            }
+        }
+
+        if (loginState.loading) {
+            PeekrLoadingScreen(Modifier.fillMaxSize())
         }
     }
 }
@@ -160,6 +169,7 @@ private fun LoginScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = ScreenTokens.HORIZONTAL_PADDING.dp),
+            loginState = LoginState(),
             login = {},
         )
     }

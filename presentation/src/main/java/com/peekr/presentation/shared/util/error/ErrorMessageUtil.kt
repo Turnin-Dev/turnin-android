@@ -1,8 +1,9 @@
-package com.peekr.presentation.shared.util
+package com.peekr.presentation.shared.util.error
 
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.presentation.R
+import com.peekr.presentation.shared.util.UiText
 
 /**
  * ErrorType의 에러 메시지를 먼저 표시한다.

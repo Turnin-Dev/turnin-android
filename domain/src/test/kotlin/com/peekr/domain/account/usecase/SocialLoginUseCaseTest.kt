@@ -33,12 +33,12 @@ class SocialLoginUseCaseTest {
     fun `invoke returns Success when authManager returns Success`() = runTest {
         // Given
         val userUID = UserUID("google-uid-123")
-        val expectedLogin = Login(SocialLoginProvider.Google, userUID)
+        val expectedLogin = Login(SocialLoginProvider.GOOGLE, userUID)
         val flow = flowOf(Result.Success(userUID))
         every { authManager.signIn() } returns flow
 
         // When
-        val result = useCase(SocialLoginProvider.Google).first()
+        val result = useCase(SocialLoginProvider.GOOGLE).first()
 
         // Then
         assert(result is Result.Success)
@@ -54,7 +54,7 @@ class SocialLoginUseCaseTest {
         }
 
         // When
-        val result = useCase(SocialLoginProvider.Google).first()
+        val result = useCase(SocialLoginProvider.GOOGLE).first()
 
         // Then
         assert(result is Result.Error)

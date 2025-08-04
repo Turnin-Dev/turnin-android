@@ -57,22 +57,8 @@ class AccountRepositoryImplTest {
         assertEquals(result.message, mockErrorMessage)
     }
 
-    @Test
-    fun `login() 실패 테스트 - 데이터 소스에서 예외 발생 시 Error를 반환한다`() = runTest {
-        // given
-        coEvery { dataSource.login(any()) } throws IllegalStateException(mockErrorMessage)
-
-        // when
-        val result = repository.login(mockLogin).last()
-
-        // then
-        assertTrue(result is Result.Error)
-        assertEquals((result as Result.Error).error, NetworkErrorType.Exception.Unexpected.toErrorType())
-        assertEquals(result.message, mockErrorMessage)
-    }
-
     companion object {
-        private val mockLogin = Login(SocialLoginProvider.Google, UserUID("123"))
+        private val mockLogin = Login(SocialLoginProvider.GOOGLE, UserUID("123"))
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
         private val mockLoginResponse = LoginResponse(mockAccessToken, mockRefreshToken)

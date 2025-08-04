@@ -32,7 +32,7 @@ class SocialLoginUseCase @Inject constructor(
             .map { result ->
                 when (result) {
                     Result.Loading -> Result.Loading
-                    is Result.Success -> {
+                    is Success -> {
                         val login = Login(provider = provider, providerId = result.data)
                         Success(login)
                     }

@@ -122,7 +122,7 @@ class CryptoManagerTest {
         }.exceptionOrNull()
 
         // then
-        assertTrue(exception is DecryptException)
+        assertTrue(exception is IllegalArgumentException)
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.io.IOException
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
 import retrofit2.HttpException
@@ -59,6 +60,8 @@ private suspend fun <T, R> executeNetworkCall(
     handle(response)
 } catch (e: HttpException) {
     handleHttpException(e)
+} catch (e: SocketException) {
+    handleException(NetworkErrorType.Network.ConnectionFailed, e)
 } catch (e: SocketTimeoutException) {
     handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: JsonDataException) {

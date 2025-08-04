@@ -2,7 +2,6 @@ package com.peekr.domain.account.usecase
 
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
-import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.domain.shared.util.flatMapResult
@@ -11,17 +10,23 @@ import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 
+/**
+ * 로그인과 동시에 리프레쉬 토큰 저장을 수행한다.
+ *
+ * @see flatMapResult
+ * @see mapSuccess
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginIntegrationUseCase @Inject constructor(
-    private val socialLoginUseCase: SocialLoginUseCase,
     private val loginUseCase: LoginUseCase,
     private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase,
 ) {
-    operator fun invoke(provider: SocialLoginProvider): Flow<Result<Boolean, ErrorType>> =
-        socialLoginUseCase(provider)
-            .flatMapResult { result: Login -> loginUseCase(result) }
+    operator fun invoke(login: Login): Flow<Result<Boolean, ErrorType>> =
+        loginUseCase(login)
             .flatMapResult { result: JWTToken -> saveRefreshTokenUseCase(result.refreshToken) }
             .mapSuccess { true }
+            .onStart { emit(Result.Loading) }
             .catch { e -> emit(Result.Error(ErrorType.Auth.LoginFailed)) }
 }

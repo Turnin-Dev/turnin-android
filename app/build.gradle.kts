@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.gms)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -52,6 +53,9 @@ android {
 }
 
 dependencies {
+    // TODO: app 모듈이 data 모듈까지 의존하는 것이 클린아키텍처 방식에서 벗어난다면 추후 별도의 di 모듈을 생성하는 것을 고려
+    implementation(project(":presentation"))
+    implementation(project(":data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -85,4 +89,11 @@ dependencies {
 
     // Logging
     implementation(libs.timber)
+
+    // Navigation
+    implementation(libs.androidx.compose.navigation)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Serialization
+    implementation(libs.kotlinx.serialization.json)
 }
