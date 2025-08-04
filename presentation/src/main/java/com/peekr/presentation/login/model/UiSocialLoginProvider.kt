@@ -4,12 +4,12 @@ import com.peekr.domain.account.model.SocialLoginProvider
 
 /** 소셜로그인 타입 */
 enum class UiSocialLoginProvider {
-    Google,
-    Kakao,
+    GOOGLE,
+    KAKAO,
     ;
 
     fun toDomainModel(): SocialLoginProvider = when (this) {
-        Google -> SocialLoginProvider.GOOGLE
-        Kakao -> SocialLoginProvider.KAKAO
+        GOOGLE -> SocialLoginProvider.GOOGLE
+        KAKAO -> SocialLoginProvider.KAKAO
     }
 }

@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -60,20 +59,16 @@ class LoginViewModel @Inject constructor(
 
     // 회원가입 페이지로 이동
     private fun navigateToRegister(login: Login) {
-        viewModelScope.launch {
-            _loginState.update {
-                it.copy(
-                    loading = false,
-                    event = LoginUiEvent.NavigateToRegister(login.provider, login.providerId),
-                )
-            }
+        _loginState.update {
+            it.copy(
+                loading = false,
+                event = LoginUiEvent.NavigateToRegister(login.provider, login.providerId),
+            )
         }
     }
 
     fun onEventConsumed() {
-        viewModelScope.launch {
-            _loginState.update { it.copy(event = null) }
-        }
+        _loginState.update { it.copy(event = null) }
     }
 
     // 로그인을 계속 진행하고 성공 시 메인 페이지로 이동

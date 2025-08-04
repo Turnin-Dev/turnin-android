@@ -19,7 +19,7 @@ sealed interface LoginUiEvent {
  * @param loginSuccess 로그인 성공 여부
  * @param loading 로그인 로딩
  * @param error 로그인 에러 메시지
- * @param [LoginUiEvent]
+ * @param event 로그인 UI 이벤트 [LoginUiEvent]
  */
 data class LoginState(
     val loginSuccess: Boolean = false,

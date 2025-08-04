@@ -6,7 +6,6 @@ import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -55,7 +54,7 @@ class LoginIntegrationUseCaseTest {
     fun `로그인 UseCase에서 에러 발생 시 해당 에러를 반환하고 후속 UseCase는 실행되지 않는다`() = runTest {
         // given
         val expectedError = ErrorType.Auth.KakaoSignInError
-        coEvery { loginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
+        every { loginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
         val result = loginIntegrationUseCase(MockLogin).last()

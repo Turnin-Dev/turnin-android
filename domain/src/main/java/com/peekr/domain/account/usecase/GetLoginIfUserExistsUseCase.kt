@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.onStart
 /**
  * 사용자의 존재 여부를 확인하고 사용자가 존재하면 로그인 정보를 반환한다.
  *
- * 사용자가 존재하면 업스트림에서 받은 [Login]을 다시 반환하고, 사용자가 존재하지 않는다면 `null`을 반환한다.
+ * 업스트림에서 받은 [Login]을 다시 반환하고, 사용자 존재 여부를 [LoginWithExistsUser.isExistsUser]에 담아 반환한다.
  */
 class GetLoginIfUserExistsUseCase @Inject constructor(
     private val socialLoginUseCase: SocialLoginUseCase,

@@ -62,13 +62,13 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(LoginButtonTokens.Height),
-                    onClick = { login(UiSocialLoginProvider.Google) },
+                    onClick = { login(UiSocialLoginProvider.GOOGLE) },
                 )
                 KakaoLoginButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(LoginButtonTokens.Height),
-                    onClick = { login(UiSocialLoginProvider.Kakao) },
+                    onClick = { login(UiSocialLoginProvider.KAKAO) },
                 )
             }
         }

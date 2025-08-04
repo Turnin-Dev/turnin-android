@@ -25,7 +25,7 @@ fun PeekrLoadingScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .background(ModalBackgroundColor)
-            .zIndex(1f)
+            .zIndex(10f)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
