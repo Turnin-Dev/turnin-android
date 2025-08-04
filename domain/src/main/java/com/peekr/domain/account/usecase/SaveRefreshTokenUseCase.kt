@@ -24,7 +24,7 @@ class SaveRefreshTokenUseCase @Inject constructor(
             )
             emit(Result.Success(true))
         } catch (e: WritingDataException) {
-            emit(Result.Error(error = ErrorType.Auth.SaveTokenFailed))
+            emit(Result.Error(error = ErrorType.Auth.SaveTokenFailed, message = e.message))
         } catch (e: Exception) {
             emit(Result.Error(error = ErrorType.Unexpected(e)))
         }

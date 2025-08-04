@@ -10,6 +10,7 @@ import com.peekr.domain.shared.util.Result
 import com.peekr.domain.shared.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
@@ -41,4 +42,5 @@ class GetLoginIfUserExistsUseCase @Inject constructor(
                         }
                     }
             }.onStart { emit(Result.Loading) }
+            .catch { e -> emit(Result.Error(ErrorType.Auth.LoginFailed)) }
 }
