@@ -1,7 +1,8 @@
-package com.peekr.presentation.shared.util
+package com.peekr.presentation.shared.util.error
 
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.presentation.R
+import com.peekr.presentation.shared.util.UiText
 import com.peekr.presentation.shared.util.UiText.DynamicString
 import com.peekr.presentation.shared.util.UiText.StringResource
 

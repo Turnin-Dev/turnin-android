@@ -27,6 +27,6 @@ interface AccountApi {
     @GET("${NetworkApiPath.AUTH}/exist/{provider}/{providerId}")
     suspend fun existsUser(
         @Path("provider") provider: SocialLoginProvider,
-        @Path("provierId") providerId: String,
+        @Path("providerId") providerId: String,
     ): Response<ExistsUserResponse>
 }

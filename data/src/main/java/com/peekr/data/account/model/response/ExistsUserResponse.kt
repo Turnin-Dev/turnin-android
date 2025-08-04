@@ -1,5 +1,6 @@
 package com.peekr.data.account.model.response
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -9,5 +10,5 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class ExistsUserResponse(
-    val isExists: Boolean,
+    @Json(name = "isExist") val isExists: Boolean,
 )
