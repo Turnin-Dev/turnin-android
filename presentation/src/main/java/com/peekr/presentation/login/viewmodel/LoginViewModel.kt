@@ -71,6 +71,10 @@ class LoginViewModel @Inject constructor(
         _loginState.update { it.copy(event = null) }
     }
 
+    fun onErrorMessageShown() {
+        _loginState.update { it.copy(error = null) }
+    }
+
     // 로그인을 계속 진행하고 성공 시 메인 페이지로 이동
     private fun proceedWithLoginAndNavigateToMain(login: Login) {
         loginIntegrationUseCase(login)

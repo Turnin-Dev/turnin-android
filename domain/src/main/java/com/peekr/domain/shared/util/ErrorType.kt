@@ -33,6 +33,9 @@ sealed interface ErrorType : Error {
 
         /** 서버 상에서 발생한 에러 */
         ServerError,
+
+        /** 서버 및 네트워크 연결 에러 */
+        ConnectionFailed,
     }
 
     /** 예외 타입 */

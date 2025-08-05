@@ -1,5 +1,6 @@
 package com.peekr.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +28,9 @@ fun LoginRoute(
     LaunchedEffect(loginState.error) {
         loginState.error?.let { error ->
             Timber.d(error.asString(context))
+            Toast.makeText(context, error.asString(context), Toast.LENGTH_SHORT).show()
         }
+        loginViewModel.onErrorMessageShown()
     }
 
     LaunchedUiEffectHandler(
