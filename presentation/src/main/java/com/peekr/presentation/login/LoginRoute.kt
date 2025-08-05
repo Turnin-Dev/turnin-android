@@ -30,6 +30,7 @@ fun LoginRoute(
             Timber.d(error.asString(context))
             Toast.makeText(context, error.asString(context), Toast.LENGTH_SHORT).show()
         }
+        loginViewModel.onErrorMessageShown()
     }
 
     LaunchedUiEffectHandler(
