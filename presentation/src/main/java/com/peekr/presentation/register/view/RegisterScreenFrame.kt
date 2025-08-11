@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -21,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.peekr.designsystem.component.button.PeekrButtonStyle
 import com.peekr.designsystem.component.button.PeekrSolidButton
 import com.peekr.designsystem.component.topbar.PeekrTopBar
@@ -53,6 +57,10 @@ fun RegisterScreenFrame(
     onBackPressed: () -> Unit,
     onNextWithValue: (String) -> Unit,
 ) {
+    val insets = WindowInsets.navigationBars.union(WindowInsets.ime)
+    val insetBottom: Dp = insets.asPaddingValues().calculateBottomPadding()
+    val bottomButtonPadding: Dp = max(ScreenTokens.BottomButtonPadding, insetBottom)
+
     // 회원가입 화면
     Column(modifier = modifier) {
         // 탑바
@@ -65,7 +73,9 @@ fun RegisterScreenFrame(
 
         // 메인 컨텐츠 & 하단 버튼
         Column(
-            modifier = Modifier.weight(1f).padding(horizontal = ScreenTokens.HorizontalPadding),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = ScreenTokens.HorizontalPadding),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             // 메인 컨텐츠
@@ -96,8 +106,7 @@ fun RegisterScreenFrame(
             PeekrSolidButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.ime)
-                    .padding(bottom = ScreenTokens.BottomButtonPadding),
+                    .padding(bottom = bottomButtonPadding),
                 text = stringResource(R.string.register_screen_btn_next),
                 style = PeekrButtonStyle.Large,
                 onClick = { onNextWithValue(text) },
