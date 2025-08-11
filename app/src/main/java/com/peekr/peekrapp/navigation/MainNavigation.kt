@@ -12,8 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.peekr.presentation.login.LoginRoute
+import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.shared.LoginGraph
-import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.Screens
 import com.peekr.presentation.shared.SubGraph
 
@@ -32,6 +32,7 @@ fun MainNavigation(
     ) {
         navigation<SubGraph.Login>(startDestination = LoginGraph.Default) {
             composable<LoginGraph.Default> {
+                // TODO: 메인 혹은 로그인 화면으로 이동 시 적절한 백스택 전략 적용 필요
                 LoginRoute(
                     modifier = Modifier,
                     onNavigateMain = {
@@ -44,16 +45,7 @@ fun MainNavigation(
             }
         }
 
-        navigation<SubGraph.Register>(startDestination = RegisterGraph.Name) {
-            composable<RegisterGraph.Name> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("Register Screen", fontSize = 50.sp)
-                }
-            }
-        }
+        registerNavigation()
 
         composable<Screens.TempMain> {
             Box(
