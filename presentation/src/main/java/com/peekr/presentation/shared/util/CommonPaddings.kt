@@ -4,4 +4,7 @@ package com.peekr.presentation.shared.util
 object CommonPaddings {
     /** 공통 수평 패딩 (dp 기준) */
     const val HORIZONTAL = 20
+
+    /** 하단에 버튼 배치시 하단 패딩 (dp 기준) */
+    const val BOTTOM_FOR_BUTTON = 20
 }
