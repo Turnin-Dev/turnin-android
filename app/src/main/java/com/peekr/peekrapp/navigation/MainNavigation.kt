@@ -12,8 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.peekr.presentation.login.LoginRoute
+import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.shared.LoginGraph
-import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.Screens
 import com.peekr.presentation.shared.SubGraph
 
@@ -44,16 +44,7 @@ fun MainNavigation(
             }
         }
 
-        navigation<SubGraph.Register>(startDestination = RegisterGraph.Name) {
-            composable<RegisterGraph.Name> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("Register Screen", fontSize = 50.sp)
-                }
-            }
-        }
+        registerNavigation(navController = mainNavController)
 
         composable<Screens.TempMain> {
             Box(

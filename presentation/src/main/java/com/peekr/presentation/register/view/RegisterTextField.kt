@@ -29,12 +29,12 @@ import com.peekr.designsystem.theme.PeekrTheme
  * @param errorMessage 에러 메시지
  */
 @Composable
-private fun RegisterTextField(
+fun RegisterTextField(
     text: String,
     onTextChanged: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
-    errorMessage: String? = null,
+    errorMessage: String?,
 ) {
     val isError = errorMessage != null && errorMessage.isNotEmpty()
 
