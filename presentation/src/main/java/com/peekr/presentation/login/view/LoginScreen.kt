@@ -36,7 +36,6 @@ import com.peekr.presentation.R
 import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.shared.logo.PeekrLogoWithText
-import com.peekr.presentation.shared.util.CommonPaddings
 import com.peekr.presentation.shared.util.ScreenTokens
 
 /**
@@ -55,7 +54,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = CommonPaddings.HORIZONTAL.dp),
+                .padding(horizontal = ScreenTokens.HORIZONTAL_PADDING.dp),
             verticalArrangement = Arrangement.spacedBy(150.dp, alignment = Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
