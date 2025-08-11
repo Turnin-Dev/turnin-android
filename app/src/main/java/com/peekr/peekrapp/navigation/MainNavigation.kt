@@ -32,6 +32,7 @@ fun MainNavigation(
     ) {
         navigation<SubGraph.Login>(startDestination = LoginGraph.Default) {
             composable<LoginGraph.Default> {
+                // TODO: 메인 혹은 로그인 화면으로 이동 시 적절한 백스택 전략 적용 필요
                 LoginRoute(
                     modifier = Modifier,
                     onNavigateMain = {
@@ -44,7 +45,7 @@ fun MainNavigation(
             }
         }
 
-        registerNavigation(navController = mainNavController)
+        registerNavigation()
 
         composable<Screens.TempMain> {
             Box(

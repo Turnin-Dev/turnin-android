@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.presentation.shared.modifier.accessibility
 
 /**
  * 회원가입 화면에서 사용하는 텍스트 필드
@@ -110,7 +111,7 @@ private fun ErrorMessage(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = modifier,
+        modifier = modifier.accessibility(errorMessage),
         text = errorMessage,
         style = PeekrTheme.typography.caption1,
         color = PeekrTheme.colorScheme.statusNegative,

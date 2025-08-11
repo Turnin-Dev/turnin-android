@@ -54,7 +54,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = ScreenTokens.HORIZONTAL_PADDING.dp),
+                .padding(horizontal = ScreenTokens.HorizontalPadding),
             verticalArrangement = Arrangement.spacedBy(150.dp, alignment = Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -170,7 +170,7 @@ private fun LoginScreenPreview() {
         LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = ScreenTokens.HORIZONTAL_PADDING.dp),
+                .padding(horizontal = ScreenTokens.HorizontalPadding),
             loginState = LoginState(),
             login = {},
         )
