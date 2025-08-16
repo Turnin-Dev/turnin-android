@@ -45,7 +45,7 @@ fun MainNavigation(
             }
         }
 
-        registerNavigation()
+        registerNavigation(navController = mainNavController)
 
         composable<Screens.TempMain> {
             Box(

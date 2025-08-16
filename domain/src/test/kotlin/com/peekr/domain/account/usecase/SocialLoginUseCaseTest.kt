@@ -3,6 +3,7 @@ package com.peekr.domain.account.usecase
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.model.UserUID
+import com.peekr.domain.account.usecase.login.SocialLoginUseCase
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.account.util.AuthManagerFactory
 import com.peekr.domain.shared.util.Result
@@ -41,8 +42,8 @@ class SocialLoginUseCaseTest {
         val result = useCase(SocialLoginProvider.GOOGLE).first()
 
         // Then
-        assert(result is Result.Success)
-        assert((result as Result.Success).data == expectedLogin)
+        assertTrue(result is Result.Success)
+        assertTrue((result as Result.Success).data == expectedLogin)
     }
 
     @Test
@@ -57,7 +58,7 @@ class SocialLoginUseCaseTest {
         val result = useCase(SocialLoginProvider.GOOGLE).first()
 
         // Then
-        assert(result is Result.Error)
+        assertTrue(result is Result.Error)
         assertNotNull((result as Result.Error).message)
         assertTrue(result.message!!.contains(expectedErrorMessage))
     }

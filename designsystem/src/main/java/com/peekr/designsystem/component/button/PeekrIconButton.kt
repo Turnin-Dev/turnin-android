@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.peekr.designsystem.component.icon.PeekrIconSize
@@ -42,12 +45,13 @@ fun PeekrIconButton(
     onClick: () -> Unit,
 ) {
     Icon(
-        modifier = Modifier
+        modifier = modifier
             .clip(CircleShape)
+            .semantics { role = Role.Button }
             .clickableSingle(
                 clickMode = ClickMode.Throttle,
                 enabled = enabled,
-                onClick = { },
+                onClick = onClick,
             ).padding(iconSize.getTouchTargetPadding())
             .size(iconSize.size),
         imageVector = icon.imageVector,
