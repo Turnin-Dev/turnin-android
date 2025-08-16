@@ -5,15 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -24,9 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.peekr.designsystem.component.button.PeekrButtonStyle
 import com.peekr.designsystem.component.button.PeekrSolidButton
 import com.peekr.designsystem.component.topbar.PeekrTopBar
@@ -34,6 +27,7 @@ import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
 import com.peekr.presentation.shared.util.ScreenTokens
+import com.peekr.presentation.shared.util.getBottomAutoPadding
 
 /**
  * 회원가입 화면 공통 프레임
@@ -58,9 +52,7 @@ fun RegisterScreenFrame(
     onBackPressed: () -> Unit,
     onNextWithValue: (String) -> Unit,
 ) {
-    val insets = WindowInsets.navigationBars.union(WindowInsets.ime)
-    val insetBottom: Dp = insets.asPaddingValues().calculateBottomPadding()
-    val bottomButtonPadding: Dp = max(ScreenTokens.BottomButtonPadding, insetBottom)
+    val bottomAutoPadding = getBottomAutoPadding()
 
     // 회원가입 화면
     Column(modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal)) {
@@ -107,7 +99,7 @@ fun RegisterScreenFrame(
             PeekrSolidButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = bottomButtonPadding),
+                    .padding(bottom = bottomAutoPadding),
                 text = stringResource(R.string.register_screen_btn_next),
                 style = PeekrButtonStyle.Large,
                 onClick = { onNextWithValue(text) },
