@@ -39,7 +39,7 @@ class AccountRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = accountNetworkDataSource.existsUser(existsUser.toDataModel())) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.isExists))
+                    emit(Result.Success(result.data.exists))
                 }
 
                 is NetworkResult.Error -> {
