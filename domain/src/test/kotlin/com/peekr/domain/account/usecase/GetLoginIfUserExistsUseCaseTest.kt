@@ -35,7 +35,7 @@ class GetLoginIfUserExistsUseCaseTest {
     }
 
     @Test
-    fun `정상적으로 작동하는 경우 LoginWithExsitsUser를 반환한다`() = runTest {
+    fun `정상적으로 작동하는 경우 LoginWithExistsUser를 반환한다`() = runTest {
         // given
         every { socialLoginUseCase(any()) } returns flowOf(Result.Success(MockLogin))
         every { accountRepository.existsUser(any()) } returns flowOf(Result.Success(true))

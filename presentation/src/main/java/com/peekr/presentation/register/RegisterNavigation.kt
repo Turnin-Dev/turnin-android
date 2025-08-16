@@ -16,7 +16,7 @@ import com.peekr.presentation.shared.SubGraph
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
     navigation<SubGraph.Register>(startDestination = RegisterGraph.Name) {
         composable<RegisterGraph.Name> {
-            var (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
+            val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
 
             RegisterScreenFrame(
                 modifier = Modifier.fillMaxSize(),
@@ -31,7 +31,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
         }
 
         composable<RegisterGraph.Nickname> {
-            var (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
+            val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
 
             RegisterScreenFrame(
                 modifier = Modifier.fillMaxSize(),

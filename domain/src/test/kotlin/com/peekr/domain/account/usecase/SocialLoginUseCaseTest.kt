@@ -42,8 +42,8 @@ class SocialLoginUseCaseTest {
         val result = useCase(SocialLoginProvider.GOOGLE).first()
 
         // Then
-        assert(result is Result.Success)
-        assert((result as Result.Success).data == expectedLogin)
+        assertTrue(result is Result.Success)
+        assertTrue((result as Result.Success).data == expectedLogin)
     }
 
     @Test
@@ -58,7 +58,7 @@ class SocialLoginUseCaseTest {
         val result = useCase(SocialLoginProvider.GOOGLE).first()
 
         // Then
-        assert(result is Result.Error)
+        assertTrue(result is Result.Error)
         assertNotNull((result as Result.Error).message)
         assertTrue(result.message!!.contains(expectedErrorMessage))
     }
