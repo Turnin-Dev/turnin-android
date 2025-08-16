@@ -47,7 +47,7 @@ fun PeekrIconButton(
             .clickableSingle(
                 clickMode = ClickMode.Throttle,
                 enabled = enabled,
-                onClick = { },
+                onClick = onClick,
             ).padding(iconSize.getTouchTargetPadding())
             .size(iconSize.size),
         imageVector = icon.imageVector,
