@@ -18,10 +18,10 @@ sealed interface LoginGraph {
 
 sealed interface RegisterGraph {
     @Serializable
-    data object Name : RegisterGraph
+    data object DisplayID : RegisterGraph
 
     @Serializable
-    data object Nickname : RegisterGraph
+    data object Name : RegisterGraph
 
     @Serializable
     data object Profile : RegisterGraph
