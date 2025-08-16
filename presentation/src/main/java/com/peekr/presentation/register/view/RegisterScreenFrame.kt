@@ -1,6 +1,7 @@
 package com.peekr.presentation.register.view
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -62,7 +63,7 @@ fun RegisterScreenFrame(
     val bottomButtonPadding: Dp = max(ScreenTokens.BottomButtonPadding, insetBottom)
 
     // 회원가입 화면
-    Column(modifier = modifier) {
+    Column(modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal)) {
         // 탑바
         PeekrTopBar(
             modifier = Modifier.fillMaxWidth(),

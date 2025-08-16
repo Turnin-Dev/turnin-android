@@ -8,6 +8,8 @@
     <!-- Register Screen -->
     <string name="register_screen_name_title">이름을 작성해주세요.</string>
     <string name="register_screen_name_placeholder">이름</string>
+    <string name="register_screen_nickname_title">프로필 이름을 작성해주세요.</string>
+    <string name="register_screen_nickname_placeholder">프로필 이름</string>
     <string name="register_screen_btn_next">다음</string>
 
     <!-- Error Message Strings -->

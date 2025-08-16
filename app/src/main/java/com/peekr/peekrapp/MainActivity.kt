@@ -5,10 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.peekr.peekrapp.navigation.MainNavigation
-import com.peekr.peekrapp.ui.theme.PeekrTheme
+import com.peekr.designsystem.theme.PeekrAppTheme
+import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.presentation.register.registerNavigation
+import com.peekr.presentation.shared.SubGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,11 +24,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainNavController = rememberNavController()
 
-            PeekrTheme {
-                MainNavigation(
+            PeekrAppTheme {
+                Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    mainNavController = mainNavController,
-                )
+                    containerColor = PeekrTheme.colorScheme.backgroundNormal,
+                ) { innerPadding ->
+                    // 메인
+//                    MainNavigation(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding),
+//                        mainNavController = mainNavController,
+//                    )
+
+                    // 테스트용
+                    NavHost(
+                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        navController = mainNavController,
+                        startDestination = SubGraph.Register,
+                    ) {
+                        registerNavigation(navController = mainNavController)
+                    }
+                }
             }
         }
     }
