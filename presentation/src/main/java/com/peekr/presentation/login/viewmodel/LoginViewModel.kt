@@ -3,8 +3,8 @@ package com.peekr.presentation.login.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.Login
-import com.peekr.domain.account.usecase.GetLoginIfUserExistsUseCase
-import com.peekr.domain.account.usecase.LoginIntegrationUseCase
+import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
+import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.presentation.login.model.UiSocialLoginProvider

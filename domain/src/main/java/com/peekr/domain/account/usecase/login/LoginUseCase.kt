@@ -1,4 +1,4 @@
-package com.peekr.domain.account.usecase
+package com.peekr.domain.account.usecase.login
 
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login

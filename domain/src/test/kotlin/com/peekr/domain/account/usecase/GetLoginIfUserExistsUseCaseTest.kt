@@ -5,6 +5,8 @@ import com.peekr.domain.account.model.LoginWithExistsUser
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.repository.AccountRepository
+import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
+import com.peekr.domain.account.usecase.login.SocialLoginUseCase
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import io.mockk.every
