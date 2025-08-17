@@ -17,12 +17,12 @@ class ValidateDisplayIdUseCase {
         // 1. 기능 정의서에 있는 규칙 검사
         when {
             displayId.length !in 1..30 -> {
-                emit(ValidationResult.Error(ValidationError.ExceedsLength))
+                emit(ValidationResult.Error(ValidationError.EXCEEDS_MAX_LENGTH))
                 return@flow
             }
 
             displayId.matches(RegexPatterns.displayId) == false -> {
-                emit(ValidationResult.Error(ValidationError.RequireEnglishNumberUnderLine))
+                emit(ValidationResult.Error(ValidationError.ONLY_ALPHANUMERIC_UNDERSCORE))
                 return@flow
             }
         }

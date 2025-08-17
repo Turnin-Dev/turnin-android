@@ -17,12 +17,12 @@ class ValidateNameUseCase {
 
         when {
             name.length !in 1..30 -> {
-                emit(ValidationResult.Error(ValidationError.ExceedsLength))
+                emit(ValidationResult.Error(ValidationError.EXCEEDS_MAX_LENGTH))
                 return@flow
             }
 
             name.matches(RegexPatterns.name) == false -> {
-                emit(ValidationResult.Error(ValidationError.RequireEnglishNumberHangul))
+                emit(ValidationResult.Error(ValidationError.ONLY_ALPHANUMERIC_HANGUL))
                 return@flow
             }
         }
