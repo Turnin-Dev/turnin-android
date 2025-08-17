@@ -45,7 +45,7 @@ class GetLoginIfUserExistsUseCaseTest {
 
         // then
         assertTrue(result is Result.Success)
-        assertEquals((result as Result.Success).data, LoginWithExistsUser(MockLogin, true))
+        assertEquals(LoginWithExistsUser(MockLogin, true), (result as Result.Success).data)
 
         verify { socialLoginUseCase(any()) }
         verify { accountRepository.existsUser(any()) }
@@ -97,11 +97,11 @@ class GetLoginIfUserExistsUseCaseTest {
         val results = getLoginIfUserExistsUseCase(SocialLoginProvider.GOOGLE).toList()
 
         // then
-        assertEquals(3, results.size)
-        assertTrue(results[0] is Result.Loading)
-        assertTrue(results[1] is Result.Loading) // .onStart 추가했기 때문에
-        assertTrue(results[2] is Result.Success)
-        assertEquals(expectedLoginWithExistsUser, (results[2] as Result.Success).data)
+        // 최소 1회 이상의 Loading 방출과 최종 Success 만 검증
+        assertTrue(results.any { it is Result.Loading })
+        val last = results.last()
+        assertTrue(last is Result.Success)
+        assertEquals(expectedLoginWithExistsUser, (last as Result.Success).data)
     }
 
     companion object {

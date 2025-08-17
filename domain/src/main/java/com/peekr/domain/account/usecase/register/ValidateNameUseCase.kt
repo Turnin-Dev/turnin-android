@@ -12,16 +12,18 @@ import kotlinx.coroutines.flow.flow
  * 사용자 이름은 중복이 허용되므로 중복 검사가 필요없다.
  */
 class ValidateNameUseCase {
-    operator fun invoke(displayId: String): Flow<ValidationResult> = flow {
+    operator fun invoke(name: String): Flow<ValidationResult> = flow {
         emit(ValidationResult.Loading)
 
         when {
-            displayId.length !in 1..30 -> {
+            name.length !in 1..30 -> {
                 emit(ValidationResult.Error(ValidationError.ExceedsLength))
+                return@flow
             }
 
-            displayId.matches(RegexPatterns.username) == false -> {
-                emit(ValidationResult.Error(ValidationError.RequireEnglishNumberHangeul))
+            name.matches(RegexPatterns.name) == false -> {
+                emit(ValidationResult.Error(ValidationError.RequireEnglishNumberHangul))
+                return@flow
             }
         }
 

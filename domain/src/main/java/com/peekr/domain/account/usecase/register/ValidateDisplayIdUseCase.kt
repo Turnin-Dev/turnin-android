@@ -18,10 +18,12 @@ class ValidateDisplayIdUseCase {
         when {
             displayId.length !in 1..30 -> {
                 emit(ValidationResult.Error(ValidationError.ExceedsLength))
+                return@flow
             }
 
             displayId.matches(RegexPatterns.displayId) == false -> {
                 emit(ValidationResult.Error(ValidationError.RequireEnglishNumberUnderLine))
+                return@flow
             }
         }
         // 2. 서버에서 중복검사

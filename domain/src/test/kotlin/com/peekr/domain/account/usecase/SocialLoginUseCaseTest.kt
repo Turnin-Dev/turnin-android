@@ -1,8 +1,8 @@
 package com.peekr.domain.account.usecase
 
 import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.usecase.login.SocialLoginUseCase
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.account.util.AuthManagerFactory
@@ -33,9 +33,9 @@ class SocialLoginUseCaseTest {
     @Test
     fun `invoke returns Success when authManager returns Success`() = runTest {
         // Given
-        val userUID = UserUID("google-uid-123")
-        val expectedLogin = Login(SocialLoginProvider.GOOGLE, userUID)
-        val flow = flowOf(Result.Success(userUID))
+        val providerId = ProviderId("google-uid-123")
+        val expectedLogin = Login(SocialLoginProvider.GOOGLE, providerId)
+        val flow = flowOf(Result.Success(providerId))
         every { authManager.signIn() } returns flow
 
         // When

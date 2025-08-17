@@ -18,7 +18,7 @@ sealed interface LoginGraph {
 
 sealed interface RegisterGraph {
     @Serializable
-    data object DisplayID : RegisterGraph
+    data object DisplayId : RegisterGraph
 
     @Serializable
     data object Name : RegisterGraph

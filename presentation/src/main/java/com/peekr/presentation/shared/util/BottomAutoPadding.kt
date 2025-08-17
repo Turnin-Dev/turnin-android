@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.max
  * 키보드가 활성화 되었을 때는 `키보드 패딩`을 존중하고 키보드가 비활성화 되었을 때는 [defaultPadding]패딩을 존중한다.
  */
 @Composable
-fun getBottomAutoPadding(defaultPadding: Dp = ScreenTokens.BottomButtonPadding): Dp {
+fun bottomAutoPadding(defaultPadding: Dp = ScreenTokens.BottomButtonPadding): Dp {
     val insets = WindowInsets.navigationBars.union(WindowInsets.ime)
     val insetBottom: Dp = insets.asPaddingValues().calculateBottomPadding()
     return max(defaultPadding, insetBottom)
