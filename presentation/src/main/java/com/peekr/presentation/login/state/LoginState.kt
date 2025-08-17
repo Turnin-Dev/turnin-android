@@ -1,13 +1,13 @@
 package com.peekr.presentation.login.state
 
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.UserUID
 import com.peekr.presentation.shared.util.UiText
 
 sealed interface LoginUiEvent {
     data class NavigateToRegister(
         val provider: SocialLoginProvider,
-        val providerId: UserUID,
+        val providerId: ProviderId,
     ) : LoginUiEvent
 
     data object NavigateToMain : LoginUiEvent

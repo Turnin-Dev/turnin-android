@@ -7,7 +7,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.data.shared.util.coroutine.trySendAndClose
-import com.peekr.domain.account.model.UserUID
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 
-private typealias UserUIDResult = Result<UserUID, ErrorType>
+private typealias UserUIDResult = Result<ProviderId, ErrorType>
 
 class KakaoAuthManager(private val context: Context) : AuthManager {
-    override fun signIn(): Flow<Result<UserUID, ErrorType>> = callbackFlow {
+    override fun signIn(): Flow<Result<ProviderId, ErrorType>> = callbackFlow {
         if (AuthApiClient.instance.hasToken()) {
             UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                 if (error != null) {
@@ -134,8 +134,8 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         UserApiClient.instance.me { user, error ->
             if (user?.id != null) {
                 Timber.i("Kakao Login succeeded")
-                val userUID = UserUID(user.id.toString())
-                trySendAndClose(Result.Success(userUID))
+                val providerId = ProviderId(user.id.toString())
+                trySendAndClose(Result.Success(providerId))
             } else {
                 Timber.i("Kakao user not found.")
                 trySendAndClose(Result.Error(ErrorType.Auth.UserNotFound))

@@ -7,8 +7,8 @@ import com.peekr.data.shared.util.network.NetworkErrorType
 import com.peekr.data.shared.util.network.toErrorType
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.shared.util.Result
 import io.mockk.coEvery
@@ -58,7 +58,7 @@ class AccountRepositoryImplTest {
     }
 
     companion object {
-        private val mockLogin = Login(SocialLoginProvider.GOOGLE, UserUID("123"))
+        private val mockLogin = Login(SocialLoginProvider.GOOGLE, ProviderId("123"))
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
         private val mockLoginResponse = LoginResponse(mockAccessToken, mockRefreshToken)

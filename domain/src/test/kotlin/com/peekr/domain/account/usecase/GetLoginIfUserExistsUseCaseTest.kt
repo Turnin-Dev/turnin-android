@@ -2,8 +2,8 @@ package com.peekr.domain.account.usecase
 
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.LoginWithExistsUser
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
 import com.peekr.domain.account.usecase.login.SocialLoginUseCase
@@ -105,6 +105,6 @@ class GetLoginIfUserExistsUseCaseTest {
     }
 
     companion object {
-        private val MockLogin = Login(SocialLoginProvider.GOOGLE, UserUID("123"))
+        private val MockLogin = Login(SocialLoginProvider.GOOGLE, ProviderId("123"))
     }
 }
