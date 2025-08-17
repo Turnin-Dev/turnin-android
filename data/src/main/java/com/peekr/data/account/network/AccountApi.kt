@@ -14,7 +14,7 @@ import retrofit2.http.Path
 
 /** Account(Auth) API */
 interface AccountApi {
-    /** 소셜로그인 */
+    /** 소셜 로그인 */
     @POST("${NetworkApiPath.AUTH}/login")
     suspend fun login(
         @Body loginRequest: LoginRequest,
@@ -24,6 +24,7 @@ interface AccountApi {
     @GET("${NetworkApiPath.AUTH}/refresh")
     suspend fun refresh(): Response<TokenResponse>
 
+    /** 사용자 존재 여부 확인 */
     @GET("${NetworkApiPath.AUTH}/exist/{provider}/{providerId}")
     suspend fun existsUser(
         @Path("provider") provider: SocialLoginProvider,

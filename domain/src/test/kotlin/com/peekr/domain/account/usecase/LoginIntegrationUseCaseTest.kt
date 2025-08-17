@@ -2,8 +2,8 @@ package com.peekr.domain.account.usecase
 
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.UserUID
 import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
 import com.peekr.domain.account.usecase.login.LoginUseCase
 import com.peekr.domain.shared.util.ErrorType
@@ -142,7 +142,7 @@ class LoginIntegrationUseCaseTest {
     }
 
     companion object {
-        internal val MockLogin = Login(SocialLoginProvider.GOOGLE, UserUID("123"))
+        internal val MockLogin = Login(SocialLoginProvider.GOOGLE, ProviderId("123"))
         private val MockJwtToken = JWTToken("aaa.bbb.ccc", "rrr.bbb.ccc")
     }
 }

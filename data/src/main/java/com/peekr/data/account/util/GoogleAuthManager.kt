@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.peekr.data.BuildConfig
-import com.peekr.domain.account.model.UserUID
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
@@ -29,7 +29,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.create(context)
 
-    override fun signIn(): Flow<Result<UserUID, ErrorType>> = flow {
+    override fun signIn(): Flow<Result<ProviderId, ErrorType>> = flow {
         try {
             val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
                 .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
@@ -97,15 +97,15 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
     }
 
     // CredentialResponse를 통해 로그인을 진행하고 결과 값(사용자 uid)을 반환한다.
-    private suspend fun signInWithCredentialResponse(credentialResponse: GetCredentialResponse): Result<UserUID, ErrorType> =
+    private suspend fun signInWithCredentialResponse(credentialResponse: GetCredentialResponse): Result<ProviderId, ErrorType> =
         when (val credential = credentialResponse.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     val firebaseUser = getFirebaseUser(credential)
                     firebaseUser?.let {
                         Timber.i("Firebase user fetched successfully.")
-                        val userUID = UserUID(firebaseUser.uid)
-                        Result.Success(userUID)
+                        val providerId = ProviderId(firebaseUser.uid)
+                        Result.Success(providerId)
                     } ?: Result.Error(ErrorType.Auth.UserNotFound)
                 } else {
                     // 올바르지 않은 형태의 토큰

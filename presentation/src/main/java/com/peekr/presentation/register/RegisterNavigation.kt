@@ -14,7 +14,22 @@ import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.SubGraph
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
-    navigation<SubGraph.Register>(startDestination = RegisterGraph.Name) {
+    navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayID) {
+        composable<RegisterGraph.DisplayID> {
+            val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
+
+            RegisterScreenFrame(
+                modifier = Modifier.fillMaxSize(),
+                title = R.string.register_screen_display_id_title,
+                placeholder = R.string.register_screen_display_id_placeholder,
+                text = text,
+                onTextChanged = onTextChanged,
+                errorMessage = null,
+                onBackPressed = {},
+                onNextWithValue = { navController.navigate(RegisterGraph.Name) },
+            )
+        }
+
         composable<RegisterGraph.Name> {
             val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
 
@@ -22,21 +37,6 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(),
                 title = R.string.register_screen_name_title,
                 placeholder = R.string.register_screen_name_placeholder,
-                text = text,
-                onTextChanged = onTextChanged,
-                errorMessage = null,
-                onBackPressed = {},
-                onNextWithValue = { navController.navigate(RegisterGraph.Nickname) },
-            )
-        }
-
-        composable<RegisterGraph.Nickname> {
-            val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
-
-            RegisterScreenFrame(
-                modifier = Modifier.fillMaxSize(),
-                title = R.string.register_screen_nickname_title,
-                placeholder = R.string.register_screen_nickname_placeholder,
                 text = text,
                 onTextChanged = onTextChanged,
                 errorMessage = null,
