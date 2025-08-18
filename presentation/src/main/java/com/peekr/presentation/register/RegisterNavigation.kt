@@ -4,27 +4,33 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.peekr.presentation.R
 import com.peekr.presentation.register.view.RegisterScreenFrame
+import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.shared.util.sharedViewModel
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
-    navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayID) {
-        composable<RegisterGraph.DisplayID> {
-            val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
+    navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayId) {
+        composable<RegisterGraph.DisplayId> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val registerState = registerViewModel.registerState.collectAsStateWithLifecycle()
 
             RegisterScreenFrame(
                 modifier = Modifier.fillMaxSize(),
                 title = R.string.register_screen_display_id_title,
+                subTitle = R.string.register_screen_display_id_sub_title,
                 placeholder = R.string.register_screen_display_id_placeholder,
-                text = text,
-                onTextChanged = onTextChanged,
-                errorMessage = null,
+                text = registerState.value.displayId,
+                onTextChanged = registerViewModel::onDisplayIdChanged,
+                errorMessage = registerState.value.error?.asString(),
                 onBackPressed = {},
                 onNextWithValue = { navController.navigate(RegisterGraph.Name) },
             )
@@ -36,6 +42,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             RegisterScreenFrame(
                 modifier = Modifier.fillMaxSize(),
                 title = R.string.register_screen_name_title,
+                subTitle = R.string.register_screen_name_sub_title,
                 placeholder = R.string.register_screen_name_placeholder,
                 text = text,
                 onTextChanged = onTextChanged,

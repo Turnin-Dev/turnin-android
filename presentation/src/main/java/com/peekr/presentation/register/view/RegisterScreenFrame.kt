@@ -27,7 +27,7 @@ import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
 import com.peekr.presentation.shared.util.ScreenTokens
-import com.peekr.presentation.shared.util.getBottomAutoPadding
+import com.peekr.presentation.shared.util.bottomAutoPadding
 
 /**
  * 회원가입 화면 공통 프레임
@@ -45,6 +45,7 @@ import com.peekr.presentation.shared.util.getBottomAutoPadding
 fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
     @StringRes title: Int,
+    @StringRes subTitle: Int,
     @StringRes placeholder: Int,
     text: String,
     onTextChanged: (String) -> Unit,
@@ -52,7 +53,7 @@ fun RegisterScreenFrame(
     onBackPressed: () -> Unit,
     onNextWithValue: (String) -> Unit,
 ) {
-    val bottomAutoPadding = getBottomAutoPadding()
+    val bottomAutoPadding = bottomAutoPadding()
 
     // 회원가입 화면
     Column(modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal)) {
@@ -77,12 +78,19 @@ fun RegisterScreenFrame(
                 verticalArrangement = Arrangement.spacedBy(ContentVerticalSpacing),
             ) {
                 // 타이틀
-                Text(
-                    text = stringResource(title),
-                    style = PeekrTheme.typography.title1,
-                    fontWeight = FontWeight.Bold,
-                    color = PeekrTheme.colorScheme.textNormal,
-                )
+                Column {
+                    Text(
+                        text = stringResource(title),
+                        style = PeekrTheme.typography.title1,
+                        fontWeight = FontWeight.Bold,
+                        color = PeekrTheme.colorScheme.textNormal,
+                    )
+                    Text(
+                        text = stringResource(subTitle),
+                        style = PeekrTheme.typography.label2,
+                        color = PeekrTheme.colorScheme.textAssist2,
+                    )
+                }
 
                 // 회원가입 텍스트필드
                 RegisterTextField(
@@ -117,12 +125,13 @@ private val ContentVerticalSpacing = 74.dp
 @Preview(showBackground = true)
 @Composable
 private fun RegisterScreenFramePreview() {
-    var (text, onTextChanged) = remember { mutableStateOf("") }
+    val (text, onTextChanged) = remember { mutableStateOf("") }
 
     PeekrAppTheme {
         RegisterScreenFrame(
             modifier = Modifier.fillMaxSize(),
             title = R.string.register_screen_name_title,
+            subTitle = R.string.register_screen_name_sub_title,
             placeholder = R.string.register_screen_name_placeholder,
             text = text,
             onTextChanged = onTextChanged,
