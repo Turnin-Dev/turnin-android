@@ -1,5 +1,6 @@
 package com.peekr.domain.account.repository
 
+import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
@@ -14,4 +15,7 @@ interface AccountRepository {
 
     /** 사용자 존재 여부 확인 */
     fun existsUser(existsUser: ExistsUser): Flow<Result<Boolean, ErrorType>>
+
+    /** 사용자 표시 ID 존재 여부 확인 */
+    fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>>
 }

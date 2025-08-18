@@ -1,6 +1,9 @@
 package com.peekr.data.account.network
 
+import com.peekr.data.account.model.request.DisplayIdRequest
+import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
+import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.network.NetworkErrorType
@@ -56,7 +59,7 @@ class AccountNetworkDataSourceImplTest {
         server.enqueue(
             MockResponse().apply {
                 setResponseCode(200)
-                setBody(JWT_TOKEN_BODY)
+                setBody(MOCK_JWT_TOKEN_BODY)
             },
         )
 
@@ -140,17 +143,99 @@ class AccountNetworkDataSourceImplTest {
         assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Network.Conflict)
     }
 
+    @Test
+    fun `existsUser() 성공 테스트`() = runTest {
+        // given
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(mockExistsResponseJson)
+            },
+        )
+
+        // when
+        val result = dataSource.existsUser(mockExistsUserRequest)
+
+        // then
+        assertTrue(result is NetworkResult.Success)
+        assertTrue((result as NetworkResult.Success).data.exists)
+    }
+
+    @Test
+    fun `existsUser() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
+        // given
+        val mockApi: AccountApi = mockk()
+        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        coEvery { mockApi.existsUser(any(), any()) } throws JsonDataException("smile")
+
+        // when
+        val result = dataSource.existsUser(mockExistsUserRequest)
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Exception.JsonData)
+    }
+
+    @Test
+    fun `existsDisplayId() 성공 테스트`() = runTest {
+        // given
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(mockExistsResponseJson)
+            },
+        )
+
+        // when
+        val result = dataSource.existsDisplayId(mockDisplayIdRequest)
+
+        // then
+        assertTrue(result is NetworkResult.Success)
+        assertTrue((result as NetworkResult.Success).data.exists)
+    }
+
+    @Test
+    fun `existsDisplayId() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
+        // given
+        val mockApi: AccountApi = mockk()
+        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        coEvery { mockApi.existsDisplayId(any()) } throws JsonDataException("smile")
+
+        // when
+        val result = dataSource.existsDisplayId(mockDisplayIdRequest)
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Exception.JsonData)
+    }
+
     companion object {
         private val mockLoginRequest = LoginRequest(SocialLoginProvider.GOOGLE, "123")
-        private val mockAccessToken = "aaa.bbb.ccc"
-        private val mockRefreshToken = "rrr.bbb.ccc"
-        private val JWT_TOKEN_BODY =
+        private const val MOCK_ACCESS_TOKEN = "aaa.bbb.ccc"
+        private const val MOCK_REFRESH_TOKEN = "rrr.bbb.ccc"
+        private val MOCK_JWT_TOKEN_BODY =
             """
             {
-                "accessToken": "$mockAccessToken",
-                "refreshToken": "$mockRefreshToken"
+                "accessToken": "$MOCK_ACCESS_TOKEN",
+                "refreshToken": "$MOCK_REFRESH_TOKEN"
             }
             """.trimIndent()
-        private val mockLoginResponse = LoginResponse(mockAccessToken, mockRefreshToken)
+        private val mockLoginResponse = LoginResponse(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN)
+        private val mockExistsUserRequest = ExistsUserRequest(SocialLoginProvider.GOOGLE, "123")
+        private val mockExistsResponse = ExistsResponse(true)
+        private val mockExistsResponseJson =
+            """
+            {
+                "exists": true
+            }
+            """.trimIndent()
+        private val mockNotExistsResponse = ExistsResponse(false)
+        private val mockNotExistsResponseJson =
+            """
+            {
+                "exists": false
+            }
+            """.trimIndent()
+        private val mockDisplayIdRequest = DisplayIdRequest("123")
     }
 }

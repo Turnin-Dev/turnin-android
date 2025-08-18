@@ -6,6 +6,7 @@ import com.peekr.data.shared.di.IO
 import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.coroutine.safeResultFlow
 import com.peekr.data.shared.util.network.toErrorType
+import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
@@ -38,6 +39,20 @@ class AccountRepositoryImpl @Inject constructor(
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
             when (val result = accountNetworkDataSource.existsUser(existsUser.toDataModel())) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.exists))
+                }
+
+                is NetworkResult.Error -> {
+                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                }
+            }
+        }
+
+    override fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>> =
+        safeResultFlow(ioDispatcher) {
+            emit(Result.Loading)
+            when (val result = accountNetworkDataSource.existsDisplayId(displayId.toDataModel())) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.exists))
                 }

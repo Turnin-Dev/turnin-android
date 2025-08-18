@@ -1,8 +1,9 @@
 package com.peekr.data.account.network
 
+import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
-import com.peekr.data.account.model.response.ExistsUserResponse
+import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.shared.util.NetworkResult
 
@@ -21,8 +22,15 @@ interface AccountNetworkDataSource {
      * 사용자 존재 여부 확인
      *
      * @param existsUserRequest 사용자 존재 여부 확인 요청 바디
-     * @return 존재하는 사용자 - `NetworkResult.Success(true)`
-     * @return 존재하지 않는 사용자 - `NetworkResult.Success(false)`
+     * @return [ExistsResponse] - 존재하면 `ExistsResponse(true)`, 존재하지 않으면 `ExistsResponse(false)`
      */
-    suspend fun existsUser(existsUserRequest: ExistsUserRequest): NetworkResult<ExistsUserResponse>
+    suspend fun existsUser(existsUserRequest: ExistsUserRequest): NetworkResult<ExistsResponse>
+
+    /**
+     * 사용자 표시 ID 존재 여부 확인
+     *
+     * @param DisplayIdRequest 요청용 사용자 표시 ID
+     * @return [ExistsResponse] - 존재하면 `ExistsResponse(true)`, 존재하지 않으면 `ExistsResponse(false)`
+     */
+    suspend fun existsDisplayId(displayId: DisplayIdRequest): NetworkResult<ExistsResponse>
 }

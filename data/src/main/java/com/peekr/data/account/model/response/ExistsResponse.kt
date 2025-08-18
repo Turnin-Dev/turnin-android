@@ -3,11 +3,11 @@ package com.peekr.data.account.model.response
 import com.squareup.moshi.JsonClass
 
 /**
- * 사용자 존재 여부 확인 응답 바디
+ * 존재 여부 확인 응답 바디
  *
- * @property exists 사용자 존재 여부
+ * @property exists 존재 여부
  */
 @JsonClass(generateAdapter = true)
-data class ExistsUserResponse(
+data class ExistsResponse(
     val exists: Boolean,
 )
