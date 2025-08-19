@@ -14,6 +14,7 @@ import com.peekr.presentation.register.view.RegisterScreenFrame
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.shared.util.event.LaunchedUiEffectHandler
 import com.peekr.presentation.shared.util.sharedViewModel
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
@@ -23,6 +24,18 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val registerState = registerViewModel.registerState.collectAsStateWithLifecycle()
 
+            LaunchedUiEffectHandler(
+                effectFlow = registerViewModel.registerEventState,
+                onConsumeEffect = {
+                    registerViewModel.onConsumeEventState()
+                },
+                onEffect = { effect ->
+                    if (effect.navigateToNextScreen) {
+                        navController.navigate(RegisterGraph.Name)
+                    }
+                },
+            )
+
             RegisterScreenFrame(
                 modifier = Modifier.fillMaxSize(),
                 title = R.string.register_screen_display_id_title,
@@ -31,8 +44,12 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 text = registerState.value.displayId,
                 onTextChanged = registerViewModel::onDisplayIdChanged,
                 errorMessage = registerState.value.error?.asString(),
+                enabledNext = registerState.value.canNext,
                 onBackPressed = {},
-                onNextWithValue = { navController.navigate(RegisterGraph.Name) },
+                onNextWithValue = { displayId ->
+                    registerViewModel.checkDisplayIdExists(displayId)
+                    registerViewModel.initCanNextState()
+                },
             )
         }
 
@@ -47,6 +64,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 text = text,
                 onTextChanged = onTextChanged,
                 errorMessage = null,
+                enabledNext = false,
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = { },
             )

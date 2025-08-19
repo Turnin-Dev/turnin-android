@@ -50,6 +50,7 @@ fun RegisterScreenFrame(
     text: String,
     onTextChanged: (String) -> Unit,
     errorMessage: String?,
+    enabledNext: Boolean,
     onBackPressed: () -> Unit,
     onNextWithValue: (String) -> Unit,
 ) {
@@ -103,7 +104,6 @@ fun RegisterScreenFrame(
             }
 
             // 하단 버튼
-            // TODO: 입력 값 검증 전까지 enabled = false 설정 필요
             PeekrSolidButton(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,6 +111,7 @@ fun RegisterScreenFrame(
                 text = stringResource(R.string.register_screen_btn_next),
                 style = PeekrButtonStyle.Large,
                 onClick = { onNextWithValue(text) },
+                enabled = enabledNext,
             )
         }
     }
@@ -136,6 +137,7 @@ private fun RegisterScreenFramePreview() {
             text = text,
             onTextChanged = onTextChanged,
             errorMessage = null,
+            enabledNext = true,
             onBackPressed = {},
             onNextWithValue = { },
         )
