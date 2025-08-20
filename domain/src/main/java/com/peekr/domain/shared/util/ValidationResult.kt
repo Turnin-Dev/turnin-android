@@ -1,7 +1,5 @@
 package com.peekr.domain.shared.util
 
-import com.peekr.domain.account.validation.RegisterValidationError
-
 interface ValidationError
 
 /**
@@ -19,7 +17,7 @@ sealed interface ValidationResult<out E : ValidationError> {
     /**
      * 유효성 검사 실패 시
      *
-     * @param error 유효성 검사 에러 [RegisterValidationError]
+     * @param error 유효성 검사 에러
      */
     data class Error<out E : ValidationError>(val error: E) : ValidationResult<E>
 }

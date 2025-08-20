@@ -16,4 +16,4 @@ data class ExistsUserRequest(
     val providerId: String,
 )
 
-fun ExistsUser.toDataModel(): ExistsUserRequest = ExistsUserRequest(provider, providerId)
+fun ExistsUser.toDataModel(): ExistsUserRequest = ExistsUserRequest(provider, providerId.uid)

@@ -1,11 +1,9 @@
-package com.peekr.domain.account.validation
-
-import com.peekr.domain.shared.util.ValidationError
+package com.peekr.domain.shared.util
 
 /** 유효성 검사 에러 */
-enum class RegisterValidationError : ValidationError {
+enum class CommonValidationError : ValidationError {
     /** 공백 비허용 */
-    EMPTY_OR_BLACK,
+    EMPTY_OR_BLANK,
 
     /** 허용된 길이 초과 */
     EXCEEDS_MAX_LENGTH,

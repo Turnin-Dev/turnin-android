@@ -32,94 +32,129 @@ class AccountRepositoryImplTest {
     private val repository: AccountRepository = AccountRepositoryImpl(dataSource, dispatcher)
 
     @Test
-    fun `login() 성공 테스트`() = runTest {
-        // given
-        coEvery { dataSource.login(any()) } returns NetworkResult.Success(mockLoginResponse)
+    fun `login() 성공 테스트`() =
+        runTest {
+            // given
+            coEvery { dataSource.login(any()) } returns NetworkResult.Success(mockLoginResponse)
 
-        // when
-        val result = repository.login(mockLogin).last()
+            // when
+            val result = repository.login(mockLogin).last()
 
-        // then
-        assertTrue(result is Result.Success)
-        assertEquals((result as Result.Success).data, mockJWTToken)
-    }
-
-    @Test
-    fun `login() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
-        // given
-        coEvery {
-            dataSource.login(any())
-        } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
-
-        // when
-        val result = repository.login(mockLogin).last()
-
-        // then
-        assertTrue(result is Result.Error)
-        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
-        assertEquals(result.message, mockErrorMessage)
-    }
+            // then
+            assertTrue(result is Result.Success)
+            assertEquals((result as Result.Success).data, mockJWTToken)
+        }
 
     @Test
-    fun `existsUser() 성공 테스트`() = runTest {
-        // given
-        coEvery { dataSource.existsUser(any()) } returns NetworkResult.Success(mockExistsResponse)
+    fun `login() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
+        runTest {
+            // given
+            coEvery {
+                dataSource.login(any())
+            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
 
-        // when
-        val result = repository.existsUser(mockExistsUser).last()
+            // when
+            val result = repository.login(mockLogin).last()
 
-        // then
-        assertTrue(result is Result.Success)
-        assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
-    }
-
-    @Test
-    fun `existsUser() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
-        // given
-        coEvery {
-            dataSource.existsUser(any())
-        } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
-
-        // when
-        val result = repository.existsUser(mockExistsUser).last()
-
-        // then
-        assertTrue(result is Result.Error)
-        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
-        assertEquals(result.message, mockErrorMessage)
-    }
+            // then
+            assertTrue(result is Result.Error)
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals(result.message, mockErrorMessage)
+        }
 
     @Test
-    fun `existsDisplayId() 성공 테스트`() = runTest {
-        // given
-        coEvery { dataSource.existsDisplayId(any()) } returns NetworkResult.Success(mockExistsResponse)
+    fun `existsUser() 성공 테스트`() =
+        runTest {
+            // given
+            coEvery { dataSource.existsUser(any()) } returns NetworkResult.Success(mockExistsResponse)
 
-        // when
-        val result = repository.existsDisplayId(mockDisplayId).last()
+            // when
+            val result = repository.existsUser(mockExistsUser).last()
 
-        // then
-        assertTrue(result is Result.Success)
-        assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
-    }
+            // then
+            assertTrue(result is Result.Success)
+            assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
+        }
 
     @Test
-    fun `existsDisplayId() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
-        // given
-        coEvery {
-            dataSource.existsDisplayId(any())
-        } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+    fun `existsUser() 성공 테스트 - 존재하지 않음(false)`() =
+        runTest {
+            // given
+            coEvery { dataSource.existsUser(any()) } returns NetworkResult.Success(ExistsResponse(false))
 
-        // when
-        val result = repository.existsDisplayId(mockDisplayId).last()
+            // when
+            val result = repository.existsUser(mockExistsUser).last()
 
-        // then
-        assertTrue(result is Result.Error)
-        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
-        assertEquals(result.message, mockErrorMessage)
-    }
+            // then
+            assertTrue(result is Result.Success)
+            assertEquals(false, (result as Result.Success).data)
+        }
+
+    @Test
+    fun `existsUser() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
+        runTest {
+            // given
+            coEvery {
+                dataSource.existsUser(any())
+            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+
+            // when
+            val result = repository.existsUser(mockExistsUser).last()
+
+            // then
+            assertTrue(result is Result.Error)
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals(result.message, mockErrorMessage)
+        }
+
+    @Test
+    fun `existsDisplayId() 성공 테스트`() =
+        runTest {
+            // given
+            coEvery { dataSource.existsDisplayId(any()) } returns NetworkResult.Success(mockExistsResponse)
+
+            // when
+            val result = repository.existsDisplayId(mockDisplayId).last()
+
+            // then
+            assertTrue(result is Result.Success)
+            assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
+        }
+
+    @Test
+    fun `existsDisplayId() 성공 테스트 - 존재하지 않음(false)`() =
+        runTest {
+            // given
+            coEvery { dataSource.existsDisplayId(any()) } returns NetworkResult.Success(ExistsResponse(false))
+
+            // when
+            val result = repository.existsDisplayId(mockDisplayId).last()
+
+            // then
+            assertTrue(result is Result.Success)
+            assertEquals(false, (result as Result.Success).data)
+        }
+
+    @Test
+    fun `existsDisplayId() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
+        runTest {
+            // given
+            coEvery {
+                dataSource.existsDisplayId(any())
+            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+
+            // when
+            val result = repository.existsDisplayId(mockDisplayId).last()
+
+            // then
+            assertTrue(result is Result.Error)
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals(result.message, mockErrorMessage)
+        }
 
     companion object {
-        private val mockLogin = Login(SocialLoginProvider.GOOGLE, ProviderId("123"))
+        private val mockProviderId = ProviderId("123")
+        private val mockLogin = Login(SocialLoginProvider.GOOGLE, mockProviderId)
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
         private val mockLoginResponse = LoginResponse(mockAccessToken, mockRefreshToken)
@@ -127,7 +162,7 @@ class AccountRepositoryImplTest {
         private val mockErrorMessage = "error world!"
         private val mockExistsResponse = ExistsResponse(true)
         private val mockNotExistsResponse = ExistsResponse(false)
-        private val mockExistsUser = ExistsUser(SocialLoginProvider.GOOGLE, "123")
+        private val mockExistsUser = ExistsUser(SocialLoginProvider.GOOGLE, mockProviderId)
         private val mockDisplayId = DisplayId("123")
     }
 }

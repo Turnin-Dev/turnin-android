@@ -7,7 +7,7 @@ object NetworkApiPath {
     object Auth {
         const val ROUTE = "$BASE/auth"
 
-        object EXISTS {
+        object Exists {
             const val PROVIDER = "$ROUTE/exists/provider"
             const val DISPLAY_ID = "$ROUTE/exists/displayId"
         }

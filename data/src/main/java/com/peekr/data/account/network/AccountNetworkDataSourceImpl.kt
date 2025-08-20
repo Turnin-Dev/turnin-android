@@ -13,12 +13,11 @@ import javax.inject.Inject
 class AccountNetworkDataSourceImpl @Inject constructor(
     private val accountApi: AccountApi,
 ) : AccountNetworkDataSource {
-    override suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse> =
-        networkCall { accountApi.login(loginRequest) }
+    override suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse> = networkCall { accountApi.login(loginRequest) }
 
     override suspend fun existsUser(existsUserRequest: ExistsUserRequest): NetworkResult<ExistsResponse> =
         networkCall { accountApi.existsUser(existsUserRequest.provider, existsUserRequest.providerId) }
 
-    override suspend fun existsDisplayId(displayId: DisplayIdRequest): NetworkResult<ExistsResponse> =
-        networkCall { accountApi.existsDisplayId(displayId.id) }
+    override suspend fun existsDisplayId(displayIdRequest: DisplayIdRequest): NetworkResult<ExistsResponse> =
+        networkCall { accountApi.existsDisplayId(displayIdRequest.id) }
 }

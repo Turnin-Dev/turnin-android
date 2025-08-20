@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.ExistsResult
 import com.peekr.domain.account.usecase.register.CheckDisplayIdExistsUseCase
 import com.peekr.domain.account.usecase.register.ValidateDisplayIdUseCase
+import com.peekr.domain.shared.util.CommonValidationError
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.domain.shared.util.ValidationResult
@@ -14,10 +15,12 @@ import com.peekr.presentation.shared.util.error.asUiText
 import com.peekr.presentation.shared.util.error.errorTypeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -52,8 +55,9 @@ class RegisterViewModel @Inject constructor(
      * 넘어갈 수 있게 이벤트 상태를 보낸다.
      */
     fun checkDisplayIdExists(displayId: String) {
-        if (displayId.isNotEmpty()) {
-            checkDisplayIdExistsUseCase(displayId)
+        val normalized = displayId.trim()
+        if (normalized.isNotEmpty()) {
+            checkDisplayIdExistsUseCase(normalized)
                 .onEach { result ->
                     when (result) {
                         Result.Loading -> {
@@ -64,17 +68,20 @@ class RegisterViewModel @Inject constructor(
 
                         is Result.Error<ErrorType> -> {
                             _registerState.update {
-                                it.copy(error = result.errorTypeFirst())
+                                it.copy(error = result.errorTypeFirst(), loading = false)
                             }
                         }
 
                         is Result.Success<ExistsResult> -> {
                             val exists = result.data.exists
                             if (exists) { // 이미 존재하면 중복이므로 사용 X
-                                _registerState.update { it.copy(error = RegisterError.CantUseDisplayId.asUiText()) }
+                                _registerState.update {
+                                    it.copy(error = RegisterError.DisplayIdNotAvailable.asUiText())
+                                }
                             } else {
                                 _registerEventState.update { it.copy(navigateToNextScreen = true) }
                             }
+                            _registerState.update { it.copy(loading = false) }
                         }
                     }
                 }.launchIn(viewModelScope)
@@ -84,36 +91,21 @@ class RegisterViewModel @Inject constructor(
     }
 
     /** [registerState] - displayId 상태 값이 변할 때 마다 유효성 검사를 수행할 수 있게 한다. */
-    @OptIn(FlowPreview::class)
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun validateDisplayIdState() {
         registerState
             .map { it.displayId }
             .distinctUntilChanged()
-            .onEach { displayId ->
-                if (displayId.isNotEmpty()) {
-                    validateDisplayId(displayId)
-                }
-            }.launchIn(viewModelScope)
-    }
-
-    private fun validateDisplayId(displayId: String) {
-        validateDisplayIdUseCase(displayId)
-            .onEach { result ->
+            .flatMapLatest { displayId ->
+                val normalized = displayId.trim()
+                if (normalized.isEmpty()) return@flatMapLatest validateDisplayIdUseCase("")
+                validateDisplayIdUseCase(normalized)
+            }.onEach { result ->
                 when (result) {
-                    ValidationResult.Loading -> {
-                        _registerState.update { it.copy(canNext = false) }
-                    }
-
-                    is ValidationResult.Error -> {
-                        _registerState.update {
-                            it.copy(error = result.error.asUiText(), canNext = false)
-                        }
-                    }
-
-                    ValidationResult.Success -> {
-                        _registerState.update {
-                            it.copy(error = null, canNext = true)
-                        }
+                    ValidationResult.Loading -> _registerState.update { it.copy(canNext = false) }
+                    ValidationResult.Success -> _registerState.update { it.copy(error = null, canNext = true) }
+                    is ValidationResult.Error<CommonValidationError> -> _registerState.update {
+                        it.copy(error = result.error.asUiText(), canNext = false)
                     }
                 }
             }.launchIn(viewModelScope)

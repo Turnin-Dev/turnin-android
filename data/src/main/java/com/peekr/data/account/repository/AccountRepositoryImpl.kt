@@ -1,6 +1,7 @@
 package com.peekr.data.account.repository
 
 import com.peekr.data.account.model.request.toDataModel
+import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.network.AccountNetworkDataSource
 import com.peekr.data.shared.di.IO
 import com.peekr.data.shared.util.NetworkResult
@@ -38,28 +39,18 @@ class AccountRepositoryImpl @Inject constructor(
     override fun existsUser(existsUser: ExistsUser): Flow<Result<Boolean, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            when (val result = accountNetworkDataSource.existsUser(existsUser.toDataModel())) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.exists))
-                }
-
-                is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
-                }
-            }
+            emit(mapExistsResult(accountNetworkDataSource.existsUser(existsUser.toDataModel())))
         }
 
     override fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            when (val result = accountNetworkDataSource.existsDisplayId(displayId.toDataModel())) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.exists))
-                }
-
-                is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
-                }
-            }
+            emit(mapExistsResult(accountNetworkDataSource.existsDisplayId(displayId.toDataModel())))
         }
 }
+
+private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =
+    when (result) {
+        is NetworkResult.Success -> Result.Success(result.data.exists)
+        is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
+    }

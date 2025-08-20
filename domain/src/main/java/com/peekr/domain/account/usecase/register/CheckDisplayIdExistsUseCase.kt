@@ -7,6 +7,7 @@ import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 /**
@@ -16,11 +17,14 @@ class CheckDisplayIdExistsUseCase @Inject constructor(
     private val accountRepository: AccountRepository,
 ) {
     operator fun invoke(displayId: String): Flow<Result<ExistsResult, ErrorType>> =
-        accountRepository.existsDisplayId(DisplayId(displayId)).map { result ->
-            when (result) {
-                Result.Loading -> Result.Loading
-                is Result.Error -> result
-                is Result.Success -> Result.Success(ExistsResult(result.data))
+        accountRepository
+            .existsDisplayId(DisplayId(displayId))
+            .distinctUntilChanged()
+            .map { result ->
+                when (result) {
+                    Result.Loading -> Result.Loading
+                    is Result.Error -> result
+                    is Result.Success -> Result.Success(ExistsResult(result.data))
+                }
             }
-        }
 }

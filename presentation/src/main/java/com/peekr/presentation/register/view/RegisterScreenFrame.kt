@@ -54,7 +54,7 @@ fun RegisterScreenFrame(
     onBackPressed: () -> Unit,
     onNextWithValue: (String) -> Unit,
 ) {
-    val bottomAutoPadding = bottomAutoPadding()
+    val bottomPadding = bottomAutoPadding()
 
     // 회원가입 화면
     Column(modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal)) {
@@ -107,7 +107,7 @@ fun RegisterScreenFrame(
             PeekrSolidButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = bottomAutoPadding),
+                    .padding(bottom = bottomPadding),
                 text = stringResource(R.string.register_screen_btn_next),
                 style = PeekrButtonStyle.Large,
                 onClick = { onNextWithValue(text) },

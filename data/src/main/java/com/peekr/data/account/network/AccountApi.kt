@@ -25,14 +25,14 @@ interface AccountApi {
     suspend fun refresh(): Response<TokenResponse>
 
     /** 사용자 존재 여부 확인 */
-    @GET("${NetworkApiPath.Auth.EXISTS.PROVIDER}/{provider}/{providerId}")
+    @GET("${NetworkApiPath.Auth.Exists.PROVIDER}/{provider}/{providerId}")
     suspend fun existsUser(
         @Path("provider") provider: SocialLoginProvider,
         @Path("providerId") providerId: String,
     ): Response<ExistsResponse>
 
     /** 사용자 표시 ID 존재 여부 확인 */
-    @GET("${NetworkApiPath.Auth.EXISTS.DISPLAY_ID}/{displayId}")
+    @GET("${NetworkApiPath.Auth.Exists.DISPLAY_ID}/{displayId}")
     suspend fun existsDisplayId(
         @Path("displayId") displayId: String,
     ): Response<ExistsResponse>
