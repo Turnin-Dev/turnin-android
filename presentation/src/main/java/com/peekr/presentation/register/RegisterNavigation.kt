@@ -1,8 +1,9 @@
 package com.peekr.presentation.register
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -22,7 +23,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
         composable<RegisterGraph.DisplayId> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
-            val registerState = registerViewModel.registerState.collectAsStateWithLifecycle()
+            val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
 
             LaunchedUiEffectHandler(
                 effectFlow = registerViewModel.registerEventState,
@@ -41,26 +42,44 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 title = R.string.register_screen_display_id_title,
                 subTitle = R.string.register_screen_display_id_sub_title,
                 placeholder = R.string.register_screen_display_id_placeholder,
-                text = registerState.value.displayId,
+                text = displayIdState.displayId,
                 onTextChanged = registerViewModel::onDisplayIdChanged,
-                errorMessage = registerState.value.error?.asString(),
-                enabledNext = registerState.value.canNext,
-                onBackPressed = {},
+                errorMessage = displayIdState.displayIdError?.asString(),
+                enabledNext = displayIdState.canNext,
                 onNextWithValue = { displayId ->
                     registerViewModel.checkDisplayIdExists(displayId)
-                    registerViewModel.initCanNextState()
                 },
             )
         }
 
-        composable<RegisterGraph.Name> {
-            val (text, onTextChanged) = rememberSaveable { mutableStateOf("") }
+        composable<RegisterGraph.Name> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val nameState = registerViewModel.nameState.collectAsStateWithLifecycle()
 
             RegisterScreenFrame(
                 modifier = Modifier.fillMaxSize(),
                 title = R.string.register_screen_name_title,
                 subTitle = R.string.register_screen_name_sub_title,
                 placeholder = R.string.register_screen_name_placeholder,
+                text = nameState.value.name,
+                onTextChanged = registerViewModel::onNameChanged,
+                errorMessage = nameState.value.nameError?.asString(),
+                enabledNext = nameState.value.canNext,
+                onBackPressed = { navController.popBackStack() },
+                onNextWithValue = { _ ->
+                    navController.navigate(RegisterGraph.Profile)
+                },
+            )
+        }
+
+        composable<RegisterGraph.Profile> {
+            val (text, onTextChanged) = remember { mutableStateOf("") }
+
+            RegisterScreenFrame(
+                modifier = Modifier.fillMaxSize(),
+                title = R.string.register_screen_profile_title,
+                placeholder = R.string.register_screen_profile_placeholder,
                 text = text,
                 onTextChanged = onTextChanged,
                 errorMessage = null,
@@ -68,10 +87,6 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = { },
             )
-        }
-
-        composable<RegisterGraph.Profile> {
-            // TODO: 회원가입 프로필 입력 화면
         }
     }
 }

@@ -45,13 +45,13 @@ import com.peekr.presentation.shared.util.bottomAutoPadding
 fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
     @StringRes title: Int,
-    @StringRes subTitle: Int,
+    @StringRes subTitle: Int? = null,
     @StringRes placeholder: Int,
     text: String,
     onTextChanged: (String) -> Unit,
     errorMessage: String?,
     enabledNext: Boolean,
-    onBackPressed: () -> Unit,
+    onBackPressed: (() -> Unit)? = null,
     onNextWithValue: (String) -> Unit,
 ) {
     val bottomPadding = bottomAutoPadding()
@@ -61,7 +61,7 @@ fun RegisterScreenFrame(
         // 탑바
         PeekrTopBar(
             modifier = Modifier.fillMaxWidth(),
-            onBackPressed = onBackPressed,
+            onBackPressed = { onBackPressed?.invoke() },
         )
 
         Spacer(Modifier.height(TopToContentSpacer))
@@ -86,11 +86,13 @@ fun RegisterScreenFrame(
                         fontWeight = FontWeight.Bold,
                         color = PeekrTheme.colorScheme.textNormal,
                     )
-                    Text(
-                        text = stringResource(subTitle),
-                        style = PeekrTheme.typography.label2,
-                        color = PeekrTheme.colorScheme.textAssist2,
-                    )
+                    subTitle?.let {
+                        Text(
+                            text = stringResource(subTitle),
+                            style = PeekrTheme.typography.label2,
+                            color = PeekrTheme.colorScheme.textAssist2,
+                        )
+                    }
                 }
 
                 // 회원가입 텍스트필드
