@@ -86,7 +86,7 @@ class RegisterViewModel @Inject constructor(
                     }
                 }.launchIn(viewModelScope)
         } else {
-            _registerState.update { it.copy(error = RegisterError.CantUseEmptyOrBlack.asUiText()) }
+            _registerState.update { it.copy(error = RegisterError.CantUseEmptyOrBlank.asUiText()) }
         }
     }
 

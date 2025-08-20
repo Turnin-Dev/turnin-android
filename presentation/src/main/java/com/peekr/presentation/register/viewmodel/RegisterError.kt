@@ -10,7 +10,7 @@ enum class RegisterError {
     DisplayIdNotAvailable,
 
     /** 빈칸은 허용하지 않는다는 에러 */
-    CantUseEmptyOrBlack,
+    CantUseEmptyOrBlank,
 }
 
 fun RegisterError.asUiText(): UiText =
@@ -19,7 +19,7 @@ fun RegisterError.asUiText(): UiText =
             StringResource(R.string.register_screen_error_cant_use_display_id)
         }
 
-        RegisterError.CantUseEmptyOrBlack -> {
+        RegisterError.CantUseEmptyOrBlank -> {
             StringResource(R.string.register_screen_error_cant_use_empty_or_blank)
         }
     }
