@@ -127,7 +127,6 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
             trySendAndClose(Result.Error(ErrorType.Auth.Cancellation))
         } else {
             close()
-            trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignInError, error?.message))
         }
     }
 

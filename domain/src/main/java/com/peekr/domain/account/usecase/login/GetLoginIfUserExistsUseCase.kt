@@ -27,7 +27,7 @@ class GetLoginIfUserExistsUseCase @Inject constructor(
         socialLoginUseCase(provider)
             .flatMapResult { result: Login ->
                 accountRepository
-                    .existsUser(ExistsUser(result.provider, result.providerId.uid))
+                    .existsUser(ExistsUser(result.provider, result.providerId))
                     .map { result2: Result<Boolean, ErrorType> ->
                         when (result2) {
                             Result.Loading -> Result.Loading
