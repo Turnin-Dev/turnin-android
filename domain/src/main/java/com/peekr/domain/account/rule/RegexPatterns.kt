@@ -1,5 +1,6 @@
 package com.peekr.domain.account.rule
 
+// TODO: 각 모델 클래스로 이전하기
 object RegexPatterns {
     /** 사용자 표시 ID 규칙: 영어/숫자/밑줄만 허용 */
     val displayId = Regex("^[a-zA-Z0-9_]+$")

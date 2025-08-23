@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.ExistsResult
 import com.peekr.domain.account.usecase.register.CheckDisplayIdExistsUseCase
 import com.peekr.domain.account.usecase.register.ValidateDisplayIdUseCase
+import com.peekr.domain.account.usecase.register.ValidateIntroduceUseCase
 import com.peekr.domain.account.usecase.register.ValidateNameUseCase
 import com.peekr.domain.shared.util.CommonValidationError
 import com.peekr.domain.shared.util.ErrorType
@@ -13,6 +14,7 @@ import com.peekr.domain.shared.util.ValidationResult
 import com.peekr.presentation.register.state.RegisterDisplayIdState
 import com.peekr.presentation.register.state.RegisterEventState
 import com.peekr.presentation.register.state.RegisterNameState
+import com.peekr.presentation.register.state.RegisterProfileState
 import com.peekr.presentation.shared.util.error.asUiText
 import com.peekr.presentation.shared.util.error.errorTypeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +35,7 @@ import kotlinx.coroutines.flow.update
 class RegisterViewModel @Inject constructor(
     private val validateDisplayIdUseCase: ValidateDisplayIdUseCase,
     private val validateNameUseCase: ValidateNameUseCase,
+    private val validateIntroduceUseCase: ValidateIntroduceUseCase,
     private val checkDisplayIdExistsUseCase: CheckDisplayIdExistsUseCase,
 ) : ViewModel() {
     private val _displayIdState = MutableStateFlow(RegisterDisplayIdState())
@@ -41,12 +44,16 @@ class RegisterViewModel @Inject constructor(
     private val _nameState = MutableStateFlow(RegisterNameState())
     val nameState = _nameState.asStateFlow()
 
+    private val _profileState = MutableStateFlow(RegisterProfileState())
+    val profileState = _profileState.asStateFlow()
+
     private val _registerEventState = MutableStateFlow(RegisterEventState())
     val registerEventState = _registerEventState.asStateFlow()
 
     init {
         validateDisplayIdState()
         validateNameState()
+        validateIntroduceState()
     }
 
     fun onDisplayIdChanged(displayId: String) {
@@ -55,6 +62,10 @@ class RegisterViewModel @Inject constructor(
 
     fun onNameChanged(name: String) {
         _nameState.update { it.copy(name = name) }
+    }
+
+    fun onIntroduceChanged(introduce: String) {
+        _profileState.update { it.copy(introduce = introduce) }
     }
 
     /**
@@ -135,6 +146,30 @@ class RegisterViewModel @Inject constructor(
                     ValidationResult.Success -> _nameState.update { it.copy(nameError = null, canNext = true) }
                     is ValidationResult.Error<CommonValidationError> -> _nameState.update {
                         it.copy(nameError = result.error.asUiText(), canNext = false)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    /** [RegisterProfileState] - profile(introduce) 상태 값이 변할 때 마다 유효성 검사를 수행할 수 있게 한다. */
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private fun validateIntroduceState() {
+        profileState
+            .map { it.introduce }
+            .distinctUntilChanged()
+            .filter { it.isNotEmpty() }
+            .flatMapLatest { introduce ->
+                if (introduce.isEmpty()) return@flatMapLatest validateIntroduceUseCase("")
+                validateIntroduceUseCase(introduce)
+            }.onEach { result ->
+                when (result) {
+                    ValidationResult.Loading -> _profileState.update { it.copy(canNext = false) }
+                    ValidationResult.Success -> _profileState.update {
+                        it.copy(introduceError = null, canNext = true)
+                    }
+
+                    is ValidationResult.Error<CommonValidationError> -> _profileState.update {
+                        it.copy(introduceError = result.error.asUiText(), canNext = false)
                     }
                 }
             }.launchIn(viewModelScope)

@@ -1,17 +1,17 @@
 package com.peekr.presentation.register
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
-import com.peekr.presentation.register.view.RegisterScreenFrame
+import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.SubGraph
@@ -37,8 +37,10 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 },
             )
 
-            RegisterScreenFrame(
-                modifier = Modifier.fillMaxSize(),
+            RegisterCommonScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_display_id_title,
                 subTitle = R.string.register_screen_display_id_sub_title,
                 placeholder = R.string.register_screen_display_id_placeholder,
@@ -55,17 +57,19 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
         composable<RegisterGraph.Name> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
-            val nameState = registerViewModel.nameState.collectAsStateWithLifecycle()
+            val nameState by registerViewModel.nameState.collectAsStateWithLifecycle()
 
-            RegisterScreenFrame(
-                modifier = Modifier.fillMaxSize(),
+            RegisterCommonScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_name_title,
                 subTitle = R.string.register_screen_name_sub_title,
                 placeholder = R.string.register_screen_name_placeholder,
-                text = nameState.value.name,
+                text = nameState.name,
                 onTextChanged = registerViewModel::onNameChanged,
-                errorMessage = nameState.value.nameError?.asString(),
-                enabledNext = nameState.value.canNext,
+                errorMessage = nameState.nameError?.asString(),
+                enabledNext = nameState.canNext,
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = { _ ->
                     navController.navigate(RegisterGraph.Profile)
@@ -73,20 +77,35 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             )
         }
 
-        composable<RegisterGraph.Profile> {
-            val (text, onTextChanged) = remember { mutableStateOf("") }
+        composable<RegisterGraph.Profile> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
 
-            RegisterScreenFrame(
-                modifier = Modifier.fillMaxSize(),
+            RegisterCommonScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_profile_title,
                 placeholder = R.string.register_screen_profile_placeholder,
-                text = text,
-                onTextChanged = onTextChanged,
-                errorMessage = null,
-                enabledNext = false,
+                buttonTitle = R.string.register_screen_btn_start,
+                text = profileState.introduce,
+                onTextChanged = registerViewModel::onIntroduceChanged,
+                errorMessage = profileState.introduceError?.asString(),
+                enabledNext = profileState.canNext,
+                profileImage = profileState.image,
+                onProfileImageClick = {
+                    // TODO 사진 선택기 열기
+                    // 사진 선택하면, 사진 자르기 화면으로 이동
+                },
                 onBackPressed = { navController.popBackStack() },
-                onNextWithValue = { },
+                onNextWithValue = {
+                    // TODO 회원가입 완료 처리
+                },
             )
+        }
+
+        composable<RegisterGraph.CropProfileImage> {
         }
     }
 }
