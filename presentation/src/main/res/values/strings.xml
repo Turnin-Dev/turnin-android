@@ -12,12 +12,16 @@
     <string name="register_screen_name_title">프로필 이름을 작성해주세요.</string>
     <string name="register_screen_name_sub_title">* 다른 사용자에게 표시되는 이름이에요</string>
     <string name="register_screen_name_placeholder">프로필 이름</string>
+    <string name="register_screen_profile_title">프로필을 설정해주세요.</string>
+    <string name="register_screen_profile_placeholder">나를 1 ~ 2줄로 간단히 표현해주세요.</string>
     <string name="register_screen_btn_next">다음</string>
+    <string name="register_screen_btn_start">시작하기</string>
     <!-- Register Screen (Validation) -->
     <string name="register_screen_validation_empty_or_blank">공백은 허용되지 않습니다.</string>
-    <string name="register_screen_validation_exceeds_max_length">1~30자 이내로 작성해주세요.</string>
-    <string name="register_screen_validation_only_al_nu_han">영어/숫자/한글만 허용됩니다.</string>
-    <string name="register_screen_validation_only_al_nu_und">영어/숫자/밑줄만 허용됩니다.</string>
+    <string name="register_screen_validation_exceeds_max_length_30">1~30자 이내로 작성해주세요.</string>
+    <string name="register_screen_validation_exceeds_max_length_200">1~200자 이내로 작성해주세요.</string>
+    <string name="register_screen_validation_only_al_nu_han">영어/숫자/한글만 허용됩니다. (공백은 허용되지 않습니다)</string>
+    <string name="register_screen_validation_only_al_nu_und">영어/숫자/밑줄만 허용됩니다. (공백은 허용되지 않습니다)</string>
     <!-- Register Screen (Error) -->
     <string name="register_screen_error_cant_use_display_id">이미 존재하는 ID입니다.</string>
     <string name="register_screen_error_cant_use_empty_or_blank">공백은 허용되지 않습니다.</string>

@@ -11,8 +11,12 @@ fun CommonValidationError.asUiText(): UiText =
             StringResource(R.string.register_screen_validation_empty_or_blank)
         }
 
-        CommonValidationError.EXCEEDS_MAX_LENGTH -> {
-            StringResource(R.string.register_screen_validation_exceeds_max_length)
+        CommonValidationError.EXCEEDS_MAX_LENGTH_30 -> {
+            StringResource(R.string.register_screen_validation_exceeds_max_length_30)
+        }
+
+        CommonValidationError.EXCEEDS_MAX_LENGTH_200 -> {
+            StringResource(R.string.register_screen_validation_exceeds_max_length_200)
         }
 
         CommonValidationError.ONLY_ALPHANUMERIC_UNDERSCORE -> {

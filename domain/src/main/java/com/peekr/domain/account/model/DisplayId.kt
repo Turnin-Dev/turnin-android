@@ -24,7 +24,7 @@ fun DisplayId.validate(): ValidationResult<CommonValidationError> {
 
         // 2) 길이 범위 위반 (1~30)
         id.length !in 1..DISPLAY_ID_MAX_LENGTH -> {
-            ValidationResult.Error(CommonValidationError.EXCEEDS_MAX_LENGTH)
+            ValidationResult.Error(CommonValidationError.EXCEEDS_MAX_LENGTH_30)
         }
 
         // 3) 허용 문자 위반
