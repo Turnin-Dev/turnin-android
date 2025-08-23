@@ -116,10 +116,8 @@ class RegisterViewModel @Inject constructor(
             .map { it.displayId }
             .distinctUntilChanged()
             .filter { it.isNotEmpty() }
-            .flatMapLatest { displayId ->
-                if (displayId.isEmpty()) return@flatMapLatest validateDisplayIdUseCase("")
-                validateDisplayIdUseCase(displayId)
-            }.onEach { result ->
+            .flatMapLatest { displayId -> validateDisplayIdUseCase(displayId) }
+            .onEach { result ->
                 when (result) {
                     ValidationResult.Loading -> _displayIdState.update { it.copy(canNext = false) }
                     ValidationResult.Success -> _displayIdState.update { it.copy(displayIdError = null, canNext = true) }
@@ -137,10 +135,8 @@ class RegisterViewModel @Inject constructor(
             .map { it.name }
             .distinctUntilChanged()
             .filter { it.isNotEmpty() }
-            .flatMapLatest { name ->
-                if (name.isEmpty()) return@flatMapLatest validateNameUseCase("")
-                validateNameUseCase(name)
-            }.onEach { result ->
+            .flatMapLatest { name -> validateNameUseCase(name) }
+            .onEach { result ->
                 when (result) {
                     ValidationResult.Loading -> _nameState.update { it.copy(canNext = false) }
                     ValidationResult.Success -> _nameState.update { it.copy(nameError = null, canNext = true) }
@@ -157,11 +153,8 @@ class RegisterViewModel @Inject constructor(
         profileState
             .map { it.introduce }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
-            .flatMapLatest { introduce ->
-                if (introduce.isEmpty()) return@flatMapLatest validateIntroduceUseCase("")
-                validateIntroduceUseCase(introduce)
-            }.onEach { result ->
+            .flatMapLatest { introduce -> validateIntroduceUseCase(introduce) }
+            .onEach { result ->
                 when (result) {
                     ValidationResult.Loading -> _profileState.update { it.copy(canNext = false) }
                     ValidationResult.Success -> _profileState.update {

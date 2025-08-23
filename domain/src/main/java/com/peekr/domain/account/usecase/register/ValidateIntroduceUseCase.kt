@@ -13,10 +13,12 @@ class ValidateIntroduceUseCase @Inject constructor() {
     operator fun invoke(introduce: String): Flow<ValidationResult<CommonValidationError>> =
         flow {
             emit(ValidationResult.Loading)
-            if (introduce.length in 1..200) {
+            if (introduce.length in 1..INTRODUCE_MAX_LENGTH) {
                 emit(ValidationResult.Success)
             } else {
                 emit(ValidationResult.Error(CommonValidationError.EXCEEDS_MAX_LENGTH_200))
             }
         }
 }
+
+private const val INTRODUCE_MAX_LENGTH = 200

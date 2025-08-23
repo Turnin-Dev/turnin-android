@@ -5,7 +5,10 @@ import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 
-class PeekrImage(val bytes: ByteArray) {
+class PeekrImage(bytes: ByteArray) {
+    // 방어적 복사로 불변성 보장
+    val bytes: ByteArray = bytes.copyOf()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
