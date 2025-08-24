@@ -110,7 +110,12 @@ class RegisterViewModel @Inject constructor(
                     }
                 }.launchIn(viewModelScope)
         } else {
-            _displayIdState.update { it.copy(displayIdError = RegisterError.CantUseEmptyOrBlank.asUiText()) }
+            _displayIdState.update {
+                it.copy(
+                    displayIdError = RegisterError.CantUseEmptyOrBlank.asUiText(),
+                    loading = false,
+                )
+            }
         }
     }
 

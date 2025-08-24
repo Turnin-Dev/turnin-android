@@ -42,6 +42,7 @@ import com.peekr.presentation.shared.util.bottomAutoPadding
  * @param text 회원가입 텍스트필드의 텍스트
  * @param onTextChanged 회원가입 텍스트필드의 텍스트 콜백
  * @param errorMessage 회원가입 텍스트필드의 에러 메시지
+ * @param loading 로딩 여부
  * @param enabledNext 다음 버튼 활성화
  * @param onBackPressed 뒤로가기 클릭 시 수행할 작업
  * @param onNextWithValue 입력한 정보와 함께 다음 버튼 클릭 시 수행할 작업
@@ -53,6 +54,7 @@ fun RegisterCommonScreen(
     @StringRes placeholder: Int,
     text: String,
     errorMessage: String?,
+    loading: Boolean,
     enabledNext: Boolean,
     @StringRes subTitle: Int? = null,
     profileImage: ImageBitmap? = null,
@@ -95,6 +97,7 @@ fun RegisterCommonScreen(
                         style = PeekrButtonStyle.Large,
                         onClick = { onNextWithValue(text) },
                         enabled = enabledNext,
+                        loading = loading,
                     )
                 },
             )
@@ -220,6 +223,7 @@ private fun RegisterScreenFramePreview() {
             text = text,
             onTextChanged = onTextChanged,
             errorMessage = null,
+            loading = false,
             enabledNext = true,
             onBackPressed = {},
             onNextWithValue = { },

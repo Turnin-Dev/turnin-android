@@ -53,6 +53,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 text = displayIdState.displayId,
                 onTextChanged = registerViewModel::onDisplayIdChanged,
                 errorMessage = displayIdState.displayIdError?.asString(),
+                loading = displayIdState.loading,
                 enabledNext = displayIdState.canNext,
                 onNextWithValue = { displayId ->
                     registerViewModel.checkDisplayIdExists(displayId)
@@ -75,6 +76,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 text = nameState.name,
                 onTextChanged = registerViewModel::onNameChanged,
                 errorMessage = nameState.nameError?.asString(),
+                loading = nameState.loading,
                 enabledNext = nameState.canNext,
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = { _ ->
@@ -98,6 +100,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 text = profileState.introduce,
                 onTextChanged = registerViewModel::onIntroduceChanged,
                 errorMessage = profileState.introduceError?.asString(),
+                loading = profileState.loading,
                 enabledNext = profileState.canNext,
                 profileImage = profileState.image,
                 onProfileImageClick = {
