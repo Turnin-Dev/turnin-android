@@ -51,10 +51,10 @@ class AccountRepositoryImpl @Inject constructor(
             emit(mapExistsResult(accountNetworkDataSource.existsDisplayId(displayId.toDataModel())))
         }
 
-    override fun getPresignedFileUploadUrl(fileName: String, mime: Mime): Flow<Result<PresignedUrl, ErrorType>> =
+    override fun getFileUploadPresignedUrl(fileName: String, mime: Mime): Flow<Result<PresignedUrl, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            when (val result = accountNetworkDataSource.getPresignedFileUploadUrl(fileName, mime.type)) {
+            when (val result = accountNetworkDataSource.getFileUploadPresignedUrl(fileName, mime.type)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }

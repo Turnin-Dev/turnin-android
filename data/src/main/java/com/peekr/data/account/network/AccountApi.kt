@@ -41,7 +41,7 @@ interface AccountApi {
 
     /** 파일 업로드에 사용할 사전 정의된 URL 요청 */
     @GET(NetworkApiPath.File.UPLOAD)
-    suspend fun getPresignedFileUploadUrl(
+    suspend fun getFileUploadPresignedUrl(
         @Query("fileName") fileName: String,
         @Query("mime") mime: String,
     ): Response<PresignedUrlResponse>

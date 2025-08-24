@@ -210,7 +210,7 @@ class AccountNetworkDataSourceImplTest {
     }
 
     @Test
-    fun `getPresignedFileUploadUrl() 성공 테스트`() = runTest {
+    fun `getFileUploadPresignedUrl() 성공 테스트`() = runTest {
         // given
         server.enqueue(
             MockResponse().apply {
@@ -220,7 +220,7 @@ class AccountNetworkDataSourceImplTest {
         )
 
         // when
-        val result = dataSource.getPresignedFileUploadUrl("my-image.jpg", "image/jpeg")
+        val result = dataSource.getFileUploadPresignedUrl("my-image.jpg", "image/jpeg")
 
         // then
         assertTrue(result is NetworkResult.Success)
@@ -231,14 +231,14 @@ class AccountNetworkDataSourceImplTest {
     }
 
     @Test
-    fun `getPresignedFileUploadUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
+    fun `getFileUploadPresignedUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AccountApi = mockk()
         dataSource = AccountNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getPresignedFileUploadUrl(any(), any()) } throws JsonDataException("smile")
+        coEvery { mockApi.getFileUploadPresignedUrl(any(), any()) } throws JsonDataException("smile")
 
         // when
-        val result = dataSource.getPresignedFileUploadUrl("asd", "asd")
+        val result = dataSource.getFileUploadPresignedUrl("asd", "asd")
 
         // then
         assertTrue(result is NetworkResult.Error)

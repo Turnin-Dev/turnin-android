@@ -23,9 +23,9 @@ class AccountNetworkDataSourceImpl @Inject constructor(
     override suspend fun existsDisplayId(displayIdRequest: DisplayIdRequest): NetworkResult<ExistsResponse> =
         networkCall { accountApi.existsDisplayId(displayIdRequest.id) }
 
-    override suspend fun getPresignedFileUploadUrl(
+    override suspend fun getFileUploadPresignedUrl(
         fileName: String,
         mime: String,
     ): NetworkResult<PresignedUrlResponse> =
-        networkCall { accountApi.getPresignedFileUploadUrl(fileName, mime) }
+        networkCall { accountApi.getFileUploadPresignedUrl(fileName, mime) }
 }

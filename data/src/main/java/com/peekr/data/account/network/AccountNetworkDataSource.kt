@@ -41,7 +41,7 @@ interface AccountNetworkDataSource {
      * @param fileName 파일 이름
      * @param mime 파일 형태
      */
-    suspend fun getPresignedFileUploadUrl(
+    suspend fun getFileUploadPresignedUrl(
         fileName: String,
         mime: String,
     ): NetworkResult<PresignedUrlResponse>

@@ -27,7 +27,7 @@ interface AccountRepository {
      * @param fileName 파일 이름
      * @param mime 파일 타입
      */
-    fun getPresignedFileUploadUrl(
+    fun getFileUploadPresignedUrl(
         fileName: String,
         mime: Mime,
     ): Flow<Result<PresignedUrl, ErrorType>>

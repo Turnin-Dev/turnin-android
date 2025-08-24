@@ -156,15 +156,15 @@ class AccountRepositoryImplTest {
         }
 
     @Test
-    fun `getPresignedFileUploadUrl() 성공 테스트`() =
+    fun `getFileUploadPresignedUrl() 성공 테스트`() =
         runTest {
             // given
             coEvery {
-                dataSource.getPresignedFileUploadUrl(any(), any())
+                dataSource.getFileUploadPresignedUrl(any(), any())
             } returns NetworkResult.Success(mockPresignedUrlResponse)
 
             // when
-            val result = repository.getPresignedFileUploadUrl("a.jpg", Mime.IMAGE_JPEG).last()
+            val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
 
             // then
             assertTrue(result is Result.Success)
@@ -172,15 +172,15 @@ class AccountRepositoryImplTest {
         }
 
     @Test
-    fun `getPresignedFileUploadUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
+    fun `getFileUploadPresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
             coEvery {
-                dataSource.getPresignedFileUploadUrl(any(), any())
+                dataSource.getFileUploadPresignedUrl(any(), any())
             } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
 
             // when
-            val result = repository.getPresignedFileUploadUrl("a.jpg", Mime.IMAGE_JPEG).last()
+            val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
 
             // then
             assertTrue(result is Result.Error)
