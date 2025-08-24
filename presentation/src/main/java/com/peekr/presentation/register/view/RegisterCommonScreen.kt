@@ -37,15 +37,18 @@ import com.peekr.presentation.shared.util.bottomAutoPadding
  *
  * @param modifier [Modifier]
  * @param title 회원가입 화면 타이틀
- * @param subTitle 회원가입 화면 보조 타이틀
  * @param placeholder 회원가입 텍스트필드의 자리표시자
  * @param text 회원가입 텍스트필드의 텍스트
- * @param onTextChanged 회원가입 텍스트필드의 텍스트 콜백
  * @param errorMessage 회원가입 텍스트필드의 에러 메시지
  * @param loading 로딩 여부
  * @param enabledNext 다음 버튼 활성화
- * @param onBackPressed 뒤로가기 클릭 시 수행할 작업
+ * @param subTitle 회원가입 화면 보조 타이틀
+ * @param profileImage 프로필 이미지
+ * @param buttonTitle 버튼 타이틀
+ * @param onTextChanged 회원가입 텍스트필드의 텍스트 콜백
  * @param onNextWithValue 입력한 정보와 함께 다음 버튼 클릭 시 수행할 작업
+ * @param onBackPressed 뒤로가기 클릭 시 수행할 작업
+ * @param onProfileImageClick 프로필 이미지 클릭 시 수행할 작업
  */
 @Composable
 fun RegisterCommonScreen(
@@ -175,8 +178,8 @@ private fun Contents(
                             .align(Alignment.CenterHorizontally)
                             .size(ProfileImageSize),
                         model = profileImage,
-                        contentDescription = null,
-                        onClick = it,
+                        contentDescription = stringResource(R.string.register_screen_profile_desc_avatar),
+                        onClick = onProfileImageClick,
                     )
                 }
 

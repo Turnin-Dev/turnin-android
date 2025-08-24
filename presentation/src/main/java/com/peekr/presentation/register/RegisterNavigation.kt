@@ -134,6 +134,10 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
 
+            if (profileState.originalImage == null) {
+                navController.popBackStack()
+            }
+
             CropProfileImageScreen(
                 modifier = Modifier.fillMaxSize(),
                 image = profileState.originalImage,

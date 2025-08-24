@@ -44,7 +44,7 @@ fun PeekrAvatar(
     model: Any?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val imageRequester = remember(model) {
@@ -60,9 +60,6 @@ fun PeekrAvatar(
         modifier = modifier,
         onClick = onClick,
         image = {
-            if (placeholderState) {
-                AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
-            }
             AsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
@@ -75,6 +72,9 @@ fun PeekrAvatar(
                     placeholderState = state.getPlaceholderResult()
                 },
             )
+            if (placeholderState) {
+                AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
+            }
         },
     )
 }
@@ -92,7 +92,7 @@ fun PeekrAvatar(
     model: ImageBitmap?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     CoreAvatar(
         modifier = modifier,
@@ -118,14 +118,20 @@ fun PeekrAvatar(
 @Composable
 private fun CoreAvatar(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     image: @Composable BoxScope.() -> Unit,
 ) {
+    val clickableModifier = if (onClick != null) {
+        Modifier.clickableSingle(onClick = onClick)
+    } else {
+        Modifier
+    }
+
     Box(
         modifier = modifier
             .clip(CircleShape)
             .background(Color(0xFFDCDCDC))
-            .clickableSingle(onClick = onClick),
+            .then(clickableModifier),
         contentAlignment = Alignment.Center,
     ) {
         image()
@@ -135,8 +141,8 @@ private fun CoreAvatar(
 @Composable
 private fun AvatarPlaceholder(modifier: Modifier = Modifier) {
     Box(
-        modifier.background(Color(0xFFDCDCDC)),
-        Alignment.Center,
+        modifier = modifier.background(Color(0xFFDCDCDC)),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             modifier = modifier

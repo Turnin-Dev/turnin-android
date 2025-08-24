@@ -60,15 +60,15 @@ fun ImageCropper(
     var offset by remember { mutableStateOf(Offset.Zero) }
 
     val imageTransformState =
-        rememberTransformableState { zoomChange, offsetChange, rotationChange ->
-            val maxX = (viewWidth.toFloat() * (scale - 1f) / 2f) / scale
-            val maxY = (viewHeight.toFloat() * (scale - 1f) / 2f) / scale
-            scale = (scale * zoomChange).coerceIn(1f, 3f)
-            offset =
-                Offset(
-                    x = (offset.x + offsetChange.x).coerceIn(-maxX, maxX),
-                    y = (offset.y + offsetChange.y).coerceIn(-maxY, maxY),
-                )
+        rememberTransformableState { zoomChange, offsetChange, _ ->
+            val newScale = (scale * zoomChange).coerceIn(1f, 3f)
+            val maxX = (viewWidth.toFloat() * (newScale - 1f) / 2f) / newScale
+            val maxY = (viewHeight.toFloat() * (newScale - 1f) / 2f) / newScale
+            scale = newScale
+            offset = Offset(
+                x = (offset.x + offsetChange.x).coerceIn(-maxX, maxX),
+                y = (offset.y + offsetChange.y).coerceIn(-maxY, maxY),
+            )
         }
 
     Box(
@@ -106,6 +106,7 @@ fun ImageCropper(
                 .padding(ScreenTokens.HorizontalPadding),
             text = stringResource(id = R.string.register_screen_btn_image_crop),
             style = PeekrButtonStyle.Large,
+            enabled = imageBitmap != null && viewWidth > 0 && viewHeight > 0,
             onClick = {
                 imageBitmap?.let { imageBitmap ->
                     val cropImageResult =

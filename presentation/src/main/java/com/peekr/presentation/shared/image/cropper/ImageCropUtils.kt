@@ -1,7 +1,6 @@
 package com.peekr.presentation.shared.image.cropper
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.compose.ui.geometry.Offset
@@ -13,7 +12,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import java.lang.Exception
@@ -30,7 +28,7 @@ import kotlinx.coroutines.withContext
  * @param imageBitmap ImageBitmap 타입의 이미지 (nullable)
  * @param scale 이미지의 Scale 값
  * @param viewWidth 화면 사이즈의 가로 길이
- * @param viewHeight 화면 사이즈의 가로 길이
+ * @param viewHeight 화면 사이즈의 세로 길이
  * @param offsetChanged 자르고 싶은 부분의 Offset 값(기준은 TopLeft)
  *
  * @return CropImageResult
@@ -105,9 +103,7 @@ suspend fun uriToBitmap(
     imageUri: Uri,
 ): ImageBitmap? = withContext(Dispatchers.IO) {
     try {
-        var bitmap: Bitmap? = null
-
-        val loader = ImageLoader(context)
+        val loader = coil.Coil.imageLoader(context)
         val request = ImageRequest
             .Builder(context)
             .data(imageUri)

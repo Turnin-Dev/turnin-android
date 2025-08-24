@@ -13,11 +13,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import com.peekr.presentation.R
 
 /**
  * 이미지 선택기
  *
- * @param open 이미지 선택기 할성화 여부
+ * @param open 이미지 선택기 활성화 여부
  * @param onSelected 이미지 선택시 ([ImageBitmap]타입)
  * @param onClose 이미지 선택시 닫을 시 수행할 작업 (Ex. open = false)
  * @param onError 에러 발생 시 수행할 작업
@@ -51,11 +52,15 @@ fun SinglePhotoPicker(
                 onSelected(imageBitmap)
                 selectedImageUri = null
             } catch (e: Exception) {
-                onError?.let { error ->
-                    error.invoke(e)
-                } ?: Toast.makeText(context, "이미지가 올바르지 않은 형식입니다.", Toast.LENGTH_SHORT).show()
+                onError?.invoke(e) ?: Toast
+                    .makeText(
+                        context,
+                        context.getText(R.string.single_photo_picker_invalid_image_format),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 onSelected(null)
             }
+            onClose()
         }
     }
 

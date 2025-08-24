@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -38,12 +36,14 @@ fun CropProfileImageScreen(
 ) {
     Box(modifier) {
         // 이미지 자르기 화면
-        ImageCropper(
-            imageBitmap = image,
-            onCrop = { croppedImageBitmap ->
-                onCrop(croppedImageBitmap)
-            },
-        )
+        if (image != null) {
+            ImageCropper(
+                imageBitmap = image,
+                onCrop = { croppedImageBitmap ->
+                    onCrop(croppedImageBitmap)
+                },
+            )
+        }
         // 취소 버튼
         PeekrIconButton(
             modifier = Modifier

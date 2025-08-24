@@ -75,7 +75,9 @@ class RegisterViewModel @Inject constructor(
 
     fun selectOriginalImage(image: ImageBitmap?) {
         _profileState.update { it.copy(originalImage = image) }
-        _registerEventState.update { it.copy(navigateToNextScreen = true) }
+        image?.let {
+            _registerEventState.update { it.copy(navigateToNextScreen = true) }
+        }
     }
 
     /**

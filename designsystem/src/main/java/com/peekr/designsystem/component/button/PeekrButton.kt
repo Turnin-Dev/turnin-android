@@ -94,6 +94,7 @@ fun PeekrSolidButton(
  * @param modifier [Modifier]
  * @param icon 버튼 아이콘
  * @param enabled 버튼 활성화 여부
+ * @param loading 로딩 여부
  * @param onClick 버튼 클릭 시
  */
 @Composable
@@ -103,6 +104,7 @@ fun PeekrOutlinedButton(
     modifier: Modifier = Modifier,
     icon: PeekrIconType? = null,
     enabled: Boolean = true,
+    loading: Boolean = false,
     onClick: () -> Unit,
 ) {
     CoreButton(
@@ -112,6 +114,7 @@ fun PeekrOutlinedButton(
         modifier = modifier,
         icon = icon,
         enabled = enabled,
+        loading = loading,
         onClick = onClick,
     )
 }
