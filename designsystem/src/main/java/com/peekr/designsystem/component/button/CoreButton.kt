@@ -2,6 +2,7 @@ package com.peekr.designsystem.component.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -9,12 +10,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +37,7 @@ import com.peekr.designsystem.util.icon.PeekrIconType
  * @param modifier [Modifier]
  * @param icon 버튼 아이콘
  * @param enabled 버튼 활성화 여부
+ * @param loading 로딩 여부
  * @param onClick 버튼 클릭 시
  */
 @Composable
@@ -44,6 +48,7 @@ internal fun CoreButton(
     modifier: Modifier = Modifier,
     icon: PeekrIconType? = null,
     enabled: Boolean = true,
+    loading: Boolean = false,
     onClick: () -> Unit,
 ) {
     val throttleClickEventProcessor = remember {
@@ -51,7 +56,7 @@ internal fun CoreButton(
     }
 
     Button(
-        onClick = { throttleClickEventProcessor.processEvent(onClick) },
+        onClick = { if (!loading) throttleClickEventProcessor.processEvent(onClick) },
         modifier = modifier.height(style.height),
         enabled = enabled,
         colors = type.buttonColors(),
@@ -59,21 +64,32 @@ internal fun CoreButton(
         contentPadding = style.paddingValues,
         shape = RoundedCornerShape(style.cornerRadius),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(style.innerPadding),
-        ) {
-            icon?.let {
-                Icon(
-                    modifier = Modifier.size(style.iconSize),
-                    imageVector = icon.imageVector,
-                    contentDescription = text,
+        Box(contentAlignment = Alignment.Center) {
+            Row(
+                modifier = Modifier.alpha(if (loading) 0f else 1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(style.innerPadding),
+            ) {
+                icon?.let {
+                    Icon(
+                        modifier = Modifier.size(style.iconSize),
+                        imageVector = icon.imageVector,
+                        contentDescription = text,
+                    )
+                }
+                Text(
+                    text = text,
+                    style = style.textStyle(),
                 )
             }
-            Text(
-                text = text,
-                style = style.textStyle(),
-            )
+
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(style.iconSize),
+                    strokeWidth = 3.dp,
+                    color = PeekrTheme.colorScheme.staticWhite,
+                )
+            }
         }
     }
 }
