@@ -12,4 +12,9 @@ object NetworkApiPath {
             const val DISPLAY_ID = "$ROUTE/exists/displayId"
         }
     }
+
+    object File {
+        private const val ROUTE = "$BASE/file"
+        const val UPLOAD = "$ROUTE/upload"
+    }
 }

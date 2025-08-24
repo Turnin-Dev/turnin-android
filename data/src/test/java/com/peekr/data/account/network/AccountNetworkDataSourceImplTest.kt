@@ -3,8 +3,8 @@ package com.peekr.data.account.network
 import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
-import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
+import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.network.NetworkErrorType
 import com.peekr.domain.account.model.SocialLoginProvider
@@ -209,6 +209,42 @@ class AccountNetworkDataSourceImplTest {
         assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Exception.JsonData)
     }
 
+    @Test
+    fun `getPresignedFileUploadUrl() 성공 테스트`() = runTest {
+        // given
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(mockPresignedResponseJson)
+            },
+        )
+
+        // when
+        val result = dataSource.getPresignedFileUploadUrl("my-image.jpg", "image/jpeg")
+
+        // then
+        assertTrue(result is NetworkResult.Success)
+        assertEquals(
+            mockPresignUrlResponse,
+            (result as NetworkResult.Success).data,
+        )
+    }
+
+    @Test
+    fun `getPresignedFileUploadUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
+        // given
+        val mockApi: AccountApi = mockk()
+        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        coEvery { mockApi.getPresignedFileUploadUrl(any(), any()) } throws JsonDataException("smile")
+
+        // when
+        val result = dataSource.getPresignedFileUploadUrl("asd", "asd")
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Exception.JsonData)
+    }
+
     companion object {
         private val mockLoginRequest = LoginRequest(SocialLoginProvider.GOOGLE, "123")
         private const val MOCK_ACCESS_TOKEN = "aaa.bbb.ccc"
@@ -222,20 +258,28 @@ class AccountNetworkDataSourceImplTest {
             """.trimIndent()
         private val mockLoginResponse = LoginResponse(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN)
         private val mockExistsUserRequest = ExistsUserRequest(SocialLoginProvider.GOOGLE, "123")
-        private val mockExistsResponse = ExistsResponse(true)
         private val mockExistsResponseJson =
             """
             {
                 "exists": true
             }
             """.trimIndent()
-        private val mockNotExistsResponse = ExistsResponse(false)
-        private val mockNotExistsResponseJson =
+        private val mockDisplayIdRequest = DisplayIdRequest("123")
+        private const val MOCK_PRESIGNED_URL = "https://example-storage.com/objects/my-image.jpg"
+        private const val MOCK_METHOD = "PUT"
+        private const val MOCK_SECONDS = 600
+        private val mockPresignedResponseJson =
             """
             {
-                "exists": false
+              "presignedUrl": "$MOCK_PRESIGNED_URL",
+              "method": "$MOCK_METHOD",
+              "expiresInSeconds": $MOCK_SECONDS
             }
             """.trimIndent()
-        private val mockDisplayIdRequest = DisplayIdRequest("123")
+        private val mockPresignUrlResponse = PresignedUrlResponse(
+            MOCK_PRESIGNED_URL,
+            MOCK_METHOD,
+            MOCK_SECONDS,
+        )
     }
 }

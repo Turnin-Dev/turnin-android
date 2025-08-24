@@ -2,6 +2,7 @@ package com.peekr.data.account.repository
 
 import com.peekr.data.account.model.request.toDataModel
 import com.peekr.data.account.model.response.ExistsResponse
+import com.peekr.data.account.model.response.toDomainModel
 import com.peekr.data.account.network.AccountNetworkDataSource
 import com.peekr.data.shared.di.IO
 import com.peekr.data.shared.util.NetworkResult
@@ -11,6 +12,8 @@ import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.model.Mime
+import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
@@ -46,6 +49,20 @@ class AccountRepositoryImpl @Inject constructor(
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
             emit(mapExistsResult(accountNetworkDataSource.existsDisplayId(displayId.toDataModel())))
+        }
+
+    override fun getPresignedFileUploadUrl(fileName: String, mime: Mime): Flow<Result<PresignedUrl, ErrorType>> =
+        safeResultFlow(ioDispatcher) {
+            emit(Result.Loading)
+            when (val result = accountNetworkDataSource.getPresignedFileUploadUrl(fileName, mime.type)) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                }
+            }
         }
 }
 

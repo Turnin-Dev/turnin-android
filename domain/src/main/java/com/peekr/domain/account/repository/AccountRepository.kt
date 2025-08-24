@@ -4,6 +4,8 @@ import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.model.Mime
+import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -18,4 +20,15 @@ interface AccountRepository {
 
     /** 사용자 표시 ID 존재 여부 확인 */
     fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>>
+
+    /**
+     * 파일 업로드에 사용할 사전 정의된 URL 가져오기
+     *
+     * @param fileName 파일 이름
+     * @param mime 파일 타입
+     */
+    fun getPresignedFileUploadUrl(
+        fileName: String,
+        mime: Mime,
+    ): Flow<Result<PresignedUrl, ErrorType>>
 }

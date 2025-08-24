@@ -5,6 +5,7 @@ import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
+import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.network.networkCall
 import javax.inject.Inject
@@ -13,11 +14,18 @@ import javax.inject.Inject
 class AccountNetworkDataSourceImpl @Inject constructor(
     private val accountApi: AccountApi,
 ) : AccountNetworkDataSource {
-    override suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse> = networkCall { accountApi.login(loginRequest) }
+    override suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse> =
+        networkCall { accountApi.login(loginRequest) }
 
     override suspend fun existsUser(existsUserRequest: ExistsUserRequest): NetworkResult<ExistsResponse> =
         networkCall { accountApi.existsUser(existsUserRequest.provider, existsUserRequest.providerId) }
 
     override suspend fun existsDisplayId(displayIdRequest: DisplayIdRequest): NetworkResult<ExistsResponse> =
         networkCall { accountApi.existsDisplayId(displayIdRequest.id) }
+
+    override suspend fun getPresignedFileUploadUrl(
+        fileName: String,
+        mime: String,
+    ): NetworkResult<PresignedUrlResponse> =
+        networkCall { accountApi.getPresignedFileUploadUrl(fileName, mime) }
 }
