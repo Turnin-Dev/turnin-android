@@ -4,12 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.util.icon.Arrow2Left
 import com.peekr.designsystem.util.icon.PeekrIcons
+import kotlinx.coroutines.delay
 
 @Preview(widthDp = 500)
 @Composable
@@ -37,6 +43,51 @@ private fun SolidButton_Default() {
             PeekrSolidButton(
                 text = "Label",
                 style = PeekrButtonStyle.ExtraSmall,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 500)
+@Composable
+private fun SolidButton_Loading_Default() {
+    var clicked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(clicked) {
+        if (clicked) {
+            delay(2000)
+            clicked = false
+        }
+    }
+
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Large,
+                loading = clicked,
+                onClick = { clicked = true },
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Medium,
+                loading = true,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.Small,
+                loading = true,
+                onClick = {},
+            )
+            PeekrSolidButton(
+                text = "Label",
+                style = PeekrButtonStyle.ExtraSmall,
+                loading = true,
                 onClick = {},
             )
         }

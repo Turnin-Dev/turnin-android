@@ -1,6 +1,6 @@
 package com.peekr.presentation.register.state
 
-import com.peekr.presentation.shared.image.PeekrImage
+import androidx.compose.ui.graphics.ImageBitmap
 import com.peekr.presentation.shared.util.UiText
 
 /**
@@ -8,7 +8,9 @@ import com.peekr.presentation.shared.util.UiText
  */
 data class RegisterProfileState(
     /** 프로필 사진 */
-    val image: PeekrImage? = null,
+    val image: ImageBitmap? = null,
+    /** 프로필 사진 원본 */
+    val originalImage: ImageBitmap? = null,
     /** 소개 글 */
     val introduce: String = "",
     /** 소개 글 관련 에러 */

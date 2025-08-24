@@ -1,5 +1,6 @@
 package com.peekr.presentation.register.viewmodel
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.ExistsResult
@@ -68,6 +69,17 @@ class RegisterViewModel @Inject constructor(
         _profileState.update { it.copy(introduce = introduce) }
     }
 
+    fun selectProfileImage(image: ImageBitmap?) {
+        _profileState.update { it.copy(image = image) }
+    }
+
+    fun selectOriginalImage(image: ImageBitmap?) {
+        _profileState.update { it.copy(originalImage = image) }
+        image?.let {
+            _registerEventState.update { it.copy(navigateToNextScreen = true) }
+        }
+    }
+
     /**
      * 사용자 표시 ID 중복 검사를 한다.
      *
@@ -105,7 +117,12 @@ class RegisterViewModel @Inject constructor(
                     }
                 }.launchIn(viewModelScope)
         } else {
-            _displayIdState.update { it.copy(displayIdError = RegisterError.CantUseEmptyOrBlank.asUiText()) }
+            _displayIdState.update {
+                it.copy(
+                    displayIdError = RegisterError.CantUseEmptyOrBlank.asUiText(),
+                    loading = false,
+                )
+            }
         }
     }
 
@@ -153,6 +170,7 @@ class RegisterViewModel @Inject constructor(
         profileState
             .map { it.introduce }
             .distinctUntilChanged()
+            .filter { it.isNotEmpty() }
             .flatMapLatest { introduce -> validateIntroduceUseCase(introduce) }
             .onEach { result ->
                 when (result) {

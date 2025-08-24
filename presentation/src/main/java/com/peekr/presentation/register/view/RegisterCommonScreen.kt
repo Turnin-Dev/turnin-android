@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,9 +28,7 @@ import com.peekr.designsystem.component.button.PeekrSolidButton
 import com.peekr.designsystem.component.topbar.PeekrTopBar
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.presentation.R
-import com.peekr.presentation.shared.image.PeekrImage
 import com.peekr.presentation.shared.util.ScreenTokens
 import com.peekr.presentation.shared.util.bottomAutoPadding
 
@@ -38,14 +37,18 @@ import com.peekr.presentation.shared.util.bottomAutoPadding
  *
  * @param modifier [Modifier]
  * @param title 회원가입 화면 타이틀
- * @param subTitle 회원가입 화면 보조 타이틀
  * @param placeholder 회원가입 텍스트필드의 자리표시자
  * @param text 회원가입 텍스트필드의 텍스트
- * @param onTextChanged 회원가입 텍스트필드의 텍스트 콜백
  * @param errorMessage 회원가입 텍스트필드의 에러 메시지
+ * @param loading 로딩 여부
  * @param enabledNext 다음 버튼 활성화
- * @param onBackPressed 뒤로가기 클릭 시 수행할 작업
+ * @param subTitle 회원가입 화면 보조 타이틀
+ * @param profileImage 프로필 이미지
+ * @param buttonTitle 버튼 타이틀
+ * @param onTextChanged 회원가입 텍스트필드의 텍스트 콜백
  * @param onNextWithValue 입력한 정보와 함께 다음 버튼 클릭 시 수행할 작업
+ * @param onBackPressed 뒤로가기 클릭 시 수행할 작업
+ * @param onProfileImageClick 프로필 이미지 클릭 시 수행할 작업
  */
 @Composable
 fun RegisterCommonScreen(
@@ -54,9 +57,10 @@ fun RegisterCommonScreen(
     @StringRes placeholder: Int,
     text: String,
     errorMessage: String?,
+    loading: Boolean,
     enabledNext: Boolean,
     @StringRes subTitle: Int? = null,
-    profileImage: PeekrImage? = null,
+    profileImage: ImageBitmap? = null,
     @StringRes buttonTitle: Int = R.string.register_screen_btn_next,
     onTextChanged: (String) -> Unit,
     onNextWithValue: (String) -> Unit,
@@ -96,6 +100,7 @@ fun RegisterCommonScreen(
                         style = PeekrButtonStyle.Large,
                         onClick = { onNextWithValue(text) },
                         enabled = enabledNext,
+                        loading = loading,
                     )
                 },
             )
@@ -137,7 +142,7 @@ private fun Contents(
     text: String,
     errorMessage: String?,
     @StringRes subTitle: Int? = null,
-    profileImage: PeekrImage? = null,
+    profileImage: ImageBitmap? = null,
     onTextChanged: (String) -> Unit,
     onProfileImageClick: (() -> Unit)? = null,
     bottomButton: @Composable ColumnScope.() -> Unit,
@@ -171,10 +176,10 @@ private fun Contents(
                     PeekrAvatar(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .size(ProfileImageSize)
-                            .clickableSingle(onClick = onProfileImageClick),
-                        model = profileImage?.imageBitmap,
-                        contentDescription = null,
+                            .size(ProfileImageSize),
+                        model = profileImage,
+                        contentDescription = stringResource(R.string.register_screen_profile_desc_avatar),
+                        onClick = onProfileImageClick,
                     )
                 }
 
@@ -221,6 +226,7 @@ private fun RegisterScreenFramePreview() {
             text = text,
             onTextChanged = onTextChanged,
             errorMessage = null,
+            loading = false,
             enabledNext = true,
             onBackPressed = {},
             onNextWithValue = { },
