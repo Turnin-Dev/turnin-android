@@ -1,8 +1,9 @@
 package com.peekr.designsystem.component.avatar
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,6 +27,7 @@ import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.peekr.designsystem.R
 import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.designsystem.util.icon.PeekrIcons
 import com.peekr.designsystem.util.icon.Profile
 
@@ -34,12 +37,14 @@ import com.peekr.designsystem.util.icon.Profile
  * @param model [AsyncImage]에서 사용 가능한 이미지 모델
  * @param contentDescription 이미지 설명
  * @param modifier [Modifier]
+ * @param onClick 클릭 시
  */
 @Composable
 fun PeekrAvatar(
     model: Any?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val imageRequester = remember(model) {
@@ -51,28 +56,79 @@ fun PeekrAvatar(
     }
     var placeholderState by remember { mutableStateOf(false) }
 
+    CoreAvatar(
+        modifier = modifier,
+        onClick = onClick,
+        image = {
+            if (placeholderState) {
+                AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
+            }
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
+                model = imageRequester,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center,
+                onState = { state ->
+                    placeholderState = state.getPlaceholderResult()
+                },
+            )
+        },
+    )
+}
+
+/**
+ * 프로필 이미지에 사용하는 아바타
+ *
+ * @param model [ImageBitmap]타입의 이미지
+ * @param contentDescription 이미지 설명
+ * @param modifier [Modifier]
+ * @param onClick 클릭 시
+ */
+@Composable
+fun PeekrAvatar(
+    model: ImageBitmap?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    CoreAvatar(
+        modifier = modifier,
+        onClick = onClick,
+        image = {
+            if (model == null) {
+                AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
+            } else {
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                    bitmap = model,
+                    contentDescription = contentDescription,
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center,
+                )
+            }
+        },
+    )
+}
+
+@Composable
+private fun CoreAvatar(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    image: @Composable BoxScope.() -> Unit,
+) {
     Box(
         modifier = modifier
             .clip(CircleShape)
             .background(Color(0xFFDCDCDC))
-            .clickable {},
+            .clickableSingle(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        if (placeholderState) {
-            AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
-        }
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(CircleShape),
-            model = imageRequester,
-            contentDescription = contentDescription,
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.Center,
-            onState = { state ->
-                placeholderState = state.getPlaceholderResult()
-            },
-        )
+        image()
     }
 }
 
@@ -93,9 +149,10 @@ private fun AvatarPlaceholder(modifier: Modifier = Modifier) {
     }
 }
 
-private fun AsyncImagePainter.State.getPlaceholderResult(): Boolean = when (this) {
-    AsyncImagePainter.State.Empty -> true
-    is AsyncImagePainter.State.Error -> true
-    is AsyncImagePainter.State.Loading -> true
-    is AsyncImagePainter.State.Success -> false
-}
+private fun AsyncImagePainter.State.getPlaceholderResult(): Boolean =
+    when (this) {
+        AsyncImagePainter.State.Empty -> true
+        is AsyncImagePainter.State.Error -> true
+        is AsyncImagePainter.State.Loading -> true
+        is AsyncImagePainter.State.Success -> false
+    }
