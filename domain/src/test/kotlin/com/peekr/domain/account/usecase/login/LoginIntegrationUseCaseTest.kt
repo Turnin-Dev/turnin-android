@@ -1,11 +1,10 @@
-package com.peekr.domain.account.usecase
+package com.peekr.domain.account.usecase.login
 
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
-import com.peekr.domain.account.usecase.login.LoginUseCase
+import com.peekr.domain.account.usecase.SaveRefreshTokenUseCase
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import io.mockk.every
