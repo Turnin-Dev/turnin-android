@@ -3,7 +3,11 @@ package com.peekr.presentation.register
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -11,10 +15,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
+import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.shared.image.cropper.SinglePhotoPicker
 import com.peekr.presentation.shared.util.event.LaunchedUiEffectHandler
 import com.peekr.presentation.shared.util.sharedViewModel
 
@@ -95,8 +101,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 enabledNext = profileState.canNext,
                 profileImage = profileState.image,
                 onProfileImageClick = {
-                    // TODO 사진 선택기 열기
-                    // 사진 선택하면, 사진 자르기 화면으로 이동
+                    navController.navigate(RegisterGraph.CropProfileImage)
                 },
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = {
@@ -105,7 +110,27 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             )
         }
 
-        composable<RegisterGraph.CropProfileImage> {
+        composable<RegisterGraph.CropProfileImage> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, true)
+            val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
+            var imageBitmap: ImageBitmap? by remember { mutableStateOf(null) }
+
+            SinglePhotoPicker(
+                onSelected = { selectedImage ->
+                    imageBitmap = selectedImage
+                },
+            )
+
+            CropProfileImageScreen(
+                modifier = Modifier.fillMaxSize(),
+                image = imageBitmap,
+                onCrop = { croppedImage ->
+                    registerViewModel.selectProfileImage(croppedImage)
+                    navController.popBackStack()
+                },
+                onCancel = {},
+            )
         }
     }
 }

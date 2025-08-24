@@ -1,5 +1,6 @@
 package com.peekr.presentation.register.viewmodel
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.ExistsResult
@@ -66,6 +67,10 @@ class RegisterViewModel @Inject constructor(
 
     fun onIntroduceChanged(introduce: String) {
         _profileState.update { it.copy(introduce = introduce) }
+    }
+
+    fun selectProfileImage(image: ImageBitmap?) {
+        _profileState.update { it.copy(image = image) }
     }
 
     /**
@@ -153,6 +158,7 @@ class RegisterViewModel @Inject constructor(
         profileState
             .map { it.introduce }
             .distinctUntilChanged()
+            .filter { it.isNotEmpty() }
             .flatMapLatest { introduce -> validateIntroduceUseCase(introduce) }
             .onEach { result ->
                 when (result) {

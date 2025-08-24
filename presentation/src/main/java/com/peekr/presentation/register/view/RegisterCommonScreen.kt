@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,9 +28,7 @@ import com.peekr.designsystem.component.button.PeekrSolidButton
 import com.peekr.designsystem.component.topbar.PeekrTopBar
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.presentation.R
-import com.peekr.presentation.shared.image.PeekrImage
 import com.peekr.presentation.shared.util.ScreenTokens
 import com.peekr.presentation.shared.util.bottomAutoPadding
 
@@ -56,7 +55,7 @@ fun RegisterCommonScreen(
     errorMessage: String?,
     enabledNext: Boolean,
     @StringRes subTitle: Int? = null,
-    profileImage: PeekrImage? = null,
+    profileImage: ImageBitmap? = null,
     @StringRes buttonTitle: Int = R.string.register_screen_btn_next,
     onTextChanged: (String) -> Unit,
     onNextWithValue: (String) -> Unit,
@@ -137,7 +136,7 @@ private fun Contents(
     text: String,
     errorMessage: String?,
     @StringRes subTitle: Int? = null,
-    profileImage: PeekrImage? = null,
+    profileImage: ImageBitmap? = null,
     onTextChanged: (String) -> Unit,
     onProfileImageClick: (() -> Unit)? = null,
     bottomButton: @Composable ColumnScope.() -> Unit,
@@ -171,10 +170,10 @@ private fun Contents(
                     PeekrAvatar(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .size(ProfileImageSize)
-                            .clickableSingle(onClick = onProfileImageClick),
-                        model = profileImage?.imageBitmap,
+                            .size(ProfileImageSize),
+                        model = profileImage,
                         contentDescription = null,
+                        onClick = it,
                     )
                 }
 

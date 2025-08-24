@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 class PeekrImage(bytes: ByteArray) {
     // 방어적 복사로 불변성 보장
     val bytes: ByteArray = bytes.copyOf()
+    val imageBitmap: ImageBitmap = bytes.toBitmap().asImageBitmap()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -19,8 +20,6 @@ class PeekrImage(bytes: ByteArray) {
     }
 
     override fun hashCode(): Int = bytes.contentHashCode()
-
-    val imageBitmap: ImageBitmap = bytes.toBitmap().asImageBitmap()
 
     private fun ByteArray.toBitmap(): Bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)
 }
