@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.peekr.designsystem.component.button.PeekrButtonStyle
 import com.peekr.designsystem.component.button.PeekrSolidButton
 import com.peekr.presentation.R
+import com.peekr.presentation.shared.util.ScreenTokens
 
 /**
  * 이미지 자르기 화면
@@ -100,7 +102,8 @@ fun ImageCropper(
         PeekrSolidButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
+                .padding(ScreenTokens.HorizontalPadding),
             text = stringResource(id = R.string.register_screen_btn_image_crop),
             style = PeekrButtonStyle.Large,
             onClick = {

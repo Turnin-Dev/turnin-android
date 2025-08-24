@@ -17,11 +17,16 @@ import androidx.compose.ui.platform.LocalContext
 /**
  * 이미지 선택기
  *
+ * @param open 이미지 선택기 할성화 여부
  * @param onSelected 이미지 선택시 ([ImageBitmap]타입)
+ * @param onClose 이미지 선택시 닫을 시 수행할 작업 (Ex. open = false)
+ * @param onError 에러 발생 시 수행할 작업
  */
 @Composable
 fun SinglePhotoPicker(
+    open: Boolean,
     onSelected: (ImageBitmap?) -> Unit,
+    onClose: () -> Unit,
     onError: ((Exception) -> Unit)? = null,
 ) {
     val context = LocalContext.current
@@ -33,6 +38,8 @@ fun SinglePhotoPicker(
             onResult = { uri ->
                 if (uri != null) {
                     selectedImageUri = uri
+                } else {
+                    onClose()
                 }
             },
         )
@@ -42,6 +49,7 @@ fun SinglePhotoPicker(
             try {
                 val imageBitmap = uriToBitmap(context, uri)
                 onSelected(imageBitmap)
+                selectedImageUri = null
             } catch (e: Exception) {
                 onError?.let { error ->
                     error.invoke(e)
@@ -51,9 +59,11 @@ fun SinglePhotoPicker(
         }
     }
 
-    LaunchedEffect(Unit) {
-        singlePhotoPickerLauncher.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-        )
+    LaunchedEffect(open) {
+        if (open) {
+            singlePhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+            )
+        }
     }
 }

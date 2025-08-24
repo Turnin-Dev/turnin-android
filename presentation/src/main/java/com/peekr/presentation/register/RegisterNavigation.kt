@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -33,9 +32,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
 
             LaunchedUiEffectHandler(
                 effectFlow = registerViewModel.registerEventState,
-                onConsumeEffect = {
-                    registerViewModel.onConsumeEventState()
-                },
+                onConsumeEffect = { registerViewModel.onConsumeEventState() },
                 onEffect = { effect ->
                     if (effect.navigateToNextScreen) {
                         navController.navigate(RegisterGraph.Name)
@@ -89,6 +86,27 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
+            var photoPickerOpen by remember { mutableStateOf(false) }
+
+            SinglePhotoPicker(
+                open = photoPickerOpen,
+                onSelected = { selectedImage ->
+                    if (selectedImage != null) {
+                        registerViewModel.selectOriginalImage(selectedImage)
+                    }
+                },
+                onClose = { photoPickerOpen = false },
+            )
+
+            LaunchedUiEffectHandler(
+                effectFlow = registerViewModel.registerEventState,
+                onConsumeEffect = { registerViewModel.onConsumeEventState() },
+                onEffect = { event ->
+                    if (event.navigateToNextScreen) {
+                        navController.navigate(RegisterGraph.CropProfileImage)
+                    }
+                },
+            )
 
             RegisterCommonScreen(
                 modifier = Modifier
@@ -103,9 +121,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 loading = profileState.loading,
                 enabledNext = profileState.canNext,
                 profileImage = profileState.image,
-                onProfileImageClick = {
-                    navController.navigate(RegisterGraph.CropProfileImage)
-                },
+                onProfileImageClick = { photoPickerOpen = true },
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = {
                     // TODO 회원가입 완료 처리
@@ -117,22 +133,15 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
-            var imageBitmap: ImageBitmap? by remember { mutableStateOf(null) }
-
-            SinglePhotoPicker(
-                onSelected = { selectedImage ->
-                    imageBitmap = selectedImage
-                },
-            )
 
             CropProfileImageScreen(
                 modifier = Modifier.fillMaxSize(),
-                image = imageBitmap,
+                image = profileState.originalImage,
                 onCrop = { croppedImage ->
                     registerViewModel.selectProfileImage(croppedImage)
                     navController.popBackStack()
                 },
-                onCancel = {},
+                onCancel = { navController.popBackStack() },
             )
         }
     }

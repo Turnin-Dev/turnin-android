@@ -73,6 +73,11 @@ class RegisterViewModel @Inject constructor(
         _profileState.update { it.copy(image = image) }
     }
 
+    fun selectOriginalImage(image: ImageBitmap?) {
+        _profileState.update { it.copy(originalImage = image) }
+        _registerEventState.update { it.copy(navigateToNextScreen = true) }
+    }
+
     /**
      * 사용자 표시 ID 중복 검사를 한다.
      *

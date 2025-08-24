@@ -2,6 +2,7 @@ package com.peekr.presentation.register.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -18,6 +19,7 @@ import com.peekr.designsystem.util.icon.Cancel
 import com.peekr.designsystem.util.icon.PeekrIcons
 import com.peekr.presentation.R
 import com.peekr.presentation.shared.image.cropper.ImageCropper
+import com.peekr.presentation.shared.util.ScreenTokens
 
 /**
  * 회원가입 - 프로필 사진 자르기 화면
@@ -39,13 +41,14 @@ fun CropProfileImageScreen(
         ImageCropper(
             imageBitmap = image,
             onCrop = { croppedImageBitmap ->
-                onCancel()
                 onCrop(croppedImageBitmap)
             },
         )
         // 취소 버튼
         PeekrIconButton(
-            modifier = Modifier.align(Alignment.TopStart),
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(ScreenTokens.HorizontalPaddingWithTouchTarget),
             icon = PeekrIcons.Default.Normal.Cancel,
             iconSize = PeekrIconSize.Small,
             contentDescription = stringResource(R.string.common_btn_cancel),

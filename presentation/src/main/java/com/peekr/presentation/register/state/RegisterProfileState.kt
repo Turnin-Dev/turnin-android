@@ -9,6 +9,8 @@ import com.peekr.presentation.shared.util.UiText
 data class RegisterProfileState(
     /** 프로필 사진 */
     val image: ImageBitmap? = null,
+    /** 프로필 사진 원본 */
+    val originalImage: ImageBitmap? = null,
     /** 소개 글 */
     val introduce: String = "",
     /** 소개 글 관련 에러 */
