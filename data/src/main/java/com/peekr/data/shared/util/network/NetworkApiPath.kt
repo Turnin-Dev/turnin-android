@@ -1,4 +1,4 @@
-package com.peekr.data.shared.util
+package com.peekr.data.shared.util.network
 
 object NetworkApiPath {
     private const val VERSION = "/v1"

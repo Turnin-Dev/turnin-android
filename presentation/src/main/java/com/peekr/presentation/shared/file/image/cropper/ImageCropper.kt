@@ -1,4 +1,4 @@
-package com.peekr.presentation.shared.image.cropper
+package com.peekr.presentation.shared.file.image.cropper
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.rememberTransformableState

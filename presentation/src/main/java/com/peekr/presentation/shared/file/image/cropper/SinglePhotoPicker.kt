@@ -1,4 +1,4 @@
-package com.peekr.presentation.shared.image.cropper
+package com.peekr.presentation.shared.file.image.cropper
 
 import android.net.Uri
 import android.widget.Toast
