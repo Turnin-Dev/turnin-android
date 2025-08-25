@@ -3,9 +3,11 @@ package com.peekr.data.account.network
 import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
+import com.peekr.data.account.model.request.RegisterRequest
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
+import com.peekr.data.account.model.response.RegisterResponse
 import com.peekr.data.shared.di.DefaultOkHttpClient
 import com.peekr.data.shared.util.network.NetworkErrorType
 import com.peekr.data.shared.util.network.NetworkResult
@@ -62,4 +64,7 @@ class AccountNetworkDataSourceImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun register(registerRequest: RegisterRequest): NetworkResult<RegisterResponse> =
+        networkCall { accountApi.register(registerRequest) }
 }

@@ -15,6 +15,7 @@ import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
+import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
@@ -88,6 +89,20 @@ class AccountRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun register(register: Register): Flow<Result<JWTToken, ErrorType>> =
+        safeResultFlow(ioDispatcher) {
+            emit(Result.Loading)
+            when (val result = accountNetworkDataSource.register(register.toDataModel())) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                }
+            }
+        }
 }
 
 private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =

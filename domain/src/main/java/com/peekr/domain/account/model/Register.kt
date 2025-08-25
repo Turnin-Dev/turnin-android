@@ -15,6 +15,6 @@ data class Register(
     val providerId: ProviderId,
     val displayId: DisplayId,
     val name: Username,
-    val profileImageUrl: String,
-    val introduce: String,
+    val profileImageUrl: String?,
+    val introduce: String?,
 )

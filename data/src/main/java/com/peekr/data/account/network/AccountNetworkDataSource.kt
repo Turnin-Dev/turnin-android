@@ -3,9 +3,11 @@ package com.peekr.data.account.network
 import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
+import com.peekr.data.account.model.request.RegisterRequest
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
+import com.peekr.data.account.model.response.RegisterResponse
 import com.peekr.data.shared.util.network.NetworkResult
 
 /** Account 네트워크 데이터 소스 */
@@ -60,4 +62,11 @@ interface AccountNetworkDataSource {
         file: ByteArray,
         mime: String,
     ): NetworkResult<Boolean>
+
+    /**
+     * 회원가입
+     *
+     * @param registerRequest 회원가입 요청 바디
+     */
+    suspend fun register(registerRequest: RegisterRequest): NetworkResult<RegisterResponse>
 }

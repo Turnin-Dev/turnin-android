@@ -36,6 +36,9 @@ sealed interface ErrorType : Error {
 
         /** 서버 및 네트워크 연결 에러 */
         ConnectionFailed,
+
+        /** 지원하지 않는 파일 유형 */
+        InvalidFileType,
     }
 
     /** 예외 타입 */

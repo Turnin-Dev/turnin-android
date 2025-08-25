@@ -11,6 +11,9 @@ enum class RegisterError {
 
     /** 빈칸은 허용하지 않는다는 에러 */
     CantUseEmptyOrBlank,
+
+    /** 변환된 사진이 null인 상황에 대한 에러 */
+    ImageFileIsNull,
 }
 
 fun RegisterError.asUiText(): UiText =
@@ -21,5 +24,9 @@ fun RegisterError.asUiText(): UiText =
 
         RegisterError.CantUseEmptyOrBlank -> {
             StringResource(R.string.register_screen_error_cant_use_empty_or_blank)
+        }
+
+        RegisterError.ImageFileIsNull -> {
+            StringResource(R.string.register_screen_error_image_file_is_null)
         }
     }

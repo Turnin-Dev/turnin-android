@@ -6,6 +6,7 @@ import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
+import com.peekr.domain.account.model.Register
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -48,4 +49,11 @@ interface AccountRepository {
         fileName: String,
         mime: Mime,
     ): Flow<Result<String?, ErrorType>>
+
+    /**
+     * 회원가입
+     *
+     * @param register 회원가입을 위한 정보
+     */
+    fun register(register: Register): Flow<Result<JWTToken, ErrorType>>
 }

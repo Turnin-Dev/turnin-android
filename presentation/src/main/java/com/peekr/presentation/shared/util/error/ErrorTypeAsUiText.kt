@@ -27,6 +27,7 @@ fun ErrorType.asUiText(): UiText = when (this) {
     ErrorType.Network.ClientError -> StringResource(R.string.error_network_client)
     ErrorType.Network.ServerError -> StringResource(R.string.error_network_server)
     ErrorType.Network.ConnectionFailed -> StringResource(R.string.error_network_connection_failed)
+    ErrorType.Network.InvalidFileType -> StringResource(R.string.error_network_invalid_file_type)
     // ------------------------------ Unexpected ------------------------------
     is ErrorType.Unexpected -> {
         this.cause?.message?.let { message ->
