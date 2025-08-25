@@ -1,6 +1,5 @@
 package com.peekr.data.shared.util.network
 
-import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.error.CommonErrorResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
