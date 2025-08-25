@@ -5,7 +5,7 @@ import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.shared.retrofit.TokenResponse
-import com.peekr.data.shared.util.NetworkApiPath
+import com.peekr.data.shared.util.network.NetworkApiPath
 import com.peekr.domain.account.model.SocialLoginProvider
 import retrofit2.Response
 import retrofit2.http.Body

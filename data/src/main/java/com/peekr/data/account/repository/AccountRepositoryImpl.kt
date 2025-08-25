@@ -5,8 +5,9 @@ import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.toDomainModel
 import com.peekr.data.account.network.AccountNetworkDataSource
 import com.peekr.data.shared.di.IO
-import com.peekr.data.shared.util.NetworkResult
+import com.peekr.data.shared.util.AppConfig
 import com.peekr.data.shared.util.coroutine.safeResultFlow
+import com.peekr.data.shared.util.network.NetworkResult
 import com.peekr.data.shared.util.network.toErrorType
 import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
@@ -64,6 +65,29 @@ class AccountRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override fun uploadFile(
+        presignedUrl: String,
+        file: ByteArray,
+        fileName: String,
+        mime: Mime,
+    ): Flow<Result<String?, ErrorType>> = safeResultFlow(ioDispatcher) {
+        emit(Result.Loading)
+        when (val result = accountNetworkDataSource.uploadFile(presignedUrl, file, mime.type)) {
+            is NetworkResult.Success -> {
+                val imageUrl = AppConfig.cloudStorageServerUrl + fileName
+                if (result.data) {
+                    emit(Result.Success(imageUrl))
+                } else {
+                    emit(Result.Success(null))
+                }
+            }
+
+            is NetworkResult.Error -> {
+                emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+            }
+        }
+    }
 }
 
 private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =

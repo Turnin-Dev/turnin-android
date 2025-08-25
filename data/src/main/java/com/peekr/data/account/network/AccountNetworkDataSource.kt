@@ -6,7 +6,7 @@ import com.peekr.data.account.model.request.LoginRequest
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
-import com.peekr.data.shared.util.NetworkResult
+import com.peekr.data.shared.util.network.NetworkResult
 
 /** Account 네트워크 데이터 소스 */
 interface AccountNetworkDataSource {
@@ -45,4 +45,19 @@ interface AccountNetworkDataSource {
         fileName: String,
         mime: String,
     ): NetworkResult<PresignedUrlResponse>
+
+    /**
+     * 파일 업로드
+     *
+     * @param presignedUrl 사전 정의된 URL
+     * @param file [ByteArray]타입의 파일
+     * @param mime 파일 타입
+     *
+     * @return 성공 시 `true`, 실패 시 `false`
+     */
+    suspend fun uploadFile(
+        presignedUrl: String,
+        file: ByteArray,
+        mime: String,
+    ): NetworkResult<Boolean>
 }

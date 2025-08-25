@@ -5,15 +5,17 @@ import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
-import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.network.NetworkErrorType
+import com.peekr.data.shared.util.network.NetworkResult
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -24,11 +26,13 @@ import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class AccountNetworkDataSourceImplTest {
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
     private lateinit var accountApi: AccountApi
     private lateinit var dataSource: AccountNetworkDataSource
+    private lateinit var testOkHttpClient: OkHttpClient
 
     @Before
     fun setUp() {
@@ -45,7 +49,9 @@ class AccountNetworkDataSourceImplTest {
                 .build()
                 .create(AccountApi::class.java)
 
-        dataSource = AccountNetworkDataSourceImpl(accountApi)
+        testOkHttpClient = OkHttpClient.Builder().build()
+
+        dataSource = AccountNetworkDataSourceImpl(accountApi, testOkHttpClient)
     }
 
     @After
@@ -100,7 +106,7 @@ class AccountNetworkDataSourceImplTest {
         // given
         val mockApi: AccountApi = mockk()
         val exception = IllegalStateException()
-        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        dataSource = AccountNetworkDataSourceImpl(mockApi, testOkHttpClient)
         coEvery { mockApi.login(any()) } throws exception
 
         // when
@@ -115,7 +121,7 @@ class AccountNetworkDataSourceImplTest {
     fun `login() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AccountApi = mockk()
-        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        dataSource = AccountNetworkDataSourceImpl(mockApi, testOkHttpClient)
         coEvery { mockApi.login(any()) } throws JsonDataException("smile")
 
         // when
@@ -165,7 +171,7 @@ class AccountNetworkDataSourceImplTest {
     fun `existsUser() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AccountApi = mockk()
-        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        dataSource = AccountNetworkDataSourceImpl(mockApi, testOkHttpClient)
         coEvery { mockApi.existsUser(any(), any()) } throws JsonDataException("smile")
 
         // when
@@ -198,7 +204,7 @@ class AccountNetworkDataSourceImplTest {
     fun `existsDisplayId() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AccountApi = mockk()
-        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        dataSource = AccountNetworkDataSourceImpl(mockApi, testOkHttpClient)
         coEvery { mockApi.existsDisplayId(any()) } throws JsonDataException("smile")
 
         // when
@@ -234,7 +240,7 @@ class AccountNetworkDataSourceImplTest {
     fun `getFileUploadPresignedUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AccountApi = mockk()
-        dataSource = AccountNetworkDataSourceImpl(mockApi)
+        dataSource = AccountNetworkDataSourceImpl(mockApi, testOkHttpClient)
         coEvery { mockApi.getFileUploadPresignedUrl(any(), any()) } throws JsonDataException("smile")
 
         // when

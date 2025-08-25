@@ -4,8 +4,8 @@ import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.network.AccountNetworkDataSource
-import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.network.NetworkErrorType
+import com.peekr.data.shared.util.network.NetworkResult
 import com.peekr.data.shared.util.network.toErrorType
 import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
