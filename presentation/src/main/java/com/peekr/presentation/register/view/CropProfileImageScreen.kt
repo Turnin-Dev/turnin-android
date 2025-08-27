@@ -16,7 +16,7 @@ import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.designsystem.util.icon.Cancel
 import com.peekr.designsystem.util.icon.PeekrIcons
 import com.peekr.presentation.R
-import com.peekr.presentation.shared.image.cropper.ImageCropper
+import com.peekr.presentation.shared.file.image.cropper.ImageCropper
 import com.peekr.presentation.shared.util.ScreenTokens
 
 /**

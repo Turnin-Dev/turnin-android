@@ -38,8 +38,8 @@ fun MainNavigation(
                     onNavigateMain = {
                         mainNavController.navigate(Screens.TempMain)
                     },
-                    onNavigateRegister = {
-                        mainNavController.navigate(SubGraph.Register)
+                    onNavigateRegister = { provider, providerId ->
+                        mainNavController.navigate(SubGraph.Register(provider, providerId))
                     },
                 )
             }

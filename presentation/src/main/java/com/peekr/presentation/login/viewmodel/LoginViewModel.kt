@@ -8,6 +8,8 @@ import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.presentation.login.model.UiSocialLoginProvider
+import com.peekr.presentation.login.model.toDomainModel
+import com.peekr.presentation.login.model.toUiModel
 import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.login.state.LoginUiEvent
 import com.peekr.presentation.shared.util.error.errorTypeFirst
@@ -62,7 +64,10 @@ class LoginViewModel @Inject constructor(
         _loginState.update {
             it.copy(
                 loading = false,
-                event = LoginUiEvent.NavigateToRegister(login.provider, login.providerId),
+                event = LoginUiEvent.NavigateToRegister(
+                    login.provider.toUiModel(),
+                    login.providerId.uid,
+                ),
             )
         }
     }

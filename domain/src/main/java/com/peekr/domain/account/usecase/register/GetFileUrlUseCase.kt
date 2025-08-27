@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * 파일 업로드가 완료되면 파일의 url을 반환한다, 파일 업로드가 정상적으로 이루어지지 않았을 경우 `null`을 반환한다.
  */
-class GetFileUrlUseCase @Inject internal constructor(
+internal class GetFileUrlUseCase @Inject internal constructor(
     private val getFileUploadPresignedUrlUseCase: GetFileUploadPresignedUrlUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
 ) {
