@@ -1,5 +1,6 @@
 package com.peekr.presentation.shared
 
+import com.peekr.presentation.login.model.UiSocialLoginProvider
 import kotlinx.serialization.Serializable
 
 /** 중첩 네비게이션을 필요로 할 때 여기서 선언해 사용한다. */
@@ -8,7 +9,10 @@ sealed interface SubGraph {
     data object Login : SubGraph
 
     @Serializable
-    data object Register : SubGraph
+    data class Register(
+        val provider: UiSocialLoginProvider,
+        val providerId: String,
+    ) : SubGraph
 }
 
 sealed interface LoginGraph {

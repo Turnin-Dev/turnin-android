@@ -23,6 +23,7 @@ fun NetworkErrorType.toErrorType(): ErrorType = when (this) {
     NetworkErrorType.Network.ServiceUnavailable -> ErrorType.Network.ServerError
     NetworkErrorType.Network.GatewayTimeout -> ErrorType.Network.ServerError
     NetworkErrorType.Network.ConnectionFailed -> ErrorType.Network.ConnectionFailed
+    NetworkErrorType.Network.InvalidFileType -> ErrorType.Network.InvalidFileType
     // ------------------------------ Unexpected ------------------------------
     is NetworkErrorType.Unexpected -> ErrorType.Unexpected(this.cause)
 }

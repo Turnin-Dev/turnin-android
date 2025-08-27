@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.ExistsResult
 import com.peekr.domain.account.usecase.register.CheckDisplayIdExistsUseCase
+import com.peekr.domain.account.usecase.register.RegisterIntegrationUseCase
 import com.peekr.domain.account.usecase.register.ValidateDisplayIdUseCase
 import com.peekr.domain.account.usecase.register.ValidateIntroduceUseCase
 import com.peekr.domain.account.usecase.register.ValidateNameUseCase
@@ -12,10 +13,15 @@ import com.peekr.domain.shared.util.CommonValidationError
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.domain.shared.util.ValidationResult
+import com.peekr.presentation.login.model.UiSocialLoginProvider
+import com.peekr.presentation.login.model.toDomainModel
+import com.peekr.presentation.register.model.UiImageFileDetail
+import com.peekr.presentation.register.model.toDomainModel
 import com.peekr.presentation.register.state.RegisterDisplayIdState
 import com.peekr.presentation.register.state.RegisterEventState
 import com.peekr.presentation.register.state.RegisterNameState
 import com.peekr.presentation.register.state.RegisterProfileState
+import com.peekr.presentation.shared.file.image.toByteArray
 import com.peekr.presentation.shared.util.error.asUiText
 import com.peekr.presentation.shared.util.error.errorTypeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +44,7 @@ class RegisterViewModel @Inject constructor(
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateIntroduceUseCase: ValidateIntroduceUseCase,
     private val checkDisplayIdExistsUseCase: CheckDisplayIdExistsUseCase,
+    private val registerIntegrationUseCase: RegisterIntegrationUseCase,
 ) : ViewModel() {
     private val _displayIdState = MutableStateFlow(RegisterDisplayIdState())
     val displayIdState = _displayIdState.asStateFlow()
@@ -57,6 +64,7 @@ class RegisterViewModel @Inject constructor(
         validateIntroduceState()
     }
 
+    // ------------------------------ 단순한 값 상태 업데이트 ------------------------------
     fun onDisplayIdChanged(displayId: String) {
         _displayIdState.update { it.copy(displayId = displayId) }
     }
@@ -76,8 +84,53 @@ class RegisterViewModel @Inject constructor(
     fun selectOriginalImage(image: ImageBitmap?) {
         _profileState.update { it.copy(originalImage = image) }
         image?.let {
-            _registerEventState.update { it.copy(navigateToNextScreen = true) }
+            _registerEventState.update { it.copy(navigateToCropImageScreen = true) }
         }
+    }
+
+    // ------------------------------ UI 비즈니스 로직 ------------------------------
+
+    /**
+     * 회원가입을 진행한다.
+     *
+     * @param provider presentation 계층용 소셜로그인 플랫폼
+     * @param providerId 소셜로그인 플랫폼 ID
+     * @param image [ImageBitmap]타입의 프로필 이미지
+     */
+    fun register(
+        provider: UiSocialLoginProvider,
+        providerId: String,
+        image: ImageBitmap?,
+    ) {
+        val imageFileDetail = image
+            ?.let {
+                UiImageFileDetail.create(image.toByteArray(), nameState.value.name)
+            }?.toDomainModel()
+        registerIntegrationUseCase(
+            provider = provider.toDomainModel(),
+            providerId = providerId,
+            displayId = displayIdState.value.displayId,
+            name = nameState.value.name,
+            imageFileDetail = imageFileDetail,
+            introduce = profileState.value.introduce,
+        ).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    _profileState.update { it.copy(loading = true) }
+                }
+
+                is Result.Error<ErrorType> -> {
+                    _profileState.update {
+                        it.copy(introduceError = result.errorTypeFirst(), loading = false)
+                    }
+                }
+
+                is Result.Success -> {
+                    _profileState.update { it.copy(loading = false) }
+                    _registerEventState.update { it.copy(navigateToNextScreen = true) }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     /**
@@ -110,6 +163,7 @@ class RegisterViewModel @Inject constructor(
                                     it.copy(displayIdError = RegisterError.DisplayIdNotAvailable.asUiText())
                                 }
                             } else {
+                                _displayIdState.update { it.copy(displayIdError = null) }
                                 _registerEventState.update { it.copy(navigateToNextScreen = true) }
                             }
                             _displayIdState.update { it.copy(loading = false) }
@@ -126,13 +180,16 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    // ------------------------------ 초기화 로직 ------------------------------
+
     /** [RegisterDisplayIdState] - displayId 상태 값이 변할 때 마다 유효성 검사를 수행할 수 있게 한다. */
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun validateDisplayIdState() {
         displayIdState
             .map { it.displayId }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
+            .onEach { if (it.isBlank()) _displayIdState.update { s -> s.copy(canNext = false) } }
+            .filter { it.isNotBlank() }
             .flatMapLatest { displayId -> validateDisplayIdUseCase(displayId) }
             .onEach { result ->
                 when (result) {
@@ -151,7 +208,8 @@ class RegisterViewModel @Inject constructor(
         nameState
             .map { it.name }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
+            .onEach { if (it.isBlank()) _nameState.update { s -> s.copy(canNext = false) } }
+            .filter { it.isNotBlank() }
             .flatMapLatest { name -> validateNameUseCase(name) }
             .onEach { result ->
                 when (result) {
@@ -170,7 +228,8 @@ class RegisterViewModel @Inject constructor(
         profileState
             .map { it.introduce }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
+            .onEach { if (it.isBlank()) _profileState.update { s -> s.copy(canNext = false) } }
+            .filter { it.isNotBlank() }
             .flatMapLatest { introduce -> validateIntroduceUseCase(introduce) }
             .onEach { result ->
                 when (result) {
@@ -186,7 +245,13 @@ class RegisterViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
+    // ------------------------------ 초기화 및 자원 정리 로직 ------------------------------
     fun onConsumeEventState() {
-        _registerEventState.update { it.copy(navigateToNextScreen = false) }
+        _registerEventState.update {
+            it.copy(
+                navigateToNextScreen = false,
+                navigateToCropImageScreen = false,
+            )
+        }
     }
 }

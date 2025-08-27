@@ -1,4 +1,4 @@
-package com.peekr.presentation.shared.image.cropper
+package com.peekr.presentation.shared.file.image.cropper
 
 import android.net.Uri
 import android.widget.Toast
@@ -59,8 +59,9 @@ fun SinglePhotoPicker(
                         Toast.LENGTH_SHORT,
                     ).show()
                 onSelected(null)
+            } finally {
+                onClose()
             }
-            onClose()
         }
     }
 

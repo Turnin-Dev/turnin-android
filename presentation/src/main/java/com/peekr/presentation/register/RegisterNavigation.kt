@@ -1,5 +1,6 @@
 package com.peekr.presentation.register
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
@@ -7,11 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
 import com.peekr.presentation.register.view.CropProfileImageScreen
@@ -19,13 +22,20 @@ import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import com.peekr.presentation.shared.RegisterGraph
 import com.peekr.presentation.shared.SubGraph
-import com.peekr.presentation.shared.image.cropper.SinglePhotoPicker
+import com.peekr.presentation.shared.file.image.cropper.SinglePhotoPicker
 import com.peekr.presentation.shared.util.event.LaunchedUiEffectHandler
 import com.peekr.presentation.shared.util.sharedViewModel
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
     navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayId) {
         composable<RegisterGraph.DisplayId> { backStackEntry ->
+//            val registerEntry = navController.getBackStackEntry<SubGraph.Register>()
+//            val registerArgs = registerEntry.toRoute<SubGraph.Register>()
+//            val argProvider = registerArgs.provider
+//            val argProviderId = registerArgs.providerId
+//            LaunchedEffect(Unit) {
+//                Log.d("registerArgs", "$argProvider, $argProviderId")
+//            }
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
@@ -83,6 +93,10 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
         }
 
         composable<RegisterGraph.Profile> { backStackEntry ->
+            val registerEntry = navController.getBackStackEntry<SubGraph.Register>()
+            val registerArgs = registerEntry.toRoute<SubGraph.Register>()
+            val argProvider = registerArgs.provider
+            val argProviderId = registerArgs.providerId
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
@@ -98,12 +112,20 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 onClose = { photoPickerOpen = false },
             )
 
+            val context = LocalContext.current
             LaunchedUiEffectHandler(
                 effectFlow = registerViewModel.registerEventState,
                 onConsumeEffect = { registerViewModel.onConsumeEventState() },
                 onEffect = { event ->
-                    if (event.navigateToNextScreen) {
-                        navController.navigate(RegisterGraph.CropProfileImage)
+                    when {
+                        event.navigateToNextScreen -> {
+                            // 메인 페이지로 이동
+                            Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                        }
+
+                        event.navigateToCropImageScreen -> {
+                            navController.navigate(RegisterGraph.CropProfileImage)
+                        }
                     }
                 },
             )
@@ -124,7 +146,11 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 onProfileImageClick = { photoPickerOpen = true },
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = {
-                    // TODO 회원가입 완료 처리
+                    registerViewModel.register(
+                        provider = argProvider,
+                        providerId = argProviderId,
+                        image = profileState.image,
+                    )
                 },
             )
         }

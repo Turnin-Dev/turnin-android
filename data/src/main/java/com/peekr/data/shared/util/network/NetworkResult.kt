@@ -1,6 +1,4 @@
-package com.peekr.data.shared.util
-
-import com.peekr.data.shared.util.network.NetworkErrorType
+package com.peekr.data.shared.util.network
 
 /**
  * 네트워크 호출 결과 래퍼 클래스

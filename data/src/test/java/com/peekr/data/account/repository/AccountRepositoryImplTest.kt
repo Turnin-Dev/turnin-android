@@ -2,16 +2,22 @@ package com.peekr.data.account.repository
 
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
+import com.peekr.data.account.model.response.PresignedUrlResponse
+import com.peekr.data.account.model.response.RegisterResponse
 import com.peekr.data.account.network.AccountNetworkDataSource
-import com.peekr.data.shared.util.NetworkResult
 import com.peekr.data.shared.util.network.NetworkErrorType
+import com.peekr.data.shared.util.network.NetworkResult
 import com.peekr.data.shared.util.network.toErrorType
 import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
+import com.peekr.domain.account.model.Mime
+import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.model.ProviderId
+import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
+import com.peekr.domain.account.model.Username
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.shared.util.Result
 import io.mockk.coEvery
@@ -152,6 +158,70 @@ class AccountRepositoryImplTest {
             assertEquals(result.message, mockErrorMessage)
         }
 
+    @Test
+    fun `getFileUploadPresignedUrl() 성공 테스트`() =
+        runTest {
+            // given
+            coEvery {
+                dataSource.getFileUploadPresignedUrl(any(), any())
+            } returns NetworkResult.Success(mockPresignedUrlResponse)
+
+            // when
+            val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+
+            // then
+            assertTrue(result is Result.Success)
+            assertEquals(mockPresignedUrl, (result as Result.Success).data)
+        }
+
+    @Test
+    fun `getFileUploadPresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
+        runTest {
+            // given
+            coEvery {
+                dataSource.getFileUploadPresignedUrl(any(), any())
+            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+
+            // when
+            val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+
+            // then
+            assertTrue(result is Result.Error)
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals(result.message, mockErrorMessage)
+        }
+
+    @Test
+    fun `register() 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.register(any())
+        } returns NetworkResult.Success(mockRegisterResponse)
+
+        // when
+        val result = repository.register(mockRegister).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(mockJWTToken, (result as Result.Success).data)
+    }
+
+    @Test
+    fun `register() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
+        // given
+        coEvery {
+            dataSource.register(any())
+        } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+
+        // when
+        val result = repository.register(mockRegister).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+        assertEquals(result.message, mockErrorMessage)
+    }
+
     companion object {
         private val mockProviderId = ProviderId("123")
         private val mockLogin = Login(SocialLoginProvider.GOOGLE, mockProviderId)
@@ -164,5 +234,16 @@ class AccountRepositoryImplTest {
         private val mockNotExistsResponse = ExistsResponse(false)
         private val mockExistsUser = ExistsUser(SocialLoginProvider.GOOGLE, mockProviderId)
         private val mockDisplayId = DisplayId("123")
+        private val mockPresignedUrlResponse = PresignedUrlResponse("example.com", "PUT", 600)
+        private val mockPresignedUrl = PresignedUrl("example.com", "PUT", 600)
+        private val mockRegisterResponse = RegisterResponse(mockAccessToken, mockRefreshToken)
+        private val mockRegister = Register(
+            provider = SocialLoginProvider.GOOGLE,
+            providerId = ProviderId("123"),
+            displayId = DisplayId("123"),
+            name = Username("hong"),
+            profileImageUrl = null,
+            introduce = null,
+        )
     }
 }

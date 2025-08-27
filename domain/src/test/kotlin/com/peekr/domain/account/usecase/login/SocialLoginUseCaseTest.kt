@@ -1,9 +1,8 @@
-package com.peekr.domain.account.usecase
+package com.peekr.domain.account.usecase.login
 
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.usecase.login.SocialLoginUseCase
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.account.util.AuthManagerFactory
 import com.peekr.domain.shared.util.Result

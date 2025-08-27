@@ -8,4 +8,6 @@ package com.peekr.presentation.register.state
 data class RegisterEventState(
     /** 다음 화면으로 이동 이벤트 */
     val navigateToNextScreen: Boolean = false,
+    /** 사진 편집 화면으로 이동 이벤트 */
+    val navigateToCropImageScreen: Boolean = false,
 )

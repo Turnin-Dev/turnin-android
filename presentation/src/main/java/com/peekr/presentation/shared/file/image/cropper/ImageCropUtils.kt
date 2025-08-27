@@ -1,4 +1,4 @@
-package com.peekr.presentation.shared.image.cropper
+package com.peekr.presentation.shared.file.image.cropper
 
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import coil.Coil
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import java.lang.Exception
@@ -103,7 +104,7 @@ suspend fun uriToBitmap(
     imageUri: Uri,
 ): ImageBitmap? = withContext(Dispatchers.IO) {
     try {
-        val loader = coil.Coil.imageLoader(context)
+        val loader = Coil.imageLoader(context)
         val request = ImageRequest
             .Builder(context)
             .data(imageUri)
