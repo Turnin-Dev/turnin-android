@@ -29,6 +29,13 @@ import com.peekr.presentation.shared.util.sharedViewModel
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
     navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayId) {
         composable<RegisterGraph.DisplayId> { backStackEntry ->
+//            val registerEntry = navController.getBackStackEntry<SubGraph.Register>()
+//            val registerArgs = registerEntry.toRoute<SubGraph.Register>()
+//            val argProvider = registerArgs.provider
+//            val argProviderId = registerArgs.providerId
+//            LaunchedEffect(Unit) {
+//                Log.d("registerArgs", "$argProvider, $argProviderId")
+//            }
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
@@ -86,7 +93,8 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
         }
 
         composable<RegisterGraph.Profile> { backStackEntry ->
-            val registerArgs = backStackEntry.toRoute<SubGraph.Register>()
+            val registerEntry = navController.getBackStackEntry<SubGraph.Register>()
+            val registerArgs = registerEntry.toRoute<SubGraph.Register>()
             val argProvider = registerArgs.provider
             val argProviderId = registerArgs.providerId
             val registerViewModel: RegisterViewModel =

@@ -7,11 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.shared.SubGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,10 +42,23 @@ class MainActivity : ComponentActivity() {
 
                     // 테스트용
                     NavHost(
-                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
                         navController = mainNavController,
-                        startDestination = SubGraph.Register,
+                        startDestination = "test-start",
                     ) {
+                        composable(route = "test-start") {
+                            LaunchedEffect(Unit) {
+                                mainNavController.navigate(
+                                    SubGraph.Register(
+                                        provider = UiSocialLoginProvider.GOOGLE,
+                                        providerId = "asdasasd",
+                                    ),
+                                )
+                            }
+                        }
+
                         registerNavigation(navController = mainNavController)
                     }
                 }

@@ -163,6 +163,7 @@ class RegisterViewModel @Inject constructor(
                                     it.copy(displayIdError = RegisterError.DisplayIdNotAvailable.asUiText())
                                 }
                             } else {
+                                _displayIdState.update { it.copy(displayIdError = null) }
                                 _registerEventState.update { it.copy(navigateToNextScreen = true) }
                             }
                             _displayIdState.update { it.copy(loading = false) }
@@ -187,7 +188,8 @@ class RegisterViewModel @Inject constructor(
         displayIdState
             .map { it.displayId }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
+            .onEach { if (it.isBlank()) _displayIdState.update { s -> s.copy(canNext = false) } }
+            .filter { it.isNotBlank() }
             .flatMapLatest { displayId -> validateDisplayIdUseCase(displayId) }
             .onEach { result ->
                 when (result) {
@@ -206,7 +208,8 @@ class RegisterViewModel @Inject constructor(
         nameState
             .map { it.name }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
+            .onEach { if (it.isBlank()) _nameState.update { s -> s.copy(canNext = false) } }
+            .filter { it.isNotBlank() }
             .flatMapLatest { name -> validateNameUseCase(name) }
             .onEach { result ->
                 when (result) {
@@ -225,7 +228,8 @@ class RegisterViewModel @Inject constructor(
         profileState
             .map { it.introduce }
             .distinctUntilChanged()
-            .filter { it.isNotEmpty() }
+            .onEach { if (it.isBlank()) _profileState.update { s -> s.copy(canNext = false) } }
+            .filter { it.isNotBlank() }
             .flatMapLatest { introduce -> validateIntroduceUseCase(introduce) }
             .onEach { result ->
                 when (result) {
