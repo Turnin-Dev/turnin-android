@@ -115,7 +115,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                             Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
                         }
 
-                        event.navigateToCropImageScreen == true -> {
+                        event.navigateToCropImageScreen -> {
                             navController.navigate(RegisterGraph.CropProfileImage)
                         }
                     }

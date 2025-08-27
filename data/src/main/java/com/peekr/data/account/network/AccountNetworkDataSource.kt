@@ -42,6 +42,7 @@ interface AccountNetworkDataSource {
      *
      * @param fileName 파일 이름
      * @param mime 파일 형태
+     * @return 성공 시 [PresignedUrlResponse], 실패 시 [NetworkResult.Error]
      */
     suspend fun getFileUploadPresignedUrl(
         fileName: String,

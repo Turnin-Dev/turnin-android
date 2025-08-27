@@ -2,6 +2,7 @@ package com.peekr.data.account.model.request
 
 import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
+import com.squareup.moshi.JsonClass
 
 /**
  * 회원가입 요청 바디
@@ -13,6 +14,7 @@ import com.peekr.domain.account.model.SocialLoginProvider
  * @param profileImageUrl 사용자 프로필 이미지 url
  * @param introduce 사용자 소개 글
  */
+@JsonClass(generateAdapter = true)
 data class RegisterRequest(
     val provider: SocialLoginProvider,
     val providerId: String,

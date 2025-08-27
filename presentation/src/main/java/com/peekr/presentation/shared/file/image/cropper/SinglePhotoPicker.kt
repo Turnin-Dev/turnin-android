@@ -59,8 +59,9 @@ fun SinglePhotoPicker(
                         Toast.LENGTH_SHORT,
                     ).show()
                 onSelected(null)
+            } finally {
+                onClose()
             }
-            onClose()
         }
     }
 

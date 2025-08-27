@@ -126,6 +126,7 @@ class RegisterViewModel @Inject constructor(
                 }
 
                 is Result.Success -> {
+                    _profileState.update { it.copy(loading = false) }
                     _registerEventState.update { it.copy(navigateToNextScreen = true) }
                 }
             }

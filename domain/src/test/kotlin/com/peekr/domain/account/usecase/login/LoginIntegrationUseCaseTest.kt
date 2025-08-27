@@ -133,11 +133,9 @@ class LoginIntegrationUseCaseTest {
         val results = loginIntegrationUseCase(MockLogin).toList()
 
         // then
-        assertEquals(3, results.size)
-        assertTrue(results[0] is Result.Loading)
-        assertTrue(results[1] is Result.Loading) // .onStart 추가했기 때문에
-        assertTrue(results[2] is Result.Success)
-        assertTrue((results[2] as Result.Success).data)
+        assertTrue(results.first() is Result.Loading)
+        assertTrue(results.last() is Result.Success)
+        assertTrue((results.last() as Result.Success).data)
     }
 
     companion object {

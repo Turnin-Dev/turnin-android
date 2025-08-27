@@ -63,6 +63,20 @@ class AccountNetworkDataSourceImpl @Inject constructor(
             Timber.e(e, "File upload failed: ${e.message}")
             throw e
         }
+
+        return try {
+            okHttpClient.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    NetworkResult.Success(true)
+                } else {
+                    Timber.w("File upload failed: HTTP ${response.code}")
+                    NetworkResult.Success(false) // 정책에 따라 Error로 바꿔도 좋습니다.
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "File upload failed: ${e.message}")
+            throw e
+        }
     }
 
     override suspend fun register(registerRequest: RegisterRequest): NetworkResult<RegisterResponse> =
