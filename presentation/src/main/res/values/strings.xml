@@ -33,7 +33,7 @@
     <string name="register_screen_error_cant_use_empty_or_blank">공백은 허용되지 않습니다.</string>
     <string name="register_screen_error_image_file_is_null">사진을 불러오지 못했습니다. 다시 시도해주세요.</string>
 
-    <!-- Error Message Strings -->
+    <!-- Error Type -->
     <!-- ErrorType - Auth -->
     <string name="error_auth_id_token_parsing">아이디 토큰을 파싱하는데 문제가 발생했습니다.</string>
     <string name="error_auth_cancellation">인증 과정이 취소되었습니다.</string>
@@ -57,6 +57,11 @@
     <string name="error_network_invalid_file_type">지원하지 않는 파일 형식입니다.</string>
     <!-- ErrorType - Unexpected -->
     <string name="error_unexpected">알 수 없는 오류가 발생했습니다. (잠시 후 다시 시도 해주세요.)</string>
+
+    <!-- Error Code -->
+    <!-- Error Code - Auth -->
+    <string name="error_code_auth_a002">중복된 사용자 입니다.</string>
+    <string name="error_code_unexpected">알 수 없는 오류가 발생했습니다. (잠시 후 다시 시도 해주세요.)</string>
 
     <!-- SinglePhotoPicker -->
     <string name="single_photo_picker_invalid_image_format">이미지가 올바르지 않은 형식입니다.</string>
