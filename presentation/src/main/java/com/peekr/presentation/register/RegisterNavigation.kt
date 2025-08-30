@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -166,8 +167,10 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
 
-            if (profileState.originalImage == null) {
-                navController.popBackStack()
+            LaunchedEffect(profileState.originalImage) {
+                if (profileState.originalImage == null) {
+                    navController.popBackStack()
+                }
             }
 
             CropProfileImageScreen(

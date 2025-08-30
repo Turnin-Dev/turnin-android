@@ -12,7 +12,7 @@ import com.peekr.presentation.login.model.toDomainModel
 import com.peekr.presentation.login.model.toUiModel
 import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.login.state.LoginUiEvent
-import com.peekr.presentation.shared.util.error.errorDisplay
+import com.peekr.presentation.shared.util.error.asUiTextTypeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -106,7 +106,7 @@ class LoginViewModel @Inject constructor(
             }
 
             is Result.Error<ErrorType> -> {
-                val error = result.errorDisplay()
+                val error = result.asUiTextTypeFirst()
                 _loginState.update { it.copy(loading = false, error = error) }
             }
 

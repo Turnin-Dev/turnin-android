@@ -77,7 +77,7 @@ class AccountRepositoryImpl @Inject constructor(
         emit(Result.Loading)
         when (val result = accountNetworkDataSource.uploadFile(presignedUrl, file, mime.type)) {
             is NetworkResult.Success -> {
-                val imageUrl = AppConfig.cloudStorageServerUrl + fileName
+                val imageUrl = createImageUrl(fileName)
                 if (result.data) {
                     emit(Result.Success(imageUrl))
                 } else {
@@ -110,10 +110,16 @@ class AccountRepositoryImpl @Inject constructor(
                 }
             }
         }
-}
 
-private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =
-    when (result) {
-        is NetworkResult.Success -> Result.Success(result.data.exists)
-        is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
+    private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =
+        when (result) {
+            is NetworkResult.Success -> Result.Success(result.data.exists)
+            is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
+        }
+
+    private fun createImageUrl(fileName: String): String = buildString {
+        append(AppConfig.cloudStorageServerUrl.trimEnd('/'))
+        append('/')
+        append(fileName.trimStart('/'))
     }
+}
