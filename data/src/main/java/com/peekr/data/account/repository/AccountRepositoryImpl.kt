@@ -19,6 +19,7 @@ import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
+import com.peekr.domain.shared.util.toErrorCode
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +77,7 @@ class AccountRepositoryImpl @Inject constructor(
         emit(Result.Loading)
         when (val result = accountNetworkDataSource.uploadFile(presignedUrl, file, mime.type)) {
             is NetworkResult.Success -> {
-                val imageUrl = AppConfig.cloudStorageServerUrl + fileName
+                val imageUrl = createImageUrl(fileName)
                 if (result.data) {
                     emit(Result.Success(imageUrl))
                 } else {
@@ -99,14 +100,26 @@ class AccountRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    emit(
+                        Result.Error(
+                            error = result.error.toErrorType(),
+                            message = result.message,
+                            code = result.code?.toErrorCode(),
+                        ),
+                    )
                 }
             }
         }
-}
 
-private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =
-    when (result) {
-        is NetworkResult.Success -> Result.Success(result.data.exists)
-        is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
+    private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =
+        when (result) {
+            is NetworkResult.Success -> Result.Success(result.data.exists)
+            is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
+        }
+
+    private fun createImageUrl(fileName: String): String = buildString {
+        append(AppConfig.cloudStorageServerUrl.trimEnd('/'))
+        append('/')
+        append(fileName.trimStart('/'))
     }
+}

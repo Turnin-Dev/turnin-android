@@ -1,8 +1,15 @@
 package com.peekr.presentation.register
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,8 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
@@ -25,17 +35,11 @@ import com.peekr.presentation.shared.SubGraph
 import com.peekr.presentation.shared.file.image.cropper.SinglePhotoPicker
 import com.peekr.presentation.shared.util.event.LaunchedUiEffectHandler
 import com.peekr.presentation.shared.util.sharedViewModel
+import kotlin.reflect.KType
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
     navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayId) {
-        composable<RegisterGraph.DisplayId> { backStackEntry ->
-//            val registerEntry = navController.getBackStackEntry<SubGraph.Register>()
-//            val registerArgs = registerEntry.toRoute<SubGraph.Register>()
-//            val argProvider = registerArgs.provider
-//            val argProviderId = registerArgs.providerId
-//            LaunchedEffect(Unit) {
-//                Log.d("registerArgs", "$argProvider, $argProviderId")
-//            }
+        animatedComposable<RegisterGraph.DisplayId> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
@@ -68,7 +72,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             )
         }
 
-        composable<RegisterGraph.Name> { backStackEntry ->
+        animatedComposable<RegisterGraph.Name> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val nameState by registerViewModel.nameState.collectAsStateWithLifecycle()
@@ -92,8 +96,10 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             )
         }
 
-        composable<RegisterGraph.Profile> { backStackEntry ->
-            val registerEntry = navController.getBackStackEntry<SubGraph.Register>()
+        animatedComposable<RegisterGraph.Profile> { backStackEntry ->
+            val registerEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<SubGraph.Register>()
+            }
             val registerArgs = registerEntry.toRoute<SubGraph.Register>()
             val argProvider = registerArgs.provider
             val argProviderId = registerArgs.providerId
@@ -135,6 +141,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                     .fillMaxSize()
                     .background(PeekrTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_profile_title,
+                subTitle = R.string.register_screen_profile_sub_title,
                 placeholder = R.string.register_screen_profile_placeholder,
                 buttonTitle = R.string.register_screen_btn_start,
                 text = profileState.introduce,
@@ -155,13 +162,15 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             )
         }
 
-        composable<RegisterGraph.CropProfileImage> { backStackEntry ->
+        animatedComposable<RegisterGraph.CropProfileImage> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
 
-            if (profileState.originalImage == null) {
-                navController.popBackStack()
+            LaunchedEffect(profileState.originalImage) {
+                if (profileState.originalImage == null) {
+                    navController.popBackStack()
+                }
             }
 
             CropProfileImageScreen(
@@ -175,4 +184,22 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
             )
         }
     }
+}
+
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    noinline sizeTransform: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards SizeTransform?)? = null,
+    noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
+) {
+    composable<T>(
+        enterTransition = { slideInHorizontally { it } },
+        exitTransition = { slideOutHorizontally { -it } },
+        popEnterTransition = { slideInHorizontally { -it } },
+        popExitTransition = { slideOutHorizontally { it } },
+        typeMap = typeMap,
+        deepLinks = deepLinks,
+        sizeTransform = sizeTransform,
+        content = content,
+    )
 }

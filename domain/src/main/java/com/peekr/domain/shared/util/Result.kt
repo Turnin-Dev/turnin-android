@@ -15,13 +15,13 @@ sealed interface Result<out T, out E : BaseError> {
      * 실패 시
      *
      * @property error 에러 타입
-     * @property message 에러 메시지
-     * @property detail 에러 부가 설명 (보통 로그용으로 사용한다.)
+     * @property message 에러 메시지 (서버에서 받은 메시지이므로 로그용으로 사용을 권장한다.)
+     * @property code 에러 코드 (서버와 통일된 에러 코드)
      */
     data class Error<out E : BaseError>(
         val error: E,
         val message: String? = null,
-        val detail: String? = null,
+        val code: ErrorCode? = null,
     ) : Result<Nothing, E>
 
     data object Loading : Result<Nothing, Nothing>

@@ -1,28 +1,42 @@
 package com.peekr.presentation.shared.util.error
 
+import com.peekr.domain.shared.util.ErrorCode
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.presentation.R
 import com.peekr.presentation.shared.util.UiText
 
 /**
- * ErrorType의 에러 메시지를 먼저 표시한다.
+ * [Result.Error]를 [UiText]타입으로 변환하여 표시한다.
  *
- * - [includeUnexpected]가 `false`인 경우, [ErrorType.Unexpected.cause]의 메시지를 표시하지 않고
- * - [includeUnexpected]가 `true`인 경우, [ErrorType.Unexpected.cause]의 메시지를 표시한다.
- *
- * @param includeUnexpected [ErrorType.Unexpected]의 포함 여부를 나타낸다.
+ * @param errorTypeFirst `true`인 경우 [ErrorType]를 먼저 표시하고, `false`인 경우 [ErrorCode]를 먼저 표시한다.
  */
-fun Result.Error<ErrorType>.errorTypeFirst(includeUnexpected: Boolean = false): UiText =
-    if (includeUnexpected) {
-        when {
-            this.error !is ErrorType.Unexpected -> this.error.asUiText()
-            this.message != null -> UiText.DynamicString(this.message!!)
-            else -> UiText.StringResource(R.string.error_unexpected)
-        }
+private fun Result.Error<ErrorType>.errorAsUiText(errorTypeFirst: Boolean = true): UiText {
+    val codeAsUiText = code?.asUiText()
+    val typeAsUiText = error.takeUnless { it is ErrorType.Unexpected }?.asUiText()
+    return if (errorTypeFirst) {
+        typeAsUiText ?: codeAsUiText ?: UiText.StringResource(R.string.error_unexpected)
     } else {
-        when {
-            this.error !is ErrorType.Unexpected -> this.error.asUiText()
-            else -> UiText.StringResource(R.string.error_unexpected)
-        }
+        codeAsUiText ?: typeAsUiText ?: UiText.StringResource(R.string.error_unexpected)
     }
+}
+
+/**
+ * [Result.Error]를 [UiText]타입으로 변환한다.
+ *
+ * 1. [ErrorType]를 먼저 표시
+ * 2. (1번이 null이면) [ErrorCode]를 표시
+ *
+ * @see errorAsUiText
+ */
+fun Result.Error<ErrorType>.asUiTextTypeFirst(): UiText = errorAsUiText(errorTypeFirst = true)
+
+/**
+ * [Result.Error]를 [UiText]타입으로 변환한다.
+ *
+ * 1. [ErrorCode]를 먼저 표시
+ * 2. (1번이 null이면) [ErrorType]를 표시
+ *
+ * @see errorAsUiText
+ */
+fun Result.Error<ErrorType>.asUiTextCodeFirst(): UiText = errorAsUiText(errorTypeFirst = false)
