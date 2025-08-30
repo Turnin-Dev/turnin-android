@@ -140,6 +140,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                     .fillMaxSize()
                     .background(PeekrTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_profile_title,
+                subTitle = R.string.register_screen_profile_sub_title,
                 placeholder = R.string.register_screen_profile_placeholder,
                 buttonTitle = R.string.register_screen_btn_start,
                 text = profileState.introduce,

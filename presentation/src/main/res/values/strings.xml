@@ -17,6 +17,7 @@
     <string name="register_screen_name_sub_title">* 다른 사용자에게 표시되는 이름이에요</string>
     <string name="register_screen_name_placeholder">프로필 이름</string>
     <string name="register_screen_profile_title">프로필을 설정해주세요.</string>
+    <string name="register_screen_profile_sub_title">* 사진은 .jpeg/.jpg 형식만 가능해요.</string>
     <string name="register_screen_profile_desc_avatar">프로필 사진</string>
     <string name="register_screen_profile_placeholder">나를 1 ~ 2줄로 간단히 표현해주세요.</string>
     <string name="register_screen_btn_next">다음</string>
