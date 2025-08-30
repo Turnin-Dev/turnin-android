@@ -19,6 +19,7 @@ import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
+import com.peekr.domain.shared.util.toErrorCode
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -99,7 +100,13 @@ class AccountRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    emit(
+                        Result.Error(
+                            error = result.error.toErrorType(),
+                            message = result.message,
+                            code = result.code?.toErrorCode(),
+                        ),
+                    )
                 }
             }
         }

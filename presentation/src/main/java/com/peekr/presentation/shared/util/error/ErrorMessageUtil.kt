@@ -1,27 +1,26 @@
 package com.peekr.presentation.shared.util.error
 
+import com.peekr.domain.shared.util.ErrorCode
 import com.peekr.domain.shared.util.ErrorType
 import com.peekr.domain.shared.util.Result
 import com.peekr.presentation.R
 import com.peekr.presentation.shared.util.UiText
 
 /**
- * ErrorType의 에러 메시지를 먼저 표시한다.
+ * [Result.Error]를 [UiText]타입으로 변환하여 표시한다.
  *
- * - [includeUnexpected]가 `false`인 경우, [ErrorType.Unexpected.cause]의 메시지를 표시하지 않고
- * - [includeUnexpected]가 `true`인 경우, [ErrorType.Unexpected.cause]의 메시지를 표시한다.
- *
- * @param includeUnexpected [ErrorType.Unexpected]의 포함 여부를 나타낸다.
+ * @param errorTypeFirst `true`인 경우 [ErrorType]를 먼저 표시하고, `false`인 경우 [ErrorCode]를 먼저 표시한다.
  */
-fun Result.Error<ErrorType>.errorTypeFirst(includeUnexpected: Boolean = false): UiText =
-    if (includeUnexpected) {
+fun Result.Error<ErrorType>.errorDisplay(errorTypeFirst: Boolean = true): UiText =
+    if (errorTypeFirst) {
         when {
             this.error !is ErrorType.Unexpected -> this.error.asUiText()
-            this.message != null -> UiText.DynamicString(this.message!!)
+            this.code != null -> this.code!!.asUiText()
             else -> UiText.StringResource(R.string.error_unexpected)
         }
     } else {
         when {
+            this.code != null -> this.code!!.asUiText()
             this.error !is ErrorType.Unexpected -> this.error.asUiText()
             else -> UiText.StringResource(R.string.error_unexpected)
         }

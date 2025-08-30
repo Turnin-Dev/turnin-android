@@ -23,7 +23,7 @@ import com.peekr.presentation.register.state.RegisterNameState
 import com.peekr.presentation.register.state.RegisterProfileState
 import com.peekr.presentation.shared.file.image.toByteArray
 import com.peekr.presentation.shared.util.error.asUiText
-import com.peekr.presentation.shared.util.error.errorTypeFirst
+import com.peekr.presentation.shared.util.error.errorDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -121,7 +121,7 @@ class RegisterViewModel @Inject constructor(
 
                 is Result.Error<ErrorType> -> {
                     _profileState.update {
-                        it.copy(introduceError = result.errorTypeFirst(), loading = false)
+                        it.copy(introduceError = result.errorDisplay(false), loading = false)
                     }
                 }
 
@@ -152,7 +152,7 @@ class RegisterViewModel @Inject constructor(
 
                         is Result.Error<ErrorType> -> {
                             _displayIdState.update {
-                                it.copy(displayIdError = result.errorTypeFirst(), loading = false)
+                                it.copy(displayIdError = result.errorDisplay(), loading = false)
                             }
                         }
 
