@@ -11,9 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.peekr.presentation.login.LoginRoute
+import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
-import com.peekr.presentation.shared.LoginGraph
 import com.peekr.presentation.shared.Screens
 import com.peekr.presentation.shared.SubGraph
 
@@ -30,20 +29,7 @@ fun MainNavigation(
         navController = mainNavController,
         startDestination = SubGraph.Login,
     ) {
-        navigation<SubGraph.Login>(startDestination = LoginGraph.Default) {
-            composable<LoginGraph.Default> {
-                // TODO: 메인 혹은 로그인 화면으로 이동 시 적절한 백스택 전략 적용 필요
-                LoginRoute(
-                    modifier = Modifier,
-                    onNavigateMain = {
-                        mainNavController.navigate(Screens.TempMain)
-                    },
-                    onNavigateRegister = { provider, providerId ->
-                        mainNavController.navigate(SubGraph.Register(provider, providerId))
-                    },
-                )
-            }
-        }
+        loginNavigation(navController = mainNavController)
 
         registerNavigation(navController = mainNavController)
 

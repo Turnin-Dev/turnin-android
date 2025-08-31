@@ -36,7 +36,7 @@ sealed interface SubGraph {
 /** 로그인 네비게이션 */
 sealed interface LoginGraph {
     @Serializable
-    data object Default : LoginGraph
+    data object Main : LoginGraph
 }
 
 /** 회원가입 네비게이션 */
