@@ -10,28 +10,30 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.shared.Screens
 import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.shared.bottom.navigation.bottomNavigation
 
 /**
- * Peekr의 메인 네비게이션
+ * Peekr의 앱 네비게이션
  */
 @Composable
-fun MainNavigation(
+fun AppNavigation(
     modifier: Modifier = Modifier,
-    mainNavController: NavHostController,
+    appNavController: NavHostController,
 ) {
     NavHost(
         modifier = modifier,
-        navController = mainNavController,
+        navController = appNavController,
         startDestination = SubGraph.Login,
     ) {
-        loginNavigation(navController = mainNavController)
+        loginNavigation(navController = appNavController)
 
-        registerNavigation(navController = mainNavController)
+        registerNavigation(navController = appNavController)
+
+        bottomNavigation(navController = appNavController)
 
         composable<Screens.TempMain> {
             Box(

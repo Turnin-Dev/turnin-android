@@ -18,6 +18,9 @@ sealed interface SubGraph {
         val providerId: String,
     ) : SubGraph
 
+    /** 바텀 네비게이션 진입점 라우트 */
+    data object BottomNav : SubGraph
+
     /** 바텀 네비게이션(홈) 라우트 ([HomeGraph]) */
     @Serializable
     data object Home : SubGraph
