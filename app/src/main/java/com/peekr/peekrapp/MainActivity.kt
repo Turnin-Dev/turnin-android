@@ -7,16 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.presentation.login.model.UiSocialLoginProvider
-import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.shared.bottom.navigation.bottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,41 +22,56 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val mainNavController = rememberNavController()
+            val appNavController = rememberNavController()
 
             PeekrAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = PeekrTheme.colorScheme.backgroundNormal,
                 ) { innerPadding ->
-                    // 메인
+// ------------------------------ 메인 ------------------------------
 //                    MainNavigation(
 //                        modifier = Modifier
 //                            .fillMaxSize()
 //                            .padding(innerPadding),
-//                        mainNavController = mainNavController,
+//                        appNavController = appNavController
 //                    )
 
-                    // 테스트용
+// ------------------------------ 회원가입 테스트용 ------------------------------
+//                    NavHost(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding),
+//                        navController = appNavController,
+//                        startDestination = "test-start",
+//                    ) {
+//                        composable(route = "test-start") {
+//                            LaunchedEffect(Unit) {
+//                                appNavController
+//                                    .navigate(
+//                                        SubGraph.Register(
+//                                            provider = UiSocialLoginProvider.GOOGLE,
+//                                            providerId = "asdasasd",
+//                                        ),
+//                                    )
+//                            }
+//                        }
+//
+//                        registerNavigation(
+//                            navController = appNavController,
+//                        )
+//                    }
+
+// ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
+                    val bottomNavController = rememberNavController()
                     NavHost(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        navController = mainNavController,
-                        startDestination = "test-start",
+                        navController = bottomNavController,
+                        startDestination = SubGraph.Home,
                     ) {
-                        composable(route = "test-start") {
-                            LaunchedEffect(Unit) {
-                                mainNavController.navigate(
-                                    SubGraph.Register(
-                                        provider = UiSocialLoginProvider.GOOGLE,
-                                        providerId = "asdasasd",
-                                    ),
-                                )
-                            }
-                        }
-
-                        registerNavigation(navController = mainNavController)
+                        bottomNavigation(bottomNavController)
                     }
                 }
             }

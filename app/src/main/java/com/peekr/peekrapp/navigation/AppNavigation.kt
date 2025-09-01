@@ -10,42 +10,35 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.peekr.presentation.login.LoginRoute
+import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
-import com.peekr.presentation.shared.LoginGraph
 import com.peekr.presentation.shared.Screens
 import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.shared.bottom.navigation.bottomNavigation
 
 /**
- * Peekr의 메인 네비게이션
+ * Peekr의 앱 네비게이션
  */
 @Composable
-fun MainNavigation(
+fun AppNavigation(
     modifier: Modifier = Modifier,
-    mainNavController: NavHostController,
+    appNavController: NavHostController,
 ) {
+    // TODO login/Register Navigation 에서 bottomNavigation 으로 이동시 아래 코드와 같이 백스택을 확실히 클리어 해야 한다.
+    // navController.navigate(SubGraph.Home) {
+    //    popUpTo(0) { inclusive = true }
+    //    launchSingleTop = true
+    // }
     NavHost(
         modifier = modifier,
-        navController = mainNavController,
+        navController = appNavController,
         startDestination = SubGraph.Login,
     ) {
-        navigation<SubGraph.Login>(startDestination = LoginGraph.Default) {
-            composable<LoginGraph.Default> {
-                // TODO: 메인 혹은 로그인 화면으로 이동 시 적절한 백스택 전략 적용 필요
-                LoginRoute(
-                    modifier = Modifier,
-                    onNavigateMain = {
-                        mainNavController.navigate(Screens.TempMain)
-                    },
-                    onNavigateRegister = { provider, providerId ->
-                        mainNavController.navigate(SubGraph.Register(provider, providerId))
-                    },
-                )
-            }
-        }
+        loginNavigation(navController = appNavController)
 
-        registerNavigation(navController = mainNavController)
+        registerNavigation(navController = appNavController)
+
+        bottomNavigation(bottomNavController = appNavController)
 
         composable<Screens.TempMain> {
             Box(
