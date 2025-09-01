@@ -46,13 +46,6 @@ fun NavGraphBuilder.bottomNavigation(bottomNavController: NavHostController) {
                 modifier = Modifier.fillMaxSize(),
                 bottomNavController = bottomNavController,
             )
-
-//            Box(
-//                modifier = Modifier.fillMaxSize(),
-//                contentAlignment = Alignment.Center,
-//            ) {
-//                Text("Discover", fontSize = 50.sp)
-//            }
         }
     }
 
@@ -62,13 +55,6 @@ fun NavGraphBuilder.bottomNavigation(bottomNavController: NavHostController) {
                 modifier = Modifier.fillMaxSize(),
                 bottomNavController = bottomNavController,
             )
-
-//            Box(
-//                modifier = Modifier.fillMaxSize(),
-//                contentAlignment = Alignment.Center,
-//            ) {
-//                Text("Profile", fontSize = 50.sp)
-//            }
         }
     }
 }
