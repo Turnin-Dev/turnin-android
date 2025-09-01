@@ -1,13 +1,19 @@
 package com.peekr.presentation.shared.bottom.navigation
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -20,10 +26,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.component.icon.PeekrIcon
 import com.peekr.designsystem.component.icon.PeekrIconSize
 import com.peekr.designsystem.theme.PeekrAppTheme
@@ -47,32 +54,41 @@ fun BottomNavigationBar(
     navController: NavHostController,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val currentHierarchy = navBackStackEntry?.destination?.hierarchy
+    val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = BarHeightDp)
+            .defaultMinSize(minHeight = BarMinHeightDp)
             .zIndex(1f),
         containerColor = PeekrTheme.colorScheme.backgroundNormal,
+        windowInsets = WindowInsets(bottom = 0.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             bottomNavItems.forEach { item ->
-                val checked by remember(currentRoute) {
+                val checked by remember(currentDestination?.route) {
                     derivedStateOf {
-                        currentHierarchy?.any { it.hasRoute(item.route::class) } == true
+                        currentDestination?.hierarchy?.any {
+                            it.route == item.route::class.qualifiedName
+                        } == true
                     }
                 }
+
                 Item(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickableSingle {
+                            onItemClickWithOptions(navController, item.route)
+                        }.padding(vertical = ItemVerticalSpacingDp),
                     icon = item.icon,
                     title = item.title,
                     checked = checked,
-                    onClick = { onItemClickWithOptions(navController, item.route) },
                 )
             }
         }
@@ -93,18 +109,17 @@ private fun Item(
     icon: PeekrIconType,
     @StringRes title: Int,
     checked: Boolean,
-    onClick: () -> Unit,
 ) {
     val color = if (checked) {
-        PeekrTheme.colorScheme.interactionInactive
-    } else {
         PeekrTheme.colorScheme.textStrong
+    } else {
+        PeekrTheme.colorScheme.interactionInactive
     }
 
     Column(
-        modifier = modifier.clickableSingle(onClick = onClick),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(itemSpacingDp),
+        verticalArrangement = Arrangement.spacedBy(ItemIconTitleSpacingDp),
     ) {
         PeekrIcon(
             icon = icon,
@@ -123,6 +138,7 @@ private fun Item(
 
 /**
  * 선택한 화면으로 이동하게 해주는 함수
+ *
  * 1. popUpTo(it) { saveState = true }:
  * 첫 번째 화면만 스택에 쌓이게 하고 백버튼 클릭 시 첫 번째 화면으로 이동한다.
  * 2. launchSingleTop: true 일 때 화면 인스턴스가 하나만 만들어진다.
@@ -133,19 +149,17 @@ private fun onItemClickWithOptions(
     route: SubGraph,
 ) {
     navController.navigate(route) {
-        navController.graph.startDestinationRoute?.let {
-            // 첫번째 화면만 스택에 쌓이게 -> 백버튼 클릭 시 첫번째 화면으로 감
-            if (route != BottomNavItem.Home.route) {
-                popUpTo(it) { saveState = true }
-            }
+        navController.graph.findStartDestination().route?.let {
+            popUpTo(it) { saveState = true }
         }
         launchSingleTop = true
         restoreState = true
     }
 }
 
-private val BarHeightDp = 64.dp
-private val itemSpacingDp = 6.dp
+private val BarMinHeightDp = 64.dp
+private val ItemIconTitleSpacingDp = 6.dp
+private val ItemVerticalSpacingDp = 8.dp
 
 // ------------------------------ Previews ------------------------------
 @Preview
@@ -154,19 +168,31 @@ private fun IconPreview() {
     PeekrAppTheme {
         Row(Modifier.width(150.dp)) {
             Item(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).clickable {},
                 icon = PeekrIcons.Filled.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = false,
-                onClick = {},
             )
             Item(
                 modifier = Modifier.weight(1f),
                 icon = PeekrIcons.Filled.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = true,
-                onClick = {},
             )
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun BottomNavigationBarPreview() {
+    PeekrAppTheme {
+        val navController = rememberNavController()
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = { BottomNavigationBar(Modifier.fillMaxWidth(), navController) },
+        ) { innerPadding ->
+            Box(Modifier.fillMaxSize().padding(innerPadding))
         }
     }
 }

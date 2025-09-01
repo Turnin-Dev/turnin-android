@@ -10,35 +10,65 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.peekr.presentation.discover.main.DiscoverMainScreen
+import com.peekr.presentation.home.main.HomeMainScreen
+import com.peekr.presentation.profile.main.ProfileMainScreen
 import com.peekr.presentation.shared.DiscoverGraph
 import com.peekr.presentation.shared.HomeGraph
 import com.peekr.presentation.shared.ProfileGraph
 import com.peekr.presentation.shared.SubGraph
 
-fun NavGraphBuilder.bottomNavigation(navController: NavHostController) {
-    navigation<SubGraph.BottomNav>(startDestination = SubGraph.Home) {
-        navigation<SubGraph.Home>(startDestination = HomeGraph.Main) {
-            composable<HomeGraph.Main> {
-                Box(Modifier.fillMaxSize(), Alignment.Center) {
-                    Text("Home", fontSize = 50.sp)
-                }
-            }
+fun NavGraphBuilder.bottomNavigation(bottomNavController: NavHostController) {
+    navigation<SubGraph.Home>(startDestination = HomeGraph.Main) {
+        composable<HomeGraph.Main> {
+            HomeMainScreen(
+                modifier = Modifier.fillMaxSize(),
+                bottomNavController = bottomNavController,
+                onNavigateToSecond = {
+                    bottomNavController.navigate("HomeSecond")
+                },
+            )
         }
 
-        navigation<SubGraph.Discover>(startDestination = DiscoverGraph.Main) {
-            composable<DiscoverGraph.Main> {
-                Box(Modifier.fillMaxSize(), Alignment.Center) {
-                    Text("Discover", fontSize = 50.sp)
-                }
+        composable(route = "HomeSecond") {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("Home", fontSize = 50.sp)
             }
         }
+    }
 
-        navigation<SubGraph.Profile>(startDestination = ProfileGraph.Main) {
-            composable<ProfileGraph.Main> {
-                Box(Modifier.fillMaxSize(), Alignment.Center) {
-                    Text("Profile", fontSize = 50.sp)
-                }
-            }
+    navigation<SubGraph.Discover>(startDestination = DiscoverGraph.Main) {
+        composable<DiscoverGraph.Main> {
+            DiscoverMainScreen(
+                modifier = Modifier.fillMaxSize(),
+                bottomNavController = bottomNavController,
+            )
+
+//            Box(
+//                modifier = Modifier.fillMaxSize(),
+//                contentAlignment = Alignment.Center,
+//            ) {
+//                Text("Discover", fontSize = 50.sp)
+//            }
+        }
+    }
+
+    navigation<SubGraph.Profile>(startDestination = ProfileGraph.Main) {
+        composable<ProfileGraph.Main> {
+            ProfileMainScreen(
+                modifier = Modifier.fillMaxSize(),
+                bottomNavController = bottomNavController,
+            )
+
+//            Box(
+//                modifier = Modifier.fillMaxSize(),
+//                contentAlignment = Alignment.Center,
+//            ) {
+//                Text("Profile", fontSize = 50.sp)
+//            }
         }
     }
 }

@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
  * @param content 각 탭의 [NavHost]를 구현한다. (반드시 패딩 파라미터를 적용해야 한다.)
  */
 @Composable
-private fun BottomNavigationFrame(
+fun BottomNavigationFrame(
     modifier: Modifier = Modifier,
     bottomNavController: NavHostController,
     content: @Composable ((PaddingValues) -> Unit),

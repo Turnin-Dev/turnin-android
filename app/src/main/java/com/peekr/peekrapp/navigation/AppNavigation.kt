@@ -33,7 +33,7 @@ fun AppNavigation(
 
         registerNavigation(navController = appNavController)
 
-        bottomNavigation(navController = appNavController)
+        bottomNavigation(bottomNavController = appNavController)
 
         composable<Screens.TempMain> {
             Box(

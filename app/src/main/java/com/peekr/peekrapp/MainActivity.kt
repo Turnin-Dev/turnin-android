@@ -7,11 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.presentation.shared.SubGraph
 import com.peekr.presentation.shared.bottom.navigation.bottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,14 +64,15 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
+                    val bottomNavController = rememberNavController()
                     NavHost(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        navController = appNavController,
-                        startDestination = "test",
+                        navController = bottomNavController,
+                        startDestination = SubGraph.Home,
                     ) {
-                        bottomNavigation(appNavController)
+                        bottomNavigation(bottomNavController)
                     }
                 }
             }
