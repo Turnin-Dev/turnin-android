@@ -5,8 +5,8 @@ import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.usecase.SaveRefreshTokenUseCase
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

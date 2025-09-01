@@ -27,14 +27,14 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
+import com.peekr.presentation.common.RegisterGraph
+import com.peekr.presentation.common.SubGraph
+import com.peekr.presentation.common.file.image.cropper.SinglePhotoPicker
+import com.peekr.presentation.common.util.event.LaunchedUiEffectHandler
+import com.peekr.presentation.common.util.sharedViewModel
 import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
-import com.peekr.presentation.shared.RegisterGraph
-import com.peekr.presentation.shared.SubGraph
-import com.peekr.presentation.shared.file.image.cropper.SinglePhotoPicker
-import com.peekr.presentation.shared.util.event.LaunchedUiEffectHandler
-import com.peekr.presentation.shared.util.sharedViewModel
 import kotlin.reflect.KType
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {

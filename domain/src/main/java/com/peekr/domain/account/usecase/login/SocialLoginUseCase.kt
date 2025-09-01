@@ -3,9 +3,9 @@ package com.peekr.domain.account.usecase.login
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.util.AuthManagerFactory
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
-import com.peekr.domain.shared.util.Result.Success
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
+import com.peekr.domain.common.util.Result.Success
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

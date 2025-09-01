@@ -7,8 +7,8 @@ import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.model.Register
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 계정 관련 리포지토리 */

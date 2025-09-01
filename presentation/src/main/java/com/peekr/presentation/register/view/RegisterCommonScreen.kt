@@ -29,8 +29,8 @@ import com.peekr.designsystem.component.topbar.PeekrTopBar
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.presentation.R
-import com.peekr.presentation.shared.util.ScreenTokens
-import com.peekr.presentation.shared.util.bottomAutoPadding
+import com.peekr.presentation.common.util.ScreenTokens
+import com.peekr.presentation.common.util.bottomAutoPadding
 
 /**
  * 회원가입 공통 화면

@@ -3,8 +3,8 @@ package com.peekr.domain.account.usecase.register
 import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsResult
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged

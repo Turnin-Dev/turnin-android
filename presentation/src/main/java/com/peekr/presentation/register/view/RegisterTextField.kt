@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.presentation.shared.modifier.accessibility
+import com.peekr.presentation.common.modifier.accessibility
 
 /**
  * 회원가입 화면에서 사용하는 텍스트 필드

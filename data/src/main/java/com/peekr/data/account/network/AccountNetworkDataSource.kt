@@ -8,7 +8,7 @@ import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
-import com.peekr.data.shared.util.network.NetworkResult
+import com.peekr.data.common.util.network.NetworkResult
 
 /** Account 네트워크 데이터 소스 */
 interface AccountNetworkDataSource {

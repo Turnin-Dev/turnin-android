@@ -7,8 +7,8 @@ import com.peekr.data.account.model.request.RegisterRequest
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
-import com.peekr.data.shared.util.network.NetworkErrorType
-import com.peekr.data.shared.util.network.NetworkResult
+import com.peekr.data.common.util.network.NetworkErrorType
+import com.peekr.data.common.util.network.NetworkResult
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi

@@ -8,9 +8,9 @@ import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.model.Username
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
-import com.peekr.domain.shared.util.flatMapResult
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
+import com.peekr.domain.common.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

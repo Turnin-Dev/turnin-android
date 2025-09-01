@@ -2,7 +2,7 @@ package com.peekr.presentation.register.model
 
 import com.peekr.domain.account.model.ImageFileDetail
 import com.peekr.domain.account.model.Mime
-import com.peekr.presentation.shared.file.image.FileNameGenerator
+import com.peekr.presentation.common.file.image.FileNameGenerator
 
 /**
  * 이미지 파일 래퍼 클래스

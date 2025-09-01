@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
 import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
+import com.peekr.presentation.common.util.error.asUiTextTypeFirst
 import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.login.model.toDomainModel
 import com.peekr.presentation.login.model.toUiModel
 import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.login.state.LoginUiEvent
-import com.peekr.presentation.shared.util.error.asUiTextTypeFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
