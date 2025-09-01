@@ -33,10 +33,10 @@ import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
 import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.presentation.R
+import com.peekr.presentation.common.logo.PeekrLogoWithText
+import com.peekr.presentation.common.util.ScreenTokens
 import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.login.state.LoginState
-import com.peekr.presentation.shared.logo.PeekrLogoWithText
-import com.peekr.presentation.shared.util.ScreenTokens
 
 /**
  * 로그인 화면

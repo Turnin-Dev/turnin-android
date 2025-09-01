@@ -8,10 +8,10 @@ import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
-import com.peekr.data.shared.di.DefaultOkHttpClient
-import com.peekr.data.shared.util.network.NetworkErrorType
-import com.peekr.data.shared.util.network.NetworkResult
-import com.peekr.data.shared.util.network.networkCall
+import com.peekr.data.common.di.DefaultOkHttpClient
+import com.peekr.data.common.util.network.NetworkErrorType
+import com.peekr.data.common.util.network.NetworkResult
+import com.peekr.data.common.util.network.networkCall
 import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient

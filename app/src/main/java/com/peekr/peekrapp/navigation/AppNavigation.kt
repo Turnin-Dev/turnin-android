@@ -10,11 +10,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.peekr.presentation.common.Screens
+import com.peekr.presentation.common.SubGraph
+import com.peekr.presentation.common.bottom.navigation.bottomNavigation
 import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
-import com.peekr.presentation.shared.Screens
-import com.peekr.presentation.shared.SubGraph
-import com.peekr.presentation.shared.bottom.navigation.bottomNavigation
 
 /**
  * Peekr의 앱 네비게이션

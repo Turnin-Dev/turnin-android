@@ -18,8 +18,8 @@ import com.google.firebase.auth.auth
 import com.peekr.data.BuildConfig
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await

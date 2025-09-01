@@ -1,6 +1,6 @@
 package com.peekr.presentation.register.state
 
-import com.peekr.presentation.shared.util.UiText
+import com.peekr.presentation.common.util.UiText
 
 /**
  * 회원가입 - 사용자 이름 상태 클래스

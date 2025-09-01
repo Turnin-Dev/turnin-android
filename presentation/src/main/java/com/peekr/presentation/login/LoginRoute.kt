@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.peekr.presentation.common.util.event.LaunchedUiEffectHandler
 import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.login.state.LoginUiEvent
 import com.peekr.presentation.login.view.LoginScreen
 import com.peekr.presentation.login.viewmodel.LoginViewModel
-import com.peekr.presentation.shared.util.event.LaunchedUiEffectHandler
 import timber.log.Timber
 
 @Composable

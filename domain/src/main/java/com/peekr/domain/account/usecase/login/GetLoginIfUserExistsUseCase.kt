@@ -5,9 +5,9 @@ import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.LoginWithExistsUser
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.shared.util.ErrorType
-import com.peekr.domain.shared.util.Result
-import com.peekr.domain.shared.util.flatMapResult
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
+import com.peekr.domain.common.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

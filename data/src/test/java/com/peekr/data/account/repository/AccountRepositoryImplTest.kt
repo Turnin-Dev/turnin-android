@@ -5,9 +5,9 @@ import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
 import com.peekr.data.account.network.AccountNetworkDataSource
-import com.peekr.data.shared.util.network.NetworkErrorType
-import com.peekr.data.shared.util.network.NetworkResult
-import com.peekr.data.shared.util.network.toErrorType
+import com.peekr.data.common.util.network.NetworkErrorType
+import com.peekr.data.common.util.network.NetworkResult
+import com.peekr.data.common.util.network.toErrorType
 import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
@@ -19,7 +19,7 @@ import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.model.Username
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

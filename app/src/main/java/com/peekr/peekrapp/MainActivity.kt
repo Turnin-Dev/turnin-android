@@ -12,8 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.presentation.shared.SubGraph
-import com.peekr.presentation.shared.bottom.navigation.bottomNavigation
+import com.peekr.presentation.common.SubGraph
+import com.peekr.presentation.common.bottom.navigation.bottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

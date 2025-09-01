@@ -1,7 +1,7 @@
 package com.peekr.domain.account.usecase.register
 
-import com.peekr.domain.shared.util.CommonValidationError
-import com.peekr.domain.shared.util.ValidationResult
+import com.peekr.domain.common.util.CommonValidationError
+import com.peekr.domain.common.util.ValidationResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

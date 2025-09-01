@@ -1,8 +1,8 @@
 package com.peekr.domain.account.model
 
 import com.peekr.domain.account.rule.RegexPatterns
-import com.peekr.domain.shared.util.CommonValidationError
-import com.peekr.domain.shared.util.ValidationResult
+import com.peekr.domain.common.util.CommonValidationError
+import com.peekr.domain.common.util.ValidationResult
 
 /**
  * 사용자 표시 ID를 래핑한다.

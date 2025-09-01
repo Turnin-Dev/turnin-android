@@ -5,7 +5,7 @@ import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.util.AuthManager
 import com.peekr.domain.account.util.AuthManagerFactory
-import com.peekr.domain.shared.util.Result
+import com.peekr.domain.common.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first

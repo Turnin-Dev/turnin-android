@@ -5,9 +5,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.peekr.presentation.shared.LoginGraph
-import com.peekr.presentation.shared.Screens
-import com.peekr.presentation.shared.SubGraph
+import com.peekr.presentation.common.LoginGraph
+import com.peekr.presentation.common.Screens
+import com.peekr.presentation.common.SubGraph
 
 fun NavGraphBuilder.loginNavigation(navController: NavHostController) {
     navigation<SubGraph.Login>(startDestination = LoginGraph.Main) {
