@@ -1,7 +1,7 @@
 package com.peekr.domain.account.usecase.register
 
 import com.peekr.domain.account.model.Username
-import com.peekr.domain.account.model.validate
+import com.peekr.domain.common.model.validate
 import com.peekr.domain.common.util.CommonValidationError
 import com.peekr.domain.common.util.ValidationResult
 import javax.inject.Inject

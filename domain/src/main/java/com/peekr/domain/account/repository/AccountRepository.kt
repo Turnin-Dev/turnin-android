@@ -1,12 +1,12 @@
 package com.peekr.domain.account.repository
 
-import com.peekr.domain.account.model.DisplayId
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.model.Register
+import com.peekr.domain.common.model.DisplayId
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.flow.Flow

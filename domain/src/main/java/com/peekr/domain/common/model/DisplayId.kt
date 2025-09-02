@@ -1,4 +1,4 @@
-package com.peekr.domain.account.model
+package com.peekr.domain.common.model
 
 import com.peekr.domain.account.rule.RegexPatterns
 import com.peekr.domain.common.util.CommonValidationError
