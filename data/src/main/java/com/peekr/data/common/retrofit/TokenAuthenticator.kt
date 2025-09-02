@@ -1,5 +1,6 @@
 package com.peekr.data.common.retrofit
 
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.account.network.AccountApi
 import com.peekr.data.common.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.data.common.retrofit.RetrofitConstants.BEARER
@@ -11,23 +12,24 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import timber.log.Timber
 
 /** 인증 요청 시 응답의 HTTP 상태코드가 401일 때만 호출된다.  */
 class TokenAuthenticator @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val accountApi: AccountApi,
 ) : Authenticator {
+    private val tag = this::class.java.simpleName
+
     override fun authenticate(route: Route?, response: Response): Request? = runBlocking {
-        Timber.d("TokenAuthenticator Triggered!")
+        AppLogger.d(tag, "TokenAuthenticator Triggered!")
 
         val newTokenResponse = refreshToken()
 
         // logging
         if (newTokenResponse.isSuccessful) {
-            Timber.d("Token refresh successful (code: ${newTokenResponse.code()})")
+            AppLogger.d(tag, "Token refresh successful (code: ${newTokenResponse.code()})")
         } else {
-            Timber.w("Token refresh failed (code: ${newTokenResponse.code()})")
+            AppLogger.w(tag, "Token refresh failed (code: ${newTokenResponse.code()})")
         }
 
         // couldn't refresh the token, so restart the login process

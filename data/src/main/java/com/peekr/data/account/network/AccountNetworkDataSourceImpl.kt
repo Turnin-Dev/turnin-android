@@ -1,5 +1,6 @@
 package com.peekr.data.account.network
 
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
@@ -17,13 +18,14 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import timber.log.Timber
 
 /** Account 네트워크 데이터 소스 */
 class AccountNetworkDataSourceImpl @Inject constructor(
     private val accountApi: AccountApi,
     @DefaultOkHttpClient private val okHttpClient: OkHttpClient,
 ) : AccountNetworkDataSource {
+    private val tag = this::class.java.simpleName
+
     override suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse> =
         networkCall { accountApi.login(loginRequest) }
 
@@ -57,24 +59,16 @@ class AccountNetworkDataSourceImpl @Inject constructor(
             .build()
 
         return try {
-            val result = okHttpClient.newCall(request).execute()
-            NetworkResult.Success(result.isSuccessful)
-        } catch (e: Exception) {
-            Timber.e(e, "File upload failed: ${e.message}")
-            throw e
-        }
-
-        return try {
             okHttpClient.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
                     NetworkResult.Success(true)
                 } else {
-                    Timber.w("File upload failed: HTTP ${response.code}")
+                    AppLogger.w(tag, "File upload failed: HTTP ${response.code}")
                     NetworkResult.Success(false) // 정책에 따라 Error로 바꿔도 좋습니다.
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e, "File upload failed: ${e.message}")
+            AppLogger.e(tag, e, "File upload failed")
             throw e
         }
     }

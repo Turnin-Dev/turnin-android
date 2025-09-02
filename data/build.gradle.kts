@@ -62,7 +62,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":core"))
     implementation(project(":domain"))
 
     // Core Android
@@ -94,9 +94,6 @@ dependencies {
     implementation(libs.kakao.sdk.v2.talk)
     implementation(libs.kakao.sdk.v2.share)
     implementation(libs.kakao.sdk.v2.cert)
-
-    // Logging
-    implementation(libs.timber)
 
     // Retrofit & OkHttp
     implementation(libs.retrofit)

@@ -2,13 +2,13 @@ package com.peekr.data.common.util.crypto
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import com.peekr.core.logger.AppLogger
 import java.security.KeyStore
 import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
-import timber.log.Timber
 
 /**
  * 암호화 유틸
@@ -16,6 +16,7 @@ import timber.log.Timber
  * 참고 링크(`https://github.com/philipplackner/EncryptedDataStore`)
  */
 object Crypto {
+    private val tag = this::class.java.simpleName
     private const val KEY_ALIAS = "secret"
     private const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
     private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM
@@ -84,7 +85,7 @@ object Crypto {
         cipher.init(Cipher.DECRYPT_MODE, getKey(), GCMParameterSpec(TAG_SIZE, iv))
         cipher.doFinal(data)
     } catch (e: AEADBadTagException) {
-        Timber.e(e, "데이터 손상 및 암호문 위변조 시도")
+        AppLogger.e(tag, e, "데이터 손상 및 암호문 위변조 시도")
         throw DecryptException(e)
     } catch (e: Exception) {
         throw DecryptException(e)

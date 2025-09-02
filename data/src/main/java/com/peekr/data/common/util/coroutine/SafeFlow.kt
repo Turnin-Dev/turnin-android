@@ -1,5 +1,6 @@
 package com.peekr.data.common.util.coroutine
 
+import com.peekr.core.logger.AppLogger
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
@@ -8,7 +9,6 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import timber.log.Timber
 
 /**
  * 안전하게 flow 빌더를 사용할 수 있다.
@@ -29,7 +29,7 @@ fun <T> safeResultFlow(
     .flowOn(dispatcher)
     .catch { exception ->
         if (enableLogging) {
-            Timber.e(exception, "Exception in flow: ${exception.message}")
+            AppLogger.e(TAG, exception, "Exception in flow: ${exception.message}")
         }
         val mappedError = errorMapper(exception)
         emit(Result.Error(error = mappedError, message = exception.message))
@@ -52,7 +52,9 @@ fun <T> safeFlow(
     .flowOn(dispatcher)
     .catch { exception ->
         if (enableLogging) {
-            Timber.e(exception, "Exception in flow: ${exception.message}")
+            AppLogger.e(TAG, exception, "Exception in flow: ${exception.message}")
         }
         onError(exception)
     }
+
+private const val TAG = "SafeFlow"

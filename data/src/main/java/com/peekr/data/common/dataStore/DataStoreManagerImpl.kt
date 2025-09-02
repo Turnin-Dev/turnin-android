@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.common.util.crypto.CryptoException
 import com.peekr.data.common.util.crypto.CryptoManager
 import com.peekr.domain.common.dataStore.DataStoreKey
@@ -16,12 +17,13 @@ import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 
 class DataStoreManagerImpl(
     private val dataStore: DataStore<Preferences>,
     private val cryptoManager: CryptoManager,
 ) : DataStoreManager {
+    private val tag = this::class.java.simpleName
+
     // ------------------------------ 일반 저장 & 읽기 메서드 ------------------------------
     override suspend fun saveStringData(key: DataStoreKey, value: String) {
         dataStoreTryCatch {
@@ -85,10 +87,10 @@ class DataStoreManagerImpl(
                 try {
                     cryptoManager.decryptString(encryptedValue)
                 } catch (e: CryptoException) {
-                    Timber.e(e, "DataStoreManager에서 복호화 과정 실패")
+                    AppLogger.e(tag, e, "DataStoreManager에서 복호화 과정 실패")
                     throw DecryptException("DataStoreManager에서 복호화 과정 실패", e)
                 } catch (e: Exception) {
-                    Timber.e(e, "DataStoreManager에서 복호화 과정 실패(정의된 이 외의 예외 발생)")
+                    AppLogger.e(tag, e, "DataStoreManager에서 복호화 과정 실패(정의된 이 외의 예외 발생)")
                     null
                 }
             }

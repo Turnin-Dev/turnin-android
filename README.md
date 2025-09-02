@@ -6,7 +6,6 @@
 |:--:|:-----------------------------------------------------|
 | 1  | [Project Structure](#1-project-structure-processing) |
 | 2  | [Dependency Direction](#2-dependency-direction)      |
-| 3  | [Logging Strategy](#3-logging-strategy)              |
 
 ## 1. Project Structure (processing...)
 
@@ -14,6 +13,11 @@
 app/                         # <APP 모듈>
 ├── navigation/              # 모든 네비게이션 라우터들이 위치
 ├── ...                      # 기타 파일 (MainActivity.kt 등)
+
+core/                         # <Core 모듈>
+├── common feature 1          # 공통 기능 1
+├── common feature 2          # 공통 기능 2
+├── ...
 
 data/                        # <Data 모듈>
 ├── shared                   # 공통 기능 (선택사항)
@@ -74,35 +78,22 @@ presentation/                # <Presentation(feature) 모듈>
 
 ## 2. Dependency Direction
 
+#### 핵심 모듈 간 의존성
+
 ```mermaid
 flowchart TD
     ap(:app) --> pr(":presentation(feature)")
     pr --> do(:domain)
     da(:data) --> do
     pr --> de(:designsystem)
+    ap --> de
 ```
+
+#### 핵심 공통 모듈인 core 모듈 의존성
 
 ```mermaid
 flowchart TD
-    :app -. optional .-> :designsystem
+    ap(:app) --> co(:core)
+    pr(:presentation) --> co
+    da(:data) --> co
 ```
-
-## 3. Logging Strategy
-
-### 로깅 목적
-
-- 앱 상태 및 흐름 추적
-- 비정상 상태 및 예외 진단
-- 사용자 행동 분석
-- 서버와의 통신 문제 모니터링
-
-### 로그 레벨 정책
-
-| 레벨        | 설명                      | 사용 예시                       |
-|-----------|-------------------------|-----------------------------|
-| `VERBOSE` | 아주 상세한 정보, 반복 작업, 개발 전용 | 네트워크 요청/응답 전체 내용, 루프 내부     |
-| `DEBUG`   | 디버깅을 위한 상태/값 확인         | 특정 값 출력, 조건 분기 결과 확인        |
-| `INFO`    | 정상적인 앱 흐름, 사용자 행동 추적    | 로그인 성공, 화면 진입, 버튼 클릭        |
-| `WARN`    | 비정상 가능성 있음              | 캐시 없음, 연결 불안정, 응답 누락        |
-| `ERROR`   | 오류, 예외 발생               | API 500, try-catch 예외 처리 실패 |
-| `ASSERT`  | 절대 발생하면 안 되는 상황         | 데이터 무결성 오류, 치명적 상태          |
