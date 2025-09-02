@@ -14,7 +14,6 @@ import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.login.state.LoginUiEvent
 import com.peekr.presentation.login.view.LoginScreen
 import com.peekr.presentation.login.viewmodel.LoginViewModel
-import timber.log.Timber
 
 @Composable
 fun LoginRoute(
@@ -28,7 +27,6 @@ fun LoginRoute(
 
     LaunchedEffect(loginState.error) {
         loginState.error?.let { error ->
-            Timber.d(error.asString(context))
             Toast.makeText(context, error.asString(context), Toast.LENGTH_SHORT).show()
         }
         loginViewModel.onErrorMessageShown()

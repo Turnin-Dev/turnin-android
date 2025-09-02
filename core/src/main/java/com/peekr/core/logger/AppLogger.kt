@@ -15,6 +15,7 @@ object AppLogger {
      * 로거 초기화
      */
     fun initLogger() {
+        if (Timber.forest().isNotEmpty()) return
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
         } else {
@@ -62,7 +63,7 @@ object AppLogger {
             action()
         } finally {
             val elapsed = System.currentTimeMillis() - startTime
-            d("Execution time: ${elapsed}ms", tag)
+            d(tag, "Execution time: ${elapsed}ms")
         }
     }
 }

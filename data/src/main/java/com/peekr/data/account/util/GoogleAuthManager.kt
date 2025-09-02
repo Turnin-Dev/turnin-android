@@ -48,12 +48,12 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
 
             emit(signInWithCredentialResponse(credentialResponse))
         } catch (e: GoogleIdTokenParsingException) {
-            AppLogger.e(tag, e, "Cannot parsing google id token.")
+            AppLogger.e(tag, "Failed to parse Google ID token.")
             emit(Result.Error(ErrorType.Auth.IdTokenParsing, e.message))
         } catch (e: GetCredentialCancellationException) {
             emit(Result.Error(ErrorType.Auth.Cancellation, e.message))
         } catch (e: Exception) {
-            AppLogger.e(tag, e, "Unexpected error during Google sign-in.")
+            AppLogger.e(tag, "Unexpected error during Google sign-in.")
             emit(Result.Error(ErrorType.Unexpected(e), e.message))
         }
     }

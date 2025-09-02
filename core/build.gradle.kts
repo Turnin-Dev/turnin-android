@@ -51,7 +51,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     // Logging
-    implementation(libs.timber)
+    api(libs.timber)
 
     // Tests
     androidTestImplementation(libs.androidx.test.runner)

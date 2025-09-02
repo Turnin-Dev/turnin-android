@@ -25,7 +25,7 @@ class PeekrApplication : Application(), ImageLoaderFactory {
         // Kakao SDK 초기화
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
-        // Timber 초기화
+        // Logger 초기화
         AppLogger.initLogger()
     }
 

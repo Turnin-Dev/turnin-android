@@ -49,7 +49,11 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
             loggingResponseCode(response.code, true)
         } else { // Failure (Ex. 4xx, 5xx)
             loggingResponseCode(response.code, false)
-            AppLogger.d(tag, "request: ${response.request}\n" + "message: ${response.message}")
+            val req = response.request
+            AppLogger.w(
+                tag = tag,
+                message = "HTTP ${response.code}: ${req.method} ${req.url} | message=${response.message}",
+            )
         }
 
         return response
@@ -57,24 +61,13 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
 
     private fun loggingResponseCode(code: Int, isSuccess: Boolean) {
         when (code) {
-            200 -> {
-                AppLogger.d(tag, "Response is Successful (HTTP status code is 200 OK)")
-            }
-
-            201 -> {
-                AppLogger.d(tag, "Response is Successful (HTTP status code is 201 Created)")
-            }
-
-            404 -> {
-                AppLogger.d(tag, "Response is Failure (HTTP status code is 404 Not Found)")
-            }
-
-            else -> {
-                if (isSuccess) {
-                    AppLogger.d(tag, "Response is Successful (HTTP status code is $code)")
-                } else {
-                    AppLogger.d(tag, "Response is Failure (HTTP status code is $code)")
-                }
+            in 200..299 -> AppLogger.d(tag, "Response Success ($code)")
+            in 400..499 -> AppLogger.w(tag, "Response Client Error ($code)")
+            in 500..599 -> AppLogger.e(tag, "Response Server Error ($code)")
+            else -> if (isSuccess) {
+                AppLogger.d(tag, "Response Success ($code)")
+            } else {
+                AppLogger.w(tag, "Response Failure ($code)")
             }
         }
     }

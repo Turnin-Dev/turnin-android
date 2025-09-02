@@ -59,14 +59,6 @@ class AccountNetworkDataSourceImpl @Inject constructor(
             .build()
 
         return try {
-            val result = okHttpClient.newCall(request).execute()
-            NetworkResult.Success(result.isSuccessful)
-        } catch (e: Exception) {
-            AppLogger.e(tag, e, "File upload failed: ${e.message}")
-            throw e
-        }
-
-        return try {
             okHttpClient.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
                     NetworkResult.Success(true)
@@ -76,7 +68,7 @@ class AccountNetworkDataSourceImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            AppLogger.e(tag, e, "File upload failed: ${e.message}")
+            AppLogger.e(tag, e, "File upload failed")
             throw e
         }
     }

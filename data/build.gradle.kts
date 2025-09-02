@@ -95,9 +95,6 @@ dependencies {
     implementation(libs.kakao.sdk.v2.share)
     implementation(libs.kakao.sdk.v2.cert)
 
-    // Logging
-    implementation(libs.timber)
-
     // Retrofit & OkHttp
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)

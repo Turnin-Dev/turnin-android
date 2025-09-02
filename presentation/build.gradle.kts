@@ -71,9 +71,6 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
-    // Logging
-    implementation(libs.timber)
-
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

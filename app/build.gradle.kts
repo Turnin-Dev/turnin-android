@@ -89,9 +89,6 @@ dependencies {
     implementation(libs.kakao.sdk.v2.share)
     implementation(libs.kakao.sdk.v2.cert)
 
-    // Logging
-    implementation(libs.timber)
-
     // Navigation
     implementation(libs.androidx.compose.navigation)
     implementation(libs.androidx.hilt.navigation.compose)
