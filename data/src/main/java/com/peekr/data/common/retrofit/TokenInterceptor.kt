@@ -1,5 +1,6 @@
 package com.peekr.data.common.retrofit
 
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.common.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.data.common.retrofit.RetrofitConstants.BEARER
 import com.peekr.domain.common.dataStore.DataStoreKey
@@ -10,7 +11,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import timber.log.Timber
 
 /**
  * HTTP 요청 시 자동으로 헤더에 토큰을 첨부해주는 토큰 인터셉터
@@ -18,8 +18,10 @@ import timber.log.Timber
  * 만약, 토큰이 빈 문자열이거나 null이면 원본 요청으로 계속 진행한다.
  */
 class TokenInterceptor @Inject constructor(private val dataStoreManager: DataStoreManager) : Interceptor {
+    private val tag = this::class.java.simpleName
+
     override fun intercept(chain: Interceptor.Chain): Response {
-        Timber.d("TokenInterceptor Triggered!")
+        AppLogger.d(tag, "TokenInterceptor Triggered!")
 
         // get access-token & just continue request when access-token is null
         val accessToken = runBlocking {
@@ -47,7 +49,7 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
             loggingResponseCode(response.code, true)
         } else { // Failure (Ex. 4xx, 5xx)
             loggingResponseCode(response.code, false)
-            Timber.d("request: ${response.request}\n" + "message: ${response.message}")
+            AppLogger.d(tag, "request: ${response.request}\n" + "message: ${response.message}")
         }
 
         return response
@@ -56,22 +58,22 @@ class TokenInterceptor @Inject constructor(private val dataStoreManager: DataSto
     private fun loggingResponseCode(code: Int, isSuccess: Boolean) {
         when (code) {
             200 -> {
-                Timber.d("Response is Successful (HTTP status code is 200 OK)")
+                AppLogger.d(tag, "Response is Successful (HTTP status code is 200 OK)")
             }
 
             201 -> {
-                Timber.d("Response is Successful (HTTP status code is 201 Created)")
+                AppLogger.d(tag, "Response is Successful (HTTP status code is 201 Created)")
             }
 
             404 -> {
-                Timber.d("Response is Failure (HTTP status code is 404 Not Found)")
+                AppLogger.d(tag, "Response is Failure (HTTP status code is 404 Not Found)")
             }
 
             else -> {
                 if (isSuccess) {
-                    Timber.d("Response is Successful (HTTP status code is $code)")
+                    AppLogger.d(tag, "Response is Successful (HTTP status code is $code)")
                 } else {
-                    Timber.d("Response is Failure (HTTP status code is $code)")
+                    AppLogger.d(tag, "Response is Failure (HTTP status code is $code)")
                 }
             }
         }

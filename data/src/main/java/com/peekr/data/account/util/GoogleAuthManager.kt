@@ -15,6 +15,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.BuildConfig
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
@@ -23,9 +24,9 @@ import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import timber.log.Timber
 
 class GoogleAuthManager(private val context: Context) : AuthManager {
+    private val tag = this::class.java.simpleName
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.create(context)
 
@@ -47,12 +48,12 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
 
             emit(signInWithCredentialResponse(credentialResponse))
         } catch (e: GoogleIdTokenParsingException) {
-            Timber.e(e, "Cannot parsing google id token.")
+            AppLogger.e(tag, e, "Cannot parsing google id token.")
             emit(Result.Error(ErrorType.Auth.IdTokenParsing, e.message))
         } catch (e: GetCredentialCancellationException) {
             emit(Result.Error(ErrorType.Auth.Cancellation, e.message))
         } catch (e: Exception) {
-            Timber.e(e, "Unexpected error during Google sign-in.")
+            AppLogger.e(tag, e, "Unexpected error during Google sign-in.")
             emit(Result.Error(ErrorType.Unexpected(e), e.message))
         }
     }
@@ -63,10 +64,10 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             credentialManager.clearCredentialState(
                 ClearCredentialStateRequest(),
             )
-            Timber.i("Google sign-out Succeeded.")
+            AppLogger.i(tag, "Google sign-out Succeeded.")
             emit(Result.Success(Unit))
         } catch (e: Exception) {
-            Timber.e(e, "Failed to Google sign-out")
+            AppLogger.e(tag, e, "Failed to Google sign-out")
             emit(Result.Error(ErrorType.Unexpected(e), e.message))
         }
     }
@@ -84,13 +85,13 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                     credentialManager.clearCredentialState(
                         ClearCredentialStateRequest(),
                     )
-                    Timber.i("Google account deleted.")
+                    AppLogger.i(tag, "Google account deleted.")
                     emit(Result.Success(Unit))
                 } else {
                     emit(Result.Error(ErrorType.Auth.DeleteAccountFailed))
                 }
             } catch (e: Exception) {
-                Timber.e(e, "Failed to delete Google account.")
+                AppLogger.e(tag, e, "Failed to delete Google account.")
                 emit(Result.Error(ErrorType.Auth.DeleteAccountFailed, e.message))
             }
         }
@@ -103,20 +104,20 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     val firebaseUser = getFirebaseUser(credential)
                     firebaseUser?.let {
-                        Timber.i("Firebase user fetched successfully.")
+                        AppLogger.i(tag, "Firebase user fetched successfully.")
                         val providerId = ProviderId(firebaseUser.uid)
                         Result.Success(providerId)
                     } ?: Result.Error(ErrorType.Auth.UserNotFound)
                 } else {
                     // 올바르지 않은 형태의 토큰
-                    Timber.w("Google token type invalid.")
+                    AppLogger.w(tag, "Google token type invalid.")
                     Result.Error(ErrorType.Auth.TokenTypeInvalid)
                 }
             }
 
             else -> {
                 // 올바르지 않은 형태의 토큰
-                Timber.w("Google token type invalid.")
+                AppLogger.w(tag, "Google token type invalid.")
                 Result.Error(ErrorType.Auth.TokenTypeInvalid)
             }
         }

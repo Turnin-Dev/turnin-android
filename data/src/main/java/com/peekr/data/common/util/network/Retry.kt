@@ -1,5 +1,6 @@
 package com.peekr.data.common.util.network
 
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.common.util.network.NetworkRetryPolicy.NON_RETRYABLE_STATUS_CODES
 import com.peekr.data.common.util.network.NetworkRetryPolicy.RETRYABLE_STATUS_CODES
 import java.net.SocketTimeoutException
@@ -9,7 +10,6 @@ import kotlin.math.pow
 import kotlin.random.Random
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
-import timber.log.Timber
 
 /**
  * Retry Function, Exponential Backoff With Jitter
@@ -37,13 +37,13 @@ suspend fun <T> retry(
         } catch (e: Exception) {
             // 인증 관련 요청인 경우 즉시 실패 처리
             if (e is HttpException && e.code() in NON_RETRYABLE_STATUS_CODES) {
-                Timber.w("Authentication failed with status ${e.code()}, not retrying")
+                AppLogger.w(TAG, "Authentication failed with status ${e.code()}, not retrying")
                 throw e
             }
 
             // 재시도 불가능한 예외 체크
             if (!isRetryableException(e)) {
-                Timber.w("Non-retryable exception: ${e.localizedMessage}")
+                AppLogger.w(TAG, "Non-retryable exception: ${e.localizedMessage}")
                 throw e
             }
 
@@ -52,7 +52,7 @@ suspend fun <T> retry(
             if (isLastAttempt) {
                 val fullJitterDelay =
                     calculateFullJitterDelay(it, initialDelayMillis, maxDelayMillis, factor)
-                Timber.d("retry delay: $fullJitterDelay ms")
+                AppLogger.d(TAG, "retry delay: $fullJitterDelay ms")
                 delay(fullJitterDelay)
             }
         }
@@ -74,7 +74,7 @@ private fun calculateFullJitterDelay(
     val temp =
         maxDelayMillis.coerceAtMost(initialDelayMillis * factor.pow(attempt).toLong())
     val fullJitterDelay = (temp / 2) + Random.nextLong(0, temp / 2)
-    Timber.d("Network call retry delay: $fullJitterDelay")
+    AppLogger.d(TAG, "Network call retry delay: $fullJitterDelay")
     return fullJitterDelay
 }
 
@@ -89,3 +89,5 @@ private fun isRetryableException(exception: Exception): Boolean =
 
         else -> false
     }
+
+private const val TAG = "Retry"

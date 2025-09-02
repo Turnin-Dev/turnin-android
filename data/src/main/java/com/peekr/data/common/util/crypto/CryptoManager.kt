@@ -1,9 +1,9 @@
 package com.peekr.data.common.util.crypto
 
+import com.peekr.core.logger.AppLogger
 import java.util.Base64
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * 암호화/복호화를 처리한다.
@@ -13,6 +13,8 @@ import timber.log.Timber
  * @see [Crypto]
  */
 class CryptoManager(private val ioDispatcher: CoroutineDispatcher) {
+    private val tag = this::class.java.simpleName
+
     /**
      * 평문 텍스트를 암호화한다.
      *
@@ -27,7 +29,7 @@ class CryptoManager(private val ioDispatcher: CoroutineDispatcher) {
             val encryptedBytes = Crypto.encrypt(bytes)
             Base64.getEncoder().encodeToString(encryptedBytes)
         } catch (e: CryptoException) {
-            Timber.e(e, "Encrypt Exception")
+            AppLogger.e(tag, e, "Encrypt Exception")
             throw EncryptException(e)
         } catch (e: Exception) {
             throw e
@@ -48,7 +50,7 @@ class CryptoManager(private val ioDispatcher: CoroutineDispatcher) {
             val decryptedBytes = Crypto.decrypt(encryptedBytesDecoded)
             decryptedBytes.decodeToString()
         } catch (e: CryptoException) {
-            Timber.e(e, "Decrypt Exception")
+            AppLogger.e(tag, e, "Decrypt Exception")
             throw DecryptException(e)
         } catch (e: Exception) {
             throw e

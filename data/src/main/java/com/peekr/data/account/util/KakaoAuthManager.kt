@@ -6,6 +6,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import com.peekr.core.logger.AppLogger
 import com.peekr.data.common.util.coroutine.trySendAndClose
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
@@ -15,33 +16,34 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import timber.log.Timber
 
 private typealias ProviderIdResult = Result<ProviderId, ErrorType>
 
 class KakaoAuthManager(private val context: Context) : AuthManager {
+    private val tag = this::class.java.simpleName
+
     override fun signIn(): Flow<Result<ProviderId, ErrorType>> = callbackFlow {
         if (AuthApiClient.instance.hasToken()) {
             UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                 if (error != null) {
                     if (error is KakaoSdkError && error.isInvalidTokenError()) {
                         // 1. Login Required
-                        Timber.i("Kakao login required")
+                        AppLogger.i(tag, "Kakao login required")
                         login(context)
                     } else {
                         // 2. another error
-                        Timber.i("Weird error during Kakao sign-in")
+                        AppLogger.i(tag, "Weird error during Kakao sign-in")
                         trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignInError))
                     }
                 } else {
                     // 3. token validity check successful (renew if necessary)
-                    Timber.i("Kakao login required")
+                    AppLogger.i(tag, "Kakao login required")
                     login(context)
                 }
             }
         } else {
             // 1. Login Required
-            Timber.i("Kakao login required")
+            AppLogger.i(tag, "Kakao login required")
             login(context)
         }
 
@@ -51,10 +53,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     override fun signOut(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.logout { e ->
             if (e == null) {
-                Timber.i("Kakao sign-out succeeded.")
+                AppLogger.i(tag, "Kakao sign-out succeeded.")
                 trySendAndClose(Result.Success(Unit))
             } else {
-                Timber.e(e, "Kakao sign-out failed.")
+                AppLogger.e(tag, e, "Kakao sign-out failed.")
                 trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignOutError, e.message))
             }
         }
@@ -65,10 +67,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     override fun deleteAccount(): Flow<Result<Unit, ErrorType>> = callbackFlow {
         UserApiClient.instance.unlink { e ->
             if (e == null) {
-                Timber.i("Kakao account deleted.")
+                AppLogger.i(tag, "Kakao account deleted.")
                 trySendAndClose(Result.Success(Unit))
             } else {
-                Timber.e(e, "Failed to delete Kakao account.")
+                AppLogger.e(tag, e, "Failed to delete Kakao account.")
                 trySendAndClose(Result.Error(ErrorType.Auth.KakaoDeleteAccountError, e.message))
             }
         }
@@ -88,10 +90,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     private fun ProducerScope<ProviderIdResult>.loginWithKakaoTalk(context: Context) =
         UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
             if (error != null) { // 로그인 실패/에러
-                Timber.i("'Login with KakaoTalk' failed.")
+                AppLogger.i(tag, "'Login with KakaoTalk' failed.")
                 loginWithKakaoTalkError(context, error)
             } else if (token != null) { // 로그인 성공
-                Timber.i("'Login with KakaoTalk' succeeded.")
+                AppLogger.i(tag, "'Login with KakaoTalk' succeeded.")
                 loginSuccess()
             } else {
                 trySendAndClose(Result.Error(ErrorType.Unexpected(error)))
@@ -112,10 +114,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     private fun ProducerScope<ProviderIdResult>.loginWithKakaoAccount(context: Context) =
         UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
             if (error != null) { // 로그인 실패/에러
-                Timber.i("'Login with KakaoAccount' failed.")
+                AppLogger.i(tag, "'Login with KakaoAccount' failed.")
                 loginWithKakaoAccountError(error)
             } else if (token != null) { // 로그인 성공
-                Timber.i("'Login with KakaoAccount' succeeded.")
+                AppLogger.i(tag, "'Login with KakaoAccount' succeeded.")
                 loginSuccess()
             } else {
                 trySendAndClose(Result.Error(ErrorType.Unexpected(error)))
@@ -133,11 +135,11 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
     private fun ProducerScope<ProviderIdResult>.loginSuccess() {
         UserApiClient.instance.me { user, error ->
             if (user?.id != null) {
-                Timber.i("Kakao Login succeeded")
+                AppLogger.i(tag, "Kakao Login succeeded")
                 val providerId = ProviderId(user.id.toString())
                 trySendAndClose(Result.Success(providerId))
             } else {
-                Timber.i("Kakao user not found.")
+                AppLogger.i(tag, "Kakao user not found.")
                 trySendAndClose(Result.Error(ErrorType.Auth.UserNotFound))
             }
         }

@@ -22,31 +22,31 @@ object AppLogger {
         }
     }
 
-    fun d(message: String, tag: String = DEFAULT_TAG) {
+    fun d(tag: String = DEFAULT_TAG, message: String) {
         Timber.tag(tag).d(message)
     }
 
-    fun d(message: String, throwable: Throwable, tag: String = DEFAULT_TAG) {
+    fun d(tag: String = DEFAULT_TAG, throwable: Throwable, message: String) {
         Timber.tag(tag).d(throwable, message)
     }
 
-    fun i(message: String, tag: String = DEFAULT_TAG) {
+    fun i(tag: String = DEFAULT_TAG, message: String) {
         Timber.tag(tag).i(message)
     }
 
-    fun w(message: String, tag: String = DEFAULT_TAG) {
+    fun w(tag: String = DEFAULT_TAG, message: String) {
         Timber.tag(tag).w(message)
     }
 
-    fun w(message: String, throwable: Throwable, tag: String = DEFAULT_TAG) {
+    fun w(tag: String = DEFAULT_TAG, throwable: Throwable, message: String) {
         Timber.tag(tag).w(throwable, message)
     }
 
-    fun e(message: String, tag: String = DEFAULT_TAG) {
+    fun e(tag: String = DEFAULT_TAG, message: String) {
         Timber.tag(tag).e(message)
     }
 
-    fun e(message: String, throwable: Throwable, tag: String = DEFAULT_TAG) {
+    fun e(tag: String = DEFAULT_TAG, throwable: Throwable, message: String) {
         Timber.tag(tag).e(throwable, message)
     }
 
