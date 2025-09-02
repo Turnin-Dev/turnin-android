@@ -5,7 +5,7 @@ import com.peekr.domain.account.model.Mime
 import com.peekr.presentation.common.file.image.FileNameGenerator
 
 /**
- * 이미지 파일 래퍼 클래스
+ * UI용 이미지 파일 세부 사항
  *
  * @property bytes [ByteArray]타입의 이미지 파일
  * @property name 이미지 파일 이름
