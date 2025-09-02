@@ -21,14 +21,14 @@ import com.peekr.designsystem.util.click.clickableSingle
 import com.peekr.designsystem.util.peekrShadow
 
 /**
- * 키워드 컴포넌트
+ * 키워드 노드 컴포넌트
  *
  * @param modifier [Modifier]
  * @param label 키워드 (이름)
  * @param onClick 키워드 클릭시
  */
 @Composable
-fun Keyword(
+fun KeywordNode(
     modifier: Modifier = Modifier,
     label: String,
     onClick: () -> Unit,
@@ -58,10 +58,10 @@ private val Shape = RoundedCornerShape(14.dp)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun KeywordPreview() {
+private fun KeywordNodePreview() {
     PeekrAppTheme {
         Box(Modifier.size(80.dp), Alignment.Center) {
-            Keyword(
+            KeywordNode(
                 label = "Label",
                 onClick = { },
             )
