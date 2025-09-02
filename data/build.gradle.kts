@@ -62,7 +62,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":core"))
     implementation(project(":domain"))
 
     // Core Android
