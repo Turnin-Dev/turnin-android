@@ -4,16 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.presentation.common.SubGraph
-import com.peekr.presentation.common.bottom.navigation.bottomNavigation
+import com.peekr.presentation.keyword.common.model.UiKeyword
+import com.peekr.presentation.keyword.graph.KeywordGraphView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -63,15 +63,23 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
-                    val bottomNavController = rememberNavController()
-                    NavHost(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        navController = bottomNavController,
-                        startDestination = SubGraph.Home,
-                    ) {
-                        bottomNavigation(bottomNavController)
+//                    val bottomNavController = rememberNavController()
+//                    NavHost(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding),
+//                        navController = bottomNavController,
+//                        startDestination = SubGraph.Home,
+//                    ) {
+//                        bottomNavigation(bottomNavController)
+//                    }
+// ------------------------------ 키워드 그래프 테스트용 ------------------------------
+                    Box(Modifier.padding(innerPadding)) {
+                        KeywordGraphView(
+                            modifier = Modifier.fillMaxSize(),
+                            profileImageUrl = null,
+                            keywords = UiKeyword.samples,
+                        )
                     }
                 }
             }
