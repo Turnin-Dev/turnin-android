@@ -5,7 +5,7 @@ import com.peekr.domain.account.model.Mime
 import com.peekr.presentation.common.file.image.FileNameGenerator
 
 /**
- * 이미지 파일 래퍼 클래스
+ * UI용 이미지 파일 세부 사항
  *
  * @property bytes [ByteArray]타입의 이미지 파일
  * @property name 이미지 파일 이름
@@ -29,7 +29,6 @@ data class UiImageFileDetail(
         if (!_bytes.contentEquals(other._bytes)) return false
         if (name != other.name) return false
         if (mime != other.mime) return false
-        if (!bytes.contentEquals(other.bytes)) return false
 
         return true
     }
@@ -38,9 +37,11 @@ data class UiImageFileDetail(
         var result = _bytes.contentHashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + mime.hashCode()
-        result = 31 * result + bytes.contentHashCode()
         return result
     }
+
+    override fun toString(): String =
+        "UiImageFileDetail(name=$name, mime=$mime, bytesSize=${_bytes.size})"
 
     companion object {
         fun create(

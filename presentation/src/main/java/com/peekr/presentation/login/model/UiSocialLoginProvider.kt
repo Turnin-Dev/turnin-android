@@ -5,7 +5,7 @@ import com.peekr.presentation.login.model.UiSocialLoginProvider.GOOGLE
 import com.peekr.presentation.login.model.UiSocialLoginProvider.KAKAO
 import kotlinx.serialization.Serializable
 
-/** 소셜로그인 타입 */
+/** UI용 소셜로그인 타입 */
 @Serializable
 enum class UiSocialLoginProvider {
     GOOGLE,
