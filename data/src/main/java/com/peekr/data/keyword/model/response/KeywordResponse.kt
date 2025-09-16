@@ -1,5 +1,7 @@
 package com.peekr.data.keyword.model.response
 
+import com.peekr.domain.common.model.KeywordId
+import com.peekr.domain.keyword.model.Keyword
 import com.squareup.moshi.JsonClass
 
 /**
@@ -13,9 +15,18 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class KeywordResponse(
-    val id: Int,
+    val id: Long,
     val keyword: String,
     val createdBy: Long,
     val createdAt: Long,
     val updatedAt: Long,
 )
+
+fun KeywordResponse.toDomainModel(): Keyword =
+    Keyword(
+        id = KeywordId(id),
+        keyword = keyword,
+        createdBy = createdBy,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )
