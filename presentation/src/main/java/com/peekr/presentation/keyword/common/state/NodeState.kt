@@ -1,10 +1,10 @@
 package com.peekr.presentation.keyword.common.state
 
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -13,19 +13,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
 /**
- * [NodeState]에서 사용하는 노드 상태 값 홀더 클래스
+ * 노드와 관련된 토큰 값들
  */
-@Immutable
-data class NodeStateHolder(
-    /** 계속해서 변하는 노드 오프셋 X 값 */
-    val offsetX: Float,
-    /** 계속해서 변하는 노드 오프셋 Y 값 */
-    val offsetY: Float,
-    /** 노드의 가로 길이 px 값 */
-    val widthPx: Float,
-    /** 노드의 세로 길이 px 값 */
-    val heightPx: Float,
-)
+object NodeTokens {
+    const val LABEL_OFFSET_ANIM = "node-offset-animation"
+    val animation = spring<Float>(dampingRatio = 0.75f, stiffness = 400f)
+}
 
 /**
  * 키워드 노드 상태 클래스
@@ -38,26 +31,17 @@ class NodeState(
     initialOffsetX: Float = 0f,
     initialOffsetY: Float = 0f,
 ) {
-    private var nodeStateHolder by mutableStateOf(
-        NodeStateHolder(
-            offsetX = initialOffsetX,
-            offsetY = initialOffsetY,
-            widthPx = 0f,
-            heightPx = 0f,
-        ),
-    )
-
     /** 계속해서 변하는 노드 오프셋 X 값 */
-    val offsetX: Float get() = nodeStateHolder.offsetX
+    var offsetX: Float by mutableFloatStateOf(initialOffsetX)
 
     /** 계속해서 변하는 노드 오프셋 Y 값 */
-    val offsetY: Float get() = nodeStateHolder.offsetY
+    var offsetY: Float by mutableFloatStateOf(initialOffsetY)
 
     /** 노드의 가로 길이 px 값 */
-    val widthPx: Float get() = nodeStateHolder.widthPx
+    var widthPx: Float by mutableFloatStateOf(0f)
 
     /** 노드의 세로 길이 px 값 */
-    val heightPx: Float get() = nodeStateHolder.heightPx
+    var heightPx: Float by mutableFloatStateOf(0f)
 
     /**
      * 새로운 노드 오프셋으로 업데이트 한다.
@@ -66,7 +50,8 @@ class NodeState(
      * @param newOffsetY 새로운 노드 오프셋 Y
      */
     fun updatePosition(newOffsetX: Float, newOffsetY: Float) {
-        nodeStateHolder = nodeStateHolder.copy(offsetX = newOffsetX, offsetY = newOffsetY)
+        offsetX = newOffsetX
+        offsetY = newOffsetY
     }
 
     /**
@@ -76,7 +61,8 @@ class NodeState(
      * @param newHeightPx 새로운 노드 세로 길이 (px)
      */
     fun updateSize(newWidthPx: Float, newHeightPx: Float) {
-        nodeStateHolder = nodeStateHolder.copy(widthPx = newWidthPx, heightPx = newHeightPx)
+        widthPx = newWidthPx
+        heightPx = newHeightPx
     }
 
     companion object {

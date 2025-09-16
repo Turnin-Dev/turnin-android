@@ -1,7 +1,6 @@
 package com.peekr.presentation.keyword.common.view
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -11,6 +10,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import com.peekr.presentation.keyword.common.state.NodeState
+import com.peekr.presentation.keyword.common.state.NodeTokens
 import kotlin.math.roundToInt
 
 /**
@@ -30,13 +30,13 @@ fun KeywordNodeEdge(
 ) {
     val animatedNodeOffsetX by animateFloatAsState(
         targetValue = nodeState.offsetX,
-        animationSpec = spring(dampingRatio = 0.75f, stiffness = 400f),
-        label = "animatedOffsetX",
+        animationSpec = NodeTokens.animation,
+        label = NodeTokens.LABEL_OFFSET_ANIM,
     )
     val animatedNodeOffsetY by animateFloatAsState(
         targetValue = nodeState.offsetY,
-        animationSpec = spring(dampingRatio = 0.75f, stiffness = 400f),
-        label = "animatedOffsetY",
+        animationSpec = NodeTokens.animation,
+        label = NodeTokens.LABEL_OFFSET_ANIM,
     )
 
     Box(modifier) {
@@ -54,10 +54,10 @@ fun KeywordNodeEdge(
                         newWidthPx = intSize.width.toFloat(),
                         newHeightPx = intSize.height.toFloat(),
                     )
-                }.graphicsLayer(
-                    translationX = animatedNodeOffsetX,
-                    translationY = animatedNodeOffsetY,
-                ).pointerInput(Unit) {
+                }.graphicsLayer {
+                    translationX = animatedNodeOffsetX
+                    translationY = animatedNodeOffsetY
+                }.pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
                         val sensitivity = 1.0f

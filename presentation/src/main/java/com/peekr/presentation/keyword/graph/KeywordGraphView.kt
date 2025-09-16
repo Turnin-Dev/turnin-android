@@ -96,13 +96,13 @@ private fun GraphBoard(
                             pinchZoom = newScale
                         },
                     )
-                }.graphicsLayer(
-                    translationX = -dragOffsetX * pinchZoom,
-                    translationY = -dragOffsetY * pinchZoom,
-                    scaleX = pinchZoom,
-                    scaleY = pinchZoom,
-                    transformOrigin = TransformOrigin(0f, 0f),
-                ),
+                }.graphicsLayer {
+                    translationX = -dragOffsetX * pinchZoom
+                    translationY = -dragOffsetY * pinchZoom
+                    scaleX = pinchZoom
+                    scaleY = pinchZoom
+                    transformOrigin = TransformOrigin(0f, 0f)
+                },
         ) {
             contents()
         }

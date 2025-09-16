@@ -29,7 +29,6 @@ data class UiImageFileDetail(
         if (!_bytes.contentEquals(other._bytes)) return false
         if (name != other.name) return false
         if (mime != other.mime) return false
-        if (!bytes.contentEquals(other.bytes)) return false
 
         return true
     }
@@ -38,9 +37,11 @@ data class UiImageFileDetail(
         var result = _bytes.contentHashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + mime.hashCode()
-        result = 31 * result + bytes.contentHashCode()
         return result
     }
+
+    override fun toString(): String =
+        "UiImageFileDetail(name=$name, mime=$mime, bytesSize=${_bytes.size})"
 
     companion object {
         fun create(
