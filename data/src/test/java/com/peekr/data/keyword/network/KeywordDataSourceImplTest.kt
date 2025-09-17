@@ -1,6 +1,6 @@
 package com.peekr.data.keyword.network
 
-import com.peekr.data.TestUtils
+import com.peekr.data.ServerTestRule
 import com.peekr.data.common.util.network.NetworkErrorType
 import com.peekr.data.common.util.network.NetworkResult
 import com.peekr.data.keyword.model.request.CreateKeywordRequest
@@ -10,35 +10,30 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class KeywordDataSourceImplTest {
-    private lateinit var server: MockWebServer
-    private lateinit var keywordApi: KeywordApi
+    @get:Rule
+    val testRule = ServerTestRule()
+
+    private val keywordApi: KeywordApi
+        get() = testRule.createNetworkApi<KeywordApi>(testRule.moshi)
+
     private lateinit var dataSource: KeywordDataSource
 
     @Before
     fun setUp() {
-        TestUtils.init()
-        keywordApi = TestUtils.createNetworkApi<KeywordApi>()
-        server = TestUtils.getServer()
         dataSource = KeywordDataSourceImpl(keywordApi)
-    }
-
-    @After
-    fun teardown() {
-        TestUtils.cleanUp()
     }
 
     @Test
     fun `키워드 조회 - 성공 테스트`() = runTest {
         // given
-        server.enqueue(
+        testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(200)
                 setBody(TestKeywordResponse)
@@ -48,7 +43,7 @@ class KeywordDataSourceImplTest {
         // when
         val response = dataSource.getKeyword(TestKeywordId)
         val expectedKeywordResponse =
-            TestUtils.decodeFromJson<KeywordResponse>(TestKeywordResponse)
+            testRule.decodeFromJson<KeywordResponse>(TestKeywordResponse)
 
         // then
         assertTrue(response is NetworkResult.Success)
@@ -61,7 +56,7 @@ class KeywordDataSourceImplTest {
     @Test
     fun `키워드 조회 - 잘못된 응답 바디로 응답 시 알려진 에러를 반환한다`() = runTest {
         // given
-        server.enqueue(
+        testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(200)
                 setBody(TestInvalidResponse)
@@ -95,7 +90,7 @@ class KeywordDataSourceImplTest {
     @Test
     fun `키워드 조회 - HTTP 상태코드 404 응답 시 NotFound 에러로 반환한다`() = runTest {
         // given
-        server.enqueue(
+        testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(404)
                 setBody(TestKeywordResponse)
@@ -113,8 +108,7 @@ class KeywordDataSourceImplTest {
     @Test
     fun `키워드 생성 - 성공 테스트`() = runTest {
         // given
-        val request = TestUtils.encodeToJson<CreateKeywordRequest>(TestCreateKeywordRequest)
-        server.enqueue(
+        testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(201)
                 setBody(TestKeywordResponse)
@@ -135,8 +129,7 @@ class KeywordDataSourceImplTest {
     @Test
     fun `키워드 생성 - 잘못된 응답 바디로 응답 시 알려진 에러를 반환한다`() = runTest {
         // given
-        val request = TestUtils.encodeToJson<CreateKeywordRequest>(TestCreateKeywordRequest)
-        server.enqueue(
+        testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(201)
                 setBody(TestInvalidResponse)

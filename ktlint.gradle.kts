@@ -50,8 +50,13 @@ tasks.register<Copy>("installKtlintGitHookToPreCommit") {
     val preCommitContent =
         """
         #!/bin/bash
-        git diff --name-only -z --cached --relative -- '*.kt' '*.kts' | ktlint --relative --patterns-from-stdin=''
-        if [ ${'$'}? -ne 0 ]; then exit 1; fi
+        STAGED_FILES=${'$'}${'$'}(git diff --name-only --cached --relative -- '*.kt' '*.kts')
+        if [ -n "${'$'}STAGED_FILES" ]; then
+          echo "${'$'}STAGED_FILES" | xargs ktlint --relative
+          if [ ${'$'}? -ne 0 ]; then
+            exit 1
+          fi
+        fi
         """.trimIndent()
 
     val preCommitFile = File(rootProject.rootDir, ".git/hooks/pre-commit")
