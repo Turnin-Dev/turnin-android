@@ -5,9 +5,10 @@ import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.Username
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.Name
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import com.peekr.domain.common.util.flatMapResult
@@ -37,9 +38,9 @@ internal class RegisterUseCase @Inject internal constructor(
                     provider = provider,
                     providerId = ProviderId(providerId),
                     displayId = DisplayId(displayId),
-                    name = Username(name),
+                    name = Name(name),
                     profileImageUrl = profileImageUrl,
-                    introduce = introduce,
+                    introduce = introduce?.let { Introduce(it) },
                 )
                 accountRepository.register(register)
             }
@@ -48,9 +49,9 @@ internal class RegisterUseCase @Inject internal constructor(
             provider = provider,
             providerId = ProviderId(providerId),
             displayId = DisplayId(displayId),
-            name = Username(name),
+            name = Name(name),
             profileImageUrl = null,
-            introduce = introduce,
+            introduce = introduce?.let { Introduce(it) },
         )
         accountRepository.register(register)
     }

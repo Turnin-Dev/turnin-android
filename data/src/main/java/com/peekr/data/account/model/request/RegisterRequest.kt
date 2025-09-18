@@ -28,8 +28,8 @@ fun Register.toDataModel(): RegisterRequest =
     RegisterRequest(
         provider = provider,
         providerId = providerId.uid,
-        displayId = displayId.id,
-        name = name.name,
+        displayId = displayId.value,
+        name = name.value,
         profileImageUrl = profileImageUrl,
-        introduce = introduce,
+        introduce = introduce?.value,
     )

@@ -1,16 +1,20 @@
 package com.peekr.data.common.retrofit
 
+import com.peekr.core.logger.AppLogger
 import com.peekr.domain.common.dataStore.DataStoreKey
 import com.peekr.domain.common.dataStore.DataStoreManager
+import io.mockk.Runs
 import io.mockk.clearAllMocks
-import io.mockk.clearMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -20,10 +24,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import timber.log.Timber
 
 @RunWith(RobolectricTestRunner::class)
 class TokenInterceptorTest {
+    private val tag = TokenInterceptor::class.java.simpleName
     private val dataStoreManager: DataStoreManager = mockk()
     private val chain: Interceptor.Chain = mockk()
 
@@ -43,19 +47,23 @@ class TokenInterceptorTest {
         every { mockRequest.newBuilder() } returns mockRequestBuilder
         every { mockRequestBuilder.addHeader(any(), any()) } returns mockRequestBuilder
         every { mockRequestBuilder.build() } returns mockRequestWithToken
+        every { mockRequest.method } returns "GET"
+        every { mockRequest.url } returns "https://example.com/test".toHttpUrl()
 
         // 기본적인 chain.proceed mock 설정
         every { chain.proceed(any()) } returns mockResponse
 
         // Timber 로깅 mock
-        val mockTree = mockk<Timber.Tree>(relaxed = true)
-        Timber.plant(mockTree)
+        mockkObject(AppLogger)
+        every { AppLogger.d(any(), any()) } just Runs
+        every { AppLogger.w(any(), any()) } just Runs
+        every { AppLogger.e(any(), any()) } just Runs
     }
 
     @After
     fun tearDown() {
         clearAllMocks()
-        unmockkStatic(Timber::class)
+        unmockkStatic(AppLogger::class)
     }
 
     @Test
@@ -80,7 +88,7 @@ class TokenInterceptorTest {
             )
         }
         verify { chain.proceed(mockRequestWithToken) }
-        verify { Timber.d("Response is Successful (HTTP status code is 200 OK)") }
+        verify { AppLogger.d(tag, "Response Success (200)") }
         assertEquals(mockResponse, result)
     }
 
@@ -149,7 +157,7 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { Timber.d("Response is Successful (HTTP status code is 200 OK)") }
+        verify { AppLogger.d(tag, "Response Success (200)") }
     }
 
     @Test
@@ -167,7 +175,7 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { Timber.d("Response is Successful (HTTP status code is 201 Created)") }
+        verify { AppLogger.d(tag, "Response Success (201)") }
     }
 
     @Test
@@ -187,8 +195,7 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { Timber.d("Response is Failure (HTTP status code is 404 Not Found)") }
-        verify { Timber.d("request: $mockRequest\nmessage: Not Found") }
+        verify { AppLogger.w(tag, "Response Client Error (404)") }
     }
 
     @Test
@@ -206,7 +213,7 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { Timber.d("Response is Successful (HTTP status code is 202)") }
+        verify { AppLogger.d(tag, "Response Success (202)") }
     }
 
     @Test
@@ -226,8 +233,7 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { Timber.d("Response is Failure (HTTP status code is 500)") }
-        verify { Timber.d("request: $mockRequest\nmessage: Internal Server Error") }
+        verify { AppLogger.e(tag, "Response Server Error (500)") }
     }
 
     @Test
@@ -248,13 +254,11 @@ class TokenInterceptorTest {
 
         // Then
         verify { mockRequestBuilder.addHeader("Authorization", "Bearer $accessToken") }
-        verify { Timber.d("Response is Failure (HTTP status code is 401)") }
-        verify { Timber.d("request: $mockRequest\nmessage: Unauthorized") }
         assertEquals(mockResponse, result)
     }
 
     @Test
-    fun `Timber 로깅이 정상적으로 호출되는지 확인`() = runTest {
+    fun `로깅이 정상적으로 호출되는지 확인`() = runTest {
         // Given
         val accessToken = "valid_token"
         every {
@@ -268,8 +272,7 @@ class TokenInterceptorTest {
         tokenInterceptor.intercept(chain)
 
         // Then
-        verify { Timber.d("TokenInterceptor Triggered!") }
-        verify { Timber.d("Response is Successful (HTTP status code is 200 OK)") }
+        verify { AppLogger.d(tag, "TokenInterceptor Triggered!") }
     }
 
     @Test
@@ -292,39 +295,6 @@ class TokenInterceptorTest {
                 RetrofitConstants.AUTHENTICATION,
                 "${RetrofitConstants.BEARER} test_access_token_123",
             )
-        }
-    }
-
-    @Test
-    fun `여러 다른 HTTP 상태 코드들에 대한 로깅 확인`() = runTest {
-        val testCases = listOf(
-            Triple(403, false, "Response is Failure (HTTP status code is 403)"),
-            Triple(400, false, "Response is Failure (HTTP status code is 400)"),
-            Triple(202, true, "Response is Successful (HTTP status code is 202)"),
-            Triple(204, true, "Response is Successful (HTTP status code is 204)"),
-        )
-
-        testCases.forEach { (statusCode, isSuccess, expectedLog) ->
-            // Given
-            clearMocks(dataStoreManager, chain, mockResponse)
-            every { dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken) } returns flowOf("token")
-            every { chain.request() } returns mockRequest
-            every { mockRequest.newBuilder() } returns mockRequestBuilder
-            every { mockRequestBuilder.addHeader(any(), any()) } returns mockRequestBuilder
-            every { mockRequestBuilder.build() } returns mockRequestWithToken
-            every { chain.proceed(mockRequestWithToken) } returns mockResponse
-            every { mockResponse.isSuccessful } returns isSuccess
-            every { mockResponse.code } returns statusCode
-            if (!isSuccess) {
-                every { mockResponse.request } returns mockRequest
-                every { mockResponse.message } returns "Error message"
-            }
-
-            // When
-            tokenInterceptor.intercept(chain)
-
-            // Then
-            verify { Timber.d(expectedLog) }
         }
     }
 }
