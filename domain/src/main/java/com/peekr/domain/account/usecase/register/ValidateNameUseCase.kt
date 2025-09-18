@@ -2,7 +2,7 @@ package com.peekr.domain.account.usecase.register
 
 import com.peekr.domain.common.model.Name
 import com.peekr.domain.common.model.NameException
-import com.peekr.domain.common.util.ValidationError
+import com.peekr.domain.common.model.toValidationError
 import com.peekr.domain.common.util.ValidationResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -14,23 +14,13 @@ import kotlinx.coroutines.flow.flow
  * 사용자 이름은 중복이 허용되므로 중복 검사가 필요없다.
  */
 class ValidateNameUseCase @Inject constructor() {
-    operator fun invoke(name: String): Flow<ValidationResult> = flow {
+    operator fun invoke(name: String): Flow<ValidationResult<Name>> = flow {
         emit(ValidationResult.Loading)
         try {
-            Name(name)
-            emit(ValidationResult.Success)
+            val result = Name(name)
+            emit(ValidationResult.Valid(result))
         } catch (e: NameException) {
-            val validationError = when (e) {
-                is NameException.Empty -> ValidationError.Name.Empty
-                is NameException.TooShortOrLong -> {
-                    ValidationError.Name.TooShortOrLong(e.min, e.max)
-                }
-
-                is NameException.InvalidFormat -> {
-                    ValidationError.Name.InvalidFormat(e.format)
-                }
-            }
-            emit(ValidationResult.Error(validationError))
+            emit(ValidationResult.Invalid(e.toValidationError()))
         }
     }
 }

@@ -26,32 +26,32 @@ internal class RegisterUseCase @Inject internal constructor(
 ) {
     operator fun invoke(
         provider: SocialLoginProvider,
-        providerId: String,
-        displayId: String,
-        name: String,
+        providerId: ProviderId,
+        displayId: DisplayId,
+        name: Name,
         imageFileDetail: ImageFileDetail?,
-        introduce: String?,
+        introduce: Introduce?,
     ): Flow<Result<JWTToken, ErrorType>> = if (imageFileDetail != null) {
         getFileUrlUseCase(imageFileDetail.bytes, imageFileDetail.name, imageFileDetail.mime)
             .flatMapResult { profileImageUrl ->
                 val register = Register(
                     provider = provider,
-                    providerId = ProviderId(providerId),
-                    displayId = DisplayId(displayId),
-                    name = Name(name),
+                    providerId = providerId,
+                    displayId = displayId,
+                    name = name,
                     profileImageUrl = profileImageUrl,
-                    introduce = introduce?.let { Introduce(it) },
+                    introduce = introduce,
                 )
                 accountRepository.register(register)
             }
     } else {
         val register = Register(
             provider = provider,
-            providerId = ProviderId(providerId),
-            displayId = DisplayId(displayId),
-            name = Name(name),
+            providerId = providerId,
+            displayId = displayId,
+            name = name,
             profileImageUrl = null,
-            introduce = introduce?.let { Introduce(it) },
+            introduce = introduce,
         )
         accountRepository.register(register)
     }

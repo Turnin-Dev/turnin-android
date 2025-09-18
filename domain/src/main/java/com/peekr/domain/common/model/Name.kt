@@ -1,5 +1,7 @@
 package com.peekr.domain.common.model
 
+import com.peekr.domain.common.util.ValidationError
+
 /** [Name] 커스텀 예외 */
 sealed class NameException(message: String) : IllegalArgumentException(message) {
     data class Empty(
@@ -7,15 +9,26 @@ sealed class NameException(message: String) : IllegalArgumentException(message) 
     ) : NameException(msg)
 
     data class TooShortOrLong(
-        val msg: String = "이름은 ${Name.MIN_LENGTH}~${Name.MAX_LENGTH}자 이내만 가능합니다.",
         val min: Int,
         val max: Int,
+        val msg: String = "이름은 $min~${max}자 이내만 가능합니다.",
     ) : NameException(msg)
 
     data class InvalidFormat(
-        val msg: String = "이름은 영어/숫자/한글만 가능합니다.",
         val format: String,
+        val msg: String = "이름은 ${format}만 가능합니다.",
     ) : NameException(msg)
+}
+
+fun NameException.toValidationError(): ValidationError = when (this) {
+    is NameException.Empty -> ValidationError.Name.Empty
+    is NameException.TooShortOrLong -> {
+        ValidationError.Name.TooShortOrLong(this.min, this.max)
+    }
+
+    is NameException.InvalidFormat -> {
+        ValidationError.Name.InvalidFormat(this.format)
+    }
 }
 
 /** 이름 VO */
@@ -39,11 +52,13 @@ value class Name private constructor(val value: String) {
 
     private fun validate() {
         when {
+            // 1) 비어 있거나 공백인 경우
             value.isBlank() -> throw NameException.Empty()
+            // 2) 길이 범위 위반
             value.length !in MIN_LENGTH..MAX_LENGTH -> {
                 throw NameException.TooShortOrLong(min = MIN_LENGTH, max = MAX_LENGTH)
             }
-
+            // 3) 허용 문자 위반
             !value.matches(regex) -> {
                 throw NameException.InvalidFormat(format = "영어/숫자/한글")
             }

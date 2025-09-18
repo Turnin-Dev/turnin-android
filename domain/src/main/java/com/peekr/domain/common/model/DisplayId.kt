@@ -1,5 +1,7 @@
 package com.peekr.domain.common.model
 
+import com.peekr.domain.common.util.ValidationError
+
 /** [DisplayId] 커스텀 예외 */
 sealed class DisplayIdException(message: String) : IllegalArgumentException(message) {
     data class Empty(
@@ -7,15 +9,26 @@ sealed class DisplayIdException(message: String) : IllegalArgumentException(mess
     ) : DisplayIdException(msg)
 
     data class TooShortOrLong(
-        val msg: String = "사용자 표시 ID는 ${Name.MIN_LENGTH}~${Name.MAX_LENGTH}자 이내만 가능합니다.",
         val min: Int,
         val max: Int,
+        val msg: String = "사용자 표시 ID는 $min~${max}자 이내만 가능합니다.",
     ) : DisplayIdException(msg)
 
     data class InvalidFormat(
-        val msg: String = "사용자 표시 ID는 영어/숫자/밑줄만 가능합니다.",
         val format: String,
+        val msg: String = "사용자 표시 ID는 ${format}만 가능합니다.",
     ) : DisplayIdException(msg)
+}
+
+fun DisplayIdException.toValidationError(): ValidationError = when (this) {
+    is DisplayIdException.Empty -> ValidationError.DisplayId.Empty
+    is DisplayIdException.TooShortOrLong -> {
+        ValidationError.DisplayId.TooShortOrLong(this.min, this.max)
+    }
+
+    is DisplayIdException.InvalidFormat -> {
+        ValidationError.DisplayId.InvalidFormat(this.format)
+    }
 }
 
 /**
