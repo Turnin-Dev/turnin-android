@@ -41,5 +41,9 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
         ).flatMapResult { token: JWTToken -> saveRefreshTokenUseCase(token.refreshToken) }
-            .catch { e -> emit(Result.Error(ErrorType.Unexpected(e))) }
+            .catch { e ->
+                if (e is IllegalArgumentException) {
+                    emit(Result.Error(ErrorType.Unexpected(e)))
+                }
+            }
 }
