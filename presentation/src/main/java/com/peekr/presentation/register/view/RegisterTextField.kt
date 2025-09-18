@@ -36,6 +36,7 @@ fun RegisterTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     errorMessage: String?,
+    singleLine: Boolean,
 ) {
     val isError = errorMessage != null && errorMessage.isNotEmpty()
 
@@ -49,6 +50,7 @@ fun RegisterTextField(
             placeholder = placeholder,
             modifier = Modifier.fillMaxWidth(),
             isError = isError,
+            singleLine = singleLine,
         )
         if (isError) {
             ErrorMessage(
@@ -75,6 +77,7 @@ private fun BaseTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
+    singleLine: Boolean,
 ) {
     BasicTextField(
         modifier = modifier,
@@ -84,7 +87,7 @@ private fun BaseTextField(
             color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
             fontWeight = FontWeight.Medium,
         ),
-        singleLine = true,
+        singleLine = singleLine,
     ) { innerTextField ->
         Box(contentAlignment = Alignment.CenterStart) {
             if (text.isEmpty()) {
@@ -131,6 +134,7 @@ private fun RegisterTextFieldPreview() {
             onTextChanged = onTextChanged,
             placeholder = "이름",
             errorMessage = null,
+            singleLine = true,
         )
     }
 }
@@ -147,6 +151,7 @@ private fun RegisterTextFieldPreview2() {
             onTextChanged = onTextChanged,
             placeholder = "이름2",
             errorMessage = "공백 포함, 3 ~ 15글자, 특수기호(@, !, ., _, -)만 가능합니다.",
+            singleLine = true,
         )
     }
 }
@@ -163,6 +168,7 @@ private fun BaseTextFieldPreview() {
             onTextChanged = onTextChanged,
             placeholder = "이름3",
             isError = false,
+            singleLine = true,
         )
     }
 }

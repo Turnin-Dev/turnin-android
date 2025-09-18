@@ -190,6 +190,7 @@ private fun Contents(
                     onTextChanged = onTextChanged,
                     placeholder = stringResource(placeholder),
                     errorMessage = errorMessage,
+                    singleLine = onProfileImageClick == null,
                 )
             }
         }
