@@ -49,7 +49,7 @@ value class DisplayId private constructor(val value: String) {
             }
             // 3) 허용 문자 위반
             !value.matches(regex) -> {
-                throw DisplayIdException.InvalidFormat(format = "영어/숫자/밑줄")
+                throw DisplayIdException.InvalidFormat(format = "영어/숫자/밑줄(_)")
             }
         }
     }
