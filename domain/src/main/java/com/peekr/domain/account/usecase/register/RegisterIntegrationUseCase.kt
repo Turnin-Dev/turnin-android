@@ -14,7 +14,6 @@ import com.peekr.domain.common.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOf
 
 /**
  * 회원가입을 진행한다.
@@ -42,5 +41,5 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
         ).flatMapResult { token: JWTToken -> saveRefreshTokenUseCase(token.refreshToken) }
-            .catch { e -> flowOf(Result.Error(ErrorType.Unexpected(e))) }
+            .catch { e -> emit(Result.Error(ErrorType.Unexpected(e))) }
 }
