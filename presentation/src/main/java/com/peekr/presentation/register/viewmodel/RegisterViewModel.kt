@@ -9,7 +9,6 @@ import com.peekr.domain.account.usecase.register.RegisterIntegrationUseCase
 import com.peekr.domain.account.usecase.register.ValidateDisplayIdUseCase
 import com.peekr.domain.account.usecase.register.ValidateIntroduceUseCase
 import com.peekr.domain.account.usecase.register.ValidateNameUseCase
-import com.peekr.domain.common.util.CommonValidationError
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import com.peekr.domain.common.util.ValidationResult
@@ -195,8 +194,8 @@ class RegisterViewModel @Inject constructor(
             .onEach { result ->
                 when (result) {
                     ValidationResult.Loading -> _displayIdState.update { it.copy(canNext = false) }
-                    ValidationResult.Success -> _displayIdState.update { it.copy(displayIdError = null, canNext = true) }
-                    is ValidationResult.Error<CommonValidationError> -> _displayIdState.update {
+                    is ValidationResult.Valid -> _displayIdState.update { it.copy(displayIdError = null, canNext = true) }
+                    is ValidationResult.Invalid -> _displayIdState.update {
                         it.copy(displayIdError = result.error.asUiText(), canNext = false)
                     }
                 }
@@ -215,8 +214,8 @@ class RegisterViewModel @Inject constructor(
             .onEach { result ->
                 when (result) {
                     ValidationResult.Loading -> _nameState.update { it.copy(canNext = false) }
-                    ValidationResult.Success -> _nameState.update { it.copy(nameError = null, canNext = true) }
-                    is ValidationResult.Error<CommonValidationError> -> _nameState.update {
+                    is ValidationResult.Valid -> _nameState.update { it.copy(nameError = null, canNext = true) }
+                    is ValidationResult.Invalid -> _nameState.update {
                         it.copy(nameError = result.error.asUiText(), canNext = false)
                     }
                 }
@@ -235,11 +234,11 @@ class RegisterViewModel @Inject constructor(
             .onEach { result ->
                 when (result) {
                     ValidationResult.Loading -> _profileState.update { it.copy(canNext = false) }
-                    ValidationResult.Success -> _profileState.update {
+                    is ValidationResult.Valid -> _profileState.update {
                         it.copy(introduceError = null, canNext = true)
                     }
 
-                    is ValidationResult.Error<CommonValidationError> -> _profileState.update {
+                    is ValidationResult.Invalid -> _profileState.update {
                         it.copy(introduceError = result.error.asUiText(), canNext = false)
                     }
                 }

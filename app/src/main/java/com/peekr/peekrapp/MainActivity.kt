@@ -4,16 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.peekr.designsystem.theme.PeekrAppTheme
 import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.presentation.keyword.common.model.UiKeyword
-import com.peekr.presentation.keyword.graph.KeywordGraphView
+import com.peekr.presentation.common.SubGraph
+import com.peekr.presentation.login.model.UiSocialLoginProvider
+import com.peekr.presentation.register.registerNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,29 +41,29 @@ class MainActivity : ComponentActivity() {
 //                    )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
-//                    NavHost(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        navController = appNavController,
-//                        startDestination = "test-start",
-//                    ) {
-//                        composable(route = "test-start") {
-//                            LaunchedEffect(Unit) {
-//                                appNavController
-//                                    .navigate(
-//                                        SubGraph.Register(
-//                                            provider = UiSocialLoginProvider.GOOGLE,
-//                                            providerId = "asdasasd",
-//                                        ),
-//                                    )
-//                            }
-//                        }
-//
-//                        registerNavigation(
-//                            navController = appNavController,
-//                        )
-//                    }
+                    NavHost(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        navController = appNavController,
+                        startDestination = "test-start",
+                    ) {
+                        composable(route = "test-start") {
+                            LaunchedEffect(Unit) {
+                                appNavController
+                                    .navigate(
+                                        SubGraph.Register(
+                                            provider = UiSocialLoginProvider.GOOGLE,
+                                            providerId = "asdasasd",
+                                        ),
+                                    )
+                            }
+                        }
+
+                        registerNavigation(
+                            navController = appNavController,
+                        )
+                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
 //                    val bottomNavController = rememberNavController()
@@ -74,13 +77,13 @@ class MainActivity : ComponentActivity() {
 //                        bottomNavigation(bottomNavController)
 //                    }
 // ------------------------------ 키워드 그래프 테스트용 ------------------------------
-                    Box(Modifier.padding(innerPadding)) {
-                        KeywordGraphView(
-                            modifier = Modifier.fillMaxSize(),
-                            profileImageUrl = null,
-                            keywords = UiKeyword.samples,
-                        )
-                    }
+//                    Box(Modifier.padding(innerPadding)) {
+//                        KeywordGraphView(
+//                            modifier = Modifier.fillMaxSize(),
+//                            profileImageUrl = null,
+//                            keywords = UiKeyword.samples,
+//                        )
+//                    }
                 }
             }
         }

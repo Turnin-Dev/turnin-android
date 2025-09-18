@@ -16,9 +16,9 @@ import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.Username
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Name
 import com.peekr.domain.common.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -241,7 +241,7 @@ class AccountRepositoryImplTest {
             provider = SocialLoginProvider.GOOGLE,
             providerId = ProviderId("123"),
             displayId = DisplayId("123"),
-            name = Username("hong"),
+            name = Name("hong"),
             profileImageUrl = null,
             introduce = null,
         )

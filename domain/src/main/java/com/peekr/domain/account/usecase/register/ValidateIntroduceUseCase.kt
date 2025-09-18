@@ -1,6 +1,8 @@
 package com.peekr.domain.account.usecase.register
 
-import com.peekr.domain.common.util.CommonValidationError
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.IntroduceException
+import com.peekr.domain.common.model.toValidationError
 import com.peekr.domain.common.util.ValidationResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -10,15 +12,13 @@ import kotlinx.coroutines.flow.flow
  * 소개 글 유효성을 검사한다.
  */
 class ValidateIntroduceUseCase @Inject constructor() {
-    operator fun invoke(introduce: String): Flow<ValidationResult<CommonValidationError>> =
-        flow {
-            emit(ValidationResult.Loading)
-            if (introduce.length in 1..INTRODUCE_MAX_LENGTH) {
-                emit(ValidationResult.Success)
-            } else {
-                emit(ValidationResult.Error(CommonValidationError.EXCEEDS_MAX_LENGTH_200))
-            }
+    operator fun invoke(introduce: String): Flow<ValidationResult<Introduce>> = flow {
+        emit(ValidationResult.Loading)
+        try {
+            val result = Introduce(introduce)
+            emit(ValidationResult.Valid(result))
+        } catch (e: IntroduceException) {
+            emit(ValidationResult.Invalid(e.toValidationError()))
         }
+    }
 }
-
-private const val INTRODUCE_MAX_LENGTH = 200

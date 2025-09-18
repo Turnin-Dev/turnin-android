@@ -9,4 +9,4 @@ data class DisplayIdRequest(
     val id: String,
 )
 
-fun DisplayId.toDataModel(): DisplayIdRequest = DisplayIdRequest(this.id)
+fun DisplayId.toDataModel(): DisplayIdRequest = DisplayIdRequest(this.value)

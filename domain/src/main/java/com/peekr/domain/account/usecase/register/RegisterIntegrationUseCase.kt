@@ -2,13 +2,18 @@ package com.peekr.domain.account.usecase.register
 
 import com.peekr.domain.account.model.ImageFileDetail
 import com.peekr.domain.account.model.JWTToken
+import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.usecase.SaveRefreshTokenUseCase
+import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.Name
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import com.peekr.domain.common.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 
 /**
  * 회원가입을 진행한다.
@@ -30,10 +35,15 @@ class RegisterIntegrationUseCase @Inject internal constructor(
     ): Flow<Result<Boolean, ErrorType>> =
         registerUseCase(
             provider = provider,
-            providerId = providerId,
-            displayId = displayId,
-            name = name,
+            providerId = ProviderId(providerId),
+            displayId = DisplayId(displayId),
+            name = Name(name),
             imageFileDetail = imageFileDetail,
-            introduce = introduce,
+            introduce = introduce?.let { Introduce(it) },
         ).flatMapResult { token: JWTToken -> saveRefreshTokenUseCase(token.refreshToken) }
+            .catch { e ->
+                if (e is IllegalArgumentException) {
+                    emit(Result.Error(ErrorType.Unexpected(e)))
+                }
+            }
 }

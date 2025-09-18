@@ -5,9 +5,10 @@ import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
-import com.peekr.domain.account.model.Username
 import com.peekr.domain.account.repository.AccountRepository
 import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.Name
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import com.peekr.domain.common.util.flatMapResult
@@ -25,19 +26,19 @@ internal class RegisterUseCase @Inject internal constructor(
 ) {
     operator fun invoke(
         provider: SocialLoginProvider,
-        providerId: String,
-        displayId: String,
-        name: String,
+        providerId: ProviderId,
+        displayId: DisplayId,
+        name: Name,
         imageFileDetail: ImageFileDetail?,
-        introduce: String?,
+        introduce: Introduce?,
     ): Flow<Result<JWTToken, ErrorType>> = if (imageFileDetail != null) {
         getFileUrlUseCase(imageFileDetail.bytes, imageFileDetail.name, imageFileDetail.mime)
             .flatMapResult { profileImageUrl ->
                 val register = Register(
                     provider = provider,
-                    providerId = ProviderId(providerId),
-                    displayId = DisplayId(displayId),
-                    name = Username(name),
+                    providerId = providerId,
+                    displayId = displayId,
+                    name = name,
                     profileImageUrl = profileImageUrl,
                     introduce = introduce,
                 )
@@ -46,9 +47,9 @@ internal class RegisterUseCase @Inject internal constructor(
     } else {
         val register = Register(
             provider = provider,
-            providerId = ProviderId(providerId),
-            displayId = DisplayId(displayId),
-            name = Username(name),
+            providerId = providerId,
+            displayId = displayId,
+            name = name,
             profileImageUrl = null,
             introduce = introduce,
         )

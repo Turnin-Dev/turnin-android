@@ -1,7 +1,7 @@
 package com.peekr.domain.common.util
 
 /** 앱 전체에서 사용되는 에러 타입으로 해당 에러 타입들은 클라이언트를 위한 에러 타입이다. */
-sealed interface ErrorType : Error {
+sealed interface ErrorType : DomainError {
     /** Auth 에러 타입 */
     enum class Auth : ErrorType {
         // Common

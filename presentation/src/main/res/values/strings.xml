@@ -6,6 +6,10 @@
     <!-- Common -->
     <string name="common_btn_cancel">취소</string>
 
+    <!-- Validation Error Type -->
+    <string name="validation_display_id_empty">사용자 표시 ID가 비어있습니다.</string>
+    <string name="validation_name_empty">이름이 비어있습니다.</string>
+
     <!-- Login Screen -->
     <string name="login_screen_btn_google">Google 로그인</string>
     <string name="login_screen_btn_kakao">카카오 로그인</string>
@@ -23,12 +27,6 @@
     <string name="register_screen_btn_next">다음</string>
     <string name="register_screen_btn_start">시작하기</string>
     <string name="register_screen_btn_image_crop">완료</string>
-    <!-- Register Screen (Validation) -->
-    <string name="register_screen_validation_empty_or_blank">공백은 허용되지 않습니다.</string>
-    <string name="register_screen_validation_exceeds_max_length_30">1~30자 이내로 작성해주세요.</string>
-    <string name="register_screen_validation_exceeds_max_length_200">1~200자 이내로 작성해주세요.</string>
-    <string name="register_screen_validation_only_al_nu_han">영어/숫자/한글만 허용됩니다. (공백은 허용되지 않습니다)</string>
-    <string name="register_screen_validation_only_al_nu_und">영어/숫자/밑줄만 허용됩니다. (공백은 허용되지 않습니다)</string>
     <!-- Register Screen (Error) -->
     <string name="register_screen_error_cant_use_display_id">이미 존재하는 ID입니다.</string>
     <string name="register_screen_error_cant_use_empty_or_blank">공백은 허용되지 않습니다.</string>

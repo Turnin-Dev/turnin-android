@@ -1,6 +1,9 @@
 package com.peekr.domain.common.util
 
-typealias BaseError = Error
+/** 도메인 에러 베이스 타입 */
+sealed interface DomainError
+
+typealias BaseError = DomainError
 
 /** 결과 래퍼 클래스 */
 sealed interface Result<out T, out E : BaseError> {

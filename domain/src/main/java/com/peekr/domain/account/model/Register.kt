@@ -1,6 +1,8 @@
 package com.peekr.domain.account.model
 
 import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.Name
 
 /**
  * 회원가입 시 사용 한다.
@@ -16,7 +18,7 @@ data class Register(
     val provider: SocialLoginProvider,
     val providerId: ProviderId,
     val displayId: DisplayId,
-    val name: Username,
+    val name: Name,
     val profileImageUrl: String?,
-    val introduce: String?,
+    val introduce: Introduce?,
 )
