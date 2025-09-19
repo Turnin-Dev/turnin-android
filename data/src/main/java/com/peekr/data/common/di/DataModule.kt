@@ -50,6 +50,20 @@ class DataModule {
         .commonTimeout()
         .build()
 
+    @TokenOkHttpClient
+    @Singleton
+    @Provides
+    fun providerTokenOkHttpClient(
+        tokenAuthenticator: TokenAuthenticator,
+        tokenInterceptor: TokenInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient = OkHttpClient
+        .Builder()
+        .authenticator(tokenAuthenticator)
+        .addInterceptor(tokenInterceptor)
+        .addInterceptor(httpLoggingInterceptor)
+        .build()
+
     // ------------------------------ Retrofit ------------------------------
     @Singleton
     @Provides
@@ -77,6 +91,10 @@ class DataModule {
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DefaultOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TokenOkHttpClient
 
 // ------------------------------ Utils ------------------------------
 private fun OkHttpClient.Builder.commonTimeout(): OkHttpClient.Builder =

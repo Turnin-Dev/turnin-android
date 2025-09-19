@@ -1,6 +1,6 @@
 package com.peekr.data.keyword.di
 
-import com.peekr.data.common.di.DefaultOkHttpClient
+import com.peekr.data.common.di.TokenOkHttpClient
 import com.peekr.data.keyword.network.KeywordApi
 import dagger.Module
 import dagger.Provides
@@ -17,7 +17,7 @@ class KeywordModule {
     @Provides
     fun providerKeywordApi(
         retrofit: Retrofit.Builder,
-        @DefaultOkHttpClient okHttpClient: OkHttpClient,
+        @TokenOkHttpClient okHttpClient: OkHttpClient,
     ): KeywordApi = retrofit
         .client(okHttpClient)
         .build()
