@@ -147,6 +147,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 text = profileState.introduce,
                 onTextChanged = registerViewModel::onIntroduceChanged,
                 errorMessage = profileState.introduceError?.asString(),
+                singleLine = false,
                 loading = profileState.loading,
                 enabledNext = profileState.canNext,
                 profileImage = profileState.image,

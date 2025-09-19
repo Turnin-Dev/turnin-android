@@ -42,6 +42,7 @@ import com.peekr.presentation.common.util.bottomAutoPadding
  * @param errorMessage 회원가입 텍스트필드의 에러 메시지
  * @param loading 로딩 여부
  * @param enabledNext 다음 버튼 활성화
+ * @param singleLine 텍스트필드의 싱글 라인 여부
  * @param subTitle 회원가입 화면 보조 타이틀
  * @param profileImage 프로필 이미지
  * @param buttonTitle 버튼 타이틀
@@ -59,6 +60,7 @@ fun RegisterCommonScreen(
     errorMessage: String?,
     loading: Boolean,
     enabledNext: Boolean,
+    singleLine: Boolean = true,
     @StringRes subTitle: Int? = null,
     profileImage: ImageBitmap? = null,
     @StringRes buttonTitle: Int = R.string.register_screen_btn_next,
@@ -87,6 +89,7 @@ fun RegisterCommonScreen(
                 placeholder = placeholder,
                 text = text,
                 errorMessage = errorMessage,
+                singleLine = singleLine,
                 subTitle = subTitle,
                 profileImage = profileImage,
                 onTextChanged = onTextChanged,
@@ -141,6 +144,7 @@ private fun Contents(
     @StringRes placeholder: Int,
     text: String,
     errorMessage: String?,
+    singleLine: Boolean,
     @StringRes subTitle: Int? = null,
     profileImage: ImageBitmap? = null,
     onTextChanged: (String) -> Unit,
@@ -190,7 +194,7 @@ private fun Contents(
                     onTextChanged = onTextChanged,
                     placeholder = stringResource(placeholder),
                     errorMessage = errorMessage,
-                    singleLine = onProfileImageClick == null,
+                    singleLine = singleLine,
                 )
             }
         }
@@ -227,6 +231,7 @@ private fun RegisterScreenFramePreview() {
             text = text,
             onTextChanged = onTextChanged,
             errorMessage = null,
+            singleLine = true,
             loading = false,
             enabledNext = true,
             onBackPressed = {},
