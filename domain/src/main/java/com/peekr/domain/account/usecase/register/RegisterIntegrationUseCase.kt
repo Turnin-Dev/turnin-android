@@ -13,7 +13,7 @@ import com.peekr.domain.common.util.Result
 import com.peekr.domain.common.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * 회원가입을 진행한다.
@@ -32,7 +32,7 @@ class RegisterIntegrationUseCase @Inject internal constructor(
         name: String,
         imageFileDetail: ImageFileDetail?,
         introduce: String?,
-    ): Flow<Result<Boolean, ErrorType>> =
+    ): Flow<Result<Boolean, ErrorType>> = runCatching {
         registerUseCase(
             provider = provider,
             providerId = ProviderId(providerId),
@@ -41,9 +41,5 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
         ).flatMapResult { token: JWTToken -> saveRefreshTokenUseCase(token.refreshToken) }
-            .catch { e ->
-                if (e is IllegalArgumentException) {
-                    emit(Result.Error(ErrorType.Unexpected(e)))
-                }
-            }
+    }.getOrElse { e -> flowOf(Result.Error(ErrorType.Unexpected(e))) }
 }

@@ -1,0 +1,135 @@
+package com.peekr.domain.account.usecase.register
+
+import com.peekr.domain.account.model.JWTToken
+import com.peekr.domain.account.model.ProviderId
+import com.peekr.domain.account.model.SocialLoginProvider
+import com.peekr.domain.account.usecase.SaveRefreshTokenUseCase
+import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.Name
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
+import io.mockk.every
+import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
+
+class RegisterIntegrationUseCaseTest {
+    private val registerUseCase: RegisterUseCase = mockk()
+    private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase = mockk()
+    private val usecase = RegisterIntegrationUseCase(registerUseCase, saveRefreshTokenUseCase)
+
+    @Test
+    fun `회원가입 성공 테스트`() = runTest {
+        // given
+        every {
+            registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
+        } returns flowOf(Result.Success(TestJWTToken))
+        every {
+            saveRefreshTokenUseCase(any())
+        } returns flowOf(Result.Success(true))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId.uid,
+            displayId = TestDisplayId.value,
+            name = TestName.value,
+            imageFileDetail = null,
+            introduce = TestIntroduce.value,
+        ).last()
+
+        // then
+        assert(result is Result.Success)
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `회원가입시 register 유스케이스에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = ErrorType.Exception.IO
+        every {
+            registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
+        } returns flowOf(Result.Success(TestJWTToken))
+        every {
+            saveRefreshTokenUseCase(any())
+        } returns flowOf(Result.Error(expectedError))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId.uid,
+            displayId = TestDisplayId.value,
+            name = TestName.value,
+            imageFileDetail = null,
+            introduce = TestIntroduce.value,
+        ).last()
+
+        // then
+        assert(result is Result.Error)
+        assertEquals(expectedError, (result as Result.Error).error)
+    }
+
+    @Test
+    fun `회원가입시 리프레쉬 토큰을 저장하는 과정에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = ErrorType.Exception.IO
+        every {
+            registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
+        } returns flowOf(Result.Error(expectedError))
+        every {
+            saveRefreshTokenUseCase(any())
+        } returns flowOf(Result.Success(true))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId.uid,
+            displayId = TestDisplayId.value,
+            name = TestName.value,
+            imageFileDetail = null,
+            introduce = TestIntroduce.value,
+        ).last()
+
+        // then
+        assert(result is Result.Error)
+        assertEquals(expectedError, (result as Result.Error).error)
+    }
+
+    @Test
+    fun `회원가입시 VO 객체 유효성 검사 과정에서 실패 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        every {
+            registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
+        } returns flowOf(Result.Success(TestJWTToken))
+        every {
+            saveRefreshTokenUseCase(any())
+        } returns flowOf(Result.Success(true))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId.uid,
+            displayId = "!!!",
+            name = TestName.value,
+            imageFileDetail = null,
+            introduce = TestIntroduce.value,
+        ).last()
+
+        // then
+        assert(result is Result.Error)
+        assert((result as Result.Error).error is ErrorType.Unexpected)
+    }
+
+    companion object {
+        private val TestProvider = SocialLoginProvider.GOOGLE
+        private val TestProviderId = ProviderId("google123")
+        private val TestDisplayId = DisplayId("abc")
+        private val TestName = Name("honggd")
+        private val TestIntroduce = Introduce("hello!")
+        private val TestJWTToken = JWTToken("a", "b")
+    }
+}
