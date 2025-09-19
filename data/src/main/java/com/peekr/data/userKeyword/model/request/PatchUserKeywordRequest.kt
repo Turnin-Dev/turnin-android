@@ -1,5 +1,6 @@
 package com.peekr.data.userKeyword.model.request
 
+import com.peekr.domain.userKeyword.model.PatchUserKeyword
 import com.squareup.moshi.JsonClass
 
 /**
@@ -15,3 +16,10 @@ data class PatchUserKeywordRequest(
     val offsetY: Double,
     val description: String,
 )
+
+fun PatchUserKeyword.toDataModel(): PatchUserKeywordRequest =
+    PatchUserKeywordRequest(
+        offsetX = offsetX,
+        offsetY = offsetY,
+        description = description,
+    )

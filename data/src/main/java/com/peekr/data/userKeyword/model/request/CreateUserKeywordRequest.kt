@@ -1,5 +1,6 @@
 package com.peekr.data.userKeyword.model.request
 
+import com.peekr.domain.userKeyword.model.CreateUserKeyword
 import com.squareup.moshi.JsonClass
 
 /**
@@ -19,3 +20,12 @@ data class CreateUserKeywordRequest(
     val offsetY: Double,
     val description: String,
 )
+
+fun CreateUserKeyword.toDataModel(): CreateUserKeywordRequest =
+    CreateUserKeywordRequest(
+        userId = userId.value,
+        keywordId = keywordId.value,
+        offsetX = offsetX,
+        offsetY = offsetY,
+        description = description,
+    )

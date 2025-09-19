@@ -1,5 +1,9 @@
 package com.peekr.data.userKeyword.model.response
 
+import com.peekr.domain.common.model.KeywordId
+import com.peekr.domain.common.model.UserId
+import com.peekr.domain.common.model.UserKeywordId
+import com.peekr.domain.userKeyword.model.UserKeyword
 import com.squareup.moshi.JsonClass
 
 /**
@@ -25,3 +29,15 @@ data class UserKeywordResponse(
     val createdAt: Long,
     val updatedAt: Long,
 )
+
+fun UserKeywordResponse.toDomainModel(): UserKeyword =
+    UserKeyword(
+        id = UserKeywordId(id),
+        keywordId = KeywordId(keywordId),
+        userId = UserId(userId),
+        offsetX = offsetX,
+        offsetY = offsetY,
+        description = description,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )
