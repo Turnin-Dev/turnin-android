@@ -40,6 +40,10 @@ android {
     buildFeatures { compose = true }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     // Essential
     implementation(libs.androidx.core.ktx)

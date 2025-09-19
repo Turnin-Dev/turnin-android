@@ -1,0 +1,131 @@
+package com.peekr.domain.account.usecase.register
+
+import com.peekr.domain.account.model.ImageFileDetail
+import com.peekr.domain.account.model.JWTToken
+import com.peekr.domain.account.model.Mime
+import com.peekr.domain.account.model.ProviderId
+import com.peekr.domain.account.model.Register
+import com.peekr.domain.account.model.SocialLoginProvider
+import com.peekr.domain.account.repository.AccountRepository
+import com.peekr.domain.common.model.DisplayId
+import com.peekr.domain.common.model.Introduce
+import com.peekr.domain.common.model.Name
+import com.peekr.domain.common.util.ErrorType
+import com.peekr.domain.common.util.Result
+import io.mockk.every
+import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class RegisterUseCaseTest {
+    private val accountRepository: AccountRepository = mockk()
+    private val getFileUrlUseCase: GetFileUrlUseCase = mockk()
+    private val usecase = RegisterUseCase(accountRepository, getFileUrlUseCase)
+
+    @Test
+    fun `업로드한 파일 url로 회원가입을 정상적으로 진행한다`() = runTest {
+        // given
+        every {
+            accountRepository.register(TestRegister)
+        } returns flowOf(Result.Success(TestJWTToken))
+        every {
+            getFileUrlUseCase(any(), any(), any())
+        } returns flowOf(Result.Success(TEST_FILE_URL))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId,
+            displayId = TestDisplayId,
+            name = TestName,
+            imageFileDetail = TestImageFileDetail,
+            introduce = TestIntroduce,
+        ).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(TestJWTToken, (result as Result.Success).data)
+    }
+
+    @Test
+    fun `업로드한 파일 url이 null이어도 회원가입을 정상적으로 진행한다`() = runTest {
+        // given
+        every {
+            accountRepository.register(TestRegisterWithNullFile)
+        } returns flowOf(Result.Success(TestJWTToken))
+        every {
+            getFileUrlUseCase(any(), any(), any())
+        } returns flowOf(Result.Success(TEST_FILE_URL))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId,
+            displayId = TestDisplayId,
+            name = TestName,
+            imageFileDetail = null,
+            introduce = TestIntroduce,
+        ).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(TestJWTToken, (result as Result.Success).data)
+    }
+
+    @Test
+    fun `업로드한 파일 url을 받아올 때 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = ErrorType.Network.ClientError
+        every {
+            accountRepository.register(TestRegister)
+        } returns flowOf(Result.Success(TestJWTToken))
+        every {
+            getFileUrlUseCase(any(), any(), any())
+        } returns flowOf(Result.Error(expectedError))
+
+        // when
+        val result = usecase(
+            provider = TestProvider,
+            providerId = TestProviderId,
+            displayId = TestDisplayId,
+            name = TestName,
+            imageFileDetail = TestImageFileDetail,
+            introduce = TestIntroduce,
+        ).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(expectedError, (result as Result.Error).error)
+    }
+
+    companion object {
+        private val TestProvider = SocialLoginProvider.GOOGLE
+        private val TestProviderId = ProviderId("google123")
+        private val TestDisplayId = DisplayId("abc")
+        private val TestName = Name("honggd")
+        private val TestIntroduce = Introduce("hello!")
+        private val TestJWTToken = JWTToken("a", "b")
+        private const val TEST_FILE_URL = "https://example.com/test.jpg"
+        private val TestImageFileDetail = ImageFileDetail("123".toByteArray(), "", Mime.IMAGE_JPEG)
+        private val TestRegister = Register(
+            provider = TestProvider,
+            providerId = TestProviderId,
+            displayId = TestDisplayId,
+            name = TestName,
+            profileImageUrl = TEST_FILE_URL,
+            introduce = TestIntroduce,
+        )
+        private val TestRegisterWithNullFile = Register(
+            provider = TestProvider,
+            providerId = TestProviderId,
+            displayId = TestDisplayId,
+            name = TestName,
+            profileImageUrl = null,
+            introduce = TestIntroduce,
+        )
+    }
+}
