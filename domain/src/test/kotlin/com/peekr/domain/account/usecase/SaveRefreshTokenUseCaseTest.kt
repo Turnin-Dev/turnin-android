@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SaveRefreshTokenUseCaseTest {
@@ -24,8 +25,8 @@ class SaveRefreshTokenUseCaseTest {
         val result = usecase(TEST_REFRESH_TOKEN).last()
 
         // then
-        assert(result is Result.Success)
-        assert((result as Result.Success).data)
+        assertTrue(result is Result.Success)
+        assertTrue((result as Result.Success).data)
     }
 
     @Test
@@ -39,8 +40,8 @@ class SaveRefreshTokenUseCaseTest {
         val result = usecase(TEST_REFRESH_TOKEN).last()
 
         // then
-        assert(result is Result.Error)
-        assert((result as Result.Error).error is ErrorType.Unexpected)
+        assertTrue(result is Result.Error)
+        assertTrue((result as Result.Error).error is ErrorType.Unexpected)
     }
 
     companion object {

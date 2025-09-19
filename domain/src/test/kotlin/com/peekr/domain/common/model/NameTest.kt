@@ -35,7 +35,7 @@ class NameTest {
     companion object {
         private const val VALID_NAME = "hong길동"
         private const val INVALID_FORMAT_NAME = "hi-hi@"
-        private val TooLongName = "a".repeat(DisplayId.MAX_LENGTH + 1)
+        private val TooLongName = "a".repeat(Name.MAX_LENGTH + 1)
         private const val EMPTY_NAME = ""
     }
 }

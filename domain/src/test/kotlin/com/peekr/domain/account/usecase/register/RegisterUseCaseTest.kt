@@ -18,6 +18,7 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RegisterUseCaseTest {
@@ -46,7 +47,7 @@ class RegisterUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Success)
+        assertTrue(result is Result.Success)
         assertEquals(TestJWTToken, (result as Result.Success).data)
     }
 
@@ -71,7 +72,7 @@ class RegisterUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Success)
+        assertTrue(result is Result.Success)
         assertEquals(TestJWTToken, (result as Result.Success).data)
     }
 
@@ -97,7 +98,7 @@ class RegisterUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Error)
+        assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
     }
 

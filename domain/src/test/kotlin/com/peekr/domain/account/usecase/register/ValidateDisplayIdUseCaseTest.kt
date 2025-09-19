@@ -5,6 +5,7 @@ import com.peekr.domain.common.util.ValidationResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ValidateDisplayIdUseCaseTest {
@@ -13,29 +14,29 @@ class ValidateDisplayIdUseCaseTest {
     @Test
     fun `사용자 표시 ID 유효성 검사 성공 테스트`() = runTest {
         val result = usecase(VALID_DISPLAY_ID).last()
-        assert(result is ValidationResult.Valid)
+        assertTrue(result is ValidationResult.Valid)
         assertEquals(VALID_DISPLAY_ID, (result as ValidationResult.Valid).value.value)
     }
 
     @Test
     fun `사용자 표시 ID 유효성 검사 실패 테스트 - 잘못된 형식`() = runTest {
         val result = usecase(INVALID_FORMAT_DISPLAY_ID).last()
-        assert(result is ValidationResult.Invalid)
-        assert((result as ValidationResult.Invalid).error is ValidationError.DisplayId.InvalidFormat)
+        assertTrue(result is ValidationResult.Invalid)
+        assertTrue((result as ValidationResult.Invalid).error is ValidationError.DisplayId.InvalidFormat)
     }
 
     @Test
     fun `사용자 표시 ID 유효성 검사 실패 테스트 - 길이 제약 위반`() = runTest {
         val result = usecase(TooLongDisplayId).last()
-        assert(result is ValidationResult.Invalid)
-        assert((result as ValidationResult.Invalid).error is ValidationError.DisplayId.TooShortOrLong)
+        assertTrue(result is ValidationResult.Invalid)
+        assertTrue((result as ValidationResult.Invalid).error is ValidationError.DisplayId.TooShortOrLong)
     }
 
     @Test
     fun `사용자 표시 ID 유효성 검사 실패 테스트 - 빈 문자열`() = runTest {
         val result = usecase(EMPTY_DISPLAY_ID).last()
-        assert(result is ValidationResult.Invalid)
-        assert((result as ValidationResult.Invalid).error is ValidationError.DisplayId.Empty)
+        assertTrue(result is ValidationResult.Invalid)
+        assertTrue((result as ValidationResult.Invalid).error is ValidationError.DisplayId.Empty)
     }
 
     companion object {

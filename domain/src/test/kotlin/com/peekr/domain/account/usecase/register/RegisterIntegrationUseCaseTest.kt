@@ -15,6 +15,7 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RegisterIntegrationUseCaseTest {
@@ -43,8 +44,8 @@ class RegisterIntegrationUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Success)
-        assert((result as Result.Success).data)
+        assertTrue(result is Result.Success)
+        assertTrue((result as Result.Success).data)
     }
 
     @Test
@@ -69,7 +70,7 @@ class RegisterIntegrationUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Error)
+        assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
     }
 
@@ -95,7 +96,7 @@ class RegisterIntegrationUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Error)
+        assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
     }
 
@@ -120,8 +121,8 @@ class RegisterIntegrationUseCaseTest {
         ).last()
 
         // then
-        assert(result is Result.Error)
-        assert((result as Result.Error).error is ErrorType.Unexpected)
+        assertTrue(result is Result.Error)
+        assertTrue((result as Result.Error).error is ErrorType.Unexpected)
     }
 
     companion object {

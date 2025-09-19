@@ -36,11 +36,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    kotlin {
-        jvmToolchain(17)
-    }
 
     buildFeatures { compose = true }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {

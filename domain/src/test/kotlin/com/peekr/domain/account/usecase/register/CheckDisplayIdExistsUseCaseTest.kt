@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CheckDisplayIdExistsUseCaseTest {
@@ -27,7 +28,7 @@ class CheckDisplayIdExistsUseCaseTest {
         val result = usecase(TestDisplayId.value).last()
 
         // then
-        assert(result is Result.Success)
+        assertTrue(result is Result.Success)
     }
 
     @Test
@@ -42,7 +43,7 @@ class CheckDisplayIdExistsUseCaseTest {
         val result = usecase(TestDisplayId.value).last()
 
         // then
-        assert(result is Result.Error)
+        assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
     }
 
