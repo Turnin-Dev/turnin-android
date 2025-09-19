@@ -30,6 +30,7 @@ data class UserKeywordResponse(
     val updatedAt: Long,
 )
 
+// TODO: 해당 메서드에서 사용하는 VO 객체에서 유효성 검사 예외를 던질 때 처리 가능한지 테스트 해보기
 fun UserKeywordResponse.toDomainModel(): UserKeyword =
     UserKeyword(
         id = UserKeywordId(id),
