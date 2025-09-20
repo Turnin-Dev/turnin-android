@@ -49,14 +49,30 @@ tasks.register<JavaExec>("ktlintFormat") {
 tasks.register<Copy>("installKtlintGitHookToPreCommit") {
     val preCommitContent =
         """
-        #!/bin/bash
-        STAGED_FILES=${'$'}${'$'}(git diff --name-only --cached --relative -- '*.kt' '*.kts')
-        if [ -n "${'$'}STAGED_FILES" ]; then
-          echo "${'$'}STAGED_FILES" | xargs ktlint --relative
-          if [ ${'$'}? -ne 0 ]; then
-            exit 1
-          fi
+        #!/bin/sh
+        echo "Running ktlint on staged files..."
+
+        # Check if there are any staged Kotlin files
+        STAGED_FILES=${'$'}(git diff --cached --name-only --diff-filter=ACM "*.kt" "*.kts")
+
+        if [ -z "${'$'}STAGED_FILES" ]; then
+            echo "No Kotlin files to check"
+            exit 0
         fi
+
+        echo "Checking staged Kotlin files with ktlint..."
+
+        # Run ktlint check using Gradle wrapper
+        ./gradlew ktlintCheck
+
+        if [ ${'$'}? -ne 0 ]; then
+            echo "❌ ktlint check failed!"
+            echo "Run './gradlew ktlintFormat' to fix formatting issues automatically"
+            exit 1
+        fi
+
+        echo "✅ ktlint check passed!"
+        exit 0
         """.trimIndent()
 
     val preCommitFile = File(rootProject.rootDir, ".git/hooks/pre-commit")

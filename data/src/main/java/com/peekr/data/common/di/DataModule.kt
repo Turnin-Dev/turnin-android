@@ -36,6 +36,8 @@ class DataModule {
             } else {
                 setLevel(HttpLoggingInterceptor.Level.NONE)
             }
+            redactHeader("Authorization")
+            redactHeader("Cookie")
         }
 
     // ------------------------------ OkHttpClient & Interceptor ------------------------------
@@ -47,6 +49,21 @@ class DataModule {
     ): OkHttpClient = OkHttpClient
         .Builder()
         .addInterceptor(httpLoggingInterceptor)
+        .commonTimeout()
+        .build()
+
+    @TokenOkHttpClient
+    @Singleton
+    @Provides
+    fun providerTokenOkHttpClient(
+        tokenAuthenticator: TokenAuthenticator,
+        tokenInterceptor: TokenInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient = OkHttpClient
+        .Builder()
+        .authenticator(tokenAuthenticator)
+        .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(tokenInterceptor)
         .commonTimeout()
         .build()
 
@@ -77,6 +94,10 @@ class DataModule {
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DefaultOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TokenOkHttpClient
 
 // ------------------------------ Utils ------------------------------
 private fun OkHttpClient.Builder.commonTimeout(): OkHttpClient.Builder =

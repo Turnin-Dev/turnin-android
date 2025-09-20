@@ -21,6 +21,10 @@ object NetworkApiPath {
         const val ROUTE = "$BASE/keyword"
     }
 
+    object UserKeyword {
+        const val ROUTE = "$BASE/user-keyword"
+    }
+
     object File {
         private const val ROUTE = "$BASE/file"
         const val UPLOAD = "$ROUTE/upload"
