@@ -36,6 +36,8 @@ class DataModule {
             } else {
                 setLevel(HttpLoggingInterceptor.Level.NONE)
             }
+            redactHeader("Authorization")
+            redactHeader("Cookie")
         }
 
     // ------------------------------ OkHttpClient & Interceptor ------------------------------
@@ -60,8 +62,9 @@ class DataModule {
     ): OkHttpClient = OkHttpClient
         .Builder()
         .authenticator(tokenAuthenticator)
-        .addInterceptor(tokenInterceptor)
         .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(tokenInterceptor)
+        .commonTimeout()
         .build()
 
     // ------------------------------ Retrofit ------------------------------

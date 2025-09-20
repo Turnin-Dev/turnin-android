@@ -50,15 +50,29 @@ tasks.register<Copy>("installKtlintGitHookToPreCommit") {
     val preCommitContent =
         """
         #!/bin/sh
-        # Check for changed Kotlin files and run ktlint on them
-        git diff --cached --name-only --diff-filter=ACM "*.kt" "*.kts" | while read -r file; do
-            if [[ -f "${'$'}file" ]]; then
-                ktlint --relative "${'$'}file"
-                if [ ${'$'}? -ne 0 ]; then
-                    exit 1
-                fi
-            fi
-        done
+        echo "Running ktlint on staged files..."
+
+        # Check if there are any staged Kotlin files
+        STAGED_FILES=${'$'}(git diff --cached --name-only --diff-filter=ACM "*.kt" "*.kts")
+
+        if [ -z "${'$'}STAGED_FILES" ]; then
+            echo "No Kotlin files to check"
+            exit 0
+        fi
+
+        echo "Checking staged Kotlin files with ktlint..."
+
+        # Run ktlint check using Gradle wrapper
+        ./gradlew ktlintCheck
+
+        if [ ${'$'}? -ne 0 ]; then
+            echo "❌ ktlint check failed!"
+            echo "Run './gradlew ktlintFormat' to fix formatting issues automatically"
+            exit 1
+        fi
+
+        echo "✅ ktlint check passed!"
+        exit 0
         """.trimIndent()
 
     val preCommitFile = File(rootProject.rootDir, ".git/hooks/pre-commit")
