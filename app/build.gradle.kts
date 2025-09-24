@@ -35,10 +35,10 @@ kotlin {
 
 dependencies {
     // TODO: app 모듈이 data 모듈까지 의존하는 것이 클린아키텍처 방식에서 벗어난다면 추후 별도의 di 모듈을 생성하는 것을 고려
-    implementation(project(":core"))
-    implementation(project(":presentation"))
-    implementation(project(":designsystem"))
-    implementation(project(":data"))
+    implementation(projects.core)
+    implementation(projects.presentation)
+    implementation(projects.designsystem)
+    implementation(projects.data)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)

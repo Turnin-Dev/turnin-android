@@ -43,8 +43,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":domain"))
+    implementation(projects.core)
+    implementation(projects.domain)
 
     // Core Android
     implementation(libs.androidx.core.ktx)
