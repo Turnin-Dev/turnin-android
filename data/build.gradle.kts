@@ -3,19 +3,15 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.peekr.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "com.peekr.data"
-    compileSdk = 35
 
     defaultConfig {
-        minSdk = 26
-
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "com.team.data.TestRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -39,25 +35,6 @@ android {
                 test.systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
             }
         }
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
