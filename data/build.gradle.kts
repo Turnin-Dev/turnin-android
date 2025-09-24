@@ -12,10 +12,6 @@ android {
     namespace = "com.peekr.data"
 
     defaultConfig {
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner = "com.team.data.TestRunner"
-        consumerProguardFiles("consumer-rules.pro")
-
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
         buildConfigField("String", "PEEKR_MOCK_SERVER_URL", properties.getProperty("PEEKR_MOCK_SERVER_URL"))
