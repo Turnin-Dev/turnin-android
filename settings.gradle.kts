@@ -1,4 +1,7 @@
 pluginManagement {
+
+    includeBuild("build-logic") // use this plugin
+
     repositories {
         google {
             content {
@@ -20,6 +23,8 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "Peekr"
 include(":app")
 include(":designsystem")
@@ -27,4 +32,3 @@ include(":domain")
 include(":data")
 include(":presentation")
 include(":core")
-include(":build-logic:convention")
