@@ -39,7 +39,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(projects.core)
     implementation(projects.domain)
 
     // Core Android

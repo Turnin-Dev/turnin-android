@@ -15,7 +15,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(projects.core)
     implementation(projects.domain)
     implementation(projects.designsystem)
 
