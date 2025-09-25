@@ -1,6 +1,6 @@
 package com.peekr.data.common.util.crypto
 
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import java.util.Base64
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

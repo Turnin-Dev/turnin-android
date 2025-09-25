@@ -1,6 +1,6 @@
 package com.peekr.data.common.retrofit
 
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.data.common.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.data.common.retrofit.RetrofitConstants.BEARER
 import com.peekr.domain.common.dataStore.DataStoreKey

@@ -15,8 +15,6 @@ kotlin {
 dependencies {
     implementation(projects.core.domain)
 
-    implementation(libs.timber)
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

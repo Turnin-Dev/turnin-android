@@ -15,7 +15,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.data.BuildConfig
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager

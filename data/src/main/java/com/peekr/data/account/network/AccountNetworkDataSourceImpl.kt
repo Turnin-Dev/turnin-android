@@ -1,6 +1,6 @@
 package com.peekr.data.account.network
 
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest

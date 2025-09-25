@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.data.common.util.crypto.CryptoException
 import com.peekr.data.common.util.crypto.CryptoManager
 import com.peekr.domain.common.dataStore.DataStoreKey

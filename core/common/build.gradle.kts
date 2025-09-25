@@ -11,6 +11,9 @@ kotlin {
 }
 
 dependencies {
+    api(libs.timber)
+
+    // Testing
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
 }

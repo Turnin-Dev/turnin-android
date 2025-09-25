@@ -1,6 +1,6 @@
 package com.peekr.data.common.util.coroutine
 
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.domain.common.util.ErrorType
 import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.CancellationException

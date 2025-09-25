@@ -2,7 +2,7 @@ package com.peekr.data.common.util.crypto
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import java.security.KeyStore
 import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher

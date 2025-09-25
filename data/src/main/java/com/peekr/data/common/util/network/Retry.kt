@@ -1,6 +1,6 @@
 package com.peekr.data.common.util.network
 
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.data.common.util.network.NetworkRetryPolicy.NON_RETRYABLE_STATUS_CODES
 import com.peekr.data.common.util.network.NetworkRetryPolicy.RETRYABLE_STATUS_CODES
 import java.net.SocketTimeoutException
