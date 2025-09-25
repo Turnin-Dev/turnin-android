@@ -15,6 +15,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(projects.core.presentation)
     implementation(projects.domain)
     implementation(projects.designsystem)
 
