@@ -1,6 +1,6 @@
 package com.peekr.data.userKeyword.di
 
-import com.peekr.data.common.di.TokenOkHttpClient
+import com.peekr.core.data.network.TokenOkHttpClient
 import com.peekr.data.userKeyword.network.UserKeywordApi
 import dagger.Module
 import dagger.Provides

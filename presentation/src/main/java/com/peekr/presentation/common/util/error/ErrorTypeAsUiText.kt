@@ -1,6 +1,6 @@
 package com.peekr.presentation.common.util.error
 
-import com.peekr.domain.common.util.ErrorType
+import com.peekr.core.domain.util.ErrorType
 import com.peekr.presentation.R
 import com.peekr.presentation.common.util.UiText
 import com.peekr.presentation.common.util.UiText.DynamicString

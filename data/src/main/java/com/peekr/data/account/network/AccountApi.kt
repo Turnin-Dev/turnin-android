@@ -1,13 +1,13 @@
 package com.peekr.data.account.network
 
+import com.peekr.core.data.network.NetworkApiPath
+import com.peekr.core.data.network.retrofit.TokenResponse
 import com.peekr.data.account.model.request.LoginRequest
 import com.peekr.data.account.model.request.RegisterRequest
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
-import com.peekr.data.common.retrofit.TokenResponse
-import com.peekr.data.common.util.network.NetworkApiPath
 import com.peekr.domain.account.model.SocialLoginProvider
 import retrofit2.Response
 import retrofit2.http.Body

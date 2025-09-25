@@ -16,11 +16,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.data.BuildConfig
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await

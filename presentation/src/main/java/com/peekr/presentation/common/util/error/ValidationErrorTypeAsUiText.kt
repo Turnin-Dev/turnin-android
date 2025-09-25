@@ -1,6 +1,6 @@
 package com.peekr.presentation.common.util.error
 
-import com.peekr.domain.common.util.ValidationError
+import com.peekr.core.domain.validation.ValidationError
 import com.peekr.presentation.R
 import com.peekr.presentation.common.util.UiText
 

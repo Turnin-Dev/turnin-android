@@ -1,14 +1,14 @@
 package com.peekr.domain.account.repository
 
+import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.model.Register
-import com.peekr.domain.common.model.DisplayId
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 계정 관련 리포지토리 */
@@ -56,4 +56,11 @@ interface AccountRepository {
      * @param register 회원가입을 위한 정보
      */
     fun register(register: Register): Flow<Result<JWTToken, ErrorType>>
+
+    /**
+     * 리프레쉬 토큰 저장
+     *
+     * @param token 리프레쉬 토큰
+     */
+    fun saveRefreshToken(token: String): Flow<Result<Unit, ErrorType>>
 }

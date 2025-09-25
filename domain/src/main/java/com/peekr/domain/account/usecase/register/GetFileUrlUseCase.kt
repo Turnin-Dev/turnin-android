@@ -1,10 +1,10 @@
 package com.peekr.domain.account.usecase.register
 
+import com.peekr.core.domain.coroutine.flatMapResult
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
-import com.peekr.domain.common.util.flatMapResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
  * 사전 정의된 url로 파일 업로드를 한다.
  *
  * 파일 업로드가 완료되면 파일의 url을 반환한다,
- * 파일 업로드가 정상적으로 이루어지지 않았을 경우 `null` 혹은 [Result.Error]을 반환한다.
+ * 파일 업로드가 정상적으로 이루어지지 않았을 경우 `null` 혹은 [com.peekr.core.common.util.Result.Error]을 반환한다.
  */
 internal class GetFileUrlUseCase @Inject internal constructor(
     private val getFileUploadPresignedUrlUseCase: GetFileUploadPresignedUrlUseCase,

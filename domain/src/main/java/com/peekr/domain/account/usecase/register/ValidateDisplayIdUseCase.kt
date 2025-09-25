@@ -1,9 +1,9 @@
 package com.peekr.domain.account.usecase.register
 
-import com.peekr.domain.common.model.DisplayId
-import com.peekr.domain.common.model.DisplayIdException
-import com.peekr.domain.common.model.toValidationError
-import com.peekr.domain.common.util.ValidationResult
+import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.DisplayIdException
+import com.peekr.core.domain.model.toValidationError
+import com.peekr.core.domain.validation.ValidationResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

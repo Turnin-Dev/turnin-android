@@ -1,14 +1,20 @@
 package com.peekr.data.account.repository
 
+import com.peekr.core.common.IO
+import com.peekr.core.data.datastore.DataStoreKey
+import com.peekr.core.data.datastore.DataStoreManager
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.util.toErrorCode
+import com.peekr.data.AppConfig
 import com.peekr.data.account.model.request.toDataModel
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.toDomainModel
 import com.peekr.data.account.network.AccountNetworkDataSource
-import com.peekr.data.common.di.IO
-import com.peekr.data.common.util.AppConfig
-import com.peekr.data.common.util.coroutine.safeResultFlow
-import com.peekr.data.common.util.network.NetworkResult
-import com.peekr.data.common.util.network.toErrorType
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
@@ -16,16 +22,13 @@ import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
 import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.common.model.DisplayId
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
-import com.peekr.domain.common.util.toErrorCode
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 class AccountRepositoryImpl @Inject constructor(
     private val accountNetworkDataSource: AccountNetworkDataSource,
+    private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AccountRepository {
     override fun login(login: Login): Flow<Result<JWTToken, ErrorType>> =
@@ -109,6 +112,14 @@ class AccountRepositoryImpl @Inject constructor(
                     )
                 }
             }
+        }
+
+    override fun saveRefreshToken(token: String): Flow<Result<Unit, ErrorType>> =
+        safeResultFlow(ioDispatcher) {
+            dataStoreManager.saveEncryptedStringData(
+                key = DataStoreKey.Auth.RefreshToken,
+                value = token,
+            )
         }
 
     private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =

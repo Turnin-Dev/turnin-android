@@ -1,15 +1,15 @@
 package com.peekr.data.keyword.repository
 
-import com.peekr.data.common.di.IO
-import com.peekr.data.common.util.coroutine.safeResultFlow
-import com.peekr.data.common.util.network.NetworkResult
-import com.peekr.data.common.util.network.toErrorType
+import com.peekr.core.common.IO
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.data.keyword.model.request.CreateKeywordRequest
 import com.peekr.data.keyword.model.response.toDomainModel
 import com.peekr.data.keyword.network.KeywordDataSource
-import com.peekr.domain.common.model.KeywordId
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import com.peekr.domain.keyword.model.Keyword
 import com.peekr.domain.keyword.repository.KeywordRepository
 import javax.inject.Inject

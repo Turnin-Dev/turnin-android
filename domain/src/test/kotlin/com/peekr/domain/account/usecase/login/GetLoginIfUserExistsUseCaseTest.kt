@@ -1,12 +1,12 @@
 package com.peekr.domain.account.usecase.login
 
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.LoginWithExistsUser
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

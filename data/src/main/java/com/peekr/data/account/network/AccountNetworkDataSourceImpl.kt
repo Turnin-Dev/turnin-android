@@ -1,6 +1,10 @@
 package com.peekr.data.account.network
 
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.network.DefaultOkHttpClient
+import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.networkCall
 import com.peekr.data.account.model.request.DisplayIdRequest
 import com.peekr.data.account.model.request.ExistsUserRequest
 import com.peekr.data.account.model.request.LoginRequest
@@ -9,10 +13,6 @@ import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
-import com.peekr.data.common.di.DefaultOkHttpClient
-import com.peekr.data.common.util.network.NetworkErrorType
-import com.peekr.data.common.util.network.NetworkResult
-import com.peekr.data.common.util.network.networkCall
 import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient

@@ -7,11 +7,11 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.data.common.util.coroutine.trySendAndClose
+import com.peekr.core.domain.coroutine.trySendAndClose
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.util.AuthManager
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

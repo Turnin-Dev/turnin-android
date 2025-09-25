@@ -1,8 +1,7 @@
 package com.peekr.presentation.common.util.error
 
-import com.peekr.domain.common.util.ErrorCode
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.presentation.R
 import com.peekr.presentation.common.util.UiText
 
