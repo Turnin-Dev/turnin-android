@@ -78,22 +78,32 @@ presentation/                # <Presentation(feature) 모듈>
 
 ## 2. Dependency Direction
 
-#### 핵심 모듈 간 의존성
-
 ```mermaid
-flowchart TD
-    ap(:app) --> pr(":presentation(feature)")
-    pr --> do(:domain)
-    da(:data) --> do
-    pr --> de(:designsystem)
-    ap --> de
-```
-
-#### 핵심 공통 모듈인 core 모듈 의존성
-
-```mermaid
-flowchart TD
-    ap(:app) --> co(:core)
-    pr(:presentation) --> co
-    da(:data) --> co
+graph TB
+    subgraph :core
+        direction TB
+        :core:data[data]:::android-library
+        :core:domain[domain]:::jvm-library
+        :core:presentation[presentation]:::android-library
+        :core:common[common]:::android-library
+    end
+    subgraph :layer
+        direction TB
+        :layer:data[data]:::android-library
+        :layer:domain[domain]:::jvm-library
+        :layer:presentation[presentation]:::android-library
+    end
+    :app[app]:::android-application
+    :app -.-> :layer
+    :app -.-> :core
+    :core:data ---> :core:domain
+    :core:presentation ---> :core:domain
+    :layer:data ---> :layer:domain
+    :layer:presentation ---> :layer:domain
+    :layer:data -.-> :core:data
+    :layer:domain -. api .-> :core:domain
+    :layer:presentation -.-> :core:presentation
+    classDef android-application fill: #CAFFBF
+    classDef android-library fill: #9BF6FF
+    classDef jvm-library fill: #BDB2FF
 ```
