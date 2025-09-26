@@ -1,6 +1,6 @@
 package com.peekr.data.account.model.request
 
-import com.peekr.domain.common.model.DisplayId
+import com.peekr.core.domain.model.DisplayId
 import com.squareup.moshi.JsonClass
 
 /** [DisplayId] 요청용 */

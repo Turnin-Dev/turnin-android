@@ -1,9 +1,9 @@
 package com.peekr.domain.account.usecase.register
 
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.Mime
 import com.peekr.domain.account.model.PresignedUrl
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

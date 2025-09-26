@@ -1,6 +1,6 @@
 package com.peekr.presentation.keyword.common.model
 
-import com.peekr.presentation.common.model.UiDisplayId
+import com.peekr.core.presentation.model.UiDisplayId
 
 /**
  * UI용 키워드

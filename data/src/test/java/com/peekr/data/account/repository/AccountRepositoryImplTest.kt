@@ -1,13 +1,17 @@
 package com.peekr.data.account.repository
 
+import com.peekr.core.data.datastore.DataStoreManager
+import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.util.Result
 import com.peekr.data.account.model.response.ExistsResponse
 import com.peekr.data.account.model.response.LoginResponse
 import com.peekr.data.account.model.response.PresignedUrlResponse
 import com.peekr.data.account.model.response.RegisterResponse
 import com.peekr.data.account.network.AccountNetworkDataSource
-import com.peekr.data.common.util.network.NetworkErrorType
-import com.peekr.data.common.util.network.NetworkResult
-import com.peekr.data.common.util.network.toErrorType
 import com.peekr.domain.account.model.ExistsUser
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
@@ -17,9 +21,6 @@ import com.peekr.domain.account.model.ProviderId
 import com.peekr.domain.account.model.Register
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.repository.AccountRepository
-import com.peekr.domain.common.model.DisplayId
-import com.peekr.domain.common.model.Name
-import com.peekr.domain.common.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,10 +33,12 @@ import org.junit.Test
 
 class AccountRepositoryImplTest {
     private val dataSource: AccountNetworkDataSource = mockk()
+    private val dataStoreManager: DataStoreManager = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository: AccountRepository = AccountRepositoryImpl(dataSource, dispatcher)
+    private val repository: AccountRepository =
+        AccountRepositoryImpl(dataSource, dataStoreManager, dispatcher)
 
     @Test
     fun `login() 성공 테스트`() =

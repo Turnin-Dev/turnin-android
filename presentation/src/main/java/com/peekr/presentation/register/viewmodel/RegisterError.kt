@@ -1,8 +1,8 @@
 package com.peekr.presentation.register.viewmodel
 
+import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.util.UiText.StringResource
 import com.peekr.presentation.R
-import com.peekr.presentation.common.util.UiText
-import com.peekr.presentation.common.util.UiText.StringResource
 
 /** 회원가입 화면에서 별도로 사용하는 에러 */
 enum class RegisterError {

@@ -26,5 +26,8 @@ ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_function-signature = disabled
 
 [**/generated/**]
-# 'generated' 디렉토리 아래의 모든 Kotlin 파일에 대해 ktlint를 비활성화
 ktlint = disabled
+
+[build-logic/**]
+ktlint = disabled
+

@@ -2,15 +2,15 @@ package com.peekr.presentation.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
+import com.peekr.core.presentation.error.asUiTextTypeFirst
+import com.peekr.core.presentation.model.UiSocialLoginProvider
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
 import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
-import com.peekr.presentation.common.util.error.asUiTextTypeFirst
-import com.peekr.presentation.login.model.UiSocialLoginProvider
-import com.peekr.presentation.login.model.toDomainModel
-import com.peekr.presentation.login.model.toUiModel
+import com.peekr.presentation.login.mapper.toDomainModel
+import com.peekr.presentation.login.mapper.toUiModel
 import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.login.state.LoginUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,10 +91,10 @@ class LoginViewModel @Inject constructor(
     }
 
     /**
-     * [Result]를 기반으로 한 데이터와 함께 [LoginState]상태를 업데이트 한다.
+     * [com.peekr.core.common.util.Result]를 기반으로 한 데이터와 함께 [LoginState]상태를 업데이트 한다.
      *
      * @param result 결과 래퍼 클래스로 감싸있는 데이터
-     * @param onSuccess [Result.Success] 시 수행할 작업
+     * @param onSuccess [com.peekr.core.common.util.Result.Success] 시 수행할 작업
      */
     private inline fun <T> updateLoginState(
         result: Result<T, ErrorType>,

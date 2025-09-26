@@ -1,20 +1,15 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.peekr.jvm.library)
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
+
 kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
-    }
     jvmToolchain(17)
 }
 
 dependencies {
-    api(libs.kotlinx.coroutines.core)
+    api(projects.core.domain)
+
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.dagger.hilt.javax)
 
     // Testing

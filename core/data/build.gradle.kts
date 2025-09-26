@@ -1,0 +1,73 @@
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
+
+plugins {
+    alias(libs.plugins.peekr.android.library)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+}
+
+android {
+    namespace = "com.peekr.core.data"
+
+    defaultConfig {
+        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
+        buildConfigField("String", "PEEKR_DATA_STORE", properties.getProperty("PEEKR_DATA_STORE"))
+        buildConfigField("String", "PEEKR_MOCK_SERVER_URL", properties.getProperty("PEEKR_MOCK_SERVER_URL"))
+        buildConfigField("String", "PEEKR_LOCAL_SERVER_URL", properties.getProperty("PEEKR_LOCAL_SERVER_URL"))
+        buildConfigField("String", "PEEKR_REAL_SERVER_URL", properties.getProperty("PEEKR_REAL_SERVER_URL"))
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+
+            all { test ->
+                // when logging required
+//                test.systemProperties["robolectric.logging.enabled"] = "true"
+                test.systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
+            }
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    implementation(projects.core.common)
+    implementation(projects.core.domain)
+
+    // Coroutine
+    implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // DataStore
+    implementation(libs.androidx.dataStore.preference)
+
+    // Retrofit & OkHttp
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    testImplementation(libs.retrofit.mock)
+    testImplementation(libs.okhttp.mockWebServer)
+
+    // Serialization
+    implementation(libs.moshi.kotlin)
+
+    // Testing: JUnit, Coroutines Test, Android runner, Mockito
+    androidTestImplementation(libs.androidx.test.runner)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.mockK)
+    testImplementation(libs.robolectric)
+}

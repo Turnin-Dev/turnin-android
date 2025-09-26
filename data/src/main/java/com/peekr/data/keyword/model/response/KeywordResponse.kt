@@ -1,6 +1,6 @@
 package com.peekr.data.keyword.model.response
 
-import com.peekr.domain.common.model.KeywordId
+import com.peekr.core.domain.model.KeywordId
 import com.peekr.domain.keyword.model.Keyword
 import com.squareup.moshi.JsonClass
 

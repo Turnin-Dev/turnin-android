@@ -1,11 +1,10 @@
 package com.peekr.domain.account.usecase.login
 
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.model.SocialLoginProvider
 import com.peekr.domain.account.util.AuthManagerFactory
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
-import com.peekr.domain.common.util.Result.Success
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -32,9 +31,9 @@ class SocialLoginUseCase @Inject constructor(
             .map { result ->
                 when (result) {
                     Result.Loading -> Result.Loading
-                    is Success -> {
+                    is Result.Success -> {
                         val login = Login(provider = provider, providerId = result.data)
-                        Success(login)
+                        Result.Success(login)
                     }
 
                     is Result.Error -> result

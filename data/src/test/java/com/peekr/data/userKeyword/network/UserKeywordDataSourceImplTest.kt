@@ -1,15 +1,15 @@
 package com.peekr.data.userKeyword.network
 
+import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.data.ServerTestRule
-import com.peekr.data.common.util.network.NetworkErrorType
-import com.peekr.data.common.util.network.NetworkResult
 import com.peekr.data.userKeyword.model.request.CreateUserKeywordRequest
 import com.peekr.data.userKeyword.model.request.PatchUserKeywordRequest
 import com.peekr.data.userKeyword.model.response.UserKeywordResponse
 import com.peekr.data.userKeyword.model.response.UserKeywordsResponse
-import com.peekr.domain.common.model.KeywordId
-import com.peekr.domain.common.model.UserId
-import com.peekr.domain.common.model.UserKeywordId
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

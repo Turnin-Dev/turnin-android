@@ -1,11 +1,11 @@
 package com.peekr.data.keyword.network
 
+import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.domain.model.KeywordId
 import com.peekr.data.ServerTestRule
-import com.peekr.data.common.util.network.NetworkErrorType
-import com.peekr.data.common.util.network.NetworkResult
 import com.peekr.data.keyword.model.request.CreateKeywordRequest
 import com.peekr.data.keyword.model.response.KeywordResponse
-import com.peekr.domain.common.model.KeywordId
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

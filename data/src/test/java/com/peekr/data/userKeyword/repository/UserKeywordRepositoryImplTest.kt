@@ -1,19 +1,19 @@
 package com.peekr.data.userKeyword.repository
 
-import com.peekr.data.common.util.network.NetworkErrorType
-import com.peekr.data.common.util.network.NetworkResult
-import com.peekr.data.common.util.network.toErrorType
+import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.data.userKeyword.model.request.CreateUserKeywordRequest
 import com.peekr.data.userKeyword.model.request.PatchUserKeywordRequest
 import com.peekr.data.userKeyword.model.response.UserKeywordResponse
 import com.peekr.data.userKeyword.model.response.UserKeywordsResponse
 import com.peekr.data.userKeyword.model.response.toDomainModel
 import com.peekr.data.userKeyword.network.UserKeywordDataSource
-import com.peekr.domain.common.model.KeywordId
-import com.peekr.domain.common.model.UserId
-import com.peekr.domain.common.model.UserKeywordId
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
 import com.peekr.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.domain.userKeyword.model.PatchUserKeyword
 import io.mockk.coEvery

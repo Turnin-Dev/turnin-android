@@ -1,10 +1,10 @@
 package com.peekr.data.account.di
 
 import android.content.Context
+import com.peekr.core.data.network.DefaultOkHttpClient
 import com.peekr.data.account.network.AccountApi
 import com.peekr.data.account.util.GoogleAuthManager
 import com.peekr.data.account.util.KakaoAuthManager
-import com.peekr.data.common.di.DefaultOkHttpClient
 import com.peekr.domain.account.util.AuthManager
 import dagger.Module
 import dagger.Provides

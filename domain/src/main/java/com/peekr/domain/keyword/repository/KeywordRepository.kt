@@ -1,8 +1,8 @@
 package com.peekr.domain.keyword.repository
 
-import com.peekr.domain.common.model.KeywordId
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.keyword.model.Keyword
 import kotlinx.coroutines.flow.Flow
 

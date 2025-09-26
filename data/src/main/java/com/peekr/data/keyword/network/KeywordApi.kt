@@ -1,6 +1,6 @@
 package com.peekr.data.keyword.network
 
-import com.peekr.data.common.util.network.NetworkApiPath
+import com.peekr.core.data.network.NetworkApiPath
 import com.peekr.data.keyword.model.request.CreateKeywordRequest
 import com.peekr.data.keyword.model.response.KeywordResponse
 import retrofit2.Response

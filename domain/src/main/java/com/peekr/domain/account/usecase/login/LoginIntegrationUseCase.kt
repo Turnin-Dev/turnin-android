@@ -1,12 +1,12 @@
 package com.peekr.domain.account.usecase.login
 
+import com.peekr.core.domain.coroutine.flatMapResult
+import com.peekr.core.domain.coroutine.mapSuccess
+import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.Result
 import com.peekr.domain.account.model.JWTToken
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.usecase.SaveRefreshTokenUseCase
-import com.peekr.domain.common.util.ErrorType
-import com.peekr.domain.common.util.Result
-import com.peekr.domain.common.util.flatMapResult
-import com.peekr.domain.common.util.mapSuccess
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

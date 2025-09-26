@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
 
 /**
  * 키워드 엣지(간선) 컴포넌트

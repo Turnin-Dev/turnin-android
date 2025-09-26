@@ -1,4 +1,12 @@
 [versions]
+# Project
+projectVersionName = "1.0"
+projectVersionCode = "1"
+projectTargetSdkVersion = "35"
+projectCompileSdkVersion = "35"
+projectMinSdkVersion = "26"
+
+# Lib
 agp = "8.10.0"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
@@ -33,6 +41,8 @@ dataStore = "1.1.7"
 androidxNavigation = "2.9.3"
 androidxHilt = "1.2.0"
 kotlinxSerialization = "1.8.0"
+androidTools = "31.7.2"
+desugar_jdk_libs = "2.0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -108,6 +118,15 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 # DataStore
 androidx-dataStore-preference = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
+# Desugar
+android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -119,3 +138,10 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# Peekr Plugins
+peekr-android-application = { id = "peekr.android.application" }
+peekr-android-application-compose = { id = "peekr.android.application.compose" }
+peekr-android-library = { id = "peekr.android.library" }
+peekr-android-library-compose = { id = "peekr.android.library.compose" }
+peekr-jvm-library = { id = "peekr.jvm.library" }

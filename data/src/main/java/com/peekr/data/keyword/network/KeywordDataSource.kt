@@ -1,9 +1,9 @@
 package com.peekr.data.keyword.network
 
-import com.peekr.data.common.util.network.NetworkResult
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.domain.model.KeywordId
 import com.peekr.data.keyword.model.request.CreateKeywordRequest
 import com.peekr.data.keyword.model.response.KeywordResponse
-import com.peekr.domain.common.model.KeywordId
 
 /** Keyword 네트워크 데이터 소스 */
 interface KeywordDataSource {

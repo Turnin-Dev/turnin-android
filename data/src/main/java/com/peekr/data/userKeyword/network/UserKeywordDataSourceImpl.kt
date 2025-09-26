@@ -1,14 +1,14 @@
 package com.peekr.data.userKeyword.network
 
-import com.peekr.data.common.util.network.NetworkResult
-import com.peekr.data.common.util.network.networkCall
-import com.peekr.data.common.util.network.networkCallWithoutResponse
+import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.networkCall
+import com.peekr.core.data.network.util.networkCallWithoutResponse
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.data.userKeyword.model.request.CreateUserKeywordRequest
 import com.peekr.data.userKeyword.model.request.PatchUserKeywordRequest
 import com.peekr.data.userKeyword.model.response.UserKeywordResponse
 import com.peekr.data.userKeyword.model.response.UserKeywordsResponse
-import com.peekr.domain.common.model.UserId
-import com.peekr.domain.common.model.UserKeywordId
 import javax.inject.Inject
 
 class UserKeywordDataSourceImpl @Inject constructor(

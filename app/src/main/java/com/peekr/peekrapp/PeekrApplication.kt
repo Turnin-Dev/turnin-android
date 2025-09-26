@@ -8,7 +8,7 @@ import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.kakao.sdk.common.KakaoSdk
-import com.peekr.core.logger.AppLogger
+import com.peekr.core.common.logger.AppLogger
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

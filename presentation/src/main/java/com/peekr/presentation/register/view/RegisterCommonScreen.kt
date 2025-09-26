@@ -22,15 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.peekr.designsystem.component.avatar.PeekrAvatar
-import com.peekr.designsystem.component.button.PeekrButtonStyle
-import com.peekr.designsystem.component.button.PeekrSolidButton
-import com.peekr.designsystem.component.topbar.PeekrTopBar
-import com.peekr.designsystem.theme.PeekrAppTheme
-import com.peekr.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.component.avatar.PeekrAvatar
+import com.peekr.core.designsystem.component.button.PeekrButtonStyle
+import com.peekr.core.designsystem.component.button.PeekrSolidButton
+import com.peekr.core.designsystem.component.topbar.PeekrTopBar
+import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.presentation.token.ScreenTokens
+import com.peekr.core.presentation.util.bottomAutoPadding
 import com.peekr.presentation.R
-import com.peekr.presentation.common.util.ScreenTokens
-import com.peekr.presentation.common.util.bottomAutoPadding
 
 /**
  * 회원가입 공통 화면

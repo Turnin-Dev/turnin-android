@@ -3,29 +3,17 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.peekr.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "com.peekr.data"
-    compileSdk = 35
 
     defaultConfig {
-        minSdk = 26
-
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner = "com.team.data.TestRunner"
-        consumerProguardFiles("consumer-rules.pro")
-
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
-        buildConfigField("String", "PEEKR_MOCK_SERVER_URL", properties.getProperty("PEEKR_MOCK_SERVER_URL"))
-        buildConfigField("String", "PEEKR_LOCAL_SERVER_URL", properties.getProperty("PEEKR_LOCAL_SERVER_URL"))
-        buildConfigField("String", "PEEKR_REAL_SERVER_URL", properties.getProperty("PEEKR_REAL_SERVER_URL"))
-        buildConfigField("String", "PEEKR_DATA_STORE", properties.getProperty("PEEKR_DATA_STORE"))
         buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", properties.getProperty("CLOUD_STORAGE_SERVER_URL"))
     }
 
@@ -40,25 +28,6 @@ android {
             }
         }
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 kotlin {
@@ -66,8 +35,9 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":domain"))
+    implementation(projects.core.common)
+    implementation(projects.core.data)
+    implementation(projects.domain)
 
     // Core Android
     implementation(libs.androidx.core.ktx)

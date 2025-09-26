@@ -1,9 +1,9 @@
 package com.peekr.domain.account.usecase.register
 
-import com.peekr.domain.common.model.Introduce
-import com.peekr.domain.common.model.IntroduceException
-import com.peekr.domain.common.model.toValidationError
-import com.peekr.domain.common.util.ValidationResult
+import com.peekr.core.domain.model.Introduce
+import com.peekr.core.domain.model.IntroduceException
+import com.peekr.core.domain.model.toValidationError
+import com.peekr.core.domain.validation.ValidationResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
