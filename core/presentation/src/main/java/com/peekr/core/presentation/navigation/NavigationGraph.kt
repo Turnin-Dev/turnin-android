@@ -54,6 +54,8 @@ sealed interface RegisterGraph {
     data object CropProfileImage : RegisterGraph
 }
 
+// ------------------------------ 바텀 네비게이션 ------------------------------
+
 /** 바텀 네비게이션(홈) */
 sealed interface HomeGraph {
     @Serializable
@@ -66,7 +68,7 @@ sealed interface DiscoverGraph {
     data object Main : DiscoverGraph
 }
 
-/** 탐색 네비게이션(프로필) */
+/** 바텀 네비게이션(프로필) */
 sealed interface ProfileGraph {
     @Serializable
     data object Main : ProfileGraph
