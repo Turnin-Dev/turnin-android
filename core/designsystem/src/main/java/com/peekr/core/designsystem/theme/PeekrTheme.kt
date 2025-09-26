@@ -30,6 +30,11 @@ object PeekrTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalShape.current
+
+    val transition: PeekrTransition
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalTransition.current
 }
 
 @Composable
