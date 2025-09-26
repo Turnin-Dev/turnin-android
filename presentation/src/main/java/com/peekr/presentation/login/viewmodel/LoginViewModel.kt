@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.core.presentation.error.asUiTextTypeFirst
+import com.peekr.core.presentation.model.UiSocialLoginProvider
 import com.peekr.domain.account.model.Login
 import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
 import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
-import com.peekr.presentation.common.util.error.asUiTextTypeFirst
-import com.peekr.presentation.login.model.UiSocialLoginProvider
-import com.peekr.presentation.login.model.toDomainModel
-import com.peekr.presentation.login.model.toUiModel
+import com.peekr.presentation.login.mapper.toDomainModel
+import com.peekr.presentation.login.mapper.toUiModel
 import com.peekr.presentation.login.state.LoginState
 import com.peekr.presentation.login.state.LoginUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel

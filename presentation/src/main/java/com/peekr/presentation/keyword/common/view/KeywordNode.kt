@@ -14,11 +14,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.peekr.designsystem.theme.PeekrAppTheme
-import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.designsystem.util.PeekrShadowType
-import com.peekr.designsystem.util.click.clickableSingle
-import com.peekr.designsystem.util.peekrShadow
+import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.PeekrShadowType
+import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.peekrShadow
 
 /**
  * 키워드 노드 컴포넌트

@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peekr.designsystem.theme.PeekrAppTheme
-import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.presentation.common.SubGraph
-import com.peekr.presentation.login.model.UiSocialLoginProvider
+import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.presentation.model.UiSocialLoginProvider
+import com.peekr.core.presentation.navigation.SubGraph
 import com.peekr.presentation.register.registerNavigation
 import dagger.hilt.android.AndroidEntryPoint
 

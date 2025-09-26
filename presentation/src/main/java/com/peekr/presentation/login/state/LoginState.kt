@@ -1,7 +1,7 @@
 package com.peekr.presentation.login.state
 
-import com.peekr.presentation.common.util.UiText
-import com.peekr.presentation.login.model.UiSocialLoginProvider
+import com.peekr.core.presentation.model.UiSocialLoginProvider
+import com.peekr.core.presentation.util.UiText
 
 sealed interface LoginUiEvent {
     data class NavigateToRegister(

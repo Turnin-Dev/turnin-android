@@ -16,8 +16,9 @@ kotlin {
 
 dependencies {
     implementation(projects.core.presentation)
+    implementation(projects.core.designsystem)
     implementation(projects.domain)
-    implementation(projects.designsystem)
+    implementation(projects.core.designsystem)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

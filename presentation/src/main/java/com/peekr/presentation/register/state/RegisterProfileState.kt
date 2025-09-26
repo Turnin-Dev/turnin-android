@@ -1,7 +1,7 @@
 package com.peekr.presentation.register.state
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.peekr.presentation.common.util.UiText
+import com.peekr.core.presentation.util.UiText
 
 /**
  * 회원가입 - 프로필 상태 클래스

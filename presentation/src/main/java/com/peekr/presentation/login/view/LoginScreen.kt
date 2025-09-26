@@ -28,14 +28,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.peekr.designsystem.component.loading.PeekrLoadingScreen
-import com.peekr.designsystem.theme.PeekrAppTheme
-import com.peekr.designsystem.theme.PeekrTheme
-import com.peekr.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
+import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.presentation.logo.PeekrLogoWithText
+import com.peekr.core.presentation.model.UiSocialLoginProvider
+import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.presentation.R
-import com.peekr.presentation.common.logo.PeekrLogoWithText
-import com.peekr.presentation.common.util.ScreenTokens
-import com.peekr.presentation.login.model.UiSocialLoginProvider
 import com.peekr.presentation.login.state.LoginState
 
 /**

@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.peekr.presentation.common.bottom.navigation.BottomNavigationFrame
+import com.peekr.core.presentation.navigation.bottom.BottomNavigationFrame
 
 @Composable
 fun HomeMainScreen(
