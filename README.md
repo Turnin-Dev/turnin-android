@@ -85,7 +85,6 @@ graph TB
         :core:data[data]:::android-library
         :core:domain[domain]:::jvm-library
         :core:presentation[presentation]:::android-library
-        :core:common[common]:::android-library
     end
     subgraph :layer
         direction TB
@@ -107,3 +106,4 @@ graph TB
     classDef android-library fill: #9BF6FF
     classDef jvm-library fill: #BDB2FF
 ```
+(`:core:common`과 `:core:designsystem`는 필요에 맞게 사용)
