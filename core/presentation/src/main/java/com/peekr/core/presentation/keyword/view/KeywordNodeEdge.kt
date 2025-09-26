@@ -1,4 +1,4 @@
-package com.peekr.presentation.keyword.common.view
+package com.peekr.core.presentation.keyword.view
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import com.peekr.presentation.keyword.common.state.NodeState
-import com.peekr.presentation.keyword.common.state.NodeTokens
+import com.peekr.core.presentation.keyword.state.NodeState
+import com.peekr.core.presentation.keyword.state.NodeTokens
 import kotlin.math.roundToInt
 
 /**
