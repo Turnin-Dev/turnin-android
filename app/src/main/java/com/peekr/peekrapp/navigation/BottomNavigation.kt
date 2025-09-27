@@ -1,60 +1,53 @@
 package com.peekr.peekrapp.navigation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import com.peekr.core.presentation.navigation.DiscoverGraph
-import com.peekr.core.presentation.navigation.HomeGraph
-import com.peekr.core.presentation.navigation.ProfileGraph
+import androidx.navigation.compose.rememberNavController
 import com.peekr.core.presentation.navigation.SubGraph
+import com.peekr.core.presentation.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.home.main.HomeMainScreen
-import com.peekr.presentation.profile.main.ProfileMainScreen
+import com.peekr.presentation.profile.view.ProfileMainScreen
 
-fun NavGraphBuilder.bottomNavigation(bottomNavController: NavHostController) {
-    navigation<SubGraph.Home>(startDestination = HomeGraph.Main) {
-        composable<HomeGraph.Main> {
-            HomeMainScreen(
-                modifier = Modifier.fillMaxSize(),
-                bottomNavController = bottomNavController,
-                onNavigateToSecond = {
-                    bottomNavController.navigate("HomeSecond")
-                },
-            )
-        }
+@Composable
+fun BottomNavigation(
+    appNavController: NavHostController,
+    modifier: Modifier = Modifier,
+) {
+    val bottomNavController = rememberNavController()
 
-        composable(route = "HomeSecond") {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("Home", fontSize = 50.sp)
+    BottomNavigationFrame(
+        modifier = modifier,
+        bottomNavController = bottomNavController,
+    ) { innerPadding ->
+        NavHost(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            navController = bottomNavController,
+            startDestination = SubGraph.Home,
+        ) {
+            composable<SubGraph.Home> {
+                HomeMainScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    onNavigateToSecond = {
+                        appNavController.navigate("HomeSecond")
+                    },
+                )
             }
-        }
-    }
 
-    navigation<SubGraph.Discover>(startDestination = DiscoverGraph.Main) {
-        composable<DiscoverGraph.Main> {
-            DiscoverMainScreen(
-                modifier = Modifier.fillMaxSize(),
-                bottomNavController = bottomNavController,
-            )
-        }
-    }
+            composable<SubGraph.Discover> {
+                DiscoverMainScreen(modifier = Modifier.fillMaxSize())
+            }
 
-    navigation<SubGraph.Profile>(startDestination = ProfileGraph.Main) {
-        composable<ProfileGraph.Main> {
-            ProfileMainScreen(
-                modifier = Modifier.fillMaxSize(),
-                bottomNavController = bottomNavController,
-            )
+            composable<SubGraph.Profile> {
+                ProfileMainScreen(modifier = Modifier.fillMaxSize())
+            }
         }
     }
 }

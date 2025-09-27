@@ -1,4 +1,4 @@
-package com.peekr.presentation.keyword.common.view
+package com.peekr.core.presentation.keyword.view
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,7 @@ import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.peekrShadow
-import com.peekr.presentation.R
+import com.peekr.core.presentation.R
 
 /**
  * 사용자 노드 컴포넌트

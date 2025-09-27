@@ -1,4 +1,4 @@
-package com.peekr.presentation.keyword.common.view
+package com.peekr.core.presentation.keyword.view
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

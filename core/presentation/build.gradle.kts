@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.peekr.android.library)
     alias(libs.plugins.peekr.android.library.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

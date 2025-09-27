@@ -1,4 +1,4 @@
-package com.peekr.presentation.keyword.graph
+package com.peekr.core.presentation.keyword.graph
 
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
@@ -19,10 +19,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.peekr.presentation.keyword.common.model.UiKeyword
-import com.peekr.presentation.keyword.common.state.rememberNodeState
-import com.peekr.presentation.keyword.common.view.KeywordNodeEdge
-import com.peekr.presentation.keyword.common.view.UserNode
+import com.peekr.core.presentation.keyword.model.UiKeyword
+import com.peekr.core.presentation.keyword.state.rememberNodeState
+import com.peekr.core.presentation.keyword.view.KeywordNodeEdge
+import com.peekr.core.presentation.keyword.view.UserNode
 
 /**
  * 키워드 그래프 뷰

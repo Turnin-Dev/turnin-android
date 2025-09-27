@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.peekr.core.presentation.navigation.BottomNav
 import com.peekr.core.presentation.navigation.Screens
 import com.peekr.core.presentation.navigation.SubGraph
 import com.peekr.presentation.login.loginNavigation
@@ -37,7 +38,12 @@ fun AppNavigation(
 
         registerNavigation(navController = appNavController)
 
-        bottomNavigation(bottomNavController = appNavController)
+        composable<BottomNav> {
+            BottomNavigation(
+                modifier = Modifier.fillMaxSize(),
+                appNavController = appNavController,
+            )
+        }
 
         composable<Screens.TempMain> {
             Box(

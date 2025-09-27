@@ -1,4 +1,4 @@
-package com.peekr.presentation.keyword.common.state
+package com.peekr.core.presentation.keyword.state
 
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable

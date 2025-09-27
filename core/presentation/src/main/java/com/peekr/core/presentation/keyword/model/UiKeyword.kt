@@ -1,4 +1,4 @@
-package com.peekr.presentation.keyword.common.model
+package com.peekr.core.presentation.keyword.model
 
 import com.peekr.core.presentation.model.UiDisplayId
 
