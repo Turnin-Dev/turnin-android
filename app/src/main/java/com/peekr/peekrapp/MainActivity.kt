@@ -4,19 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.model.UiSocialLoginProvider
 import com.peekr.core.presentation.navigation.SubGraph
-import com.peekr.presentation.register.registerNavigation
+import com.peekr.peekrapp.navigation.bottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,41 +43,50 @@ class MainActivity : ComponentActivity() {
 //                    )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
-                    NavHost(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        navController = appNavController,
-                        startDestination = "test-start",
-                    ) {
-                        composable(route = "test-start") {
-                            LaunchedEffect(Unit) {
-                                appNavController
-                                    .navigate(
-                                        SubGraph.Register(
-                                            provider = UiSocialLoginProvider.GOOGLE,
-                                            providerId = "asdasasd",
-                                        ),
-                                    )
-                            }
-                        }
-
-                        registerNavigation(
-                            navController = appNavController,
-                        )
-                    }
-
-// ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
-//                    val bottomNavController = rememberNavController()
 //                    NavHost(
 //                        modifier = Modifier
 //                            .fillMaxSize()
 //                            .padding(innerPadding),
-//                        navController = bottomNavController,
-//                        startDestination = SubGraph.Home,
+//                        navController = appNavController,
+//                        startDestination = "test-start",
 //                    ) {
-//                        bottomNavigation(bottomNavController)
+//                        composable(route = "test-start") {
+//                            LaunchedEffect(Unit) {
+//                                appNavController
+//                                    .navigate(
+//                                        SubGraph.Register(
+//                                            provider = UiSocialLoginProvider.GOOGLE,
+//                                            providerId = "asdasasd",
+//                                        ),
+//                                    )
+//                            }
+//                        }
+//
+//                        registerNavigation(
+//                            navController = appNavController,
+//                        )
 //                    }
+
+// ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
+                    val bottomNavController = rememberNavController()
+                    NavHost(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        navController = bottomNavController,
+                        startDestination = SubGraph.Home,
+                    ) {
+                        bottomNavigation(bottomNavController)
+
+                        composable(route = "HomeSecond") {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text("Home", fontSize = 50.sp)
+                            }
+                        }
+                    }
 // ------------------------------ 키워드 그래프 테스트용 ------------------------------
 //                    Box(Modifier.padding(innerPadding)) {
 //                        KeywordGraphView(

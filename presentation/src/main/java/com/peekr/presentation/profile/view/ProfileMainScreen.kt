@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile.main
+package com.peekr.presentation.profile.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

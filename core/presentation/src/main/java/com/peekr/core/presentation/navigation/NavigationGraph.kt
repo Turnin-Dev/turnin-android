@@ -5,7 +5,13 @@ import kotlinx.serialization.Serializable
 
 // ------------------------------ Sub Graph (중첩 네비게이션 라우트) ------------------------------
 
-/** 중첩 네비게이션을 필요로 할 때 여기서 선언해 사용한다. */
+/**
+ * 중첩 네비게이션을 필요로 할 때 여기서 선언해 사용한다.
+ *
+ * 여기에 선언된 라우트는 `라우트명+Graph`이름으로 된 별도의 그래프가 존재한다.
+ *
+ * Ex) `SubGraph.Home`: HomeGraph(`Home+Graph`) 그래프 존재
+ */
 sealed interface SubGraph {
     /** 로그인 네비게이션 라우트 ([LoginGraph]) */
     @Serializable
