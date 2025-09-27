@@ -3,6 +3,10 @@ package com.peekr.core.presentation.navigation
 import com.peekr.core.presentation.model.UiSocialLoginProvider
 import kotlinx.serialization.Serializable
 
+/** 바텀 네비게이션 진입점 라우트 */
+@Serializable
+data object BottomNav : SubGraph
+
 // ------------------------------ Sub Graph (중첩 네비게이션 라우트) ------------------------------
 
 /**
@@ -24,7 +28,7 @@ sealed interface SubGraph {
         val providerId: String,
     ) : SubGraph
 
-    /** 바텀 네비게이션(홈, 진입점) 라우트 ([HomeGraph]) */
+    /** 바텀 네비게이션(홈) 라우트 ([HomeGraph]) */
     @Serializable
     data object Home : SubGraph
 

@@ -17,8 +17,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.navigation.SubGraph
-import com.peekr.peekrapp.navigation.bottomNavigation
+import com.peekr.core.presentation.navigation.BottomNav
+import com.peekr.peekrapp.navigation.BottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -68,22 +68,26 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
-                    val bottomNavController = rememberNavController()
                     NavHost(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        navController = bottomNavController,
-                        startDestination = SubGraph.Home,
+                        navController = appNavController,
+                        startDestination = BottomNav,
                     ) {
-                        bottomNavigation(bottomNavController)
+                        composable<BottomNav> {
+                            BottomNavigation(
+                                modifier = Modifier.fillMaxSize(),
+                                appNavController = appNavController,
+                            )
+                        }
 
                         composable(route = "HomeSecond") {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Text("Home", fontSize = 50.sp)
+                                Text("HomeSecond", fontSize = 50.sp)
                             }
                         }
                     }
