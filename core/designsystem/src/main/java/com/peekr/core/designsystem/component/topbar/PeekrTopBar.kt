@@ -7,6 +7,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Peekr TopBar
+ *
+ * 기본적으로 양쪽에 `10.dp` 패딩이 포함되어 있다.
+ *
+ * @param modifier [Modifier]
+ * @param title 탑바 타이틀
+ * @param onBackPressed 탑바 뒤로가기 시
+ * @param optionSlot 탑바 오른쪽 부분에 위치한 추가 슬롯
+ *
+ * @see CoreTopBar
+ */
 @Composable
 fun PeekrTopBar(
     modifier: Modifier = Modifier,
@@ -15,7 +27,13 @@ fun PeekrTopBar(
     optionSlot: @Composable (RowScope.() -> Unit)? = null,
 ) {
     CoreTopBar(
-        modifier = modifier.padding(PaddingValues),
+        modifier = modifier.padding(
+            when {
+                onBackPressed != null -> PaddingValuesWithTouchTarget
+                optionSlot != null -> PaddingValuesWithTouchTarget
+                else -> PaddingValues
+            },
+        ),
         onBackPressed = onBackPressed,
         title = title,
         optionSlot = optionSlot,
@@ -23,4 +41,5 @@ fun PeekrTopBar(
 }
 
 // 탑바 패딩
-private val PaddingValues = PaddingValues(horizontal = 10.dp)
+private val PaddingValues = PaddingValues(20.dp)
+private val PaddingValuesWithTouchTarget = PaddingValues(10.dp)
