@@ -27,6 +27,12 @@
     <string name="register_screen_error_cant_use_empty_or_blank">공백은 허용되지 않습니다.</string>
     <string name="register_screen_error_image_file_is_null">사진을 불러오지 못했습니다. 다시 시도해주세요.</string>
 
+    <!-- Profile Screen -->
+    <string name="profile_screen_top_bar_settings">설정</string>
+    <string name="profile_screen_friends_total">친구</string>
+    <string name="profile_screen_avatar_content_desc">프로필 사진</string>
+    <string name="profile_screen_fab_content_desc">키워드 추가</string>
+
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->
     <!-- Error Code - Auth -->
