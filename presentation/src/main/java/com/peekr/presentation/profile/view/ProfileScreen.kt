@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,14 +34,11 @@ import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.Name
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.keyword.model.UiKeyword
 import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.model.UiUserProfile
+import com.peekr.presentation.profile.state.ProfileState
 
 /**
  * 프로필 화면
@@ -50,7 +46,7 @@ import com.peekr.presentation.profile.model.UiUserProfile
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    userProfile: UiUserProfile,
+    profileState: ProfileState,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -60,24 +56,24 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp),
-                    title = userProfile.displayId.value,
+                    title = profileState.displayId,
                 )
             },
             profile = {
                 Profile(
                     modifier = Modifier.fillMaxWidth(),
-                    profileImageUrl = userProfile.profileImageUrl,
-                    name = userProfile.name.value,
-                    friendsTotal = userProfile.friendsTotal,
-                    introduce = userProfile.introduce.value,
+                    profileImageUrl = profileState.profileImageUrl,
+                    name = profileState.name,
+                    friendsTotal = profileState.friendsTotal,
+                    introduce = profileState.introduce,
                     onProfileImageClick = {},
                     onFriendsTotalClick = {},
                 )
             },
             keywordGraph = {
                 KeywordGraph(
-                    profileImageUrl = userProfile.profileImageUrl,
-                    keywords = userProfile.keywords,
+                    profileImageUrl = profileState.profileImageUrl,
+                    keywords = profileState.keywords,
                 )
             },
         )
@@ -313,14 +309,13 @@ private fun ProfileScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
-            userProfile = UiUserProfile(
-                displayId = DisplayId("Honggd123"),
-                name = Name("홍길동"),
+            profileState = ProfileState(
+                displayId = "Honggd123",
+                name = "홍길동",
                 friendsTotal = 86,
                 profileImageUrl = null,
-                introduce = Introduce(
-                    "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" + "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                ),
+                introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                    "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
                 keywords = UiKeyword.samples,
             ),
         )
