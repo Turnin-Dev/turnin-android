@@ -3,7 +3,10 @@ package com.peekr.peekrapp.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +15,8 @@ import com.peekr.core.presentation.navigation.SubGraph
 import com.peekr.core.presentation.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.home.main.HomeMainScreen
-import com.peekr.presentation.profile.view.ProfileMainScreen
+import com.peekr.presentation.profile.view.ProfileScreen
+import com.peekr.presentation.profile.viewmodel.ProfileViewModel
 
 @Composable
 fun BottomNavigation(
@@ -46,7 +50,13 @@ fun BottomNavigation(
             }
 
             composable<SubGraph.Profile> {
-                ProfileMainScreen(modifier = Modifier.fillMaxSize())
+                val profileViewModel: ProfileViewModel = hiltViewModel()
+                val profileState by profileViewModel.profileState.collectAsStateWithLifecycle()
+
+                ProfileScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    profileState = profileState,
+                )
             }
         }
     }

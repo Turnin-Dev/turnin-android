@@ -23,7 +23,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIconType
 @Composable
 fun PeekrIcon(
     icon: PeekrIconType,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     iconSize: PeekrIconSize = PeekrIconSize.Normal,
     tint: Color = PeekrTheme.colorScheme.textNormal,

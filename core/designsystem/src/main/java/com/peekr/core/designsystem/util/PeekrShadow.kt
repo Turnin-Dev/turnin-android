@@ -16,8 +16,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /** PeekrShadow 타입 */
-enum class PeekrShadowType {
-    Normal,
+sealed class PeekrShadowType {
+    data object Normal : PeekrShadowType()
+
+    data class Custom(
+        val shape: Shape = RectangleShape,
+        val offsetX: Dp = 0.dp,
+        val offsetY: Dp = 0.dp,
+        val blur: Dp = 0.dp,
+        val spread: Dp = 0.dp,
+    ) : PeekrShadowType()
 }
 
 /**
@@ -55,13 +63,21 @@ private data class PeekrShadowToken(
 )
 
 // PeekrShadowType 를 통해 PeekrShadowToken 를 가져온다.
-private fun PeekrShadowType.getPeekrShadowToken(
-    darkMode: Boolean,
-): PeekrShadowToken = when (this) {
+private fun PeekrShadowType.getPeekrShadowToken(darkMode: Boolean): PeekrShadowToken = when (this) {
     PeekrShadowType.Normal -> {
         PeekrShadowToken(
             color = if (darkMode) Color.White.copy(0.25f) else Color.Black.copy(0.25f),
             blur = 3.dp,
+        )
+    }
+
+    is PeekrShadowType.Custom -> {
+        PeekrShadowToken(
+            color = if (darkMode) Color.White.copy(0.25f) else Color.Black.copy(0.25f),
+            offsetX = offsetX,
+            offsetY = offsetY,
+            blur = blur,
+            spread = spread,
         )
     }
 }
