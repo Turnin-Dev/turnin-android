@@ -43,7 +43,6 @@ androidxHilt = "1.2.0"
 kotlinxSerialization = "1.8.0"
 androidTools = "31.7.2"
 desugar_jdk_libs = "2.1.5"
-orbit = "10.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -121,11 +120,6 @@ okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercepto
 androidx-dataStore-preference = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 # Desugar
 android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
-# Orbit MVI
-orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbit" }
-orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbit" }
-orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbit" }
-orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbit" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

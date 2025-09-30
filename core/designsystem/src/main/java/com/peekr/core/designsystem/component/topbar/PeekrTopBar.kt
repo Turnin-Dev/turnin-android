@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 /**
  * Peekr TopBar
  *
- * 기본적으로 양쪽에 `10.dp` 패딩이 포함되어 있다.
+ * 기본 Horizontal 패딩은 아이콘 버튼 활성화 여부에 따라 달라진다.
  *
  * @param modifier [Modifier]
  * @param title 탑바 타이틀

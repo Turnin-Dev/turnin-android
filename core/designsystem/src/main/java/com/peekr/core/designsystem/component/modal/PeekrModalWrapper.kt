@@ -103,8 +103,8 @@ fun PeekrModalWrapper(
                 // 모달 배경
                 AnimatedVisibility(
                     visible = animateIn && isOpen,
-                    enter = PeekrTheme.transition.fadeIn,
-                    exit = PeekrTheme.transition.fadeOut,
+                    enter = if (animated) PeekrTheme.transition.fadeIn else EnterTransition.None,
+                    exit = if (animated) PeekrTheme.transition.fadeOut else ExitTransition.None,
                 ) {
                     ModalScrim(onDismissRequest = onDismissRequest)
                 }
