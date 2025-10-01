@@ -1,10 +1,10 @@
 package com.peekr.core.data.userKeyword.network
 
 import com.peekr.core.data.network.NetworkApiPath
-import com.peekr.core.data.userKeyword.model.request.CreateUserKeywordRequest
-import com.peekr.core.data.userKeyword.model.request.PatchUserKeywordRequest
-import com.peekr.core.data.userKeyword.model.response.UserKeywordResponse
-import com.peekr.core.data.userKeyword.model.response.UserKeywordsResponse
+import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
+import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
+import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
+import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

@@ -1,4 +1,4 @@
-package com.peekr.core.data.userKeyword.model.response
+package com.peekr.core.data.userKeyword.network.response
 
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.UserId

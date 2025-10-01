@@ -1,6 +1,6 @@
 package com.peekr.core.data.file.network
 
-import com.peekr.core.data.file.response.PresignedUrlResponse
+import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.util.NetworkResult
 
 /** 파일 네트워크 데이터소스 */

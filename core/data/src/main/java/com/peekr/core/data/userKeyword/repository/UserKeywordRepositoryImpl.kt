@@ -3,9 +3,9 @@ package com.peekr.core.data.userKeyword.repository
 import com.peekr.core.common.IO
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
-import com.peekr.core.data.userKeyword.model.request.toDataModel
-import com.peekr.core.data.userKeyword.model.response.toDomainModel
 import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
+import com.peekr.core.data.userKeyword.network.request.toDataModel
+import com.peekr.core.data.userKeyword.network.response.toDomainModel
 import com.peekr.core.domain.coroutine.safeResultFlow
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
