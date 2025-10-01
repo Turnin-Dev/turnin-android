@@ -31,7 +31,7 @@ class UserKeywordDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = UserKeywordDataSourceImpl(userKeywordApi)
+        dataSource = UserKeywordNetworkDataSource(userKeywordApi)
     }
 
     @Test
@@ -82,7 +82,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordDataSourceImpl(mockApi)
+        dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery { mockApi.getUserKeywords(TestUserId.value) } throws exception
 
         // when
@@ -166,7 +166,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordDataSourceImpl(mockApi)
+        dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery { mockApi.createUserKeyword(TestCreateUserKeywordRequest) } throws exception
 
         // when
@@ -227,7 +227,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordDataSourceImpl(mockApi)
+        dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery {
             mockApi.patchUserKeyword(
                 ownerId = TestUserId.value,
@@ -299,7 +299,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordDataSourceImpl(mockApi)
+        dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery {
             mockApi.deleteUserKeyword(
                 ownerId = TestUserId.value,

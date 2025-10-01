@@ -2,7 +2,7 @@ package com.peekr.core.data.file.repository
 
 import com.peekr.core.common.IO
 import com.peekr.core.data.AppConfig
-import com.peekr.core.data.file.network.FileNetworkDataSource
+import com.peekr.core.data.file.network.FileDataSource
 import com.peekr.core.data.file.response.toDomainModel
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
@@ -17,13 +17,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 class FileRepositoryImpl @Inject constructor(
-    private val fileNetworkDataSource: FileNetworkDataSource,
+    private val fileDataSource: FileDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : FileRepository {
     override fun getFileUploadPresignedUrl(fileName: String, mime: Mime): Flow<com.peekr.core.domain.util.Result<PresignedUrl, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            when (val result = fileNetworkDataSource.getFileUploadPresignedUrl(fileName, mime.type)) {
+            when (val result = fileDataSource.getFileUploadPresignedUrl(fileName, mime.type)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -41,7 +41,7 @@ class FileRepositoryImpl @Inject constructor(
         mime: Mime,
     ): Flow<Result<String?, ErrorType>> = safeResultFlow(ioDispatcher) {
         emit(Result.Loading)
-        when (val result = fileNetworkDataSource.uploadFile(presignedUrl, file, mime.type)) {
+        when (val result = fileDataSource.uploadFile(presignedUrl, file, mime.type)) {
             is NetworkResult.Success -> {
                 val imageUrl = createImageUrl(fileName)
                 if (result.data) {

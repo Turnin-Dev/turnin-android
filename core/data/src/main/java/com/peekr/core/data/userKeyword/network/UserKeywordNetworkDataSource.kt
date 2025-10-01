@@ -11,7 +11,7 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import javax.inject.Inject
 
-class UserKeywordDataSourceImpl @Inject constructor(
+class UserKeywordNetworkDataSource @Inject constructor(
     private val userKeywordApi: UserKeywordApi,
 ) : UserKeywordDataSource {
     override suspend fun getUserKeywords(userId: UserId): NetworkResult<UserKeywordsResponse> =

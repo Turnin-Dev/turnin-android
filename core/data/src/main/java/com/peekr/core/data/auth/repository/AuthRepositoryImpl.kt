@@ -2,7 +2,7 @@ package com.peekr.core.data.auth.repository
 
 import com.peekr.core.common.IO
 import com.peekr.core.data.AppConfig
-import com.peekr.core.data.auth.network.AuthNetworkDataSource
+import com.peekr.core.data.auth.network.AuthDataSource
 import com.peekr.core.data.auth.network.request.toDataModel
 import com.peekr.core.data.auth.network.response.ExistsResponse
 import com.peekr.core.data.auth.network.response.toDomainModel
@@ -25,14 +25,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl @Inject constructor(
-    private val authNetworkDataSource: AuthNetworkDataSource,
+    private val authDataSource: AuthDataSource,
     private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
     override fun login(login: Login): Flow<Result<JWTToken, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            when (val result = authNetworkDataSource.login(login.toDataModel())) {
+            when (val result = authDataSource.login(login.toDataModel())) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -46,19 +46,19 @@ class AuthRepositoryImpl @Inject constructor(
     override fun existsUser(existsUser: ExistsUser): Flow<Result<Boolean, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            emit(mapExistsResult(authNetworkDataSource.existsUser(existsUser.toDataModel())))
+            emit(mapExistsResult(authDataSource.existsUser(existsUser.toDataModel())))
         }
 
     override fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            emit(mapExistsResult(authNetworkDataSource.existsDisplayId(displayId.toDataModel())))
+            emit(mapExistsResult(authDataSource.existsDisplayId(displayId.toDataModel())))
         }
 
     override fun register(register: Register): Flow<Result<JWTToken, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            when (val result = authNetworkDataSource.register(register.toDataModel())) {
+            when (val result = authDataSource.register(register.toDataModel())) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
