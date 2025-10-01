@@ -2,7 +2,6 @@ package com.peekr.core.data.file.repository
 
 import com.peekr.core.common.IO
 import com.peekr.core.data.AppConfig
-import com.peekr.core.data.auth.network.response.toDomainModel
 import com.peekr.core.data.file.network.FileNetworkDataSource
 import com.peekr.core.data.file.response.toDomainModel
 import com.peekr.core.data.network.util.NetworkResult
