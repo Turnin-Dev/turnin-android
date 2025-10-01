@@ -7,7 +7,7 @@ import com.peekr.core.data.auth.network.request.LoginRequest
 import com.peekr.core.data.auth.network.request.RegisterRequest
 import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
-import com.peekr.core.data.file.response.PresignedUrlResponse
+import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.domain.model.SocialLoginProvider

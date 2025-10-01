@@ -1,4 +1,4 @@
-package com.peekr.core.data.file.response
+package com.peekr.core.data.file.network.response
 
 import com.peekr.core.domain.file.model.PresignedUrl
 import com.squareup.moshi.JsonClass

@@ -2,7 +2,7 @@ package com.peekr.core.data.file.repository
 
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.file.network.FileDataSource
-import com.peekr.core.data.file.response.PresignedUrlResponse
+import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType

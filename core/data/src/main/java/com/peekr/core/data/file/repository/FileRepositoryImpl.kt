@@ -3,7 +3,7 @@ package com.peekr.core.data.file.repository
 import com.peekr.core.common.IO
 import com.peekr.core.data.AppConfig
 import com.peekr.core.data.file.network.FileDataSource
-import com.peekr.core.data.file.response.toDomainModel
+import com.peekr.core.data.file.network.response.toDomainModel
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.coroutine.safeResultFlow

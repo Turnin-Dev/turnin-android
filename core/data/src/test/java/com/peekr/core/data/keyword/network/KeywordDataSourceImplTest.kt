@@ -1,8 +1,8 @@
 package com.peekr.core.data.keyword.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.keyword.model.request.CreateKeywordRequest
-import com.peekr.core.data.keyword.model.response.KeywordResponse
+import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
+import com.peekr.core.data.keyword.network.response.KeywordResponse
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.domain.model.KeywordId

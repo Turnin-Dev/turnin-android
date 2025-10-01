@@ -1,4 +1,4 @@
-package com.peekr.core.data.keyword.model.request
+package com.peekr.core.data.keyword.network.request
 
 import com.squareup.moshi.JsonClass
 

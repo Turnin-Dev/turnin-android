@@ -1,10 +1,9 @@
 package com.peekr.core.data.keyword.repository
 
-import com.peekr.core.data.keyword.model.request.CreateKeywordRequest
-import com.peekr.core.data.keyword.model.response.KeywordResponse
-import com.peekr.core.data.keyword.model.response.toDomainModel
 import com.peekr.core.data.keyword.network.KeywordDataSource
-import com.peekr.core.data.keyword.repository.KeywordRepositoryImpl
+import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
+import com.peekr.core.data.keyword.network.response.KeywordResponse
+import com.peekr.core.data.keyword.network.response.toDomainModel
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
