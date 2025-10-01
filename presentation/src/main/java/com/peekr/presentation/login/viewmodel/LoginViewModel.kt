@@ -2,13 +2,13 @@ package com.peekr.presentation.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.error.asUiTextTypeFirst
 import com.peekr.core.presentation.model.UiSocialLoginProvider
-import com.peekr.domain.account.model.Login
-import com.peekr.domain.account.usecase.login.GetLoginIfUserExistsUseCase
-import com.peekr.domain.account.usecase.login.LoginIntegrationUseCase
+import com.peekr.domain.login.usecase.GetLoginIfUserExistsUseCase
+import com.peekr.domain.login.usecase.LoginIntegrationUseCase
 import com.peekr.presentation.login.mapper.toDomainModel
 import com.peekr.presentation.login.mapper.toUiModel
 import com.peekr.presentation.login.state.LoginState

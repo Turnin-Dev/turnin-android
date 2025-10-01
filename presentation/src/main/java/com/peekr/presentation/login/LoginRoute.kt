@@ -19,9 +19,9 @@ import com.peekr.presentation.login.viewmodel.LoginViewModel
 fun LoginRoute(
     modifier: Modifier = Modifier,
     onNavigateMain: () -> Unit,
+    loginViewModel: LoginViewModel = hiltViewModel(),
     onNavigateRegister: (UiSocialLoginProvider, String) -> Unit,
 ) {
-    val loginViewModel: LoginViewModel = hiltViewModel()
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
