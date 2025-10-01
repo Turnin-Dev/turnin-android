@@ -27,7 +27,7 @@ class KeywordDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = KeywordDataSourceImpl(keywordApi)
+        dataSource = KeywordNetworkDataSource(keywordApi)
     }
 
     @Test
@@ -76,7 +76,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordDataSourceImpl(mockApi)
+        dataSource = KeywordNetworkDataSource(mockApi)
         coEvery { mockApi.getKeyword(any()) } throws exception
 
         // when
@@ -149,7 +149,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordDataSourceImpl(mockApi)
+        dataSource = KeywordNetworkDataSource(mockApi)
         coEvery { mockApi.createKeyword(any()) } throws exception
         // when
         val response = dataSource.createKeyword(TestCreateKeywordRequest)

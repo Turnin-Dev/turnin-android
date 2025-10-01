@@ -7,7 +7,7 @@ import com.peekr.core.data.network.util.networkCall
 import com.peekr.core.domain.model.KeywordId
 import javax.inject.Inject
 
-class KeywordDataSourceImpl @Inject constructor(
+class KeywordNetworkDataSource @Inject constructor(
     private val keywordApi: KeywordApi,
 ) : KeywordDataSource {
     override suspend fun getKeyword(keywordId: KeywordId): NetworkResult<KeywordResponse> =

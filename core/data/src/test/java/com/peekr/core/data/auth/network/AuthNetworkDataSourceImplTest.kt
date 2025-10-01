@@ -28,13 +28,13 @@ class AuthNetworkDataSourceImplTest {
     val testRule = ServerTestRule()
     private val authApi: AuthApi
         get() = testRule.createNetworkApi<AuthApi>(testRule.moshi)
-    private lateinit var dataSource: AuthNetworkDataSource
+    private lateinit var dataSource: AuthDataSource
     private lateinit var testOkHttpClient: OkHttpClient
 
     @Before
     fun setUp() {
         testOkHttpClient = OkHttpClient.Builder().build()
-        dataSource = AuthNetworkDataSourceImpl(authApi)
+        dataSource = AuthNetworkDataSource(authApi)
     }
 
     @Test
@@ -84,7 +84,7 @@ class AuthNetworkDataSourceImplTest {
         // given
         val mockApi: AuthApi = mockk()
         val exception = IllegalStateException()
-        dataSource = AuthNetworkDataSourceImpl(mockApi)
+        dataSource = AuthNetworkDataSource(mockApi)
         coEvery { mockApi.login(any()) } throws exception
 
         // when
@@ -99,7 +99,7 @@ class AuthNetworkDataSourceImplTest {
     fun `login() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSourceImpl(mockApi)
+        dataSource = AuthNetworkDataSource(mockApi)
         coEvery { mockApi.login(any()) } throws JsonDataException("smile")
 
         // when
@@ -149,7 +149,7 @@ class AuthNetworkDataSourceImplTest {
     fun `existsUser() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSourceImpl(mockApi)
+        dataSource = AuthNetworkDataSource(mockApi)
         coEvery { mockApi.existsUser(any(), any()) } throws JsonDataException("smile")
 
         // when
@@ -182,7 +182,7 @@ class AuthNetworkDataSourceImplTest {
     fun `existsDisplayId() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSourceImpl(mockApi)
+        dataSource = AuthNetworkDataSource(mockApi)
         coEvery { mockApi.existsDisplayId(any()) } throws JsonDataException("smile")
 
         // when
@@ -215,7 +215,7 @@ class AuthNetworkDataSourceImplTest {
     fun `register() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSourceImpl(mockApi)
+        dataSource = AuthNetworkDataSource(mockApi)
         coEvery { mockApi.register(any()) } throws JsonDataException("smile")
 
         // when

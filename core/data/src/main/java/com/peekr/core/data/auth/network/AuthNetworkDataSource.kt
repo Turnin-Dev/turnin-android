@@ -8,38 +8,21 @@ import com.peekr.core.data.auth.network.response.ExistsResponse
 import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.network.util.networkCall
+import javax.inject.Inject
 
-/** Auth 네트워크 데이터소스 */
-interface AuthNetworkDataSource {
-    /**
-     * 로그인
-     *
-     * @param loginRequest 로그인 요청 바디
-     * @return 성공 시 - [NetworkResult.Success]
-     * @return 실패 시 - [NetworkResult.Error]
-     */
-    suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse>
+class AuthNetworkDataSource @Inject constructor(
+    private val authApi: AuthApi,
+) : AuthDataSource {
+    override suspend fun login(loginRequest: LoginRequest): NetworkResult<LoginResponse> =
+        networkCall { authApi.login(loginRequest) }
 
-    /**
-     * 사용자 존재 여부 확인
-     *
-     * @param existsUserRequest 사용자 존재 여부 확인 요청 바디
-     * @return [ExistsResponse] - 존재하면 `ExistsResponse(true)`, 존재하지 않으면 `ExistsResponse(false)`
-     */
-    suspend fun existsUser(existsUserRequest: ExistsUserRequest): NetworkResult<ExistsResponse>
+    override suspend fun existsUser(existsUserRequest: ExistsUserRequest): NetworkResult<ExistsResponse> =
+        networkCall { authApi.existsUser(existsUserRequest.provider, existsUserRequest.providerId) }
 
-    /**
-     * 사용자 표시 ID 존재 여부 확인
-     *
-     * @param DisplayIdRequest 요청용 사용자 표시 ID
-     * @return [ExistsResponse] - 존재하면 `ExistsResponse(true)`, 존재하지 않으면 `ExistsResponse(false)`
-     */
-    suspend fun existsDisplayId(displayId: DisplayIdRequest): NetworkResult<ExistsResponse>
+    override suspend fun existsDisplayId(displayIdRequest: DisplayIdRequest): NetworkResult<ExistsResponse> =
+        networkCall { authApi.existsDisplayId(displayIdRequest.id) }
 
-    /**
-     * 회원가입
-     *
-     * @param registerRequest 회원가입 요청 바디
-     */
-    suspend fun register(registerRequest: RegisterRequest): NetworkResult<RegisterResponse>
+    override suspend fun register(registerRequest: RegisterRequest): NetworkResult<RegisterResponse> =
+        networkCall { authApi.register(registerRequest) }
 }

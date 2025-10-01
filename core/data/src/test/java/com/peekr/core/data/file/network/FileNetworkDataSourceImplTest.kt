@@ -26,13 +26,13 @@ class FileNetworkDataSourceImplTest {
     val testRule = ServerTestRule()
     private val fileApi: FileApi
         get() = testRule.createNetworkApi<FileApi>(testRule.moshi)
-    private lateinit var dataSource: FileNetworkDataSource
+    private lateinit var dataSource: FileDataSource
     private lateinit var testOkHttpClient: OkHttpClient
 
     @Before
     fun setUp() {
         testOkHttpClient = OkHttpClient.Builder().build()
-        dataSource = FileNetworkDataSourceImpl(fileApi, testOkHttpClient)
+        dataSource = FileNetworkDataSource(fileApi, testOkHttpClient)
     }
 
     @Test
@@ -60,7 +60,7 @@ class FileNetworkDataSourceImplTest {
     fun `getFileUploadPresignedUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: FileApi = mockk()
-        dataSource = FileNetworkDataSourceImpl(mockApi, testOkHttpClient)
+        dataSource = FileNetworkDataSource(mockApi, testOkHttpClient)
         coEvery { mockApi.getFileUploadPresignedUrl(any(), any()) } throws JsonDataException("smile")
 
         // when
