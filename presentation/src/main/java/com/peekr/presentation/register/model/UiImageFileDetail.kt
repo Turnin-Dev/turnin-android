@@ -1,8 +1,8 @@
 package com.peekr.presentation.register.model
 
+import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.presentation.util.FileNameGenerator
-import com.peekr.domain.account.model.ImageFileDetail
-import com.peekr.domain.account.model.Mime
+import com.peekr.domain.register.model.ImageFileDetail
 
 /**
  * UI용 이미지 파일 세부 사항

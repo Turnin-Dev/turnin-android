@@ -12,7 +12,7 @@ import timber.log.Timber
 /**
  * 네트워크 관련 로직 테스트 룰
  *
- * [MockWebServer], [Moshi], [Timber] 가 포함되어 있다.
+ * [okhttp3.mockwebserver.MockWebServer], [com.squareup.moshi.Moshi], [timber.log.Timber] 가 포함되어 있다.
  */
 class ServerTestRule : ExternalResource() {
     private var _server: MockWebServer? = null
@@ -34,8 +34,8 @@ class ServerTestRule : ExternalResource() {
         _server = MockWebServer().apply { start() }
 
         // Timber
-        if (Timber.forest().none { it == mockTree }) {
-            Timber.plant(mockTree)
+        if (Timber.Forest.forest().none { it == mockTree }) {
+            Timber.Forest.plant(mockTree)
         }
     }
 
@@ -45,8 +45,8 @@ class ServerTestRule : ExternalResource() {
         _server = null
 
         // Timber
-        if (Timber.forest().contains(mockTree)) {
-            Timber.uproot(mockTree)
+        if (Timber.Forest.forest().contains(mockTree)) {
+            Timber.Forest.uproot(mockTree)
         }
     }
 
