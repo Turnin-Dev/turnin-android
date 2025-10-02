@@ -37,11 +37,11 @@ class UserRepositoryImplTest {
     fun `사용자 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getUserById(TestUserId)
+            dataSource.getUserById()
         } returns NetworkResult.Success(TestUserResponse)
 
         // when
-        val result = repository.getUserById(TestUserId).last()
+        val result = repository.getUserById().last()
 
         // then
         assertTrue(result is Result.Success)
@@ -56,11 +56,11 @@ class UserRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.Forbidden
         coEvery {
-            dataSource.getUserById(TestUserId)
+            dataSource.getUserById()
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getUserById(TestUserId).last()
+        val result = repository.getUserById().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -72,11 +72,11 @@ class UserRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.getUserById(TestUserId)
+            dataSource.getUserById()
         } throws exception
 
         // when
-        val result = repository.getUserById(TestUserId).last()
+        val result = repository.getUserById().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -92,11 +92,11 @@ class UserRepositoryImplTest {
     fun `사용자 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.updateUserById(TestUserId, TestUserPatchRequest)
+            dataSource.updateUserById(TestUserPatchRequest)
         } returns NetworkResult.Success(Unit)
 
         // when
-        val result = repository.updateUserById(TestUserId, TestUserPatch).last()
+        val result = repository.updateUserById(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -107,11 +107,11 @@ class UserRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.Forbidden
         coEvery {
-            dataSource.updateUserById(TestUserId, TestUserPatchRequest)
+            dataSource.updateUserById(TestUserPatchRequest)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.updateUserById(TestUserId, TestUserPatch).last()
+        val result = repository.updateUserById(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -123,11 +123,11 @@ class UserRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.updateUserById(TestUserId, TestUserPatchRequest)
+            dataSource.updateUserById(TestUserPatchRequest)
         } throws exception
 
         // when
-        val result = repository.updateUserById(TestUserId, TestUserPatch).last()
+        val result = repository.updateUserById(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)

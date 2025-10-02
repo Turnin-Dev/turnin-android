@@ -7,7 +7,6 @@ import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.toDataModel
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
 import com.peekr.core.domain.coroutine.safeResultFlow
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
@@ -24,11 +23,11 @@ class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordDataSource: UserKeywordDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
-    override fun getUserKeywords(userId: UserId): Flow<Result<UserKeywords, ErrorType>> =
+    override fun getUserKeywords(): Flow<Result<UserKeywords, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
 
-            when (val result = userKeywordDataSource.getUserKeywords(userId)) {
+            when (val result = userKeywordDataSource.getUserKeywords()) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -55,7 +54,6 @@ class UserKeywordRepositoryImpl @Inject constructor(
         }
 
     override fun patchUserKeyword(
-        userId: UserId,
         userKeywordId: UserKeywordId,
         patch: PatchUserKeyword,
     ): Flow<Result<Unit, ErrorType>> =
@@ -64,7 +62,6 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
             when (
                 val result = userKeywordDataSource.patchUserKeyword(
-                    userId,
                     userKeywordId,
                     patch.toDataModel(),
                 )
@@ -80,11 +77,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
         }
 
     override fun deleteUserKeyword(
-        userId: UserId,
         userKeywordId: UserKeywordId,
     ): Flow<Result<Unit, ErrorType>> =
         safeResultFlow(ioDispatcher) {
-            when (val result = userKeywordDataSource.deleteUserKeyword(userId, userKeywordId)) {
+            when (val result = userKeywordDataSource.deleteUserKeyword(userKeywordId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(Unit))
                 }

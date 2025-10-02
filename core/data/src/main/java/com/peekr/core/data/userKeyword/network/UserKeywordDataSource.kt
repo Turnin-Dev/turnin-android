@@ -5,17 +5,14 @@ import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 
 /** UserKeyword 네트워크 데이터 소스 */
 interface UserKeywordDataSource {
     /**
      * 사용자 키워드 리스트 조회
-     *
-     * @param userId 사용자 ID
      */
-    suspend fun getUserKeywords(userId: UserId): NetworkResult<UserKeywordsResponse>
+    suspend fun getUserKeywords(): NetworkResult<UserKeywordsResponse>
 
     /**
      * 사용자 키워드 생성
@@ -33,12 +30,10 @@ interface UserKeywordDataSource {
      * - 성공 시: `204`
      * - 실패 시: `404`
      *
-     * @param ownerId 사용자 ID
      * @param userKeywordId 사용자 키워드 ID,
      * @param patchUserKeywordRequest 사용자 키워드 수정 요청 바디
      */
     suspend fun patchUserKeyword(
-        ownerId: UserId,
         userKeywordId: UserKeywordId,
         patchUserKeywordRequest: PatchUserKeywordRequest,
     ): NetworkResult<Unit>
@@ -50,11 +45,9 @@ interface UserKeywordDataSource {
      * - 성공 시: `204`
      * - 실패 시: `404`
      *
-     * @param ownerId 사용자 ID
      * @param userKeywordId 사용자 키워드 ID
      */
     suspend fun deleteUserKeyword(
-        ownerId: UserId,
         userKeywordId: UserKeywordId,
     ): NetworkResult<Unit>
 }

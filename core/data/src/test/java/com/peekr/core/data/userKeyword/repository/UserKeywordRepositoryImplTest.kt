@@ -36,11 +36,11 @@ class UserKeywordRepositoryImplTest {
     fun `사용자 키워드 리스트 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getUserKeywords(TestUserId)
+            dataSource.getUserKeywords()
         } returns NetworkResult.Success(TestUserKeywordsResponse)
 
         // when
-        val result = repository.getUserKeywords(TestUserId).last()
+        val result = repository.getUserKeywords().last()
 
         // then
         assertTrue(result is Result.Success)
@@ -55,11 +55,11 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.NotFound
         coEvery {
-            dataSource.getUserKeywords(TestUserId)
+            dataSource.getUserKeywords()
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getUserKeywords(TestUserId).last()
+        val result = repository.getUserKeywords().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -74,11 +74,11 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.getUserKeywords(TestUserId)
+            dataSource.getUserKeywords()
         } throws exception
 
         // when
-        val result = repository.getUserKeywords(TestUserId).last()
+        val result = repository.getUserKeywords().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -153,7 +153,6 @@ class UserKeywordRepositoryImplTest {
         // given
         coEvery {
             dataSource.patchUserKeyword(
-                ownerId = TestUserId,
                 userKeywordId = TestUserKeywordId,
                 patchUserKeywordRequest = TestPatchUserKeywordRequest,
             )
@@ -162,7 +161,6 @@ class UserKeywordRepositoryImplTest {
         // when
         val result = repository
             .patchUserKeyword(
-                userId = TestUserId,
                 userKeywordId = TestUserKeywordId,
                 patch = TestPatchUserKeyword,
             ).last()
@@ -177,7 +175,6 @@ class UserKeywordRepositoryImplTest {
         val expectedError = NetworkErrorType.Network.NotFound
         coEvery {
             dataSource.patchUserKeyword(
-                ownerId = TestUserId,
                 userKeywordId = TestUserKeywordId,
                 patchUserKeywordRequest = TestPatchUserKeywordRequest,
             )
@@ -186,7 +183,6 @@ class UserKeywordRepositoryImplTest {
         // when
         val result = repository
             .patchUserKeyword(
-                userId = TestUserId,
                 userKeywordId = TestUserKeywordId,
                 patch = TestPatchUserKeyword,
             ).last()
@@ -205,7 +201,6 @@ class UserKeywordRepositoryImplTest {
         val exception = Exception("error!")
         coEvery {
             dataSource.patchUserKeyword(
-                ownerId = TestUserId,
                 userKeywordId = TestUserKeywordId,
                 patchUserKeywordRequest = TestPatchUserKeywordRequest,
             )
@@ -214,7 +209,6 @@ class UserKeywordRepositoryImplTest {
         // when
         val result = repository
             .patchUserKeyword(
-                userId = TestUserId,
                 userKeywordId = TestUserKeywordId,
                 patch = TestPatchUserKeyword,
             ).last()
@@ -233,18 +227,11 @@ class UserKeywordRepositoryImplTest {
     fun `사용자 키워드 삭제 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.deleteUserKeyword(
-                ownerId = TestUserId,
-                userKeywordId = TestUserKeywordId,
-            )
+            dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Success(Unit)
 
         // when
-        val result = repository
-            .deleteUserKeyword(
-                userId = TestUserId,
-                userKeywordId = TestUserKeywordId,
-            ).last()
+        val result = repository.deleteUserKeyword(userKeywordId = TestUserKeywordId).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -255,18 +242,11 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.NotFound
         coEvery {
-            dataSource.deleteUserKeyword(
-                ownerId = TestUserId,
-                userKeywordId = TestUserKeywordId,
-            )
+            dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository
-            .deleteUserKeyword(
-                userId = TestUserId,
-                userKeywordId = TestUserKeywordId,
-            ).last()
+        val result = repository.deleteUserKeyword(userKeywordId = TestUserKeywordId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -281,18 +261,11 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.deleteUserKeyword(
-                ownerId = TestUserId,
-                userKeywordId = TestUserKeywordId,
-            )
+            dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } throws exception
 
         // when
-        val result = repository
-            .deleteUserKeyword(
-                userId = TestUserId,
-                userKeywordId = TestUserKeywordId,
-            ).last()
+        val result = repository.deleteUserKeyword(userKeywordId = TestUserKeywordId).last()
 
         // then
         assertTrue(result is Result.Error)

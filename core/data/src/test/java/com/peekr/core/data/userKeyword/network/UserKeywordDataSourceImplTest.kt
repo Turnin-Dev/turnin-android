@@ -46,7 +46,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getUserKeywords(TestUserId)
+        val response = dataSource.getUserKeywords()
 
         // then
         assertTrue(response is NetworkResult.Success)
@@ -67,7 +67,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getUserKeywords(TestUserId)
+        val response = dataSource.getUserKeywords()
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -83,10 +83,10 @@ class UserKeywordDataSourceImplTest {
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
         dataSource = UserKeywordNetworkDataSource(mockApi)
-        coEvery { mockApi.getUserKeywords(TestUserId.value) } throws exception
+        coEvery { mockApi.getUserKeywords() } throws exception
 
         // when
-        val response = dataSource.getUserKeywords(TestUserId)
+        val response = dataSource.getUserKeywords()
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -108,7 +108,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getUserKeywords(TestUserId)
+        val response = dataSource.getUserKeywords()
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -213,7 +213,6 @@ class UserKeywordDataSourceImplTest {
 
         // when
         val response = dataSource.patchUserKeyword(
-            ownerId = TestUserId,
             userKeywordId = TestUserKeywordId,
             patchUserKeywordRequest = TestPatchUserKeywordRequest,
         )
@@ -230,7 +229,6 @@ class UserKeywordDataSourceImplTest {
         dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery {
             mockApi.patchUserKeyword(
-                ownerId = TestUserId.value,
                 userKeywordId = TestUserKeywordId.value,
                 patchUserKeywordRequest = TestPatchUserKeywordRequest,
             )
@@ -238,7 +236,6 @@ class UserKeywordDataSourceImplTest {
 
         // when
         val response = dataSource.patchUserKeyword(
-            ownerId = TestUserId,
             userKeywordId = TestUserKeywordId,
             patchUserKeywordRequest = TestPatchUserKeywordRequest,
         )
@@ -262,7 +259,6 @@ class UserKeywordDataSourceImplTest {
 
         // when
         val response = dataSource.patchUserKeyword(
-            ownerId = TestUserId,
             userKeywordId = TestUserKeywordId,
             patchUserKeywordRequest = TestPatchUserKeywordRequest,
         )
@@ -285,10 +281,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.deleteUserKeyword(
-            ownerId = TestUserId,
-            userKeywordId = TestUserKeywordId,
-        )
+        val response = dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
 
         // then
         assertTrue(response is NetworkResult.Success)
@@ -301,17 +294,11 @@ class UserKeywordDataSourceImplTest {
         val exception = Exception()
         dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery {
-            mockApi.deleteUserKeyword(
-                ownerId = TestUserId.value,
-                userKeywordId = TestUserKeywordId.value,
-            )
+            mockApi.deleteUserKeyword(userKeywordId = TestUserKeywordId.value)
         } throws exception
 
         // when
-        val response = dataSource.deleteUserKeyword(
-            ownerId = TestUserId,
-            userKeywordId = TestUserKeywordId,
-        )
+        val response = dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -331,10 +318,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.deleteUserKeyword(
-            ownerId = TestUserId,
-            userKeywordId = TestUserKeywordId,
-        )
+        val response = dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
 
         // then
         assertTrue(response is NetworkResult.Error)

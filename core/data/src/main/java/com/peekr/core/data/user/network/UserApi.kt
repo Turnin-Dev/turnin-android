@@ -7,20 +7,16 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
-import retrofit2.http.Path
 
 /** User Network API */
 interface UserApi {
     /** 사용자 조회 */
-    @GET("${NetworkApiPath.User.ROUTE}/{userId}")
-    suspend fun getUser(
-        @Path("userId") userId: Long,
-    ): Response<UserResponse>
+    @GET(NetworkApiPath.User.ROUTE)
+    suspend fun getUser(): Response<UserResponse>
 
     /** 사용자 수정 */
-    @PATCH("${NetworkApiPath.User.ROUTE}/{userId}")
+    @PATCH(NetworkApiPath.User.ROUTE)
     suspend fun updateUser(
-        @Path("userId") userId: Long,
         @Body userPatchRequest: UserPatchRequest,
     ): Response<Unit>
 }

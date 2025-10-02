@@ -11,15 +11,12 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserKeywordApi {
     /** 사용자 키워드 리스트 조회 */
-    @GET("${NetworkApiPath.UserKeyword.ROUTE}/{userId}")
-    suspend fun getUserKeywords(
-        @Path("userId") userId: Long,
-    ): Response<UserKeywordsResponse>
+    @GET(NetworkApiPath.UserKeyword.ROUTE)
+    suspend fun getUserKeywords(): Response<UserKeywordsResponse>
 
     /** 사용자 키워드 생성 */
     @POST(NetworkApiPath.UserKeyword.ROUTE)
@@ -35,7 +32,6 @@ interface UserKeywordApi {
      */
     @PATCH(NetworkApiPath.UserKeyword.ROUTE)
     suspend fun patchUserKeyword(
-        @Query("ownerId") ownerId: Long,
         @Query("userKeywordId") userKeywordId: Long,
         @Body patchUserKeywordRequest: PatchUserKeywordRequest,
     ): Response<Unit>
@@ -48,7 +44,6 @@ interface UserKeywordApi {
      */
     @DELETE(NetworkApiPath.UserKeyword.ROUTE)
     suspend fun deleteUserKeyword(
-        @Query("ownerId") ownerId: Long,
         @Query("userKeywordId") userKeywordId: Long,
     ): Response<Unit>
 }

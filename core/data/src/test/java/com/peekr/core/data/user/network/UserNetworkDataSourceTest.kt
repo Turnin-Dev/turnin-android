@@ -42,18 +42,12 @@ class UserNetworkDataSourceTest {
             testRule.decodeFromJson<UserResponse>(TestUserResponseJson)
 
         // when
-        val response = dataSource.getUserById(TestUserId)
+        val response = dataSource.getUserById()
 
         // then
         Assert.assertTrue(response is NetworkResult.Success)
-        Assert.assertEquals(
-            expectedUserResponse.id,
-            (response as NetworkResult.Success).data.id,
-        )
-        Assert.assertEquals(
-            expectedUserResponse.displayId,
-            (response as NetworkResult.Success).data.displayId,
-        )
+        Assert.assertEquals(expectedUserResponse.id, (response as NetworkResult.Success).data.id)
+        Assert.assertEquals(expectedUserResponse.displayId, response.data.displayId)
     }
 
     @Test
@@ -67,7 +61,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserById(TestUserId)
+        val response = dataSource.getUserById()
 
         // then
         Assert.assertTrue(response is NetworkResult.Error)
@@ -83,10 +77,10 @@ class UserNetworkDataSourceTest {
         val mockApi: UserApi = mockk()
         val exception = Exception()
         dataSource = UserNetworkDataSource(mockApi)
-        coEvery { mockApi.getUser(TestUserId.value) } throws exception
+        coEvery { mockApi.getUser() } throws exception
 
         // when
-        val response = dataSource.getUserById(TestUserId)
+        val response = dataSource.getUserById()
 
         // then
         Assert.assertTrue(response is NetworkResult.Error)
@@ -106,7 +100,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserById(TestUserId)
+        val response = dataSource.getUserById()
 
         // then
         Assert.assertTrue(response is NetworkResult.Error)
@@ -127,7 +121,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.updateUserById(TestUserId, TestUserPatchRequest)
+        val response = dataSource.updateUserById(TestUserPatchRequest)
 
         // then
         Assert.assertTrue(response is NetworkResult.Success)
@@ -139,10 +133,10 @@ class UserNetworkDataSourceTest {
         val mockApi: UserApi = mockk()
         val exception = Exception()
         dataSource = UserNetworkDataSource(mockApi)
-        coEvery { mockApi.updateUser(TestUserId.value, TestUserPatchRequest) } throws exception
+        coEvery { mockApi.updateUser(TestUserPatchRequest) } throws exception
 
         // when
-        val response = dataSource.updateUserById(TestUserId, TestUserPatchRequest)
+        val response = dataSource.updateUserById(TestUserPatchRequest)
 
         // then
         Assert.assertTrue(response is NetworkResult.Error)
@@ -162,7 +156,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.updateUserById(TestUserId, TestUserPatchRequest)
+        val response = dataSource.updateUserById(TestUserPatchRequest)
 
         // then
         Assert.assertTrue(response is NetworkResult.Error)
