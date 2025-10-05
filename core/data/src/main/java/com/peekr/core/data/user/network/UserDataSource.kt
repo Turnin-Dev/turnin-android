@@ -2,6 +2,7 @@ package com.peekr.core.data.user.network
 
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.user.network.request.UserPatchRequest
+import com.peekr.core.data.user.network.response.UserProfileResponse
 import com.peekr.core.data.user.network.response.UserResponse
 
 /** 사용자 데이터 소스 */
@@ -11,7 +12,14 @@ interface UserDataSource {
      *
      * @return [UserResponse]
      */
-    suspend fun getUserById(): NetworkResult<UserResponse>
+    suspend fun getUser(): NetworkResult<UserResponse>
+
+    /**
+     * 사용자 프로필 조회
+     *
+     * @return [UserProfileResponse]
+     */
+    suspend fun getUserProfile(): NetworkResult<UserProfileResponse>
 
     /**
      * 사용자 수정
