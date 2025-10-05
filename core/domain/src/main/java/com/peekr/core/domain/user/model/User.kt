@@ -29,7 +29,7 @@ data class User(
     val providerId: ProviderId,
     val displayId: DisplayId,
     val name: Name,
-    val profileImageUrl: String,
+    val profileImageUrl: String?,
     val introduce: Introduce,
     val lastLoginAt: Long,
     val active: Boolean,
