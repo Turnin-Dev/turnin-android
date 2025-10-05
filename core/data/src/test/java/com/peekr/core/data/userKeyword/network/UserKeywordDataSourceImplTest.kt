@@ -341,6 +341,7 @@ class UserKeywordDataSourceImplTest {
         private val TestUserKeywordResponse = UserKeywordResponse(
             id = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
+            keywordName = "sample",
             userId = TestUserId.value,
             offsetX = 0.0,
             offsetY = 0.0,

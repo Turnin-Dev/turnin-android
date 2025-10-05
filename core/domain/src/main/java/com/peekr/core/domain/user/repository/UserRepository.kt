@@ -28,5 +28,5 @@ interface UserRepository {
      *
      * @param patch 사용자 수정 요청
      */
-    fun updateUserById(patch: UserPatch): Flow<Result<Unit, ErrorType>>
+    fun updateUser(patch: UserPatch): Flow<Result<Unit, ErrorType>>
 }

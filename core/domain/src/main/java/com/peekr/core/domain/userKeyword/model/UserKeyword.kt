@@ -9,6 +9,7 @@ import com.peekr.core.domain.model.UserKeywordId
  *
  * @property id 사용자 키워드 ID
  * @property keywordId 키워드 ID
+ * @property keywordName 키워드 명
  * @property userId 사용자 ID
  * @property offsetX 키워드 위치 오프셋 X
  * @property offsetY 키워드 위치 오프셋 Y
@@ -19,6 +20,7 @@ import com.peekr.core.domain.model.UserKeywordId
 data class UserKeyword(
     val id: UserKeywordId,
     val keywordId: KeywordId,
+    val keywordName: String,
     val userId: UserId,
     val offsetX: Double,
     val offsetY: Double,

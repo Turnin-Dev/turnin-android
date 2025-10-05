@@ -150,7 +150,7 @@ class UserRepositoryImplTest {
         } returns NetworkResult.Success(Unit)
 
         // when
-        val result = repository.updateUserById(TestUserPatch).last()
+        val result = repository.updateUser(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -165,7 +165,7 @@ class UserRepositoryImplTest {
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.updateUserById(TestUserPatch).last()
+        val result = repository.updateUser(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -181,7 +181,7 @@ class UserRepositoryImplTest {
         } throws exception
 
         // when
-        val result = repository.updateUserById(TestUserPatch).last()
+        val result = repository.updateUser(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)

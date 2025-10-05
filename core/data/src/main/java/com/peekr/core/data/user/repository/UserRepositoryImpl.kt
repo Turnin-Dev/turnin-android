@@ -49,7 +49,7 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun updateUserById(patch: UserPatch): Flow<Result<Unit, ErrorType>> =
+    override fun updateUser(patch: UserPatch): Flow<Result<Unit, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
             when (val result = userDataSource.updateUserById(patch.toDataModel())) {
