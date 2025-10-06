@@ -1,10 +1,12 @@
 package com.peekr.core.data.network.util
 
+import com.ibm.icu.util.TimeUnit
 import com.peekr.core.data.network.CommonErrorResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.SocketPolicy
@@ -30,11 +32,19 @@ class NetworkCallTest {
 
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
+        val client = OkHttpClient
+            .Builder()
+            .readTimeout(1000, java.util.concurrent.TimeUnit.MICROSECONDS)
+            .connectTimeout(1000, java.util.concurrent.TimeUnit.MICROSECONDS)
+            .writeTimeout(1000, java.util.concurrent.TimeUnit.MICROSECONDS)
+            .build()
+
         apiService =
             Retrofit
                 .Builder()
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(server.url("/"))
+                .client(client)
                 .build()
                 .create(ApiService::class.java)
     }
