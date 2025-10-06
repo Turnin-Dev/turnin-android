@@ -7,15 +7,14 @@ import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import javax.inject.Inject
 
 class UserKeywordNetworkDataSource @Inject constructor(
     private val userKeywordApi: UserKeywordApi,
 ) : UserKeywordDataSource {
-    override suspend fun getUserKeywords(userId: UserId): NetworkResult<UserKeywordsResponse> =
-        networkCall { userKeywordApi.getUserKeywords(userId.value) }
+    override suspend fun getUserKeywords(): NetworkResult<UserKeywordsResponse> =
+        networkCall { userKeywordApi.getUserKeywords() }
 
     override suspend fun createUserKeyword(
         createUserKeywordRequest: CreateUserKeywordRequest,
@@ -23,19 +22,17 @@ class UserKeywordNetworkDataSource @Inject constructor(
         networkCall { userKeywordApi.createUserKeyword(createUserKeywordRequest) }
 
     override suspend fun patchUserKeyword(
-        ownerId: UserId,
         userKeywordId: UserKeywordId,
         patchUserKeywordRequest: PatchUserKeywordRequest,
     ): NetworkResult<Unit> =
         networkCallWithoutResponse {
-            userKeywordApi.patchUserKeyword(ownerId.value, userKeywordId.value, patchUserKeywordRequest)
+            userKeywordApi.patchUserKeyword(userKeywordId.value, patchUserKeywordRequest)
         }
 
     override suspend fun deleteUserKeyword(
-        ownerId: UserId,
         userKeywordId: UserKeywordId,
     ): NetworkResult<Unit> =
         networkCallWithoutResponse {
-            userKeywordApi.deleteUserKeyword(ownerId.value, userKeywordId.value)
+            userKeywordApi.deleteUserKeyword(userKeywordId.value)
         }
 }

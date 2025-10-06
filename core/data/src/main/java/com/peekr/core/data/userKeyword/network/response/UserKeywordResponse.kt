@@ -11,6 +11,7 @@ import com.squareup.moshi.JsonClass
  *
  * @property id 사용자 키워드 ID
  * @property keywordId 키워드 ID
+ * @property keywordName 키워드 명
  * @property userId 사용자 ID
  * @property offsetX 키워드 위치 오프셋 X
  * @property offsetY 키워드 위치 오프셋 Y
@@ -22,6 +23,7 @@ import com.squareup.moshi.JsonClass
 data class UserKeywordResponse(
     val id: Long,
     val keywordId: Long,
+    val keywordName: String,
     val userId: Long,
     val offsetX: Double,
     val offsetY: Double,
@@ -35,6 +37,7 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
     UserKeyword(
         id = UserKeywordId(id),
         keywordId = KeywordId(keywordId),
+        keywordName = keywordName,
         userId = UserId(userId),
         offsetX = offsetX,
         offsetY = offsetY,
