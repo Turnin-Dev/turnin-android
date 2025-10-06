@@ -33,7 +33,7 @@ data class UserProfileResponse(
     val providerId: String,
     val displayId: String,
     val name: String,
-    val profileImageUrl: String,
+    val profileImageUrl: String?,
     val introduce: String,
     val lastLoginAt: Long,
     val active: Boolean,

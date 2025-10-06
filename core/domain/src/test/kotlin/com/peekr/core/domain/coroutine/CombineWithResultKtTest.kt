@@ -16,7 +16,7 @@ private data class TestPost(val title: String)
 
 private data class TestUserPost(val user: TestUser, val post: TestPost)
 
-class CombineWIthResultKtTest {
+class CombineWithResultKtTest {
     @Test
     fun `두 Flow 모두 Success일 때 transform 함수가 적용된다`() = runTest {
         // given
