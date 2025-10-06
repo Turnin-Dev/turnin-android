@@ -38,7 +38,7 @@ import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.keyword.model.UiKeyword
 import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.state.ProfileState
+import com.peekr.presentation.profile.state.ProfileContract
 
 /**
  * 프로필 화면
@@ -46,7 +46,7 @@ import com.peekr.presentation.profile.state.ProfileState
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    profileState: ProfileState,
+    profileState: ProfileContract.UiState,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -309,7 +309,7 @@ private fun ProfileScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
-            profileState = ProfileState(
+            profileState = ProfileContract.UiState(
                 displayId = "Honggd123",
                 name = "홍길동",
                 friendsTotal = 86,

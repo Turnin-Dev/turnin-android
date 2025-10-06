@@ -51,7 +51,7 @@ fun BottomNavigation(
 
             composable<SubGraph.Profile> {
                 val profileViewModel: ProfileViewModel = hiltViewModel()
-                val profileState by profileViewModel.profileState.collectAsStateWithLifecycle()
+                val profileState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
                 ProfileScreen(
                     modifier = Modifier.fillMaxSize(),
