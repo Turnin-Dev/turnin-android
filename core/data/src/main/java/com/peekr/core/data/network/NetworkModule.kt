@@ -88,6 +88,16 @@ class NetworkModule {
     @Provides
     fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
         TokenInterceptor(dataStoreManager)
+
+    @Singleton
+    @Provides
+    fun providerRefreshTokenApi(
+        retrofit: Retrofit.Builder,
+        @DefaultOkHttpClient okHttpClient: OkHttpClient,
+    ): RefreshTokenApi = retrofit
+        .client(okHttpClient)
+        .build()
+        .create(RefreshTokenApi::class.java)
 }
 
 // ------------------------------ Qualifier ------------------------------

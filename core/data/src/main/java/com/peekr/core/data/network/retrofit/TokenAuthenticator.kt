@@ -5,7 +5,7 @@ import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.core.data.network.retrofit.RetrofitConstants.BEARER
-import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -13,7 +13,7 @@ import okhttp3.Response
 import okhttp3.Route
 
 /** 인증 요청 시 응답의 HTTP 상태코드가 401일 때만 호출된다.  */
-class TokenAuthenticator @Inject constructor(
+class TokenAuthenticator(
     private val dataStoreManager: DataStoreManager,
     private val refreshTokenApi: RefreshTokenApi,
 ) : Authenticator {
@@ -22,7 +22,11 @@ class TokenAuthenticator @Inject constructor(
     override fun authenticate(route: Route?, response: Response): Request? = runBlocking {
         AppLogger.d(tag, "TokenAuthenticator Triggered!")
 
-        val newTokenResponse = refreshToken()
+        // refresh token check
+        val originalRefreshToken =
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken).first()
+        if (originalRefreshToken == null) return@runBlocking null
+        val newTokenResponse = refreshToken(originalRefreshToken)
 
         // logging
         if (newTokenResponse.isSuccessful) {
@@ -49,6 +53,6 @@ class TokenAuthenticator @Inject constructor(
         }
     }
 
-    private suspend fun refreshToken(): retrofit2.Response<TokenResponse> =
-        refreshTokenApi.refresh()
+    private suspend fun refreshToken(token: String): retrofit2.Response<TokenResponse> =
+        refreshTokenApi.refresh(token)
 }

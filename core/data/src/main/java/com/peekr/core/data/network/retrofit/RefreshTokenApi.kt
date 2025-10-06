@@ -3,9 +3,12 @@ package com.peekr.core.data.network.retrofit
 import com.peekr.core.data.network.NetworkApiPath
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 
 interface RefreshTokenApi {
     /** 토큰 새로고침 */
     @GET(NetworkApiPath.Auth.REFRESH)
-    suspend fun refresh(): Response<TokenResponse>
+    suspend fun refresh(
+        @Header("Authorization") refreshToken: String,
+    ): Response<TokenResponse>
 }
