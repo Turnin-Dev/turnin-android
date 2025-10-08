@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -44,8 +45,6 @@ import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
-
-// TODO: 추후에 profile이 null일 때 Shimmer 스켈레톤 화면으로 대체, 정확히는 이 부분말고 요소별로 적용 예정
 
 /**
  * 프로필 화면
@@ -122,7 +121,11 @@ private fun ProfileScreenFrame(
     keywordGraph: @Composable () -> Unit,
 ) {
     Column(modifier) {
-        Column(Modifier.zIndex(2f)) {
+        Column(
+            Modifier
+                .heightIn(min = TopSectionMinHeightDp)
+                .zIndex(2f),
+        ) {
             // TopBar
             topBar()
 
@@ -297,7 +300,6 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             SkeletonBox(DpSize(218.dp, 18.dp))
-            SkeletonBox(DpSize(163.dp, 18.dp))
         }
     }
 }
@@ -337,6 +339,7 @@ private fun ShadowSection(modifier: Modifier = Modifier) {
 
 private val FabSize = 50.dp
 private val AvatarSize = 70.dp
+private val TopSectionMinHeightDp = 166.dp
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDark
