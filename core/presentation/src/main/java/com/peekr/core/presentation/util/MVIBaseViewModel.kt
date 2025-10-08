@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -21,29 +23,33 @@ interface BaseUiEffect
  */
 abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect : BaseUiEffect> : ViewModel() {
     // ------------------------------ Init ------------------------------
-    init {
-        viewModelScope.launch {
-            loadInitialData()
-        }
-    }
+
+    /** 초기 데이터 로드 시 사용한다. */
+    protected open suspend fun loadInitialData() {}
 
     // ------------------------------ UI State ------------------------------
 
     /** UI State 초기 값 */
-    protected abstract val initialState: State
+    private val initialState: State by lazy { createInitialState() }
+
+    protected abstract fun createInitialState(): State
 
     // UI State
     private val _uiState: MutableStateFlow<State> = MutableStateFlow(initialState)
 
     /** UI State */
-    val uiState: StateFlow<State> = _uiState.asStateFlow()
+    val uiState: StateFlow<State> =
+        _uiState
+            .onStart { loadInitialData() }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000L),
+                initialValue = initialState,
+            )
 
     /** 단순히 UI State 값을 읽을 때 사용한다. */
     protected val currentUiState: State
         get() = uiState.value
-
-    /** 초기 데이터 로드 시 사용한다. */
-    protected open suspend fun loadInitialData() {}
 
     /** Update UiState */
     protected fun updateState(newUiState: State) {

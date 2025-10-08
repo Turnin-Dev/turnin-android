@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,10 +36,12 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
-import com.peekr.core.presentation.keyword.model.UiKeyword
 import com.peekr.core.presentation.token.ScreenTokens
+import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.state.ProfileContract
+import com.peekr.presentation.profile.model.UiProfile
+
+// TODO: 추후에 profile이 null일 때 Shimmer 스켈레톤 화면으로 대체, 정확히는 이 부분말고 요소별로 적용 예정
 
 /**
  * 프로필 화면
@@ -46,46 +49,50 @@ import com.peekr.presentation.profile.state.ProfileContract
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    profileState: ProfileContract.UiState,
+    profile: UiProfile?,
 ) {
     Box(modifier) {
-        ProfileScreenFrame(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                TopBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    title = profileState.displayId,
-                )
-            },
-            profile = {
-                Profile(
-                    modifier = Modifier.fillMaxWidth(),
-                    profileImageUrl = profileState.profileImageUrl,
-                    name = profileState.name,
-                    friendsTotal = profileState.friendsTotal,
-                    introduce = profileState.introduce,
-                    onProfileImageClick = {},
-                    onFriendsTotalClick = {},
-                )
-            },
-            keywordGraph = {
-                KeywordGraph(
-                    profileImageUrl = profileState.profileImageUrl,
-                    keywords = profileState.keywords,
-                )
-            },
-        )
+        if (profile != null) {
+            ProfileScreenFrame(
+                modifier = Modifier.fillMaxSize(),
+                topBar = {
+                    TopBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp),
+                        title = profile.displayId,
+                    )
+                },
+                profile = {
+                    Profile(
+                        modifier = Modifier.fillMaxWidth(),
+                        profileImageUrl = profile.profileImageUrl,
+                        name = profile.name,
+                        friendsTotal = profile.friendsTotal,
+                        introduce = profile.introduce,
+                        onProfileImageClick = {},
+                        onFriendsTotalClick = {},
+                    )
+                },
+                keywordGraph = {
+                    KeywordGraph(
+                        profileImageUrl = profile.profileImageUrl,
+                        keywords = profile.keywords,
+                    )
+                },
+            )
 
-        PeekrFab(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(20.dp)
-                .size(FabSize),
-            contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
-            onClick = {},
-        )
+            PeekrFab(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(20.dp)
+                    .size(FabSize),
+                contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
+                onClick = {},
+            )
+        } else {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
     }
 }
 
@@ -248,7 +255,7 @@ private fun Profile(
 private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
-    keywords: List<UiKeyword>,
+    keywords: List<UiUserKeyword>,
 ) {
     KeywordGraphView(
         modifier = modifier,
@@ -309,14 +316,14 @@ private fun ProfileScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
-            profileState = ProfileContract.UiState(
+            profile = UiProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
                 friendsTotal = 86,
                 profileImageUrl = null,
                 introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
                     "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                keywords = UiKeyword.samples,
+                keywords = UiUserKeyword.samples,
             ),
         )
     }
