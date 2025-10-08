@@ -36,23 +36,34 @@ class TokenAuthenticator(
         }
 
         // couldn't refresh the token, so restart the login process
-        if (!newTokenResponse.isSuccessful || newTokenResponse.body() == null) {
+        if (!newTokenResponse.isSuccessful) {
             dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
             dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
+            return@runBlocking null
+        }
+
+        val body = newTokenResponse.body() ?: run {
+            dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
+            dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
+            return@runBlocking null
         }
 
         // Save tokens
         // & Call with tokens (can get response from 'chain.proceed(...)')
-        newTokenResponse.body()?.let {
-            dataStoreManager.saveEncryptedStringData(DataStoreKey.Auth.AccessToken, it.accessToken)
-            dataStoreManager.saveEncryptedStringData(DataStoreKey.Auth.RefreshToken, it.refreshToken)
-            response.request
-                .newBuilder()
-                .header(AUTHENTICATION, "$BEARER ${it.accessToken}")
-                .build()
-        }
+        dataStoreManager.saveEncryptedStringData(DataStoreKey.Auth.AccessToken, body.accessToken)
+        dataStoreManager.saveEncryptedStringData(DataStoreKey.Auth.RefreshToken, body.refreshToken)
+        response.request
+            .newBuilder()
+            .header(AUTHENTICATION, "$BEARER ${body.accessToken}")
+            .build()
     }
 
-    private suspend fun refreshToken(token: String): retrofit2.Response<TokenResponse> =
-        refreshTokenApi.refresh(token)
+    private suspend fun refreshToken(token: String): retrofit2.Response<TokenResponse> {
+        val bearerToken = if (!token.trimStart().startsWith("$BEARER ", ignoreCase = true)) {
+            "$BEARER $token"
+        } else {
+            token
+        }
+        return refreshTokenApi.refresh(bearerToken)
+    }
 }

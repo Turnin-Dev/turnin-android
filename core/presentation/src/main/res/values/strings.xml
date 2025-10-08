@@ -29,6 +29,7 @@
     <string name="error_network_server">서버에서 오류가 발생했습니다.</string>
     <string name="error_network_connection_failed">서버에 연결할 수 없습니다.</string>
     <string name="error_network_invalid_file_type">지원하지 않는 파일 형식입니다.</string>
+    <string name="error_network_upload_file_failed">파일 업로드에 실패했습니다.</string>
 
     <!-- Validation Error Type -->
     <string name="validation_display_id_empty">사용자 표시 ID가 비어있습니다.</string>

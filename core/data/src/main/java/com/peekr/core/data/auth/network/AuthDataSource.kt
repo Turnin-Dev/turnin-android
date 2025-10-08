@@ -1,6 +1,5 @@
 package com.peekr.core.data.auth.network
 
-import com.peekr.core.data.auth.network.request.DisplayIdRequest
 import com.peekr.core.data.auth.network.request.ExistsUserRequest
 import com.peekr.core.data.auth.network.request.LoginRequest
 import com.peekr.core.data.auth.network.request.RegisterRequest
@@ -8,6 +7,7 @@ import com.peekr.core.data.auth.network.response.ExistsResponse
 import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.domain.model.DisplayId
 
 /** Auth 네트워크 데이터소스 */
 interface AuthDataSource {
@@ -31,10 +31,10 @@ interface AuthDataSource {
     /**
      * 사용자 표시 ID 존재 여부 확인
      *
-     * @param DisplayIdRequest 요청용 사용자 표시 ID
+     * @param displayId 사용자 표시 ID
      * @return [ExistsResponse] - 존재하면 `ExistsResponse(true)`, 존재하지 않으면 `ExistsResponse(false)`
      */
-    suspend fun existsDisplayId(displayId: DisplayIdRequest): NetworkResult<ExistsResponse>
+    suspend fun existsDisplayId(displayId: DisplayId): NetworkResult<ExistsResponse>
 
     /**
      * 회원가입

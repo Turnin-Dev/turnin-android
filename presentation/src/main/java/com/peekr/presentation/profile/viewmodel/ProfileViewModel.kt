@@ -1,6 +1,5 @@
 package com.peekr.presentation.profile.viewmodel
 
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.util.MVIBaseViewModel
@@ -21,10 +20,10 @@ class ProfileViewModel @Inject constructor(
         getProfileUseCase().collect { result ->
             when (result) {
                 Result.Loading -> updateState {
-                    this.copy(loading = true)
+                    this.copy(loading = true, error = null)
                 }
 
-                is Result.Error<ErrorType> -> updateState {
+                is Result.Error -> updateState {
                     this.copy(loading = false, error = result.error.asUiText())
                 }
 

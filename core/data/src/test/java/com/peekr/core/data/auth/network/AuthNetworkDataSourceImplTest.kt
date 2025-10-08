@@ -1,7 +1,6 @@
 package com.peekr.core.data.auth.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.auth.network.request.DisplayIdRequest
 import com.peekr.core.data.auth.network.request.ExistsUserRequest
 import com.peekr.core.data.auth.network.request.LoginRequest
 import com.peekr.core.data.auth.network.request.RegisterRequest
@@ -10,6 +9,7 @@ import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.squareup.moshi.JsonDataException
 import io.mockk.coEvery
@@ -171,7 +171,7 @@ class AuthNetworkDataSourceImplTest {
         )
 
         // when
-        val result = dataSource.existsDisplayId(mockDisplayIdRequest)
+        val result = dataSource.existsDisplayId(mockDisplayId)
 
         // then
         assertTrue(result is NetworkResult.Success)
@@ -186,7 +186,7 @@ class AuthNetworkDataSourceImplTest {
         coEvery { mockApi.existsDisplayId(any()) } throws JsonDataException("smile")
 
         // when
-        val result = dataSource.existsDisplayId(mockDisplayIdRequest)
+        val result = dataSource.existsDisplayId(mockDisplayId)
 
         // then
         assertTrue(result is NetworkResult.Error)
@@ -245,7 +245,7 @@ class AuthNetworkDataSourceImplTest {
                 "exists": true
             }
             """.trimIndent()
-        private val mockDisplayIdRequest = DisplayIdRequest("123")
+        private val mockDisplayId = DisplayId("123")
         private const val MOCK_PRESIGNED_URL = "https://example-storage.com/objects/my-image.jpg"
         private const val MOCK_METHOD = "PUT"
         private const val MOCK_SECONDS = 600

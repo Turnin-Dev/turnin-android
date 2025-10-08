@@ -117,7 +117,7 @@ class AuthRepositoryImplTest {
     fun `existsDisplayId() 성공 테스트`() =
         runTest {
             // given
-            coEvery { dataSource.existsDisplayId(any()) } returns NetworkResult.Success(mockExistsResponse)
+            coEvery { dataSource.existsDisplayId(mockDisplayId) } returns NetworkResult.Success(mockExistsResponse)
 
             // when
             val result = repository.existsDisplayId(mockDisplayId).last()
@@ -131,7 +131,7 @@ class AuthRepositoryImplTest {
     fun `existsDisplayId() 성공 테스트 - 존재하지 않음(false)`() =
         runTest {
             // given
-            coEvery { dataSource.existsDisplayId(any()) } returns NetworkResult.Success(ExistsResponse(false))
+            coEvery { dataSource.existsDisplayId(mockDisplayId) } returns NetworkResult.Success(ExistsResponse(false))
 
             // when
             val result = repository.existsDisplayId(mockDisplayId).last()
@@ -146,7 +146,7 @@ class AuthRepositoryImplTest {
         runTest {
             // given
             coEvery {
-                dataSource.existsDisplayId(any())
+                dataSource.existsDisplayId(mockDisplayId)
             } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
 
             // when

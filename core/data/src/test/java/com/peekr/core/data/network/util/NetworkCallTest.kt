@@ -1,6 +1,5 @@
 package com.peekr.core.data.network.util
 
-import com.ibm.icu.util.TimeUnit
 import com.peekr.core.data.network.CommonErrorResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -34,9 +33,9 @@ class NetworkCallTest {
 
         val client = OkHttpClient
             .Builder()
-            .readTimeout(1000, java.util.concurrent.TimeUnit.MICROSECONDS)
-            .connectTimeout(1000, java.util.concurrent.TimeUnit.MICROSECONDS)
-            .writeTimeout(1000, java.util.concurrent.TimeUnit.MICROSECONDS)
+            .readTimeout(2000, java.util.concurrent.TimeUnit.MICROSECONDS)
+            .connectTimeout(2000, java.util.concurrent.TimeUnit.MICROSECONDS)
+            .writeTimeout(2000, java.util.concurrent.TimeUnit.MICROSECONDS)
             .build()
 
         apiService =
@@ -102,11 +101,19 @@ class NetworkCallTest {
     @Test
     fun `networkCall 에러 테스트 (에러 메시지)`() = runTest {
         // given
-        val expectedCode = 404
+        val expectedStatusCode = 404
+        val expectedErrorMessage =
+            """
+            {
+              "code": "$ERROR_CODE",
+              "message": "$ERROR_MESSAGE",
+              "status": $expectedStatusCode
+            }
+            """.trimIndent()
         server.enqueue(
             MockResponse().apply {
-                setResponseCode(expectedCode)
-                setBody(ERROR_RESPONSE)
+                setResponseCode(expectedStatusCode)
+                setBody(expectedErrorMessage)
             },
         )
 
@@ -115,7 +122,7 @@ class NetworkCallTest {
 
         // then
         assertTrue(result is NetworkResult.Error)
-        assertEquals(expectedCode, (result as NetworkResult.Error).status)
+        assertEquals(expectedStatusCode, (result as NetworkResult.Error).status)
         assertEquals(errorResponse.message, result.message)
     }
 
@@ -191,14 +198,6 @@ class NetworkCallTest {
         private const val ERROR_CODE = "A001"
         private const val ERROR_MESSAGE = "Login failed"
         private const val STATUS = 400
-        private val ERROR_RESPONSE =
-            """
-            {
-              "code": "$ERROR_CODE",
-              "message": "$ERROR_MESSAGE",
-              "status": $STATUS
-            }
-            """.trimIndent()
         private val errorResponse = CommonErrorResponse(
             code = ERROR_CODE,
             message = ERROR_MESSAGE,

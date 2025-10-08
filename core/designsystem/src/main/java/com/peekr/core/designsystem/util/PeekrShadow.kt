@@ -39,7 +39,9 @@ enum class DropShadowDirection {
  *
  * @param type 그림자 타입
  * @param shape 그림자 모양
+ * @param direction 그림자 방향
  * @see PeekrShadowType
+ * @see DropShadowDirection
  */
 fun Modifier.peekrShadow(
     type: PeekrShadowType,
