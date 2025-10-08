@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.shimmerEffect
 
 /**
  * 스켈레톤 스크린에서 사용
@@ -30,6 +31,7 @@ fun SkeletonBox(
             Modifier
                 .clip(shape)
                 .size(size)
+                .shimmerEffect()
                 .background(PeekrTheme.colorScheme.componentShimmer, shape),
     )
 }

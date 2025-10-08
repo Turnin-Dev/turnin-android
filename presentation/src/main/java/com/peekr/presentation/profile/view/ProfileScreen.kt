@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,15 +22,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.DropShadowDirection
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.PeekrIcons
@@ -52,20 +56,25 @@ fun ProfileScreen(
     profile: UiProfile?,
 ) {
     Box(modifier) {
-        if (profile != null) {
-            ProfileScreenFrame(
-                modifier = Modifier.fillMaxSize(),
-                topBar = {
+        ProfileScreenFrame(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                profile?.let {
                     TopBar(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(PeekrTheme.colorScheme.backgroundNormal)
                             .padding(horizontal = 10.dp),
                         title = profile.displayId,
                     )
-                },
-                profile = {
+                } ?: TopBarSkeleton()
+            },
+            profile = {
+                profile?.let {
                     Profile(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp),
                         profileImageUrl = profile.profileImageUrl,
                         name = profile.name,
                         friendsTotal = profile.friendsTotal,
@@ -73,15 +82,19 @@ fun ProfileScreen(
                         onProfileImageClick = {},
                         onFriendsTotalClick = {},
                     )
-                },
-                keywordGraph = {
+                } ?: ProfileSkeleton()
+            },
+            keywordGraph = {
+                profile?.let {
                     KeywordGraph(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                     )
-                },
-            )
+                } ?: KeywordGraphSkeleton()
+            },
+        )
 
+        profile?.let {
             PeekrFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -90,8 +103,6 @@ fun ProfileScreen(
                 contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
                 onClick = {},
             )
-        } else {
-            CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     }
 }
@@ -111,31 +122,28 @@ private fun ProfileScreenFrame(
     keywordGraph: @Composable () -> Unit,
 ) {
     Column(modifier) {
-        Column(
-            Modifier
-                .background(PeekrTheme.colorScheme.backgroundNormal)
-                .zIndex(2f),
-        ) {
+        Column(Modifier.zIndex(2f)) {
             // TopBar
             topBar()
 
             // Profile
-            Box(Modifier.padding(horizontal = ScreenTokens.HorizontalPadding)) {
+            Box(
+                Modifier
+                    .background(PeekrTheme.colorScheme.backgroundNormal)
+                    .padding(horizontal = ScreenTokens.HorizontalPadding)
+                    .zIndex(1f),
+            ) {
                 profile()
             }
-            ShadowSection(
-                Modifier
-                    .fillMaxWidth()
-                    .zIndex(2f),
-            )
+            ShadowSection(Modifier.fillMaxWidth())
         }
 
         // Keyword Graph
         Box(
-            Modifier
+            modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = ScreenTokens.HorizontalPadding)
-                .zIndex(1f),
+                .padding(horizontal = ScreenTokens.HorizontalPadding),
+            contentAlignment = Alignment.Center,
         ) {
             keywordGraph()
         }
@@ -167,6 +175,16 @@ private fun TopBar(
     )
 }
 
+@Preview
+@Composable
+private fun TopBarSkeleton() {
+    PeekrTopBar(
+        modifier = Modifier.fillMaxWidth(),
+        title = "",
+        optionSlot = { Spacer(Modifier.size(1.dp)) },
+    )
+}
+
 /**
  * 프로필
  *
@@ -189,9 +207,7 @@ private fun Profile(
     onFriendsTotalClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // 프로필 사진 & 이름 & 친구 수
@@ -252,6 +268,41 @@ private fun Profile(
 }
 
 @Composable
+private fun ProfileSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SkeletonBox(DpSize(AvatarSize, AvatarSize), CircleShape)
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                SkeletonBox(DpSize(59.dp, 24.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SkeletonBox(DpSize(94.dp, 20.dp))
+                }
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            SkeletonBox(DpSize(218.dp, 18.dp))
+            SkeletonBox(DpSize(163.dp, 18.dp))
+        }
+    }
+}
+
+@Composable
 private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
@@ -265,9 +316,21 @@ private fun KeywordGraph(
 }
 
 @Composable
+private fun KeywordGraphSkeleton() {
+    Box(Modifier.fillMaxSize(), Alignment.Center) {
+        SkeletonBox(DpSize(49.dp, 49.dp), CircleShape)
+    }
+}
+
+@Composable
 private fun ShadowSection(modifier: Modifier = Modifier) {
     HorizontalDivider(
-        modifier = modifier.peekrShadow(PeekrShadowType.Custom(blur = 4.dp)),
+        modifier = modifier
+            .fillMaxWidth()
+            .peekrShadow(
+                type = PeekrShadowType.Custom(blur = 4.dp, offsetY = 2.dp),
+                direction = DropShadowDirection.BOTTOM,
+            ),
         color = Color.Transparent,
     )
 }
@@ -315,7 +378,7 @@ private fun ProfileScreenPreview() {
         ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(Color.LightGray),
             profile = UiProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
@@ -325,6 +388,17 @@ private fun ProfileScreenPreview() {
                     "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
                 keywords = UiUserKeyword.samples,
             ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ProfileScreenShimmerPreview() {
+    PeekrAppTheme {
+        ProfileScreen(
+            modifier = Modifier.fillMaxSize(),
+            profile = null,
         )
     }
 }

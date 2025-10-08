@@ -28,6 +28,12 @@ sealed class PeekrShadowType {
     ) : PeekrShadowType()
 }
 
+/** 그림자 방향 */
+enum class DropShadowDirection {
+    ALL,
+    BOTTOM,
+}
+
 /**
  * PeekrShadow
  *
@@ -38,12 +44,14 @@ sealed class PeekrShadowType {
 fun Modifier.peekrShadow(
     type: PeekrShadowType,
     shape: Shape = RectangleShape,
+    direction: DropShadowDirection = DropShadowDirection.ALL,
 ): Modifier = composed {
     val token = type.getPeekrShadowToken(isSystemInDarkTheme())
 
     this.then(
         Modifier.dropShadow(
             shape = shape,
+            direction = direction,
             color = token.color,
             offsetX = token.offsetX,
             offsetY = token.offsetY,
@@ -88,6 +96,7 @@ private fun PeekrShadowType.getPeekrShadowToken(darkMode: Boolean): PeekrShadowT
  */
 private fun Modifier.dropShadow(
     shape: Shape,
+    direction: DropShadowDirection = DropShadowDirection.ALL,
     color: Color = Color.Black,
     offsetX: Dp = 0.dp,
     offsetY: Dp = 0.dp,
@@ -111,6 +120,23 @@ private fun Modifier.dropShadow(
 
         drawIntoCanvas { canvas ->
             canvas.save()
+
+            // 방향에 따른 클리핑
+            when (direction) {
+                DropShadowDirection.BOTTOM -> {
+                    canvas.clipRect(
+                        left = 0f,
+                        top = size.height,
+                        right = size.width,
+                        bottom = size.height + blur.toPx() + spread.toPx() + offsetY.toPx(),
+                    )
+                }
+
+                DropShadowDirection.ALL -> {
+                    // 클리핑 필요없음
+                }
+            }
+
             canvas.translate(offsetX.toPx(), offsetY.toPx())
             canvas.drawOutline(shadowOutline, paint)
             canvas.restore()
