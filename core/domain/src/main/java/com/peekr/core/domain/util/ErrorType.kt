@@ -39,6 +39,9 @@ sealed interface ErrorType : DomainError {
 
         /** 지원하지 않는 파일 유형 */
         InvalidFileType,
+
+        /** 파일 업로드 실패 에러 */
+        UploadFileFailed,
     }
 
     /** 예외 타입 */

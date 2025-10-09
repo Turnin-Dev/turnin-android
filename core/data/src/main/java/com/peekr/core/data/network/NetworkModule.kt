@@ -75,7 +75,7 @@ class NetworkModule {
     ): Retrofit.Builder = Retrofit
         .Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl(BuildConfig.PEEKR_LOCAL_SERVER_URL)
+        .baseUrl(BuildConfig.PEEKR_MOCK_SERVER_URL)
 
     @Singleton
     @Provides
@@ -88,6 +88,16 @@ class NetworkModule {
     @Provides
     fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
         TokenInterceptor(dataStoreManager)
+
+    @Singleton
+    @Provides
+    fun providerRefreshTokenApi(
+        retrofit: Retrofit.Builder,
+        @DefaultOkHttpClient okHttpClient: OkHttpClient,
+    ): RefreshTokenApi = retrofit
+        .client(okHttpClient)
+        .build()
+        .create(RefreshTokenApi::class.java)
 }
 
 // ------------------------------ Qualifier ------------------------------

@@ -5,7 +5,6 @@ import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.core.data.network.retrofit.RetrofitConstants.BEARER
-import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -17,7 +16,7 @@ import okhttp3.Response
  *
  * 만약, 토큰이 빈 문자열이거나 null이면 원본 요청으로 계속 진행한다.
  */
-class TokenInterceptor @Inject constructor(private val dataStoreManager: DataStoreManager) : Interceptor {
+class TokenInterceptor(private val dataStoreManager: DataStoreManager) : Interceptor {
     private val tag = this::class.java.simpleName
 
     override fun intercept(chain: Interceptor.Chain): Response {

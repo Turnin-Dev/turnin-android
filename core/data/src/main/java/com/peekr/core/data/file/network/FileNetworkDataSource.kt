@@ -47,12 +47,12 @@ class FileNetworkDataSource @Inject constructor(
                     NetworkResult.Success(true)
                 } else {
                     AppLogger.w(tag, "File upload failed: HTTP ${response.code}")
-                    NetworkResult.Success(false) // 정책에 따라 Error로 바꿔도 좋습니다.
+                    NetworkResult.Error(NetworkErrorType.Network.UploadFileFailed)
                 }
             }
         } catch (e: Exception) {
             AppLogger.e(tag, e, "File upload failed")
-            throw e
+            NetworkResult.Error(NetworkErrorType.Network.UploadFileFailed)
         }
     }
 }

@@ -28,22 +28,32 @@ sealed class PeekrShadowType {
     ) : PeekrShadowType()
 }
 
+/** 그림자 방향 */
+enum class DropShadowDirection {
+    ALL,
+    BOTTOM,
+}
+
 /**
  * PeekrShadow
  *
  * @param type 그림자 타입
  * @param shape 그림자 모양
+ * @param direction 그림자 방향
  * @see PeekrShadowType
+ * @see DropShadowDirection
  */
 fun Modifier.peekrShadow(
     type: PeekrShadowType,
     shape: Shape = RectangleShape,
+    direction: DropShadowDirection = DropShadowDirection.ALL,
 ): Modifier = composed {
     val token = type.getPeekrShadowToken(isSystemInDarkTheme())
 
     this.then(
         Modifier.dropShadow(
             shape = shape,
+            direction = direction,
             color = token.color,
             offsetX = token.offsetX,
             offsetY = token.offsetY,
@@ -88,6 +98,7 @@ private fun PeekrShadowType.getPeekrShadowToken(darkMode: Boolean): PeekrShadowT
  */
 private fun Modifier.dropShadow(
     shape: Shape,
+    direction: DropShadowDirection = DropShadowDirection.ALL,
     color: Color = Color.Black,
     offsetX: Dp = 0.dp,
     offsetY: Dp = 0.dp,
@@ -96,22 +107,43 @@ private fun Modifier.dropShadow(
     modifier: Modifier = Modifier,
 ) = then(
     modifier.drawBehind {
-        val shadowSize = Size(size.width + spread.toPx(), size.height + spread.toPx())
+        val offsetXPx = offsetX.toPx()
+        val offsetYPx = offsetY.toPx()
+        val blurPx = blur.toPx()
+        val spreadPx = spread.toPx()
+        val shadowSize = Size(size.width + spreadPx, size.height + spreadPx)
         val shadowOutline = shape.createOutline(shadowSize, layoutDirection, this)
 
         val paint = Paint().apply {
             this.color = color
         }
 
-        if (blur.toPx() > 0) {
+        if (blurPx > 0) {
             paint.asFrameworkPaint().apply {
-                maskFilter = BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
+                maskFilter = BlurMaskFilter(blurPx, BlurMaskFilter.Blur.NORMAL)
             }
         }
 
         drawIntoCanvas { canvas ->
             canvas.save()
-            canvas.translate(offsetX.toPx(), offsetY.toPx())
+
+            // 방향에 따른 클리핑
+            when (direction) {
+                DropShadowDirection.BOTTOM -> {
+                    canvas.clipRect(
+                        left = 0f,
+                        top = size.height,
+                        right = size.width,
+                        bottom = size.height + blurPx + spreadPx + offsetYPx,
+                    )
+                }
+
+                DropShadowDirection.ALL -> {
+                    // 클리핑 필요없음
+                }
+            }
+
+            canvas.translate(offsetXPx, offsetYPx)
             canvas.drawOutline(shadowOutline, paint)
             canvas.restore()
         }

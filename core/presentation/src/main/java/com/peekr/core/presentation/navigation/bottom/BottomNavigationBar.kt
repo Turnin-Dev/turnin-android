@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,32 +66,37 @@ fun BottomNavigationBar(
         containerColor = PeekrTheme.colorScheme.backgroundNormal,
         windowInsets = WindowInsets(bottom = 0.dp),
     ) {
-        Row(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            bottomNavItems.forEach { item ->
-                val checked by remember(currentDestination?.route) {
-                    derivedStateOf {
-                        currentDestination?.hierarchy?.any {
-                            it.route == item.route::class.qualifiedName
-                        } == true
+        Column(Modifier.align(Alignment.CenterVertically)) {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                color = DividerColor,
+                thickness = 1.dp,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                bottomNavItems.forEach { item ->
+                    val checked by remember(currentDestination?.route) {
+                        derivedStateOf {
+                            currentDestination?.hierarchy?.any {
+                                it.route == item.route::class.qualifiedName
+                            } == true
+                        }
                     }
-                }
 
-                Item(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickableSingle {
-                            onItemClickWithOptions(navController, item.route)
-                        }.padding(vertical = ItemVerticalSpacingDp),
-                    icon = item.icon,
-                    title = item.title,
-                    checked = checked,
-                )
+                    Item(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickableSingle {
+                                onItemClickWithOptions(navController, item.route)
+                            }.padding(vertical = ItemVerticalSpacingDp),
+                        icon = item.icon,
+                        title = item.title,
+                        checked = checked,
+                    )
+                }
             }
         }
     }
@@ -160,6 +167,7 @@ private fun onItemClickWithOptions(
 private val BarMinHeightDp = 64.dp
 private val ItemIconTitleSpacingDp = 6.dp
 private val ItemVerticalSpacingDp = 8.dp
+private val DividerColor = Color(0xFFD5D5D5)
 
 // ------------------------------ Previews ------------------------------
 @Preview

@@ -1,6 +1,5 @@
 package com.peekr.core.data.file.network
 
-import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.util.NetworkErrorType
@@ -8,7 +7,6 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.squareup.moshi.JsonDataException
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
 import java.net.HttpURLConnection
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -95,20 +93,27 @@ class FileNetworkDataSourceImplTest {
     }
 
     @Test
-    fun `uploadFile() 실패 테스트- 서버 에러 발생시 false를 반환한다`() = runTest {
+    fun `uploadFile() 실패 테스트 - 서버 에러 발생시 정상적으로 정의된 에러타입을 반환한다`() = runTest {
         // Given
         val fileContent = "test file content".toByteArray()
         val mimeType = "application/pdf"
         val presignedUrl = testRule.server.url("/upload").toString()
 
-        testRule.server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
+            },
+        )
 
         // When
         val result = dataSource.uploadFile(presignedUrl, fileContent, mimeType)
 
         // Then
-        assertTrue(result is NetworkResult.Success)
-        assertEquals(false, (result as NetworkResult.Success).data)
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Network.UploadFileFailed,
+            (result as NetworkResult.Error).error,
+        )
     }
 
     @Test
@@ -133,20 +138,21 @@ class FileNetworkDataSourceImplTest {
     }
 
     @Test
-    fun `uploadFile() 실패 테스트 - 예외 발생 시 에러 로그를 수행한다`() = runTest {
-        // Given
+    fun `uploadFile() 실패 테스트 - 예외 발생 시 정상적으로 정의된 에러타입을 반환한다`() = runTest {
+        // given
         val fileContent = "test file content".toByteArray()
         val mimeType = "text/plain"
         val presignedUrl = "http://invalid-url-that-will-fail"
 
-        // When & Then
-        val exception = runCatching {
-            dataSource.uploadFile(presignedUrl, fileContent, mimeType)
-        }.exceptionOrNull()
-        assertTrue(exception is Throwable)
+        // when
+        val result = dataSource.uploadFile(presignedUrl, fileContent, mimeType)
 
-        // verify
-        verify(exactly = 1) { AppLogger.e(any<String>(), any<Throwable>(), any<String>()) }
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Network.UploadFileFailed,
+            (result as NetworkResult.Error).error,
+        )
     }
 
     companion object {

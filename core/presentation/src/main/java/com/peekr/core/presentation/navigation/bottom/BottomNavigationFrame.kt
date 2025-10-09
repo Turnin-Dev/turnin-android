@@ -13,7 +13,7 @@ import androidx.navigation.compose.NavHost
  *
  * @param modifier [Modifier]
  * @param bottomNavController 바텀 네비게이션의 navController
- * @param content 각 탭의 [NavHost]를 구현한다. (반드시 패딩 파라미터를 적용해야 한다.)
+ * @param content 각 탭의 [NavHost]를 구현한다. (반드시 패딩 파라미터를 적용해야 하지만 중첩 Scaffold 구조에선 예외이다.)
  */
 @Composable
 fun BottomNavigationFrame(
@@ -25,6 +25,8 @@ fun BottomNavigationFrame(
         modifier = modifier,
         bottomBar = { BottomNavigationBar(Modifier.fillMaxWidth(), bottomNavController) },
     ) { innerPadding ->
-        content(innerPadding)
+        content(
+            PaddingValues(bottom = innerPadding.calculateBottomPadding()),
+        )
     }
 }

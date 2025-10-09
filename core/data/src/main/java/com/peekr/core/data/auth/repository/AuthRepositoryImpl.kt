@@ -52,7 +52,7 @@ class AuthRepositoryImpl @Inject constructor(
     override fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
-            emit(mapExistsResult(authDataSource.existsDisplayId(displayId.toDataModel())))
+            emit(mapExistsResult(authDataSource.existsDisplayId(displayId)))
         }
 
     override fun register(register: Register): Flow<Result<JWTToken, ErrorType>> =

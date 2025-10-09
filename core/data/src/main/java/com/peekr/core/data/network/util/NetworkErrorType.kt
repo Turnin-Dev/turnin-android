@@ -17,6 +17,7 @@ sealed interface NetworkErrorType {
         GatewayTimeout,
         ConnectionFailed,
         InvalidFileType,
+        UploadFileFailed,
     }
 
     /** Exception 에러 타입 */

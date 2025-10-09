@@ -18,6 +18,8 @@ class UserModule {
     fun providerUserApi(
         retrofit: Retrofit.Builder,
         @TokenOkHttpClient okHttpClient: OkHttpClient,
-    ): UserApi =
-        retrofit.client(okHttpClient).build().create(UserApi::class.java)
+    ): UserApi = retrofit
+        .client(okHttpClient)
+        .build()
+        .create(UserApi::class.java)
 }

@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,25 +23,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.DropShadowDirection
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
-import com.peekr.core.presentation.keyword.model.UiKeyword
 import com.peekr.core.presentation.token.ScreenTokens
+import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.state.ProfileState
+import com.peekr.presentation.profile.model.UiProfile
 
 /**
  * 프로필 화면
@@ -46,46 +52,57 @@ import com.peekr.presentation.profile.state.ProfileState
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    profileState: ProfileState,
+    profile: UiProfile?,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                TopBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    title = profileState.displayId,
-                )
+                profile?.let {
+                    TopBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(PeekrTheme.colorScheme.backgroundNormal)
+                            .padding(horizontal = 10.dp),
+                        title = profile.displayId,
+                    )
+                } ?: TopBarSkeleton()
             },
             profile = {
-                Profile(
-                    modifier = Modifier.fillMaxWidth(),
-                    profileImageUrl = profileState.profileImageUrl,
-                    name = profileState.name,
-                    friendsTotal = profileState.friendsTotal,
-                    introduce = profileState.introduce,
-                    onProfileImageClick = {},
-                    onFriendsTotalClick = {},
-                )
+                profile?.let {
+                    Profile(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp),
+                        profileImageUrl = profile.profileImageUrl,
+                        name = profile.name,
+                        friendsTotal = profile.friendsTotal,
+                        introduce = profile.introduce,
+                        onProfileImageClick = {},
+                        onFriendsTotalClick = {},
+                    )
+                } ?: ProfileSkeleton()
             },
             keywordGraph = {
-                KeywordGraph(
-                    profileImageUrl = profileState.profileImageUrl,
-                    keywords = profileState.keywords,
-                )
+                profile?.let {
+                    KeywordGraph(
+                        profileImageUrl = profile.profileImageUrl,
+                        keywords = profile.keywords,
+                    )
+                } ?: KeywordGraphSkeleton()
             },
         )
 
-        PeekrFab(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(20.dp)
-                .size(FabSize),
-            contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
-            onClick = {},
-        )
+        profile?.let {
+            PeekrFab(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(20.dp)
+                    .size(FabSize),
+                contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
+                onClick = {},
+            )
+        }
     }
 }
 
@@ -106,29 +123,30 @@ private fun ProfileScreenFrame(
     Column(modifier) {
         Column(
             Modifier
-                .background(PeekrTheme.colorScheme.backgroundNormal)
+                .heightIn(min = TopSectionMinHeightDp)
                 .zIndex(2f),
         ) {
             // TopBar
             topBar()
 
             // Profile
-            Box(Modifier.padding(horizontal = ScreenTokens.HorizontalPadding)) {
+            Box(
+                Modifier
+                    .background(PeekrTheme.colorScheme.backgroundNormal)
+                    .padding(horizontal = ScreenTokens.HorizontalPadding)
+                    .zIndex(1f),
+            ) {
                 profile()
             }
-            ShadowSection(
-                Modifier
-                    .fillMaxWidth()
-                    .zIndex(2f),
-            )
+            ShadowSection(Modifier.fillMaxWidth())
         }
 
         // Keyword Graph
         Box(
-            Modifier
+            modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = ScreenTokens.HorizontalPadding)
-                .zIndex(1f),
+                .padding(horizontal = ScreenTokens.HorizontalPadding),
+            contentAlignment = Alignment.Center,
         ) {
             keywordGraph()
         }
@@ -160,6 +178,16 @@ private fun TopBar(
     )
 }
 
+@Preview
+@Composable
+private fun TopBarSkeleton() {
+    PeekrTopBar(
+        modifier = Modifier.fillMaxWidth(),
+        title = "",
+        optionSlot = { Spacer(Modifier.size(1.dp)) },
+    )
+}
+
 /**
  * 프로필
  *
@@ -182,9 +210,7 @@ private fun Profile(
     onFriendsTotalClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // 프로필 사진 & 이름 & 친구 수
@@ -245,10 +271,44 @@ private fun Profile(
 }
 
 @Composable
+private fun ProfileSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SkeletonBox(DpSize(AvatarSize, AvatarSize), CircleShape)
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                SkeletonBox(DpSize(59.dp, 24.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SkeletonBox(DpSize(94.dp, 20.dp))
+                }
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            SkeletonBox(DpSize(218.dp, 18.dp))
+        }
+    }
+}
+
+@Composable
 private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
-    keywords: List<UiKeyword>,
+    keywords: List<UiUserKeyword>,
 ) {
     KeywordGraphView(
         modifier = modifier,
@@ -258,15 +318,28 @@ private fun KeywordGraph(
 }
 
 @Composable
+private fun KeywordGraphSkeleton() {
+    Box(Modifier.fillMaxSize(), Alignment.Center) {
+        SkeletonBox(DpSize(49.dp, 49.dp), CircleShape)
+    }
+}
+
+@Composable
 private fun ShadowSection(modifier: Modifier = Modifier) {
     HorizontalDivider(
-        modifier = modifier.peekrShadow(PeekrShadowType.Custom(blur = 4.dp)),
+        modifier = modifier
+            .fillMaxWidth()
+            .peekrShadow(
+                type = PeekrShadowType.Custom(blur = 4.dp, offsetY = 2.dp),
+                direction = DropShadowDirection.BOTTOM,
+            ),
         color = Color.Transparent,
     )
 }
 
 private val FabSize = 50.dp
 private val AvatarSize = 70.dp
+private val TopSectionMinHeightDp = 166.dp
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDark
@@ -308,16 +381,27 @@ private fun ProfileScreenPreview() {
         ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
-            profileState = ProfileState(
+                .background(Color.LightGray),
+            profile = UiProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
                 friendsTotal = 86,
                 profileImageUrl = null,
                 introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
                     "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                keywords = UiKeyword.samples,
+                keywords = UiUserKeyword.samples,
             ),
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun ProfileScreenShimmerPreview() {
+    PeekrAppTheme {
+        ProfileScreen(
+            modifier = Modifier.fillMaxSize(),
+            profile = null,
         )
     }
 }
