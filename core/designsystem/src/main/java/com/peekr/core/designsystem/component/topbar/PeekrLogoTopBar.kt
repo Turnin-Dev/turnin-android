@@ -31,7 +31,7 @@ fun PeekrLogoTopBar(
     onLogoClick: () -> Unit = {},
 ) {
     CoreTopBar(
-        modifier = modifier.padding(PaddingValues),
+        modifier = modifier.padding(TopBarPaddingValues),
         optionSlot = optionSlot,
         logoSlot = {
             Image(
@@ -53,4 +53,4 @@ fun PeekrLogoTopBar(
 private val LogoSize = DpSize(77.dp, 30.dp)
 
 // 탑바 패딩
-private val PaddingValues = PaddingValues(start = 20.dp, end = 10.dp)
+private val TopBarPaddingValues = PaddingValues(start = 20.dp, end = 10.dp)
