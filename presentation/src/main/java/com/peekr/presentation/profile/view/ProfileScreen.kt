@@ -34,7 +34,6 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.DropShadowDirection
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.PeekrIcons
@@ -330,8 +329,12 @@ private fun ShadowSection(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .peekrShadow(
-                type = PeekrShadowType.Custom(blur = 4.dp, offsetY = 2.dp),
-                direction = DropShadowDirection.BOTTOM,
+                type = PeekrShadowType.Custom(
+                    blur = 6.dp,
+                    lightColor = Color.Black,
+                    darkColor = Color.White,
+                    alpha = 0.25f,
+                ),
             ),
         color = Color.Transparent,
     )

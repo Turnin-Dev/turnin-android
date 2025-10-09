@@ -32,8 +32,8 @@ fun UserNode(
 ) {
     Box(
         modifier = modifier
-            .clip(CircleShape)
-            .peekrShadow(PeekrShadowType.Normal, shape = CircleShape),
+            .peekrShadow(PeekrShadowType.Normal, shape = CircleShape)
+            .clip(CircleShape),
     ) {
         PeekrAvatar(
             modifier = Modifier.size(AvatarSize),
