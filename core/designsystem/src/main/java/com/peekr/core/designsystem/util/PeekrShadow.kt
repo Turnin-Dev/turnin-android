@@ -107,16 +107,20 @@ private fun Modifier.dropShadow(
     modifier: Modifier = Modifier,
 ) = then(
     modifier.drawBehind {
-        val shadowSize = Size(size.width + spread.toPx(), size.height + spread.toPx())
+        val offsetXPx = offsetX.toPx()
+        val offsetYPx = offsetY.toPx()
+        val blurPx = blur.toPx()
+        val spreadPx = spread.toPx()
+        val shadowSize = Size(size.width + spreadPx, size.height + spreadPx)
         val shadowOutline = shape.createOutline(shadowSize, layoutDirection, this)
 
         val paint = Paint().apply {
             this.color = color
         }
 
-        if (blur.toPx() > 0) {
+        if (blurPx > 0) {
             paint.asFrameworkPaint().apply {
-                maskFilter = BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
+                maskFilter = BlurMaskFilter(blurPx, BlurMaskFilter.Blur.NORMAL)
             }
         }
 
@@ -130,7 +134,7 @@ private fun Modifier.dropShadow(
                         left = 0f,
                         top = size.height,
                         right = size.width,
-                        bottom = size.height + blur.toPx() + spread.toPx() + offsetY.toPx(),
+                        bottom = size.height + blurPx + spreadPx + offsetYPx,
                     )
                 }
 
@@ -139,7 +143,7 @@ private fun Modifier.dropShadow(
                 }
             }
 
-            canvas.translate(offsetX.toPx(), offsetY.toPx())
+            canvas.translate(offsetXPx, offsetYPx)
             canvas.drawOutline(shadowOutline, paint)
             canvas.restore()
         }
