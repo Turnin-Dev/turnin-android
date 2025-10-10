@@ -118,3 +118,36 @@ fun PeekrOutlinedButton(
         onClick = onClick,
     )
 }
+
+/**
+ * [CoreButton] 을 기반으로 한 OutlinedButton
+ *
+ * @param text 버튼 텍스트
+ * @param style [PeekrButtonStyle]
+ * @param modifier [Modifier]
+ * @param icon 버튼 아이콘
+ * @param enabled 버튼 활성화 여부
+ * @param loading 로딩 여부
+ * @param onClick 버튼 클릭 시
+ */
+@Composable
+fun PeekrNegativeButton(
+    text: String,
+    style: PeekrButtonStyle,
+    modifier: Modifier = Modifier,
+    icon: PeekrIconType? = null,
+    enabled: Boolean = true,
+    loading: Boolean = false,
+    onClick: () -> Unit,
+) {
+    CoreButton(
+        type = PeekrButtonType.Negative,
+        style = style,
+        text = text,
+        modifier = modifier,
+        icon = icon,
+        enabled = enabled,
+        loading = loading,
+        onClick = onClick,
+    )
+}

@@ -28,6 +28,13 @@ import com.peekr.core.designsystem.util.click.ThrottleClickEventProcessor
 import com.peekr.core.designsystem.util.click.getThrottle
 import com.peekr.core.designsystem.util.icon.PeekrIconType
 
+/** PeekrButton 타입 */
+internal enum class PeekrButtonType {
+    Solid,
+    Outlined,
+    Negative,
+}
+
 /**
  * Peekr Core Button
  *
@@ -94,12 +101,6 @@ internal fun CoreButton(
     }
 }
 
-/** PeekrButton 타입 */
-internal enum class PeekrButtonType {
-    Solid,
-    Outlined,
-}
-
 @Composable
 private fun PeekrButtonStyle.textStyle(): TextStyle = when (this) {
     PeekrButtonStyle.Large -> PeekrTheme.typography.body1.copy(fontWeight = FontWeight.SemiBold)
@@ -127,6 +128,15 @@ private fun PeekrButtonType.buttonColors(): ButtonColors = when (this) {
             disabledContentColor = PeekrTheme.colorScheme.interactionDisable,
         )
     }
+
+    PeekrButtonType.Negative -> {
+        ButtonDefaults.buttonColors(
+            containerColor = PeekrTheme.colorScheme.interactionDisable,
+            contentColor = PeekrTheme.colorScheme.staticWhite,
+            disabledContainerColor = PeekrTheme.colorScheme.interactionDisable,
+            disabledContentColor = PeekrTheme.colorScheme.staticWhite,
+        )
+    }
 }
 
 @Composable
@@ -140,4 +150,6 @@ private fun PeekrButtonType.borderStroke(enabled: Boolean): BorderStroke? = when
             PeekrTheme.colorScheme.interactionDisable
         },
     )
+
+    PeekrButtonType.Negative -> null
 }
