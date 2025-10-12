@@ -16,8 +16,6 @@ import androidx.compose.animation.slideOutVertically
 data class PeekrTransition(
     val fadeIn: EnterTransition = fadeIn(),
     val fadeOut: ExitTransition = fadeOut(),
-    val dialogEnter: EnterTransition = AnimationTokens.slideInVerticallyTween + AnimationTokens.fadeInTween,
-    val dialogExit: ExitTransition = AnimationTokens.slideOutVerticallyTween + AnimationTokens.fadeOutTween,
 ) {
     fun slideInTransition(direction: PeekrTransitionDirection): EnterTransition =
         when (direction) {
@@ -86,8 +84,6 @@ object PeekrTransitionObject {
     private val transition = PeekrTransition()
     val fadeIn = transition.fadeIn
     val fadeOut = transition.fadeOut
-    val dialogEnter = transition.dialogEnter
-    val dialogExit = transition.dialogExit
     val enterTransition: (PeekrTransitionDirection) -> EnterTransition = {
         transition.slideInTransition(it)
     }
