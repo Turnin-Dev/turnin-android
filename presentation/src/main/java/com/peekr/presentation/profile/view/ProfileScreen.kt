@@ -47,9 +47,12 @@ import com.peekr.presentation.profile.model.UiProfile
 
 /**
  * 프로필 화면
+ *
+ * @param modifier [Modifier]
+ * @param profile 사용자 프로필
  */
 @Composable
-fun ProfileScreen(
+internal fun ProfileScreen(
     modifier: Modifier = Modifier,
     profile: UiProfile?,
 ) {

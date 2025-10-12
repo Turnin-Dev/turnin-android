@@ -9,6 +9,7 @@
     <!-- Login Screen -->
     <string name="login_screen_btn_google">Google 로그인</string>
     <string name="login_screen_btn_kakao">카카오 로그인</string>
+
     <!-- Register Screen -->
     <string name="register_screen_display_id_title">아이디를 입력해주세요.</string>
     <string name="register_screen_display_id_sub_title">* 나의 고유한 아이디에요</string>
@@ -22,6 +23,7 @@
     <string name="register_screen_profile_placeholder">나를 1 ~ 2줄로 간단히 표현해주세요.</string>
     <string name="register_screen_btn_next">다음</string>
     <string name="register_screen_btn_start">시작하기</string>
+
     <!-- Register Screen (Error) -->
     <string name="register_screen_error_cant_use_display_id">이미 존재하는 ID입니다.</string>
     <string name="register_screen_error_cant_use_empty_or_blank">공백은 허용되지 않습니다.</string>
@@ -32,6 +34,19 @@
     <string name="profile_screen_friends_total">친구</string>
     <string name="profile_screen_avatar_content_desc">프로필 사진</string>
     <string name="profile_screen_fab_content_desc">키워드 추가</string>
+    <!-- Profile Screen (Modal) -->
+    <string name="profile_screen_add_keyword_modal_title">키워드 추가</string>
+    <string name="profile_screen_add_keyword_modal_input_keyword">키워드</string>
+    <string name="profile_screen_add_keyword_modal_input_keyword_ph">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
+    <string name="profile_screen_add_keyword_modal_input_keyword_desc">내용 (선택사항)</string>
+    <string name="profile_screen_add_keyword_modal_input_keyword_desc_ph">
+        키워드에 관한 내용을 자유롭게 입력해주세요
+    </string>
+    <string name="profile_screen_add_keyword_modal_btn_add">추가</string>
+    <string name="profile_screen_add_keyword_modal_btn_cancel">취소</string>
+    <!-- Profile Screen (Modal Content Desc) -->
+    <string name="profile_screen_add_keyword_modal_content_desc_more">취소</string>
+
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->

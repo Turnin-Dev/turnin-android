@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -116,7 +117,9 @@ fun PeekrModalWrapper(
                     exit = if (animated) PeekrTheme.transition.dialogExit else ExitTransition.None,
                 ) {
                     ModalContent(
-                        modifier = Modifier.padding(20.dp),
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .imePadding(),
                         content = content,
                     )
 
