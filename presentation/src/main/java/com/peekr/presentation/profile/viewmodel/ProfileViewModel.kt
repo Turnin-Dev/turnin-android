@@ -39,6 +39,22 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun handleEvent(event: ProfileContract.UiEvent) {
-        // handle event
+        when (event) {
+            is ProfileContract.UiEvent.OnKeywordTextChanged -> {
+                updateState {
+                    this.copy(
+                        keywordTextField = this.keywordTextField.copy(value = event.value),
+                    )
+                }
+            }
+
+            is ProfileContract.UiEvent.OnKeywordDescTextChanged -> {
+                updateState {
+                    this.copy(
+                        keywordDescTextField = this.keywordDescTextField.copy(value = event.value),
+                    )
+                }
+            }
+        }
     }
 }

@@ -9,4 +9,6 @@
     <string name="menu_btn_cancel">취소</string>
     <!-- Logo -->
     <string name="logo_content_desc">로고</string>
+    <!-- Bottom Modal Sheet Content -->
+    <string name="bottom_modal_sheet_content_cancel">취소</string>
 </resources>

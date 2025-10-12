@@ -44,9 +44,11 @@
     </string>
     <string name="profile_screen_add_keyword_modal_btn_add">추가</string>
     <string name="profile_screen_add_keyword_modal_btn_cancel">취소</string>
+    <string name="profile_screen_delete_keyword_modal_title">키워드를 삭제하실 건가요?</string>
+    <string name="profile_screen_delete_keyword_modal_btn_delete">삭제</string>
+    <string name="profile_screen_delete_keyword_modal_btn_cancel">취소</string>
     <!-- Profile Screen (Modal Content Desc) -->
     <string name="profile_screen_add_keyword_modal_content_desc_more">취소</string>
-
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->

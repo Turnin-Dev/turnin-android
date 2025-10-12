@@ -37,18 +37,15 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.Arrow1Down
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.presentation.R
+import com.peekr.presentation.profile.state.KeywordTextFieldState
 
 /**
  * 키워드 추가 모달
  *
  * @param modifier [Modifier]
  * @param isOpen 모달 표시 유무
- * @param keywordText 키워드 텍스트
- * @param isKeywordError 키워드 에러 발생 유무
- * @param keywordErrorMessage 키워드 에러 메시지
- * @param keywordDescText 키워드 내용 텍스트
- * @param isKeywordDescError 키워드 내용 에러 발생 유무
- * @param keywordDescErrorMessage 키워드 내용 에러 메시지
+ * @param keywordTextFieldState 키워드 텍스트 필드 상태
+ * @param keywordDescTextFieldState 키워드 내용 텍스트 필드 상태
  * @param onKeywordTextChanged 키워드 텍스트 변화 시 콜백
  * @param onKeywordDescTextChanged 키워드 내용 텍스트 변화 시 콜백
  * @param onAddClick 추가 클릭 시 수행할 작업
@@ -60,17 +57,12 @@ import com.peekr.presentation.R
 internal fun AddKeywordModal(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
-    keywordText: String,
-    isKeywordError: Boolean,
-    keywordErrorMessage: String?,
-    keywordDescText: String,
-    isKeywordDescError: Boolean,
-    keywordDescErrorMessage: String?,
+    keywordTextFieldState: KeywordTextFieldState,
+    keywordDescTextFieldState: KeywordTextFieldState,
     onKeywordTextChanged: (String) -> Unit,
     onKeywordDescTextChanged: (String) -> Unit,
     onAddClick: () -> Unit,
-    onCancelClick: () -> Unit,
-    onDismissRequest: () -> Unit,
+    onCancel: () -> Unit,
     onAnimationFinished: (() -> Unit)? = null,
 ) {
     val scrollState = rememberScrollState()
@@ -86,22 +78,20 @@ internal fun AddKeywordModal(
         PeekrModalWrapper(
             isOpen = isOpen,
             animated = true,
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = onCancel,
             onAnimationFinished = { onAnimationFinished?.invoke() },
         ) {
             Box {
                 ModalContent(
                     modifier = Modifier.verticalScroll(scrollState),
-                    keywordText = keywordText,
+                    keywordText = keywordTextFieldState.value,
                     onKeywordTextChanged = onKeywordTextChanged,
-                    isKeywordError = isKeywordError,
-                    keywordErrorMessage = keywordErrorMessage,
-                    keywordDescText = keywordDescText,
+                    keywordErrorMessage = keywordTextFieldState.error?.asString(),
+                    keywordDescText = keywordDescTextFieldState.value,
                     onKeywordDescTextChanged = onKeywordDescTextChanged,
-                    isKeywordDescError = isKeywordDescError,
-                    keywordDescErrorMessage = keywordDescErrorMessage,
+                    keywordDescErrorMessage = keywordDescTextFieldState.error?.asString(),
                     onAddClick = onAddClick,
-                    onCancelClick = onCancelClick,
+                    onCancelClick = onCancel,
                 )
 
                 if (isContentHidden) {
@@ -126,11 +116,9 @@ internal fun AddKeywordModal(
  * @param modifier [Modifier]
  * @param keywordText 키워드 텍스트
  * @param onKeywordTextChanged 키워드 텍스트 변화 시 콜백
- * @param isKeywordError 키워드 에러 발생 유무
  * @param keywordErrorMessage 키워드 에러 메시지
  * @param keywordDescText 키워드 내용 텍스트
  * @param onKeywordDescTextChanged 키워드 내용 텍스트 변화 시 콜백
- * @param isKeywordDescError 키워드 내용 에러 발생 유무
  * @param keywordDescErrorMessage 키워드 내용 에러 메시지
  * @param onAddClick 추가 클릭 시 수행할 작업
  * @param onCancelClick 취소 클릭 시 수행할 작업
@@ -140,11 +128,9 @@ private fun ModalContent(
     modifier: Modifier = Modifier,
     keywordText: String,
     onKeywordTextChanged: (String) -> Unit,
-    isKeywordError: Boolean,
     keywordErrorMessage: String?,
     keywordDescText: String,
     onKeywordDescTextChanged: (String) -> Unit,
-    isKeywordDescError: Boolean,
     keywordDescErrorMessage: String?,
     onAddClick: () -> Unit,
     onCancelClick: () -> Unit,
@@ -171,7 +157,7 @@ private fun ModalContent(
                 onTextChanged = onKeywordTextChanged,
                 placeholder = stringResource(R.string.profile_screen_add_keyword_modal_input_keyword_ph),
                 singleLine = true,
-                isError = isKeywordError,
+                isError = keywordErrorMessage != null,
                 errorMessage = keywordErrorMessage,
             )
             InputSection(
@@ -181,7 +167,7 @@ private fun ModalContent(
                 onTextChanged = onKeywordDescTextChanged,
                 placeholder = stringResource(R.string.profile_screen_add_keyword_modal_input_keyword_desc_ph),
                 singleLine = false,
-                isError = isKeywordDescError,
+                isError = keywordDescErrorMessage != null,
                 errorMessage = keywordDescErrorMessage,
             )
         }
@@ -350,18 +336,16 @@ private fun ButtonsPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun ModalContentPreview() {
-    val (text, onTextChanged) = remember { mutableStateOf("") }
-    val (text2, onText2Changed) = remember { mutableStateOf("") }
+    val text by remember { mutableStateOf(KeywordTextFieldState()) }
+    val text2 by remember { mutableStateOf(KeywordTextFieldState()) }
 
     PeekrAppTheme {
         ModalContent(
-            keywordText = text,
-            onKeywordTextChanged = onTextChanged,
-            isKeywordError = false,
+            keywordText = text.value,
+            onKeywordTextChanged = {},
             keywordErrorMessage = null,
-            keywordDescText = text2,
-            onKeywordDescTextChanged = onText2Changed,
-            isKeywordDescError = false,
+            keywordDescText = text2.value,
+            onKeywordDescTextChanged = {},
             keywordDescErrorMessage = null,
             onAddClick = {},
             onCancelClick = {},
@@ -373,11 +357,11 @@ private fun ModalContentPreview() {
 @Composable
 private fun AddKeywordModalPreview() {
     var isOpen by remember { mutableStateOf(false) }
-    val (text, onTextChanged) = remember { mutableStateOf("") }
-    val (text2, onText2Changed) = remember { mutableStateOf("") }
+    val text by remember { mutableStateOf(KeywordTextFieldState()) }
+    val text2 by remember { mutableStateOf(KeywordTextFieldState()) }
     val isTextError by remember(text) {
         derivedStateOf {
-            text.length > 5
+            text.value.length > 5
         }
     }
 
@@ -389,17 +373,12 @@ private fun AddKeywordModalPreview() {
 
             AddKeywordModal(
                 isOpen = isOpen,
-                keywordText = text,
-                onKeywordTextChanged = onTextChanged,
-                isKeywordError = isTextError,
-                keywordErrorMessage = if (isTextError) "error!" else null,
-                keywordDescText = text2,
-                onKeywordDescTextChanged = onText2Changed,
-                isKeywordDescError = false,
-                keywordDescErrorMessage = null,
+                keywordTextFieldState = text,
+                keywordDescTextFieldState = text2,
+                onKeywordTextChanged = {},
+                onKeywordDescTextChanged = {},
                 onAddClick = {},
-                onCancelClick = {},
-                onDismissRequest = { isOpen = false },
+                onCancel = { isOpen = false },
             )
         }
     }

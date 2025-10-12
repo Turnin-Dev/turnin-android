@@ -55,6 +55,7 @@ import com.peekr.presentation.profile.model.UiProfile
 internal fun ProfileScreen(
     modifier: Modifier = Modifier,
     profile: UiProfile?,
+    onOpenAddKeywordModal: () -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -102,7 +103,7 @@ internal fun ProfileScreen(
                     .padding(20.dp)
                     .size(FabSize),
                 contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
-                onClick = {},
+                onClick = onOpenAddKeywordModal,
             )
         }
     }
@@ -397,6 +398,7 @@ private fun ProfileScreenPreview() {
                     "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
                 keywords = UiUserKeyword.samples,
             ),
+            onOpenAddKeywordModal = {},
         )
     }
 }
@@ -408,6 +410,7 @@ private fun ProfileScreenShimmerPreview() {
         ProfileScreen(
             modifier = Modifier.fillMaxSize(),
             profile = null,
+            onOpenAddKeywordModal = {},
         )
     }
 }
