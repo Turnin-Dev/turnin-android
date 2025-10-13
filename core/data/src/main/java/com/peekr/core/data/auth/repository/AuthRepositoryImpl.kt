@@ -1,7 +1,6 @@
 package com.peekr.core.data.auth.repository
 
 import com.peekr.core.common.IO
-import com.peekr.core.data.AppConfig
 import com.peekr.core.data.auth.network.AuthDataSource
 import com.peekr.core.data.auth.network.request.toDataModel
 import com.peekr.core.data.auth.network.response.ExistsResponse
@@ -11,9 +10,10 @@ import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
-import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.model.Register
+import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.coroutine.safeResultFlow
 import com.peekr.core.domain.model.DisplayId
@@ -29,11 +29,15 @@ class AuthRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
-    override fun login(login: Login): Flow<Result<JWTToken, ErrorType>> =
+    override fun login(login: Login): Flow<Result<LoginResult, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
             when (val result = authDataSource.login(login.toDataModel())) {
                 is NetworkResult.Success -> {
+                    dataStoreManager.saveLongData(
+                        key = DataStoreKey.User.UserId,
+                        value = result.data.userId,
+                    )
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -55,11 +59,15 @@ class AuthRepositoryImpl @Inject constructor(
             emit(mapExistsResult(authDataSource.existsDisplayId(displayId)))
         }
 
-    override fun register(register: Register): Flow<Result<JWTToken, ErrorType>> =
+    override fun register(register: Register): Flow<Result<RegisterResult, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
             when (val result = authDataSource.register(register.toDataModel())) {
                 is NetworkResult.Success -> {
+                    dataStoreManager.saveLongData(
+                        key = DataStoreKey.User.UserId,
+                        value = result.data.userId,
+                    )
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -88,10 +96,4 @@ class AuthRepositoryImpl @Inject constructor(
             is NetworkResult.Success -> Result.Success(result.data.exists)
             is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
         }
-
-    private fun createImageUrl(fileName: String): String = buildString {
-        append(AppConfig.cloudStorageServerUrl.trimEnd('/'))
-        append('/')
-        append(fileName.trimStart('/'))
-    }
 }

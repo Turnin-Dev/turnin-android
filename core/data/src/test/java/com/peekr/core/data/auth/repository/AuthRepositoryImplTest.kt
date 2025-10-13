@@ -4,12 +4,12 @@ import com.peekr.core.data.auth.network.AuthDataSource
 import com.peekr.core.data.auth.network.response.ExistsResponse
 import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
+import com.peekr.core.data.auth.network.response.toDomainModel
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
-import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.repository.AuthRepository
@@ -17,6 +17,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -48,7 +49,7 @@ class AuthRepositoryImplTest {
 
             // then
             assertTrue(result is Result.Success)
-            assertEquals((result as Result.Success).data, mockJWTToken)
+            assertEquals(mockLoginResponse.toDomainModel(), (result as Result.Success).data)
         }
 
     @Test
@@ -170,7 +171,7 @@ class AuthRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
-        assertEquals(mockJWTToken, (result as Result.Success).data)
+        assertEquals(mockRegisterResponse.toDomainModel(), (result as Result.Success).data)
     }
 
     @Test
@@ -191,16 +192,18 @@ class AuthRepositoryImplTest {
 
     companion object {
         private val mockProviderId = ProviderId("123")
+        private val mockUserId = UserId(1L)
         private val mockLogin = Login(SocialLoginProvider.GOOGLE, mockProviderId)
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
-        private val mockLoginResponse = LoginResponse(mockAccessToken, mockRefreshToken)
-        private val mockJWTToken = JWTToken(mockAccessToken, mockRefreshToken)
+        private val mockLoginResponse =
+            LoginResponse(mockUserId.value, mockAccessToken, mockRefreshToken)
         private val mockErrorMessage = "error world!"
         private val mockExistsResponse = ExistsResponse(true)
         private val mockExistsUser = ExistsUser(SocialLoginProvider.GOOGLE, mockProviderId)
         private val mockDisplayId = DisplayId("123")
-        private val mockRegisterResponse = RegisterResponse(mockAccessToken, mockRefreshToken)
+        private val mockRegisterResponse =
+            RegisterResponse(mockUserId.value, mockAccessToken, mockRefreshToken)
         private val mockRegister = Register(
             provider = SocialLoginProvider.GOOGLE,
             providerId = ProviderId("123"),

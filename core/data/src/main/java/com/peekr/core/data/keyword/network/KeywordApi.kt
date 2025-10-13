@@ -29,5 +29,3 @@ interface KeywordApi {
         @Body createKeywordRequest: CreateKeywordRequest,
     ): Response<KeywordResponse>
 }
-
-// TODO: 수정된 엔드포인트와 추가된 엔드포인트에 맞게 수정 필요!

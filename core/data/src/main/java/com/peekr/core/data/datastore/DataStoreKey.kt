@@ -18,4 +18,14 @@ sealed class DataStoreKey(val name: String) {
          */
         object RefreshToken : DataStoreKey("refresh_token")
     }
+
+    /** 사용자 관련 키 값 집합 */
+    object User {
+        /**
+         * `Key`: 사용자 ID
+         *
+         * `Value`: Long 타입의 값
+         */
+        object UserId : DataStoreKey("user_id")
+    }
 }

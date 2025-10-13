@@ -11,6 +11,7 @@ import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.model.UserId
 import com.squareup.moshi.JsonDataException
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -43,7 +44,7 @@ class AuthNetworkDataSourceImplTest {
         testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(200)
-                setBody(MOCK_JWT_TOKEN_BODY)
+                setBody(mockLoginResponseJson)
             },
         )
 
@@ -227,17 +228,12 @@ class AuthNetworkDataSourceImplTest {
     }
 
     companion object {
+        private val mockUserId = UserId(1L)
         private val mockLoginRequest = LoginRequest(SocialLoginProvider.GOOGLE, "123")
         private const val MOCK_ACCESS_TOKEN = "aaa.bbb.ccc"
         private const val MOCK_REFRESH_TOKEN = "rrr.bbb.ccc"
-        private val MOCK_JWT_TOKEN_BODY =
-            """
-            {
-                "accessToken": "$MOCK_ACCESS_TOKEN",
-                "refreshToken": "$MOCK_REFRESH_TOKEN"
-            }
-            """.trimIndent()
-        private val mockLoginResponse = LoginResponse(MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN)
+        private val mockLoginResponse =
+            LoginResponse(mockUserId.value, MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN)
         private val mockExistsUserRequest = ExistsUserRequest(SocialLoginProvider.GOOGLE, "123")
         private val mockExistsResponseJson =
             """
@@ -264,12 +260,22 @@ class AuthNetworkDataSourceImplTest {
         )
         private val mockRegisterRequest =
             RegisterRequest(SocialLoginProvider.GOOGLE, "asd", "asd", "asd", null, null)
-        private val mockRegisterResponse = RegisterResponse("aaa.bbb.ccc", "aaa.bbb.ccc")
+        private val mockRegisterResponse =
+            RegisterResponse(mockUserId.value, MOCK_ACCESS_TOKEN, MOCK_REFRESH_TOKEN)
+        private val mockLoginResponseJson =
+            """
+            {
+              "userId": ${mockUserId.value},
+              "accessToken": "$MOCK_ACCESS_TOKEN",
+              "refreshToken": "$MOCK_REFRESH_TOKEN"
+            }
+            """.trimIndent()
         private val mockRegisterResponseJson =
             """
             {
-              "accessToken": "aaa.bbb.ccc",
-              "refreshToken": "aaa.bbb.ccc"
+              "userId": ${mockUserId.value},
+              "accessToken": "$MOCK_ACCESS_TOKEN",
+              "refreshToken": "$MOCK_REFRESH_TOKEN"
             }
             """.trimIndent()
     }
