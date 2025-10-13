@@ -1,8 +1,8 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
-import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.coroutine.mapSuccess
 import com.peekr.core.domain.util.ErrorType
@@ -26,7 +26,7 @@ class LoginIntegrationUseCase @Inject constructor(
 ) {
     operator fun invoke(login: Login): Flow<Result<Boolean, ErrorType>> =
         loginUseCase(login)
-            .flatMapResult { result: JWTToken -> saveRefreshTokenUseCase(result.refreshToken) }
+            .flatMapResult { result: LoginResult -> saveRefreshTokenUseCase(result.refreshToken) }
             .mapSuccess { true }
             .onStart { emit(Result.Loading) }
             .catch { e -> emit(Result.Error(ErrorType.Auth.LoginFailed)) }

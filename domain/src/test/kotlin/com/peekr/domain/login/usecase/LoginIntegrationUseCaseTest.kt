@@ -3,8 +3,10 @@ package com.peekr.domain.login.usecase
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.every
@@ -37,7 +39,7 @@ class LoginIntegrationUseCaseTest {
     @Test
     fun `로그인, 토큰 저장 UseCase가 전부 정상적으로 동작 시 true를 반환한다`() = runTest {
         // given
-        every { loginUseCase(any()) } returns flowOf(Result.Success(MockJwtToken))
+        every { loginUseCase(any()) } returns flowOf(Result.Success(MockLoginResult))
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
 
         // when
@@ -88,7 +90,7 @@ class LoginIntegrationUseCaseTest {
     fun `토큰 저장 UseCase에서 에러 발생 시 해당 에러를 반환한다`() = runTest {
         // given
         val expectedError = ErrorType.Auth.SaveTokenFailed
-        every { loginUseCase(any()) } returns flowOf(Result.Success(MockJwtToken))
+        every { loginUseCase(any()) } returns flowOf(Result.Success(MockLoginResult))
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
@@ -125,7 +127,7 @@ class LoginIntegrationUseCaseTest {
         every { loginUseCase(any()) } returns flow {
             emit(Result.Loading)
             delay(10)
-            emit(Result.Success(MockJwtToken))
+            emit(Result.Success(MockLoginResult))
         }
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
 
@@ -140,6 +142,9 @@ class LoginIntegrationUseCaseTest {
 
     companion object {
         internal val MockLogin = Login(SocialLoginProvider.GOOGLE, ProviderId("123"))
+        private val MockUserId = UserId(1L)
         private val MockJwtToken = JWTToken("aaa.bbb.ccc", "rrr.bbb.ccc")
+        private val MockLoginResult =
+            LoginResult(MockUserId, MockJwtToken.accessToken, MockJwtToken.refreshToken)
     }
 }

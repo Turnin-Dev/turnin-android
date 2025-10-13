@@ -2,6 +2,7 @@ package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
@@ -22,6 +23,6 @@ class LoginUseCase @Inject constructor(
     private val authRepository: AuthRepository,
 ) {
     /** @param login 플랫폼·사용자 식별 정보를 담은 객체 */
-    operator fun invoke(login: Login): Flow<Result<JWTToken, ErrorType>> =
+    operator fun invoke(login: Login): Flow<Result<LoginResult, ErrorType>> =
         authRepository.login(login)
 }

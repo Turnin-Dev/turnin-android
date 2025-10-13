@@ -2,6 +2,7 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Register
+import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.model.DisplayId
@@ -31,7 +32,7 @@ internal class RegisterUseCase @Inject internal constructor(
         name: Name,
         imageFileDetail: ImageFileDetail?,
         introduce: Introduce?,
-    ): Flow<Result<JWTToken, ErrorType>> = if (imageFileDetail != null) {
+    ): Flow<Result<RegisterResult, ErrorType>> = if (imageFileDetail != null) {
         getFileUrlUseCase(imageFileDetail.bytes, imageFileDetail.name, imageFileDetail.mime)
             .flatMapResult { profileImageUrl ->
                 val register = Register(
