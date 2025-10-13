@@ -8,11 +8,18 @@ import com.peekr.core.domain.model.KeywordId
 /** Keyword 네트워크 데이터 소스 */
 interface KeywordDataSource {
     /**
-     * 키워드 조회
+     * 키워드 ID로 키워드 조회
      *
      * @param keywordId 키워드 ID
      */
-    suspend fun getKeyword(keywordId: KeywordId): NetworkResult<KeywordResponse>
+    suspend fun getKeywordById(keywordId: KeywordId): NetworkResult<KeywordResponse>
+
+    /**
+     * 키워드 명으로 키워드 조회
+     *
+     * @param keywordName 키워드 명
+     */
+    suspend fun getKeywordByName(keywordName: String): NetworkResult<KeywordResponse>
 
     /**
      * 키워드 생성

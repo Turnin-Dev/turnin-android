@@ -31,11 +31,11 @@ class KeywordRepositoryImplTest {
     fun `키워드 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getKeyword(TestKeywordId)
+            dataSource.getKeywordById(TestKeywordId)
         } returns NetworkResult.Success(TestKeywordResponse)
 
         // when
-        val result = repository.getKeyword(TestKeywordId).last()
+        val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -47,11 +47,11 @@ class KeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.Forbidden
         coEvery {
-            dataSource.getKeyword(TestKeywordId)
+            dataSource.getKeywordById(TestKeywordId)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getKeyword(TestKeywordId).last()
+        val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -63,11 +63,11 @@ class KeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.getKeyword(TestKeywordId)
+            dataSource.getKeywordById(TestKeywordId)
         } throws exception
 
         // when
-        val result = repository.getKeyword(TestKeywordId).last()
+        val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
         assertTrue(result is Result.Error)

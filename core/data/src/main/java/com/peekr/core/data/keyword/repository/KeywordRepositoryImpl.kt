@@ -4,6 +4,7 @@ import com.peekr.core.common.IO
 import com.peekr.core.data.keyword.network.KeywordDataSource
 import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
 import com.peekr.core.data.keyword.network.response.toDomainModel
+import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.coroutine.safeResultFlow
@@ -20,17 +21,40 @@ class KeywordRepositoryImpl @Inject constructor(
     private val keywordDataSource: KeywordDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : KeywordRepository {
-    override fun getKeyword(keywordId: KeywordId): Flow<Result<Keyword, ErrorType>> =
+    override fun getKeywordById(keywordId: KeywordId): Flow<Result<Keyword?, ErrorType>> =
         safeResultFlow(ioDispatcher) {
             emit(Result.Loading)
 
-            when (val result = keywordDataSource.getKeyword(keywordId)) {
+            when (val result = keywordDataSource.getKeywordById(keywordId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    if (result.error == NetworkErrorType.Network.NotFound) {
+                        emit(Result.Success(null))
+                    } else {
+                        emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    }
+                }
+            }
+        }
+
+    override fun getKeywordByName(keywordName: String): Flow<Result<Keyword?, ErrorType>> =
+        safeResultFlow(ioDispatcher) {
+            emit(Result.Loading)
+
+            when (val result = keywordDataSource.getKeywordByName(keywordName)) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    if (result.error == NetworkErrorType.Network.NotFound) {
+                        emit(Result.Success(null))
+                    } else {
+                        emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    }
                 }
             }
         }

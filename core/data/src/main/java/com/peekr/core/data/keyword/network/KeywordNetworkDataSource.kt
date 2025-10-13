@@ -10,8 +10,11 @@ import javax.inject.Inject
 class KeywordNetworkDataSource @Inject constructor(
     private val keywordApi: KeywordApi,
 ) : KeywordDataSource {
-    override suspend fun getKeyword(keywordId: KeywordId): NetworkResult<KeywordResponse> =
-        networkCall { keywordApi.getKeyword(keywordId.value) }
+    override suspend fun getKeywordById(keywordId: KeywordId): NetworkResult<KeywordResponse> =
+        networkCall { keywordApi.getKeywordById(keywordId.value) }
+
+    override suspend fun getKeywordByName(keywordName: String): NetworkResult<KeywordResponse> =
+        networkCall { keywordApi.getKeywordByName(keywordName) }
 
     override suspend fun createKeyword(
         createKeywordRequest: CreateKeywordRequest,

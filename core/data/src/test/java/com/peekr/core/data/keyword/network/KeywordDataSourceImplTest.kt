@@ -20,14 +20,14 @@ class KeywordDataSourceImplTest {
     @get:Rule
     val testRule = ServerTestRule()
 
-    private val keywordApi: KeywordApi
+    private val keywordByIdApi: KeywordApi
         get() = testRule.createNetworkApi<KeywordApi>(testRule.moshi)
 
     private lateinit var dataSource: KeywordDataSource
 
     @Before
     fun setUp() {
-        dataSource = KeywordNetworkDataSource(keywordApi)
+        dataSource = KeywordNetworkDataSource(keywordByIdApi)
     }
 
     @Test
@@ -41,7 +41,7 @@ class KeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getKeyword(TestKeywordId)
+        val response = dataSource.getKeywordById(TestKeywordId)
         val expectedKeywordResponse =
             testRule.decodeFromJson<KeywordResponse>(TestKeywordResponse)
 
@@ -64,7 +64,7 @@ class KeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getKeyword(TestKeywordId)
+        val response = dataSource.getKeywordById(TestKeywordId)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -77,10 +77,10 @@ class KeywordDataSourceImplTest {
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
         dataSource = KeywordNetworkDataSource(mockApi)
-        coEvery { mockApi.getKeyword(any()) } throws exception
+        coEvery { mockApi.getKeywordById(any()) } throws exception
 
         // when
-        val response = dataSource.getKeyword(TestKeywordId)
+        val response = dataSource.getKeywordById(TestKeywordId)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -98,7 +98,7 @@ class KeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getKeyword(TestKeywordId)
+        val response = dataSource.getKeywordById(TestKeywordId)
 
         // then
         assertTrue(response is NetworkResult.Error)
