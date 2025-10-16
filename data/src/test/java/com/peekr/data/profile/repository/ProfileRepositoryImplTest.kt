@@ -1,5 +1,6 @@
 package com.peekr.data.profile.repository
 
+import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.KeywordId
@@ -13,6 +14,7 @@ import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
@@ -33,7 +35,9 @@ import org.junit.Test
 class ProfileRepositoryImplTest {
     private val userRepository: UserRepository = mockk()
     private val userKeywordRepository: UserKeywordRepository = mockk()
-    private val repository = ProfileRepositoryImpl(userRepository, userKeywordRepository)
+    private val dataStoreManager: DataStoreManager = mockk()
+    private val repository =
+        ProfileRepositoryImpl(userRepository, userKeywordRepository, dataStoreManager)
 
     @Test
     fun `사용자 프로필 조회 - 성공 테스트`() = runTest {
@@ -143,8 +147,85 @@ class ProfileRepositoryImplTest {
         assertEquals(expectedError, (result as Result.Error).error)
     }
 
+    @Test
+    fun `사용자 프로필 키워드 추가 - 성공 테스트`() = runTest {
+        // given
+        every { dataStoreManager.getLongData(any()) } returns flowOf(TestUserId.value)
+        every {
+            userKeywordRepository.createUserKeyword(any())
+        } returns flowOf(Result.Success(TestUserKeyword))
+
+        // when
+        val addedUserKeyword = repository
+            .addKeyword(
+                TestCreateUserKeyword.keywordName,
+                TestCreateUserKeyword.offsetX,
+                TestCreateUserKeyword.offsetY,
+                TestCreateUserKeyword.description,
+            ).last()
+
+        // then
+        assertTrue(addedUserKeyword is Result.Success)
+        assertEquals(
+            TestUserKeyword,
+            (addedUserKeyword as Result.Success).data,
+        )
+    }
+
+    @Test
+    fun `사용자 프로필 키워드 추가 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedErrorType = ErrorType.Exception.IO
+        every { dataStoreManager.getLongData(any()) } returns flowOf(TestUserId.value)
+        every {
+            userKeywordRepository.createUserKeyword(any())
+        } returns flowOf(Result.Error(expectedErrorType))
+
+        // when
+        val addedUserKeyword = repository
+            .addKeyword(
+                TestCreateUserKeyword.keywordName,
+                TestCreateUserKeyword.offsetX,
+                TestCreateUserKeyword.offsetY,
+                TestCreateUserKeyword.description,
+            ).last()
+
+        // then
+        assertTrue(addedUserKeyword is Result.Error)
+        assertEquals(
+            expectedErrorType,
+            (addedUserKeyword as Result.Error).error,
+        )
+    }
+
+    @Test
+    fun `사용자 프로필 키워드 추가 - 사용자 ID가 존재하지 않는 경우 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        every { dataStoreManager.getLongData(any()) } returns flowOf(null)
+        every {
+            userKeywordRepository.createUserKeyword(any())
+        } returns flowOf(Result.Success(TestUserKeyword))
+
+        // when
+        val addedUserKeyword = repository
+            .addKeyword(
+                TestCreateUserKeyword.keywordName,
+                TestCreateUserKeyword.offsetX,
+                TestCreateUserKeyword.offsetY,
+                TestCreateUserKeyword.description,
+            ).last()
+
+        // then
+        assertTrue(addedUserKeyword is Result.Error)
+        assertEquals(
+            ErrorType.Unexpected(null),
+            (addedUserKeyword as Result.Error).error,
+        )
+    }
+
     companion object {
         private val TestUserId = UserId(1L)
+        private const val TEST_KEYWORD_NAME = "sampleKeyword"
         private val TestUserProfile = UserProfile(
             user = User(
                 id = TestUserId,
@@ -160,20 +241,19 @@ class ProfileRepositoryImplTest {
             ),
             friendsCount = 40,
         )
+        private val TestUserKeyword = UserKeyword(
+            id = UserKeywordId(1L),
+            keywordId = KeywordId(1L),
+            keywordName = TEST_KEYWORD_NAME,
+            userId = TestUserId,
+            offsetX = 50.0,
+            offsetY = 50.0,
+            description = "my keyword",
+            createdAt = 1000L,
+            updatedAt = 1000L,
+        )
         private val TestUserKeywords = UserKeywords(
-            keywords = listOf(
-                UserKeyword(
-                    id = UserKeywordId(1L),
-                    keywordId = KeywordId(1L),
-                    keywordName = "sample",
-                    userId = TestUserId,
-                    offsetX = 50.0,
-                    offsetY = 50.0,
-                    description = "my keyword",
-                    createdAt = 1000L,
-                    updatedAt = 1000L,
-                ),
-            ),
+            keywords = listOf(TestUserKeyword),
         )
         private val TestUserPatch = UserPatch(
             displayId = DisplayId("id"),
@@ -186,6 +266,13 @@ class ProfileRepositoryImplTest {
             name = Name("name"),
             profileImageUrl = null,
             introduce = Introduce("hello"),
+        )
+        private val TestCreateUserKeyword = CreateUserKeyword(
+            userId = TestUserId,
+            keywordName = TEST_KEYWORD_NAME,
+            offsetX = 0.0,
+            offsetY = 0.0,
+            description = null,
         )
     }
 }

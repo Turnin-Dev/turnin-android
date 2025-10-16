@@ -332,6 +332,7 @@ class UserKeywordDataSourceImplTest {
         private val TestUserId = UserId(1L)
         private val TestUserKeywordId = UserKeywordId(1L)
         private val TestKeywordId = KeywordId(1L)
+        private const val TEST_KEYWORD_NAME = "sampleKeyword"
         private val TestInvalidJson =
             """
             {
@@ -341,7 +342,7 @@ class UserKeywordDataSourceImplTest {
         private val TestUserKeywordResponse = UserKeywordResponse(
             id = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
-            keywordName = "sample",
+            keywordName = TEST_KEYWORD_NAME,
             userId = TestUserId.value,
             offsetX = 0.0,
             offsetY = 0.0,
@@ -354,7 +355,7 @@ class UserKeywordDataSourceImplTest {
         )
         private val TestCreateUserKeywordRequest = CreateUserKeywordRequest(
             userId = TestUserId.value,
-            keywordId = TestKeywordId.value,
+            keywordName = TEST_KEYWORD_NAME,
             offsetX = 0.0,
             offsetY = 0.0,
             description = "sample",

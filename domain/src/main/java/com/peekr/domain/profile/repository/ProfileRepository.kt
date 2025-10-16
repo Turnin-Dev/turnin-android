@@ -1,8 +1,8 @@
 package com.peekr.domain.profile.repository
 
+import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
-import com.peekr.domain.profile.model.AddKeywordResult
 import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.model.ProfilePatch
 import kotlinx.coroutines.flow.Flow
@@ -26,9 +26,18 @@ interface ProfileRepository {
      * 새롭게 키워드 등록 후 사용자 키워드를 저장한다.
      *
      * 이미 존재하면 조회된 키워드로 사용자 키워드를 저장한다.
+     *
+     * @param keywordName 키워드 명
+     * @param offsetX 키워드 오프셋 X
+     * @param offsetY 키워드 오프셋 Y
+     * @param keywordDesc 키워드 내용
+     *
+     * @return [UserKeyword]
      */
     fun addKeyword(
         keywordName: String,
+        offsetX: Double,
+        offsetY: Double,
         keywordDesc: String?,
-    ): Flow<Result<AddKeywordResult, ErrorType>>
+    ): Flow<Result<UserKeyword, ErrorType>>
 }

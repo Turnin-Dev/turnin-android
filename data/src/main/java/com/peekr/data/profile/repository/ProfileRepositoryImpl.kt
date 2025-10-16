@@ -1,24 +1,28 @@
 package com.peekr.data.profile.repository
 
+import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.domain.coroutine.combineWithResult
-import com.peekr.core.domain.keyword.repository.KeywordRepository
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
+import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
-import com.peekr.domain.profile.model.AddKeywordResult
 import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.model.ProfilePatch
 import com.peekr.domain.profile.model.toUserPatch
 import com.peekr.domain.profile.repository.ProfileRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 
 class ProfileRepositoryImpl @Inject constructor(
     private val userRepository: UserRepository,
     private val userKeywordRepository: UserKeywordRepository,
-    private val keywordRepository: KeywordRepository,
     private val dataStoreManager: DataStoreManager,
 ) : ProfileRepository {
     override fun getProfile(): Flow<Result<Profile, ErrorType>> =
@@ -42,18 +46,22 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override fun addKeyword(
         keywordName: String,
+        offsetX: Double,
+        offsetY: Double,
         keywordDesc: String?,
-    ): Flow<Result<AddKeywordResult, ErrorType>> = TODO()
-//        keywordRepository.getKeywordByName(keywordName).flatMapResult { keyword ->
-//            if (keyword == null) {
-//                // 새롭게 키워드 등록 후 사용자 키워드 저장
-//            } else {
-//                // 조회된 키워드로 사용자 키워드 저장
-//                val userId = dataStoreManager.
-//                val createUserKeyword = CreateUserKeyword(
-//
-//                )
-//                userKeywordRepository.createUserKeyword()
-//            }
-//        }
+    ): Flow<Result<UserKeyword, ErrorType>> = flow {
+        val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
+        if (userId != null) {
+            val createUserKeyword = CreateUserKeyword(
+                userId = UserId(userId),
+                keywordName = keywordName,
+                offsetX = offsetX,
+                offsetY = offsetY,
+                description = keywordDesc,
+            )
+            emitAll(userKeywordRepository.createUserKeyword(createUserKeyword))
+        } else {
+            emit(Result.Error(error = ErrorType.Unexpected(null)))
+        }
+    }
 }
