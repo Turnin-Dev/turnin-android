@@ -34,10 +34,9 @@ import com.peekr.presentation.R
  *
  * @param modifier [Modifier]
  * @param isOpen 모달 활성화 여부
- * @param onDismissRequest 모달이 사라질 때 수행할 작업
  * @param onAnimationFinished 모달 사라지는 애니메이션이 끝나고 나서 수행할 작업
  * @param onDeleteClick 경고 모달에서 삭제 클릭 시 수행할 작업
- * @param onCancelClick 경고 모달에서 취소 클릭 시 수행할 작업
+ * @param onCancel 경고 모달에서 취소 클릭 시 수행할 작업
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +69,12 @@ fun CancelWarningModal(
     }
 }
 
+/**
+ * 모달 타이틀
+ *
+ * @param modifier [Modifier]
+ * @param text 타이틀
+ */
 @Composable
 private fun Title(
     modifier: Modifier = Modifier,
@@ -89,7 +94,7 @@ private fun Title(
  * 하단 버튼 영역
  *
  * @param modifier [Modifier]
- * @param onDeleteClick `추가` 클릭 시 수행할 작업
+ * @param onDeleteClick `삭제` 클릭 시 수행할 작업
  * @param onCancelClick `취소` 클릭 시 수행할 작업
  */
 @Composable

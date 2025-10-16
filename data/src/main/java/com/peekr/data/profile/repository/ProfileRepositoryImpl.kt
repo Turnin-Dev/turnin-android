@@ -50,6 +50,7 @@ class ProfileRepositoryImpl @Inject constructor(
         offsetY: Double,
         keywordDesc: String?,
     ): Flow<Result<UserKeyword, ErrorType>> = flow {
+        emit(Result.Loading)
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
         if (userId != null) {
             val createUserKeyword = CreateUserKeyword(

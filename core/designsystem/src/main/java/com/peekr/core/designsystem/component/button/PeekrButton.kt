@@ -120,7 +120,7 @@ fun PeekrOutlinedButton(
 }
 
 /**
- * [CoreButton] 을 기반으로 한 OutlinedButton
+ * [CoreButton] 을 기반으로 한 NegativeButton
  *
  * @param text 버튼 텍스트
  * @param style [PeekrButtonStyle]

@@ -86,7 +86,7 @@ private fun CoreTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
     val colorScheme = PeekrTheme.colorScheme
-    val color = remember(isError, text.isEmpty(), focused) {
+    val color = remember(isError, text.isEmpty(), focused, colorScheme) {
         when {
             isError -> colorScheme.statusNegative
             text.isEmpty() && !focused -> colorScheme.textPlaceholder

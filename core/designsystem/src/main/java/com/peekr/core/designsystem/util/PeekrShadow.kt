@@ -24,7 +24,7 @@ sealed class PeekrShadowType {
         val darkColor: Color = Color.White,
         val spread: Dp = 0.dp,
         val offset: DpOffset = DpOffset(0.dp, 0.dp),
-        @FloatRange val alpha: Float = 1f,
+        @FloatRange(from = 0.0, to = 1.0) val alpha: Float = 1f,
     ) : PeekrShadowType()
 }
 

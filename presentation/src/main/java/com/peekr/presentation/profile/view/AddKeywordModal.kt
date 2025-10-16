@@ -49,8 +49,7 @@ import com.peekr.presentation.profile.state.KeywordTextFieldState
  * @param onKeywordTextChanged 키워드 텍스트 변화 시 콜백
  * @param onKeywordDescTextChanged 키워드 내용 텍스트 변화 시 콜백
  * @param onAddClick 추가 클릭 시 수행할 작업
- * @param onCancelClick 취소 클릭 시 수행할 작업
- * @param onDismissRequest 모달이 사라질 때 수행할 작업
+ * @param onCancel 취소 클릭 시 수행할 작업
  * @param onAnimationFinished 모달이 사라지고 애니메이션까지 끝나고 나서 수행할 작업
  */
 @Composable
@@ -239,7 +238,7 @@ private fun InputSection(
             modifier = Modifier.fillMaxWidth(),
             text = text,
             onTextChanged = onTextChanged,
-            placeholder = stringResource(R.string.profile_screen_add_keyword_modal_input_keyword_ph),
+            placeholder = placeholder,
             singleLine = singleLine,
             isError = isError,
             supportingText = {

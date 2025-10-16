@@ -19,15 +19,15 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 
-typealias Text = String
-typealias TextColor = Color
-typealias OnTextClick = () -> Unit
+typealias ModalText = String
+typealias ModalTextColor = Color
+typealias OnModalTextClick = () -> Unit
 
 /**
  * [PeekrModalBottomSheetContent]에서 사용하는 토큰으로 순서대로
  * (텍스트, 컬러, 항목 클릭 시 콜백)이다.
  */
-typealias ModalContentToken = Triple<Text, TextColor, OnTextClick>
+typealias ModalContentToken = Triple<ModalText, ModalTextColor, OnModalTextClick>
 
 /**
  * [PeekrModalBottomSheet] 내부에서 사용하는 컨텐츠
