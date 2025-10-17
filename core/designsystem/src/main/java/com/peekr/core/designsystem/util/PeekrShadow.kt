@@ -18,7 +18,6 @@ sealed class PeekrShadowType {
     data object Normal : PeekrShadowType()
 
     data class Custom(
-        val shape: Shape = RectangleShape,
         val blur: Dp = 0.dp,
         val lightColor: Color = Color.Black,
         val darkColor: Color = Color.White,
