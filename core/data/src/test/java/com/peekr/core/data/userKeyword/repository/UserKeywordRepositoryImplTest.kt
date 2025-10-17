@@ -281,10 +281,11 @@ class UserKeywordRepositoryImplTest {
         private val TestUserId = UserId(1L)
         private val TestUserKeywordId = UserKeywordId(1L)
         private val TestKeywordId = KeywordId(1L)
+        private const val TEST_KEYWORD_NAME = "sampleKeyword"
         private val TestUserKeywordResponse = UserKeywordResponse(
             id = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
-            keywordName = "sample",
+            keywordName = TEST_KEYWORD_NAME,
             userId = TestUserId.value,
             offsetX = 0.0,
             offsetY = 0.0,
@@ -297,14 +298,14 @@ class UserKeywordRepositoryImplTest {
         )
         private val TestCreateUserKeywordRequest = CreateUserKeywordRequest(
             userId = TestUserId.value,
-            keywordId = TestKeywordId.value,
+            keywordName = TEST_KEYWORD_NAME,
             offsetX = 0.0,
             offsetY = 0.0,
             description = "sample",
         )
         private val TestCreateUserKeyword = CreateUserKeyword(
             userId = TestUserId,
-            keywordId = TestKeywordId,
+            keywordName = TEST_KEYWORD_NAME,
             offsetX = 0.0,
             offsetY = 0.0,
             description = "sample",

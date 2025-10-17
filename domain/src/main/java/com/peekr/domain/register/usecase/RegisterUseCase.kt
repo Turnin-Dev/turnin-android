@@ -1,7 +1,7 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Register
+import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.model.DisplayId
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * 회원가입 기능을 수행한다.
  *
- * 회원가입에 성공하면 [JWTToken]을 반환한다.
+ * 회원가입에 성공하면 [RegisterResult]을 반환한다.
  */
 internal class RegisterUseCase @Inject internal constructor(
     private val authRepository: AuthRepository,
@@ -31,7 +31,7 @@ internal class RegisterUseCase @Inject internal constructor(
         name: Name,
         imageFileDetail: ImageFileDetail?,
         introduce: Introduce?,
-    ): Flow<Result<JWTToken, ErrorType>> = if (imageFileDetail != null) {
+    ): Flow<Result<RegisterResult, ErrorType>> = if (imageFileDetail != null) {
         getFileUrlUseCase(imageFileDetail.bytes, imageFileDetail.name, imageFileDetail.mime)
             .flatMapResult { profileImageUrl ->
                 val register = Register(

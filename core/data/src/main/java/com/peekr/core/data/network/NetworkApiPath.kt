@@ -19,6 +19,8 @@ object NetworkApiPath {
 
     object Keyword {
         const val ROUTE = "$BASE/keyword"
+        const val ID = "$ROUTE/id"
+        const val NAME = "$ROUTE/name"
     }
 
     object UserKeyword {

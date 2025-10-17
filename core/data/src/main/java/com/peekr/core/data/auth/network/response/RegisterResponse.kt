@@ -1,6 +1,7 @@
 package com.peekr.core.data.auth.network.response
 
-import com.peekr.core.domain.auth.model.JWTToken
+import com.peekr.core.domain.auth.model.RegisterResult
+import com.peekr.core.domain.model.UserId
 import com.squareup.moshi.JsonClass
 
 /**
@@ -11,11 +12,13 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class RegisterResponse(
+    val userId: Long,
     val accessToken: String,
     val refreshToken: String,
 )
 
-fun RegisterResponse.toDomainModel(): JWTToken = JWTToken(
+fun RegisterResponse.toDomainModel(): RegisterResult = RegisterResult(
+    userId = UserId(userId),
     accessToken = accessToken,
     refreshToken = refreshToken,
 )

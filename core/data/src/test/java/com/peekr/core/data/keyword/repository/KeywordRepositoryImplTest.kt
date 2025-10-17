@@ -28,14 +28,14 @@ class KeywordRepositoryImplTest {
     private val repository: KeywordRepository = KeywordRepositoryImpl(dataSource, dispatcher)
 
     @Test
-    fun `키워드 조회 - 성공 테스트`() = runTest {
+    fun `키워드 ID로 키워드 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getKeyword(TestKeywordId)
+            dataSource.getKeywordById(TestKeywordId)
         } returns NetworkResult.Success(TestKeywordResponse)
 
         // when
-        val result = repository.getKeyword(TestKeywordId).last()
+        val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -43,15 +43,15 @@ class KeywordRepositoryImplTest {
     }
 
     @Test
-    fun `키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `키워드 ID로 키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Network.Forbidden
         coEvery {
-            dataSource.getKeyword(TestKeywordId)
+            dataSource.getKeywordById(TestKeywordId)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getKeyword(TestKeywordId).last()
+        val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -59,15 +59,65 @@ class KeywordRepositoryImplTest {
     }
 
     @Test
-    fun `키워드 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `키워드 ID로 키워드 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.getKeyword(TestKeywordId)
+            dataSource.getKeywordById(TestKeywordId)
         } throws exception
 
         // when
-        val result = repository.getKeyword(TestKeywordId).last()
+        val result = repository.getKeywordById(TestKeywordId).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+            assertEquals(
+                ErrorType.Unexpected(exception).cause?.message,
+                (result.error as ErrorType.Unexpected).cause?.message,
+            )
+        }
+    }
+
+    @Test
+    fun `키워드 명으로 키워드 조회 - 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getKeywordByName(TEST_KEYWORD)
+        } returns NetworkResult.Success(TestKeywordResponse)
+
+        // when
+        val result = repository.getKeywordByName(TEST_KEYWORD).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(TestKeywordResponse.toDomainModel(), (result as Result.Success).data)
+    }
+
+    @Test
+    fun `키워드 명으로 키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = NetworkErrorType.Network.Forbidden
+        coEvery {
+            dataSource.getKeywordByName(TEST_KEYWORD)
+        } returns NetworkResult.Error(expectedError)
+
+        // when
+        val result = repository.getKeywordByName(TEST_KEYWORD).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(expectedError.toErrorType(), (result as Result.Error).error)
+    }
+
+    @Test
+    fun `키워드 명으로 키워드 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val exception = Exception("error!")
+        coEvery { dataSource.getKeywordByName(TEST_KEYWORD) } throws exception
+
+        // when
+        val result = repository.getKeywordByName(TEST_KEYWORD).last()
 
         // then
         assertTrue(result is Result.Error)

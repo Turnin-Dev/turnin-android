@@ -34,7 +34,6 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.DropShadowDirection
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.PeekrIcons
@@ -48,11 +47,15 @@ import com.peekr.presentation.profile.model.UiProfile
 
 /**
  * 프로필 화면
+ *
+ * @param modifier [Modifier]
+ * @param profile 사용자 프로필
  */
 @Composable
-fun ProfileScreen(
+internal fun ProfileScreen(
     modifier: Modifier = Modifier,
     profile: UiProfile?,
+    onOpenAddKeywordModal: () -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -100,7 +103,7 @@ fun ProfileScreen(
                     .padding(20.dp)
                     .size(FabSize),
                 contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
-                onClick = {},
+                onClick = onOpenAddKeywordModal,
             )
         }
     }
@@ -330,8 +333,12 @@ private fun ShadowSection(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .peekrShadow(
-                type = PeekrShadowType.Custom(blur = 4.dp, offsetY = 2.dp),
-                direction = DropShadowDirection.BOTTOM,
+                type = PeekrShadowType.Custom(
+                    blur = 6.dp,
+                    lightColor = Color.Black,
+                    darkColor = Color.White,
+                    alpha = 0.25f,
+                ),
             ),
         color = Color.Transparent,
     )
@@ -391,6 +398,7 @@ private fun ProfileScreenPreview() {
                     "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
                 keywords = UiUserKeyword.samples,
             ),
+            onOpenAddKeywordModal = {},
         )
     }
 }
@@ -402,6 +410,7 @@ private fun ProfileScreenShimmerPreview() {
         ProfileScreen(
             modifier = Modifier.fillMaxSize(),
             profile = null,
+            onOpenAddKeywordModal = {},
         )
     }
 }

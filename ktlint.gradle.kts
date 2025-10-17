@@ -8,11 +8,11 @@ dependencies {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }
     }
-    ktlint("io.nlopez.compose.rules:ktlint:0.4.22") {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-        }
-    }
+//    ktlint("io.nlopez.compose.rules:ktlint:0.4.22") {
+//        attributes {
+//            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+//        }
+//    }
 }
 
 // 3. 스타일 검사 Task

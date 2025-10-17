@@ -7,6 +7,7 @@ import com.peekr.domain.profile.repository.ProfileRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
+/** 프로필 조회 */
 class GetProfileUseCase @Inject constructor(
     private val profileRepository: ProfileRepository,
 ) {

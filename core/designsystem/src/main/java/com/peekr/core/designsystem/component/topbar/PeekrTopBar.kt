@@ -31,7 +31,7 @@ fun PeekrTopBar(
             when {
                 onBackPressed != null -> PaddingValuesWithTouchTarget
                 optionSlot != null -> PaddingValuesWithTouchTarget
-                else -> PaddingValues
+                else -> DefaultPaddingValues
             },
         ),
         onBackPressed = onBackPressed,
@@ -41,5 +41,5 @@ fun PeekrTopBar(
 }
 
 // 탑바 패딩
-private val PaddingValues = PaddingValues(20.dp)
+private val DefaultPaddingValues = PaddingValues(20.dp)
 private val PaddingValuesWithTouchTarget = PaddingValues(10.dp)

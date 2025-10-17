@@ -2,11 +2,13 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.JWTToken
+import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.every
@@ -28,7 +30,7 @@ class RegisterIntegrationUseCaseTest {
         // given
         every {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
-        } returns flowOf(Result.Success(TestJWTToken))
+        } returns flowOf(Result.Success(TestRegisterResult))
         every {
             saveRefreshTokenUseCase(any())
         } returns flowOf(Result.Success(true))
@@ -54,7 +56,7 @@ class RegisterIntegrationUseCaseTest {
         val expectedError = ErrorType.Exception.IO
         every {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
-        } returns flowOf(Result.Success(TestJWTToken))
+        } returns flowOf(Result.Success(TestRegisterResult))
         every {
             saveRefreshTokenUseCase(any())
         } returns flowOf(Result.Error(expectedError))
@@ -105,7 +107,7 @@ class RegisterIntegrationUseCaseTest {
         // given
         every {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
-        } returns flowOf(Result.Success(TestJWTToken))
+        } returns flowOf(Result.Success(TestRegisterResult))
         every {
             saveRefreshTokenUseCase(any())
         } returns flowOf(Result.Success(true))
@@ -126,11 +128,14 @@ class RegisterIntegrationUseCaseTest {
     }
 
     companion object {
+        private val TestUserId = UserId(1L)
         private val TestProvider = SocialLoginProvider.GOOGLE
         private val TestProviderId = ProviderId("google123")
         private val TestDisplayId = DisplayId("abc")
         private val TestName = Name("honggd")
         private val TestIntroduce = Introduce("hello!")
         private val TestJWTToken = JWTToken("a", "b")
+        private val TestRegisterResult =
+            RegisterResult(TestUserId, TestJWTToken.accessToken, TestJWTToken.refreshToken)
     }
 }

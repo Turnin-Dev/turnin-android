@@ -9,11 +9,18 @@ import kotlinx.coroutines.flow.Flow
 /** 키워드 리포지토리 */
 interface KeywordRepository {
     /**
-     * 키워드 조회
+     * 키워드 ID로 키워드 조회
      *
      * @param keywordId 키워드 ID
      */
-    fun getKeyword(keywordId: KeywordId): Flow<Result<Keyword, ErrorType>>
+    fun getKeywordById(keywordId: KeywordId): Flow<Result<Keyword?, ErrorType>>
+
+    /**
+     * 키워드 명로 키워드 조회
+     *
+     * @param keywordName 키워드 명
+     */
+    fun getKeywordByName(keywordName: String): Flow<Result<Keyword?, ErrorType>>
 
     /**
      * 키워드 생성

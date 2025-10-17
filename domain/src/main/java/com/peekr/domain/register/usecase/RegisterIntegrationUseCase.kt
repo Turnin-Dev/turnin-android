@@ -1,7 +1,7 @@
 package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
-import com.peekr.core.domain.auth.model.JWTToken
+import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
@@ -40,6 +40,6 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             name = Name(name),
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
-        ).flatMapResult { token: JWTToken -> saveRefreshTokenUseCase(token.refreshToken) }
+        ).flatMapResult { token: RegisterResult -> saveRefreshTokenUseCase(token.refreshToken) }
     }.getOrElse { e -> flowOf(Result.Error(ErrorType.Unexpected(e))) }
 }

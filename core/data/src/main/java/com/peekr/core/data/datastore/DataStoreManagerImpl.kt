@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.crypto.CryptoException
@@ -35,6 +36,13 @@ class DataStoreManagerImpl(
         }
     }
 
+    override suspend fun saveLongData(key: DataStoreKey, value: Long) {
+        dataStoreTryCatch {
+            val pKey = longPreferencesKey(key.name)
+            dataStore.edit { preferences -> preferences[pKey] = value }
+        }
+    }
+
     override fun getStringData(key: DataStoreKey): Flow<String?> =
         dataStore.data
             .catch { exception ->
@@ -57,6 +65,18 @@ class DataStoreManagerImpl(
             }
         }.map { preferences ->
             val pKey = booleanPreferencesKey(key.name)
+            preferences[pKey]
+        }
+
+    override fun getLongData(key: DataStoreKey): Flow<Long?> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            val pKey = longPreferencesKey(key.name)
             preferences[pKey]
         }
 
@@ -105,6 +125,15 @@ class DataStoreManagerImpl(
     override suspend fun deleteBooleanData(key: DataStoreKey) {
         dataStoreTryCatch {
             val pKey = booleanPreferencesKey(key.name)
+            dataStore.edit { preferences ->
+                preferences.remove(pKey)
+            }
+        }
+    }
+
+    override suspend fun deleteLongData(key: DataStoreKey) {
+        dataStoreTryCatch {
+            val pKey = longPreferencesKey(key.name)
             dataStore.edit { preferences ->
                 preferences.remove(pKey)
             }

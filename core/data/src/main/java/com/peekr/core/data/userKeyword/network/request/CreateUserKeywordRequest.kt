@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
  * 사용자 키워드 생성 요청 바디
  *
  * @property userId 사용자 ID
- * @property keywordId 키워드 ID
+ * @property keywordName 키워드 명
  * @property offsetX 키워드 위치 오프셋 X
  * @property offsetY 키워드 위치 오프셋 Y
  * @property description 키워드 설명
@@ -15,16 +15,16 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class CreateUserKeywordRequest(
     val userId: Long,
-    val keywordId: Long,
+    val keywordName: String,
     val offsetX: Double,
     val offsetY: Double,
-    val description: String,
+    val description: String?,
 )
 
 fun CreateUserKeyword.toDataModel(): CreateUserKeywordRequest =
     CreateUserKeywordRequest(
         userId = userId.value,
-        keywordId = keywordId.value,
+        keywordName = keywordName,
         offsetX = offsetX,
         offsetY = offsetY,
         description = description,
