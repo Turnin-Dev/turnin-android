@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
+import com.peekr.core.designsystem.component.loading.PeekrLoadingIndicator
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 
 /**
  * Modal Wrapper
@@ -55,6 +57,7 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 fun PeekrModalWrapper(
     isOpen: Boolean,
     animated: Boolean = true,
+    loading: Boolean = false,
     onDismissRequest: () -> Unit,
     onAnimationFinished: () -> Unit = {},
     content: @Composable () -> Unit,
@@ -75,6 +78,15 @@ fun PeekrModalWrapper(
                         .imePadding(),
                     content = content,
                 )
+                if (loading) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .clickableSingleWithoutRipple {},
+                    ) {
+                        PeekrLoadingIndicator(Modifier.align(Alignment.Center))
+                    }
+                }
             }
         }
     }
