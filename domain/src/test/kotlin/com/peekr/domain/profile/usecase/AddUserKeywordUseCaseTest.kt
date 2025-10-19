@@ -29,8 +29,6 @@ class AddUserKeywordUseCaseTest {
         // when
         val result = usecase(
             keywordName = TEST_KEYWORD_NAME,
-            offsetX = TEST_OFFSET_X,
-            offsetY = TEST_OFFSET_Y,
             keywordDesc = TEST_KEYWORD_DESC,
         ).last()
 
@@ -44,16 +42,14 @@ class AddUserKeywordUseCaseTest {
 
     companion object {
         private const val TEST_KEYWORD_NAME = "sampleKeyword"
-        private const val TEST_OFFSET_X = 0.0
-        private const val TEST_OFFSET_Y = 0.0
         private const val TEST_KEYWORD_DESC = "hello"
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
             keywordName = TEST_KEYWORD_NAME,
             userId = UserId(1L),
-            offsetX = TEST_OFFSET_X,
-            offsetY = TEST_OFFSET_Y,
+            offsetX = 0.0,
+            offsetY = 0.0,
             description = TEST_KEYWORD_DESC,
             createdAt = 1000,
             updatedAt = 1000,

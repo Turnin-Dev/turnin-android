@@ -13,14 +13,15 @@ class AddUserKeywordUseCase @Inject constructor(
 ) {
     operator fun invoke(
         keywordName: String,
-        offsetX: Double,
-        offsetY: Double,
         keywordDesc: String?,
     ): Flow<Result<UserKeyword, ErrorType>> =
         profileRepository.addKeyword(
             keywordName = keywordName,
-            offsetX = offsetX,
-            offsetY = offsetY,
             keywordDesc = keywordDesc,
+            offsetX = INITIAL_OFFSET_X,
+            offsetY = INITIAL_OFFSET_Y,
         )
 }
+
+private const val INITIAL_OFFSET_X = 0.0
+private const val INITIAL_OFFSET_Y = 0.0

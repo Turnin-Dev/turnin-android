@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -68,6 +69,7 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
+                    val testDataViewModel: TestDataViewModel = hiltViewModel()
                     NavHost(
                         modifier = Modifier
                             .fillMaxSize()

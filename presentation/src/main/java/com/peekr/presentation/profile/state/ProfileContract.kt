@@ -28,6 +28,8 @@ class ProfileContract {
         data class OnKeywordTextChanged(val value: String) : UiEvent
 
         data class OnKeywordDescTextChanged(val value: String) : UiEvent
+
+        data object AddKeyword : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect

@@ -62,6 +62,7 @@ class ProfileRepositoryImpl @Inject constructor(
             )
             emitAll(userKeywordRepository.createUserKeyword(createUserKeyword))
         } else {
+            // TODO: Profile 전용 에러 타입 필요
             emit(Result.Error(error = ErrorType.Unexpected(null)))
         }
     }
