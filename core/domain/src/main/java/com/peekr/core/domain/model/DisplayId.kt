@@ -32,7 +32,11 @@ value class DisplayId private constructor(val value: String) {
             value.isBlank() -> throw CommonValidationException.Empty(FIELD)
             // 2) 길이 범위 위반
             value.length !in MIN_LENGTH..MAX_LENGTH -> {
-                throw CommonValidationException.TooShortOrLong(FIELD, MIN_LENGTH, MAX_LENGTH)
+                throw CommonValidationException.TooShortOrLong(
+                    field = FIELD,
+                    min = MIN_LENGTH,
+                    max = MAX_LENGTH,
+                )
             }
             // 3) 허용 문자 위반
             !value.matches(regex) -> {

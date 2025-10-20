@@ -13,7 +13,7 @@ import com.peekr.core.domain.model.KeywordId
  */
 data class Keyword(
     val id: KeywordId,
-    val keyword: String,
+    val keyword: KeywordValue,
     val createdBy: Long,
     val createdAt: Long,
     val updatedAt: Long,
