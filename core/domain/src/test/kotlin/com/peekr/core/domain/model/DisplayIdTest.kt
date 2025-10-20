@@ -1,6 +1,7 @@
 package com.peekr.core.domain.model
 
 import com.peekr.core.domain.assertThrows
+import com.peekr.core.domain.validation.CommonValidationException
 import org.junit.Assert
 import org.junit.Test
 
@@ -13,21 +14,21 @@ class DisplayIdTest {
 
     @Test
     fun `사용자 표시 ID VO 객체 생성 실패 테스트 - 잘못된 형식`() {
-        assertThrows<DisplayIdException.InvalidFormat> {
+        assertThrows<CommonValidationException.InvalidFormat> {
             DisplayId(INVALID_FORMAT_DISPLAY_ID)
         }
     }
 
     @Test
     fun `사용자 표시 ID VO 객체 생성 실패 테스트 - 길이 제약 위반`() {
-        assertThrows<DisplayIdException.TooShortOrLong> {
+        assertThrows<CommonValidationException.TooShortOrLong> {
             DisplayId(TooLongDisplayId)
         }
     }
 
     @Test
     fun `사용자 표시 ID VO 객체 생성 실패 테스트 - 빈 문자열`() {
-        assertThrows<DisplayIdException.Empty> {
+        assertThrows<CommonValidationException.Empty> {
             DisplayId(EMPTY_DISPLAY_ID)
         }
     }

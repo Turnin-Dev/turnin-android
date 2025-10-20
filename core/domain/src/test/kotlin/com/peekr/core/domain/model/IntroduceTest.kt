@@ -1,6 +1,7 @@
 package com.peekr.core.domain.model
 
 import com.peekr.core.domain.assertThrows
+import com.peekr.core.domain.validation.CommonValidationException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -13,7 +14,7 @@ class IntroduceTest {
 
     @Test
     fun `소개 글 유효성 검사 실패 테스트 - 길이 제약 위반`() {
-        assertThrows<IntroduceException.TooLong> {
+        assertThrows<CommonValidationException.TooShortOrLong> {
             Introduce(TooLongIntroduce)
         }
     }

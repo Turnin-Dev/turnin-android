@@ -1,32 +1,23 @@
 package com.peekr.core.domain.validation
 
-/**
- * 유효성 검사 에러 타입
- */
-sealed interface ValidationError {
-    sealed interface DisplayId : ValidationError {
-        data object Empty : DisplayId
+/** 유효성 검사 에러 타입 */
+sealed interface ValidationError
 
-        data class TooShortOrLong(
-            val min: Int,
-            val max: Int,
-        ) : DisplayId
+/** 공통 유효성 검사 에러 타입 */
+sealed interface CommonValidationError : ValidationError {
+    /** [field]가 비어있는 경우 */
+    data class Empty(val field: String) : CommonValidationError
 
-        data class InvalidFormat(val format: String) : DisplayId
-    }
+    /** [field]가 [min]보다 짧거나 [max]보다 긴 경우 */
+    data class TooShortOrLong(
+        val field: String,
+        val min: Int,
+        val max: Int,
+    ) : CommonValidationError
 
-    sealed interface Name : ValidationError {
-        data object Empty : Name
-
-        data class TooShortOrLong(
-            val min: Int,
-            val max: Int,
-        ) : Name
-
-        data class InvalidFormat(val format: String) : Name
-    }
-
-    sealed interface Introduce : ValidationError {
-        data class TooLong(val max: Int) : Introduce
-    }
+    /** [field]가 [format]과 일치하지 않는 경우 */
+    data class InvalidFormat(
+        val field: String,
+        val format: String,
+    ) : CommonValidationError
 }

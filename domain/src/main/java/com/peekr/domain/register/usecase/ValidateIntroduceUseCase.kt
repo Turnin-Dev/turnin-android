@@ -1,9 +1,9 @@
 package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.IntroduceException
-import com.peekr.core.domain.model.toValidationError
+import com.peekr.core.domain.validation.CommonValidationException
 import com.peekr.core.domain.validation.ValidationResult
+import com.peekr.core.domain.validation.toValidationError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,7 +17,7 @@ class ValidateIntroduceUseCase @Inject constructor() {
         try {
             val result = Introduce(introduce)
             emit(ValidationResult.Valid(result))
-        } catch (e: IntroduceException) {
+        } catch (e: CommonValidationException) {
             emit(ValidationResult.Invalid(e.toValidationError()))
         }
     }
