@@ -18,6 +18,7 @@ sealed class UiText {
     /** 문자열 리소스를 래핑한다. */
     class StringResource(
         @StringRes val id: Int,
+        vararg val args: Any,
     ) : UiText()
 
     /** [Composable]에서 사용 가능한 String 변환 함수이다. */

@@ -53,10 +53,7 @@ fun KeywordNodeEdge(
 
     LaunchedEffect(nodeDragging) {
         // 드래그 하지 않은 상태에서 기존 위치에서 변화가 일어났다면 콜백 수행
-        if (!nodeDragging &&
-            nodeState.offsetX != offsetX &&
-            nodeState.offsetY != offsetY
-        ) {
+        if (!nodeDragging && (nodeState.offsetX != offsetX || nodeState.offsetY != offsetY)) {
             onNodeChanged(nodeState.offsetX, nodeState.offsetY)
         }
     }

@@ -11,7 +11,7 @@ import com.peekr.core.presentation.model.UiDisplayId
  * @property offsetY 키워드가 UI 상에 위치할 오프셋 Y
  * @property createdBy 키워드 최초 생성자
  * @property createdAt 키워드 생성일
- * @property updatedAt 키워드 수성일
+ * @property updatedAt 키워드 수정일
  */
 data class UiKeyword(
     val id: Long,

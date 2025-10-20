@@ -39,7 +39,7 @@ fun CommonValidationError.toErrorType(): ErrorType = when (this) {
 
     is CommonValidationError.TooShortOrLong -> {
         ErrorType.Profile.ValidationError(
-            message = "${this.field}는 $min ~ ${max}자 이내만 가능합니다.",
+            message = "${this.field}는 ${this.min} ~ ${this.max}자 이내만 가능합니다.",
         )
     }
 }
