@@ -7,9 +7,9 @@ import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
+import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.userKeyword.model.UserKeywordId
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -342,7 +342,7 @@ class UserKeywordDataSourceImplTest {
         private val TestUserKeywordResponse = UserKeywordResponse(
             id = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TEST_KEYWORD_NAME,
             userId = TestUserId.value,
             offsetX = 0.0,
             offsetY = 0.0,
@@ -355,7 +355,7 @@ class UserKeywordDataSourceImplTest {
         )
         private val TestCreateUserKeywordRequest = CreateUserKeywordRequest(
             userId = TestUserId.value,
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TEST_KEYWORD_NAME,
             offsetX = 0.0,
             offsetY = 0.0,
             description = "sample",

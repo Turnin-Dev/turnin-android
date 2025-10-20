@@ -1,7 +1,7 @@
 package com.peekr.core.data.auth.network.request
 
 import com.peekr.core.domain.auth.model.ExistsUser
-import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.user.model.SocialLoginProvider
 import com.squareup.moshi.JsonClass
 
 /**

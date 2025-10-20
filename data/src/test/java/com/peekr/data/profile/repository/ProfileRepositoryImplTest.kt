@@ -1,21 +1,23 @@
 package com.peekr.data.profile.repository
 
 import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.model.Role
-import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
+import com.peekr.core.domain.keyword.model.KeywordValue
+import com.peekr.core.domain.user.model.DisplayId
+import com.peekr.core.domain.user.model.Introduce
+import com.peekr.core.domain.user.model.Name
+import com.peekr.core.domain.user.model.ProviderId
+import com.peekr.core.domain.user.model.Role
+import com.peekr.core.domain.user.model.SocialLoginProvider
 import com.peekr.core.domain.user.model.User
+import com.peekr.core.domain.user.model.UserId
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
+import com.peekr.core.domain.userKeyword.model.KeywordDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
+import com.peekr.core.domain.userKeyword.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.core.domain.util.ErrorType
@@ -158,10 +160,10 @@ class ProfileRepositoryImplTest {
         // when
         val addedUserKeyword = repository
             .addKeyword(
-                TestCreateUserKeyword.keywordName,
+                TestCreateUserKeyword.keyword,
+                TestCreateUserKeyword.description,
                 TestCreateUserKeyword.offsetX,
                 TestCreateUserKeyword.offsetY,
-                TestCreateUserKeyword.description,
             ).last()
 
         // then
@@ -184,10 +186,10 @@ class ProfileRepositoryImplTest {
         // when
         val addedUserKeyword = repository
             .addKeyword(
-                TestCreateUserKeyword.keywordName,
+                TestCreateUserKeyword.keyword,
+                TestCreateUserKeyword.description,
                 TestCreateUserKeyword.offsetX,
                 TestCreateUserKeyword.offsetY,
-                TestCreateUserKeyword.description,
             ).last()
 
         // then
@@ -209,10 +211,10 @@ class ProfileRepositoryImplTest {
         // when
         val addedUserKeyword = repository
             .addKeyword(
-                TestCreateUserKeyword.keywordName,
+                TestCreateUserKeyword.keyword,
+                TestCreateUserKeyword.description,
                 TestCreateUserKeyword.offsetX,
                 TestCreateUserKeyword.offsetY,
-                TestCreateUserKeyword.description,
             ).last()
 
         // then
@@ -225,7 +227,8 @@ class ProfileRepositoryImplTest {
 
     companion object {
         private val TestUserId = UserId(1L)
-        private const val TEST_KEYWORD_NAME = "sampleKeyword"
+        private val TestKeyword = KeywordValue("sampleKeyword")
+        private val TestKeywordDescription = KeywordDescription("sample")
         private val TestUserProfile = UserProfile(
             user = User(
                 id = TestUserId,
@@ -244,11 +247,11 @@ class ProfileRepositoryImplTest {
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TestKeyword,
             userId = TestUserId,
             offsetX = 50.0,
             offsetY = 50.0,
-            description = "my keyword",
+            description = TestKeywordDescription,
             createdAt = 1000L,
             updatedAt = 1000L,
         )
@@ -269,10 +272,10 @@ class ProfileRepositoryImplTest {
         )
         private val TestCreateUserKeyword = CreateUserKeyword(
             userId = TestUserId,
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TestKeyword,
+            description = TestKeywordDescription,
             offsetX = 0.0,
             offsetY = 0.0,
-            description = null,
         )
     }
 }

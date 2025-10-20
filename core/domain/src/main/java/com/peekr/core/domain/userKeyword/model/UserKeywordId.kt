@@ -1,4 +1,4 @@
-package com.peekr.core.domain.model
+package com.peekr.core.domain.userKeyword.model
 
 /** 사용자 키워드 ID VO */
 @JvmInline

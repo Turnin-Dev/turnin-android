@@ -1,7 +1,7 @@
 package com.peekr.core.domain.auth.model
 
-import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.user.model.ProviderId
+import com.peekr.core.domain.user.model.SocialLoginProvider
 
 /**
  * 이미 존재하는 사용자를 파악하기 위한 사용자 식별 정보

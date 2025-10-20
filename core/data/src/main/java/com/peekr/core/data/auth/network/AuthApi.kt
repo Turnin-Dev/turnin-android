@@ -7,7 +7,7 @@ import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.network.NetworkApiPath
 import com.peekr.core.data.network.retrofit.TokenResponse
-import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.user.model.SocialLoginProvider
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -1,9 +1,5 @@
 package com.peekr.core.domain.user.model
 
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.Name
-
 /**
  * 사용자 수정 요청
  *

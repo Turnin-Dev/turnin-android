@@ -1,6 +1,6 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.model.Introduce
+import com.peekr.core.domain.user.model.Introduce
 import com.peekr.core.domain.validation.CommonValidationException
 import com.peekr.core.domain.validation.ValidationResult
 import com.peekr.core.domain.validation.toValidationError

@@ -1,9 +1,9 @@
 package com.peekr.core.presentation.userKeyword.model
 
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
+import com.peekr.core.domain.user.model.UserId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
+import com.peekr.core.domain.userKeyword.model.UserKeywordId
 
 /**
  * UI용 사용자 키워드
@@ -50,11 +50,11 @@ fun UserKeyword.toUiModel(): UiUserKeyword =
     UiUserKeyword(
         id = id,
         keywordId = keywordId,
-        keywordName = keywordName,
+        keywordName = keyword.value,
         userId = userId,
         offsetX = offsetX,
         offsetY = offsetY,
-        description = description,
+        description = description?.value,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )

@@ -1,4 +1,4 @@
-package com.peekr.core.domain.model
+package com.peekr.core.domain.user.model
 
 /**
  * 소셜로그인 플랫폼

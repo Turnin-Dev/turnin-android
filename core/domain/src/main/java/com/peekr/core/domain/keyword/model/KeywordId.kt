@@ -1,4 +1,4 @@
-package com.peekr.core.domain.model
+package com.peekr.core.domain.keyword.model
 
 @JvmInline
 value class KeywordId private constructor(val value: Long) {

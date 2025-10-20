@@ -4,9 +4,9 @@ import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.LoginResult
-import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.ProviderId
+import com.peekr.core.domain.user.model.SocialLoginProvider
+import com.peekr.core.domain.user.model.UserId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.every

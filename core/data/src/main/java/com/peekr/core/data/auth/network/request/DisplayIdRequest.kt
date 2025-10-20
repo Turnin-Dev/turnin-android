@@ -1,6 +1,6 @@
 package com.peekr.core.data.auth.network.request
 
-import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.user.model.DisplayId
 import com.squareup.moshi.JsonClass
 
 /** [DisplayId] 요청용 */

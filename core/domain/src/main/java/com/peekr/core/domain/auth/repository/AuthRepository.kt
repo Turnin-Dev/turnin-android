@@ -5,7 +5,7 @@ import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
-import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.user.model.DisplayId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow

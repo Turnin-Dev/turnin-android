@@ -1,13 +1,13 @@
 package com.peekr.core.data.user.network.response
 
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.model.Role
-import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.DisplayId
+import com.peekr.core.domain.user.model.Introduce
+import com.peekr.core.domain.user.model.Name
+import com.peekr.core.domain.user.model.ProviderId
+import com.peekr.core.domain.user.model.Role
+import com.peekr.core.domain.user.model.SocialLoginProvider
 import com.peekr.core.domain.user.model.User
+import com.peekr.core.domain.user.model.UserId
 import com.squareup.moshi.JsonClass
 
 /**

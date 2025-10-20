@@ -1,25 +1,25 @@
-package com.peekr.core.domain.model
+package com.peekr.core.domain.user.model
 
 import com.peekr.core.domain.validation.CommonValidationException
 
 /**
- * 사용자 표시 ID VO
+ * 이름 VO
  *
  * @throws CommonValidationException 유효성 검사 실패 시
  */
 @JvmInline
-value class DisplayId private constructor(val value: String) {
+value class Name private constructor(val value: String) {
     companion object {
         const val MIN_LENGTH = 1
         const val MAX_LENGTH = 30
-        private const val FIELD = "사용자 표시 ID"
+        private const val FIELD = "이름"
 
-        /** 사용자 표시 ID 규칙: 영어/숫자/밑줄만 허용 */
-        val regex = Regex("^[a-zA-Z0-9_]+$")
+        /** 사용자 이름 규칙: 영어/숫자/한글만 허용 */
+        val regex = Regex("^[a-zA-Z0-9가-힣]+$")
 
-        fun from(value: String): DisplayId = DisplayId(value)
+        fun from(value: String): Name = Name(value)
 
-        operator fun invoke(value: String): DisplayId = from(value)
+        operator fun invoke(value: String): Name = from(value)
     }
 
     init {
@@ -29,7 +29,9 @@ value class DisplayId private constructor(val value: String) {
     private fun validate() {
         when {
             // 1) 비어 있거나 공백인 경우
-            value.isBlank() -> throw CommonValidationException.Empty(FIELD)
+            value.isBlank() -> {
+                throw CommonValidationException.Empty(FIELD)
+            }
             // 2) 길이 범위 위반
             value.length !in MIN_LENGTH..MAX_LENGTH -> {
                 throw CommonValidationException.TooShortOrLong(
@@ -40,7 +42,10 @@ value class DisplayId private constructor(val value: String) {
             }
             // 3) 허용 문자 위반
             !value.matches(regex) -> {
-                throw CommonValidationException.InvalidFormat(FIELD, "영어/숫자/밑줄(_)")
+                throw CommonValidationException.InvalidFormat(
+                    field = FIELD,
+                    format = "영어/숫자/한글",
+                )
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.peekr.domain.profile.repository
 
+import com.peekr.core.domain.keyword.model.KeywordValue
+import com.peekr.core.domain.userKeyword.model.KeywordDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
@@ -27,17 +29,17 @@ interface ProfileRepository {
      *
      * 이미 존재하면 조회된 키워드로 사용자 키워드를 저장한다.
      *
-     * @param keywordName 키워드 명
+     * @param keyword 키워드 명
      * @param offsetX 키워드 오프셋 X
      * @param offsetY 키워드 오프셋 Y
-     * @param keywordDesc 키워드 내용
+     * @param description 키워드 내용
      *
      * @return [UserKeyword]
      */
     fun addKeyword(
-        keywordName: String,
+        keyword: KeywordValue,
+        description: KeywordDescription,
         offsetX: Double,
         offsetY: Double,
-        keywordDesc: String?,
     ): Flow<Result<UserKeyword, ErrorType>>
 }

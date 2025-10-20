@@ -1,6 +1,6 @@
 package com.peekr.core.presentation.keyword
 
-import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
 
 /** 키워드 ID */
 typealias KeywordIdType = KeywordId

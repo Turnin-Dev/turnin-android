@@ -1,9 +1,11 @@
 package com.peekr.domain.profile.usecase
 
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
+import com.peekr.core.domain.keyword.model.KeywordValue
+import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.userKeyword.model.KeywordDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
+import com.peekr.core.domain.userKeyword.model.UserKeywordId
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.repository.ProfileRepository
 import io.mockk.every
@@ -23,13 +25,13 @@ class AddUserKeywordUseCaseTest {
     fun `키워드 추가 성공 테스트`() = runTest {
         // given
         every {
-            profileRepository.addKeyword(any(), any(), any(), any())
+            profileRepository.addKeyword(TestKeyword, TestKeywordDescription, any(), any())
         } returns flowOf(Result.Success(TestUserKeyword))
 
         // when
         val result = usecase(
-            keywordName = TEST_KEYWORD_NAME,
-            keywordDesc = TEST_KEYWORD_DESC,
+            keyword = TestKeyword.value,
+            description = TestKeywordDescription.value,
         ).last()
 
         // then
@@ -41,16 +43,16 @@ class AddUserKeywordUseCaseTest {
     }
 
     companion object {
-        private const val TEST_KEYWORD_NAME = "sampleKeyword"
-        private const val TEST_KEYWORD_DESC = "hello"
+        private val TestKeyword = KeywordValue("sampleKeyword")
+        private val TestKeywordDescription = KeywordDescription("hello")
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TestKeyword,
             userId = UserId(1L),
             offsetX = 0.0,
             offsetY = 0.0,
-            description = TEST_KEYWORD_DESC,
+            description = TestKeywordDescription,
             createdAt = 1000,
             updatedAt = 1000,
         )

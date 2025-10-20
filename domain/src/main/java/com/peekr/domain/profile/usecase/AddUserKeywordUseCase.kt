@@ -1,5 +1,7 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.keyword.model.KeywordValue
+import com.peekr.core.domain.userKeyword.model.KeywordDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
@@ -12,12 +14,12 @@ class AddUserKeywordUseCase @Inject constructor(
     private val profileRepository: ProfileRepository,
 ) {
     operator fun invoke(
-        keywordName: String,
-        keywordDesc: String?,
+        keyword: String,
+        description: String,
     ): Flow<Result<UserKeyword, ErrorType>> =
         profileRepository.addKeyword(
-            keywordName = keywordName,
-            keywordDesc = keywordDesc,
+            keyword = KeywordValue(keyword),
+            description = KeywordDescription(description),
             offsetX = INITIAL_OFFSET_X,
             offsetY = INITIAL_OFFSET_Y,
         )

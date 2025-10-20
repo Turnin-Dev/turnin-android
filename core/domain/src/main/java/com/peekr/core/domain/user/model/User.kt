@@ -1,13 +1,5 @@
 package com.peekr.core.domain.user.model
 
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.model.Role
-import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.model.UserId
-
 /**
  * 사용자
  *

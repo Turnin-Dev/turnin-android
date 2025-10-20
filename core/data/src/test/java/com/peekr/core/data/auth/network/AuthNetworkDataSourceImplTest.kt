@@ -9,9 +9,9 @@ import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.DisplayId
+import com.peekr.core.domain.user.model.SocialLoginProvider
+import com.peekr.core.domain.user.model.UserId
 import com.squareup.moshi.JsonDataException
 import io.mockk.coEvery
 import io.mockk.mockk

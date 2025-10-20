@@ -11,7 +11,7 @@ import com.peekr.core.domain.validation.CommonValidationException
 value class KeywordValue private constructor(val value: String) {
     companion object {
         const val MIN_LENGTH = 1
-        const val MAX_LENGTH = 1
+        const val MAX_LENGTH = 15
         private const val FIELD = "키워드"
 
         fun from(value: String): KeywordValue = KeywordValue(value)

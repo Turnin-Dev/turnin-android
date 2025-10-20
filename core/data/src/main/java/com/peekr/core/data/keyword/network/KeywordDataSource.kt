@@ -3,7 +3,7 @@ package com.peekr.core.data.keyword.network
 import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
 import com.peekr.core.data.keyword.network.response.KeywordResponse
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
 
 /** Keyword 네트워크 데이터 소스 */
 interface KeywordDataSource {

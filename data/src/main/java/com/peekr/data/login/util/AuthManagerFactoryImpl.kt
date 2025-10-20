@@ -1,6 +1,6 @@
 package com.peekr.data.login.util
 
-import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.user.model.SocialLoginProvider
 import com.peekr.data.login.di.GoogleAuth
 import com.peekr.data.login.di.KakaoAuth
 import com.peekr.domain.login.util.AuthManager

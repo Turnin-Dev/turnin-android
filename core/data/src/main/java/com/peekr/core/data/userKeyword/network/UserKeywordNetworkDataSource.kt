@@ -7,7 +7,7 @@ import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
-import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.UserKeywordId
 import javax.inject.Inject
 
 class UserKeywordNetworkDataSource @Inject constructor(

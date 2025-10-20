@@ -1,6 +1,6 @@
 package com.peekr.domain.login.util
 
-import com.peekr.core.domain.model.ProviderId
+import com.peekr.core.domain.user.model.ProviderId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow

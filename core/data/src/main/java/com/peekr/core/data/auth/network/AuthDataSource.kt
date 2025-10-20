@@ -7,7 +7,7 @@ import com.peekr.core.data.auth.network.response.ExistsResponse
 import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.user.model.DisplayId
 
 /** Auth 네트워크 데이터소스 */
 interface AuthDataSource {

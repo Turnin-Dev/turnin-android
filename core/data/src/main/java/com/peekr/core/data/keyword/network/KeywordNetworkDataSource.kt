@@ -4,7 +4,7 @@ import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
 import com.peekr.core.data.keyword.network.response.KeywordResponse
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.networkCall
-import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.keyword.model.KeywordId
 import javax.inject.Inject
 
 class KeywordNetworkDataSource @Inject constructor(

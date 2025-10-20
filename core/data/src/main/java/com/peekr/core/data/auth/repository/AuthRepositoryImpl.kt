@@ -16,7 +16,7 @@ import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.coroutine.safeResultFlow
-import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.user.model.DisplayId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.core.domain.util.toErrorCode
