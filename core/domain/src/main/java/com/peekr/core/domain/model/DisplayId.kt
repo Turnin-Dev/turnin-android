@@ -4,6 +4,8 @@ import com.peekr.core.domain.validation.CommonValidationException
 
 /**
  * 사용자 표시 ID VO
+ *
+ * @throws CommonValidationException 유효성 검사 실패 시
  */
 @JvmInline
 value class DisplayId private constructor(val value: String) {

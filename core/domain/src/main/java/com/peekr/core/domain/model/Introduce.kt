@@ -2,7 +2,11 @@ package com.peekr.core.domain.model
 
 import com.peekr.core.domain.validation.CommonValidationException
 
-/** 소개 글 VO */
+/**
+ * 소개 글 VO
+ *
+ * @throws CommonValidationException 유효성 검사 실패 시
+ */
 @JvmInline
 value class Introduce private constructor(val value: String) {
     companion object {
