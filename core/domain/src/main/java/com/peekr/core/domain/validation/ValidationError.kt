@@ -26,20 +26,21 @@ sealed interface CommonValidationError : ValidationError {
 
 fun CommonValidationError.toErrorType(): ErrorType = when (this) {
     is CommonValidationError.Empty -> {
-        ErrorType.Profile.ValidationError(
-            message = "${this.field}는 비어있을 수 없습니다.",
-        )
+        ErrorType.Validation.Empty(field = field)
     }
 
     is CommonValidationError.InvalidFormat -> {
-        ErrorType.Profile.ValidationError(
-            message = "${this.field}는 ${this.format}만 가능합니다.",
+        ErrorType.Validation.InvalidFormat(
+            field = field,
+            format = format,
         )
     }
 
     is CommonValidationError.TooShortOrLong -> {
-        ErrorType.Profile.ValidationError(
-            message = "${this.field}는 ${this.min} ~ ${this.max}자 이내만 가능합니다.",
+        ErrorType.Validation.TooShortOrLong(
+            field = field,
+            min = min,
+            max = max,
         )
     }
 }

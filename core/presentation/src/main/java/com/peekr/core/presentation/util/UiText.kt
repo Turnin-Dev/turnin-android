@@ -25,12 +25,12 @@ sealed class UiText {
     @Composable
     fun asString(): String = when (this) {
         is DynamicString -> value
-        is StringResource -> LocalContext.current.getString(id)
+        is StringResource -> LocalContext.current.getString(id, *args)
     }
 
     /** [Context]를 통해 일반 함수에서 사용 가능한 String 변환 함수이다. */
     fun asString(context: Context): String = when (this) {
         is DynamicString -> value
-        is StringResource -> context.getString(id)
+        is StringResource -> context.getString(id, *args)
     }
 }

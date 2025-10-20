@@ -23,8 +23,19 @@ sealed interface ErrorType : DomainError {
         LoginFailed,
     }
 
-    sealed interface Profile : ErrorType {
-        data class ValidationError(val message: String) : Profile
+    sealed interface Validation : ErrorType {
+        data class Empty(val field: String) : Validation
+
+        data class InvalidFormat(
+            val field: String,
+            val format: String,
+        ) : Validation
+
+        data class TooShortOrLong(
+            val field: String,
+            val min: Int,
+            val max: Int,
+        ) : Validation
     }
 
     /** 네트워크에서 발생한 에러 타입 */
