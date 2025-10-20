@@ -9,7 +9,9 @@ import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
+import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
@@ -281,15 +283,16 @@ class UserKeywordRepositoryImplTest {
         private val TestUserId = UserId(1L)
         private val TestUserKeywordId = UserKeywordId(1L)
         private val TestKeywordId = KeywordId(1L)
-        private const val TEST_KEYWORD_NAME = "sampleKeyword"
+        private val TestKeyword = KeywordValue("sampleKeyword")
+        private val TestKeywordDescription = KeywordDescription("sample")
         private val TestUserKeywordResponse = UserKeywordResponse(
             id = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TestKeyword.value,
             userId = TestUserId.value,
             offsetX = 0.0,
             offsetY = 0.0,
-            description = "sample",
+            description = TestKeywordDescription.value,
             createdAt = 1000,
             updatedAt = 1000,
         )
@@ -298,27 +301,27 @@ class UserKeywordRepositoryImplTest {
         )
         private val TestCreateUserKeywordRequest = CreateUserKeywordRequest(
             userId = TestUserId.value,
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TestKeyword.value,
             offsetX = 0.0,
             offsetY = 0.0,
-            description = "sample",
+            description = TestKeywordDescription.value,
         )
         private val TestCreateUserKeyword = CreateUserKeyword(
             userId = TestUserId,
-            keywordName = TEST_KEYWORD_NAME,
+            keyword = TestKeyword,
+            description = TestKeywordDescription,
             offsetX = 0.0,
             offsetY = 0.0,
-            description = "sample",
         )
         private val TestPatchUserKeywordRequest = PatchUserKeywordRequest(
             offsetX = 0.0,
             offsetY = 0.0,
-            description = "sample",
+            description = TestKeywordDescription.value,
         )
         private val TestPatchUserKeyword = PatchUserKeyword(
             offsetX = 0.0,
             offsetY = 0.0,
-            description = "sample",
+            description = TestKeywordDescription.value,
         )
     }
 }

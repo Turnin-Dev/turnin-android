@@ -30,6 +30,7 @@ fun NavGraphBuilder.profileNavigation() {
         AddKeywordModal(
             modifier = Modifier.fillMaxSize(),
             isOpen = isAddKeywordModalOpen,
+            loading = uiState.loading,
             keywordTextFieldState = uiState.keywordTextField,
             onKeywordTextChanged = {
                 viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(it))
@@ -39,7 +40,7 @@ fun NavGraphBuilder.profileNavigation() {
                 viewModel.processEvent(ProfileContract.UiEvent.OnKeywordDescTextChanged(it))
             },
             onAddClick = {
-                // 키워드 추가 요청
+                viewModel.processEvent(ProfileContract.UiEvent.AddKeyword)
             },
             onCancel = {
                 if (uiState.keywordTextField.value.isNotBlank() ||

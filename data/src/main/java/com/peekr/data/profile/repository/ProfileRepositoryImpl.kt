@@ -3,6 +3,8 @@ package com.peekr.data.profile.repository
 import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.domain.coroutine.combineWithResult
+import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
@@ -45,23 +47,24 @@ class ProfileRepositoryImpl @Inject constructor(
         userRepository.updateUser(patch.toUserPatch())
 
     override fun addKeyword(
-        keywordName: String,
+        keyword: KeywordValue,
+        description: KeywordDescription,
         offsetX: Double,
         offsetY: Double,
-        keywordDesc: String?,
     ): Flow<Result<UserKeyword, ErrorType>> = flow {
         emit(Result.Loading)
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
         if (userId != null) {
             val createUserKeyword = CreateUserKeyword(
                 userId = UserId(userId),
-                keywordName = keywordName,
+                keyword = keyword,
+                description = description,
                 offsetX = offsetX,
                 offsetY = offsetY,
-                description = keywordDesc,
             )
             emitAll(userKeywordRepository.createUserKeyword(createUserKeyword))
         } else {
+            // TODO: Profile 전용 에러 타입 필요
             emit(Result.Error(error = ErrorType.Unexpected(null)))
         }
     }

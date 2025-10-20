@@ -6,16 +6,16 @@ import com.peekr.core.presentation.model.UiDisplayId
  * UI용 키워드
  *
  * @property id 키워드 ID
- * @property label 키워드 명
+ * @property name 키워드 명
  * @property offsetX 키워드가 UI 상에 위치할 오프셋 X
  * @property offsetY 키워드가 UI 상에 위치할 오프셋 Y
  * @property createdBy 키워드 최초 생성자
  * @property createdAt 키워드 생성일
- * @property updatedAt 키워드 수성일
+ * @property updatedAt 키워드 수정일
  */
 data class UiKeyword(
     val id: Long,
-    val label: String,
+    val name: String,
     val offsetX: Float,
     val offsetY: Float,
     val createdBy: UiDisplayId,

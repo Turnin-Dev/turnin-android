@@ -18,6 +18,26 @@ fun ErrorType.asUiText(): UiText = when (this) {
     ErrorType.Auth.KakaoDeleteAccountError -> StringResource(R.string.error_auth_kakao_delete_account_error)
     ErrorType.Auth.SaveTokenFailed -> StringResource(R.string.error_auth_save_token_failed)
     ErrorType.Auth.LoginFailed -> StringResource(R.string.error_auth_login_failed)
+
+    // ------------------------------ Validation ------------------------------
+    is ErrorType.Validation.Empty -> StringResource(
+        R.string.common_validation_error_empty_field,
+        this.field,
+    )
+
+    is ErrorType.Validation.InvalidFormat -> StringResource(
+        R.string.common_validation_error_invalid_format,
+        this.field,
+        this.format,
+    )
+
+    is ErrorType.Validation.TooShortOrLong -> StringResource(
+        R.string.common_validation_error_length_range,
+        this.field,
+        this.min,
+        this.max,
+    )
+
     // ------------------------------ Exception ------------------------------
     ErrorType.Exception.Json -> StringResource(R.string.error_exception_json)
     ErrorType.Exception.TimeOut -> StringResource(R.string.error_exception_timeout)

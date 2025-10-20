@@ -1,24 +1,18 @@
 package com.peekr.core.domain.model
 
-import com.peekr.core.domain.validation.ValidationError
+import com.peekr.core.domain.validation.CommonValidationException
 
-/** [Introduce] 커스텀 예외 */
-sealed class IntroduceException(message: String) : IllegalArgumentException(message) {
-    data class TooLong(
-        val max: Int,
-        val msg: String = "소개 글은 ${max}자 이내만 가능합니다.",
-    ) : IntroduceException(msg)
-}
-
-fun IntroduceException.toValidationError(): ValidationError = when (this) {
-    is IntroduceException.TooLong -> ValidationError.Introduce.TooLong(this.max)
-}
-
-/** 소개 글 VO */
 @JvmInline
 value class Introduce private constructor(val value: String) {
+    /**
+     * 소개 글 VO
+     *
+     * @throws CommonValidationException 유효성 검사 실패 시
+     */
     companion object {
+        const val MIN_LENGTH = 0
         const val MAX_LENGTH = 200
+        private const val FIELD = "소개 글"
 
         fun from(value: String): Introduce = Introduce(value)
 
@@ -32,7 +26,13 @@ value class Introduce private constructor(val value: String) {
     private fun validate() {
         when {
             // 1) 길이 제약 위반
-            value.length > MAX_LENGTH -> throw IntroduceException.TooLong(max = MAX_LENGTH)
+            value.length !in MIN_LENGTH..MAX_LENGTH -> {
+                throw CommonValidationException.TooShortOrLong(
+                    field = FIELD,
+                    min = MIN_LENGTH,
+                    max = MAX_LENGTH,
+                )
+            }
         }
     }
 }

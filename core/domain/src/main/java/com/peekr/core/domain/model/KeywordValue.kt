@@ -3,23 +3,20 @@ package com.peekr.core.domain.model
 import com.peekr.core.domain.validation.CommonValidationException
 
 @JvmInline
-value class Name private constructor(val value: String) {
+value class KeywordValue private constructor(val value: String) {
     /**
-     * 이름 VO
+     * 키워드 명(값) VO
      *
-     * @throws CommonValidationException 유효성 검사 실패 시
+     * @throws com.peekr.core.domain.validation.CommonValidationException 유효성 검사 실패 시
      */
     companion object {
         const val MIN_LENGTH = 1
-        const val MAX_LENGTH = 30
-        private const val FIELD = "이름"
+        const val MAX_LENGTH = 15
+        private const val FIELD = "키워드"
 
-        /** 사용자 이름 규칙: 영어/숫자/한글만 허용 */
-        val regex = Regex("^[a-zA-Z0-9가-힣]+$")
+        fun from(value: String): KeywordValue = KeywordValue(value)
 
-        fun from(value: String): Name = Name(value)
-
-        operator fun invoke(value: String): Name = from(value)
+        operator fun invoke(value: String): KeywordValue = from(value)
     }
 
     init {
@@ -38,13 +35,6 @@ value class Name private constructor(val value: String) {
                     field = FIELD,
                     min = MIN_LENGTH,
                     max = MAX_LENGTH,
-                )
-            }
-            // 3) 허용 문자 위반
-            !value.matches(regex) -> {
-                throw CommonValidationException.InvalidFormat(
-                    field = FIELD,
-                    format = "영어/숫자/한글",
                 )
             }
         }

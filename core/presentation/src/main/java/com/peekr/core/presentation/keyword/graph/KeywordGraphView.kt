@@ -19,7 +19,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.peekr.core.presentation.keyword.state.rememberNodeState
 import com.peekr.core.presentation.keyword.view.KeywordNodeEdge
 import com.peekr.core.presentation.keyword.view.UserNode
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
@@ -41,19 +40,24 @@ fun KeywordGraphView(
     GraphBoard(modifier = modifier) {
         // 사용자 노드
         UserNode(
-            modifier = Modifier.align(Alignment.Center).size(UserNodeSizeDp).zIndex(2f),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(UserNodeSizeDp)
+                .zIndex(2f),
             profileImageUrl = profileImageUrl,
             onClick = { },
         )
 
         // 키워드 노드 & 엣지
         keywords.forEach { keyword ->
-            val nodeState = rememberNodeState(keyword.offsetX.toFloat(), keyword.offsetY.toFloat())
             KeywordNodeEdge(
                 modifier = Modifier.zIndex(1f),
-                nodeState = nodeState,
+                offsetX = keyword.offsetX.toFloat(),
+                offsetY = keyword.offsetY.toFloat(),
                 label = keyword.keywordName,
                 onNodeClick = { },
+                onNodeChanged = { offsetX, offsetY ->
+                },
             )
         }
     }

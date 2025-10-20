@@ -1,6 +1,6 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.validation.ValidationError
+import com.peekr.core.domain.validation.CommonValidationError
 import com.peekr.core.domain.validation.ValidationResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.last
@@ -22,7 +22,7 @@ class ValidateIntroduceUseCaseTest {
     fun `소개 글 유효성 검사 실패 테스트 - 길이 제약 위반`() = runTest {
         val result = usecase(TooLongIntroduce).last()
         assertTrue(result is ValidationResult.Invalid)
-        assertTrue((result as ValidationResult.Invalid).error is ValidationError.Introduce.TooLong)
+        assertTrue((result as ValidationResult.Invalid).error is CommonValidationError.TooShortOrLong)
     }
 
     companion object {

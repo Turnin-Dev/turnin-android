@@ -1,36 +1,26 @@
 package com.peekr.core.presentation.error
 
+import com.peekr.core.domain.validation.CommonValidationError
 import com.peekr.core.domain.validation.ValidationError
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.util.UiText
 
 fun ValidationError.asUiText(): UiText = when (this) {
-    // ------------------------------ DisplayID ------------------------------
-    ValidationError.DisplayId.Empty -> {
-        UiText.StringResource(R.string.validation_display_id_empty)
-    }
+    is CommonValidationError.Empty -> UiText.StringResource(
+        R.string.common_validation_error_empty_field,
+        this.field,
+    )
 
-    is ValidationError.DisplayId.TooShortOrLong -> {
-        UiText.DynamicString("${this.min}~${this.max}자 이내만 가능합니다.")
-    }
+    is CommonValidationError.TooShortOrLong -> UiText.StringResource(
+        R.string.common_validation_error_length_range,
+        this.field,
+        this.min,
+        this.max,
+    )
 
-    is ValidationError.DisplayId.InvalidFormat -> {
-        UiText.DynamicString("${this.format}만 가능합니다.")
-    }
-    // ------------------------------ Introduce ------------------------------
-    is ValidationError.Introduce.TooLong -> {
-        UiText.DynamicString("${this.max}자 이내만 가능합니다.")
-    }
-    // ------------------------------ Name ------------------------------
-    ValidationError.Name.Empty -> {
-        UiText.StringResource(R.string.validation_name_empty)
-    }
-
-    is ValidationError.Name.TooShortOrLong -> {
-        UiText.DynamicString("${this.min}~${this.max}자 이내만 가능합니다.")
-    }
-
-    is ValidationError.Name.InvalidFormat -> {
-        UiText.DynamicString("${this.format}만 가능합니다.")
-    }
+    is CommonValidationError.InvalidFormat -> UiText.StringResource(
+        R.string.common_validation_error_invalid_format,
+        this.field,
+        this.format,
+    )
 }

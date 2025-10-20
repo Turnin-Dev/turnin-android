@@ -44,6 +44,7 @@ import com.peekr.presentation.profile.state.KeywordTextFieldState
  *
  * @param modifier [Modifier]
  * @param isOpen 모달 표시 유무
+ * @param loading 로딩 표시 여부
  * @param keywordTextFieldState 키워드 텍스트 필드 상태
  * @param keywordDescTextFieldState 키워드 내용 텍스트 필드 상태
  * @param onKeywordTextChanged 키워드 텍스트 변화 시 콜백
@@ -56,6 +57,7 @@ import com.peekr.presentation.profile.state.KeywordTextFieldState
 internal fun AddKeywordModal(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
+    loading: Boolean,
     keywordTextFieldState: KeywordTextFieldState,
     keywordDescTextFieldState: KeywordTextFieldState,
     onKeywordTextChanged: (String) -> Unit,
@@ -77,6 +79,7 @@ internal fun AddKeywordModal(
         PeekrModalWrapper(
             isOpen = isOpen,
             animated = true,
+            loading = loading,
             onDismissRequest = onCancel,
             onAnimationFinished = { onAnimationFinished?.invoke() },
         ) {
@@ -372,6 +375,7 @@ private fun AddKeywordModalPreview() {
 
             AddKeywordModal(
                 isOpen = isOpen,
+                loading = false,
                 keywordTextFieldState = text,
                 keywordDescTextFieldState = text2,
                 onKeywordTextChanged = {},

@@ -32,8 +32,9 @@
     <string name="error_network_upload_file_failed">파일 업로드에 실패했습니다.</string>
 
     <!-- Validation Error Type -->
-    <string name="validation_display_id_empty">사용자 표시 ID가 비어있습니다.</string>
-    <string name="validation_name_empty">이름이 비어있습니다.</string>
+    <string name="common_validation_error_empty_field">%1$s이(가) 비어있을 수 없습니다.</string>
+    <string name="common_validation_error_length_range">%1$s은(는) %2$d ~ %3$d자 이내만 가능합니다.</string>
+    <string name="common_validation_error_invalid_format">%1$s은(는) %2$s만 가능합니다.</string>
 
     <!-- Bottom Navigation -->
     <string name="bottom_nav_item_home">홈</string>

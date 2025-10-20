@@ -19,7 +19,9 @@ import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.util.Result
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
@@ -43,6 +45,7 @@ class AuthRepositoryImplTest {
         runTest {
             // given
             coEvery { dataSource.login(any()) } returns NetworkResult.Success(mockLoginResponse)
+            coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
 
             // when
             val result = repository.login(mockLogin).last()
@@ -165,6 +168,7 @@ class AuthRepositoryImplTest {
         coEvery {
             dataSource.register(any())
         } returns NetworkResult.Success(mockRegisterResponse)
+        coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
 
         // when
         val result = repository.register(mockRegister).last()
