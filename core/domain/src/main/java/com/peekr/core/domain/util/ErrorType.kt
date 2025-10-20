@@ -23,6 +23,10 @@ sealed interface ErrorType : DomainError {
         LoginFailed,
     }
 
+    sealed interface Profile : ErrorType {
+        data class ValidationError(val message: String) : Profile
+    }
+
     /** 네트워크에서 발생한 에러 타입 */
     enum class Network : ErrorType {
         /** 허가되지 않은 인증 */

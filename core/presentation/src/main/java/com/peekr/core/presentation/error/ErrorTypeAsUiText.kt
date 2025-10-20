@@ -18,6 +18,7 @@ fun ErrorType.asUiText(): UiText = when (this) {
     ErrorType.Auth.KakaoDeleteAccountError -> StringResource(R.string.error_auth_kakao_delete_account_error)
     ErrorType.Auth.SaveTokenFailed -> StringResource(R.string.error_auth_save_token_failed)
     ErrorType.Auth.LoginFailed -> StringResource(R.string.error_auth_login_failed)
+    is ErrorType.Profile.ValidationError -> DynamicString(this.message)
     // ------------------------------ Exception ------------------------------
     ErrorType.Exception.Json -> StringResource(R.string.error_exception_json)
     ErrorType.Exception.TimeOut -> StringResource(R.string.error_exception_timeout)

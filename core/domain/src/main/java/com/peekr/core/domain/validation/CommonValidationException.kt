@@ -19,7 +19,7 @@ sealed class CommonValidationException(message: String) : IllegalArgumentExcepti
     ) : CommonValidationException(field)
 }
 
-fun CommonValidationException.toValidationError(): ValidationError = when (this) {
+fun CommonValidationException.toCommonValidationError(): CommonValidationError = when (this) {
     is CommonValidationException.Empty -> {
         CommonValidationError.Empty(field)
     }

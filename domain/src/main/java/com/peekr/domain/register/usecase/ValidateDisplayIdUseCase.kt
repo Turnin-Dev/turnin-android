@@ -3,7 +3,7 @@ package com.peekr.domain.register.usecase
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.validation.CommonValidationException
 import com.peekr.core.domain.validation.ValidationResult
-import com.peekr.core.domain.validation.toValidationError
+import com.peekr.core.domain.validation.toCommonValidationError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +20,7 @@ class ValidateDisplayIdUseCase @Inject constructor() {
             val result = DisplayId(displayId)
             emit(ValidationResult.Valid(result))
         } catch (e: CommonValidationException) {
-            emit(ValidationResult.Invalid(e.toValidationError()))
+            emit(ValidationResult.Invalid(e.toCommonValidationError()))
         }
     }
 }
