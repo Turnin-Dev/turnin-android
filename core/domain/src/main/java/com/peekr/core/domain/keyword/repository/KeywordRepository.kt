@@ -1,7 +1,7 @@
 package com.peekr.core.domain.keyword.repository
 
 import com.peekr.core.domain.keyword.model.Keyword
-import com.peekr.core.domain.keyword.model.KeywordId
+import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow

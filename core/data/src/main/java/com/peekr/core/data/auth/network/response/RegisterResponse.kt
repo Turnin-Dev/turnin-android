@@ -1,7 +1,7 @@
 package com.peekr.core.data.auth.network.response
 
 import com.peekr.core.domain.auth.model.RegisterResult
-import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.model.UserId
 import com.squareup.moshi.JsonClass
 
 /**

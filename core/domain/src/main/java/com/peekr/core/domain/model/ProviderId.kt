@@ -1,4 +1,4 @@
-package com.peekr.core.domain.user.model
+package com.peekr.core.domain.model
 
 /**
  * 외부 서비스에서 제공된 사용자의 고유 ID를 래핑한다.

@@ -1,11 +1,11 @@
 package com.peekr.core.data.userKeyword.network.response
 
-import com.peekr.core.domain.keyword.model.KeywordId
-import com.peekr.core.domain.keyword.model.KeywordValue
-import com.peekr.core.domain.user.model.UserId
-import com.peekr.core.domain.userKeyword.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywordId
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

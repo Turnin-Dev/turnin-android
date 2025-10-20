@@ -1,7 +1,7 @@
 package com.peekr.domain.profile.usecase
 
-import com.peekr.core.domain.keyword.model.KeywordValue
-import com.peekr.core.domain.userKeyword.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result

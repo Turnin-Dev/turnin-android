@@ -1,14 +1,14 @@
-package com.peekr.core.domain.keyword.model
+package com.peekr.core.domain.model
 
 import com.peekr.core.domain.validation.CommonValidationException
 
-/**
- * 키워드 명(값)
- *
- * @throws CommonValidationException 유효성 검사 실패 시
- */
 @JvmInline
 value class KeywordValue private constructor(val value: String) {
+    /**
+     * 키워드 명(값) VO
+     *
+     * @throws com.peekr.core.domain.validation.CommonValidationException 유효성 검사 실패 시
+     */
     companion object {
         const val MIN_LENGTH = 1
         const val MAX_LENGTH = 15

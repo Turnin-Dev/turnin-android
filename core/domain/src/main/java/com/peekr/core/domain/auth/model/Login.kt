@@ -1,7 +1,7 @@
 package com.peekr.core.domain.auth.model
 
-import com.peekr.core.domain.user.model.ProviderId
-import com.peekr.core.domain.user.model.SocialLoginProvider
+import com.peekr.core.domain.model.ProviderId
+import com.peekr.core.domain.model.SocialLoginProvider
 
 /**
  * 로그인 시 사용 한다.

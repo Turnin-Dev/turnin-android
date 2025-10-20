@@ -1,8 +1,8 @@
 package com.peekr.domain.profile.usecase
 
-import com.peekr.core.domain.user.model.DisplayId
-import com.peekr.core.domain.user.model.Introduce
-import com.peekr.core.domain.user.model.Name
+import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.Introduce
+import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.model.ProfilePatch
 import com.peekr.domain.profile.repository.ProfileRepository

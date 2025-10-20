@@ -1,7 +1,8 @@
 package com.peekr.core.domain.userKeyword.model
 
-import com.peekr.core.domain.keyword.model.KeywordValue
-import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.UserId
 
 /**
  * 사용자 키워드 생성 요청

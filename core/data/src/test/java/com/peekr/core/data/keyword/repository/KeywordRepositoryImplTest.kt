@@ -7,8 +7,8 @@ import com.peekr.core.data.keyword.network.response.toDomainModel
 import com.peekr.core.data.network.util.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.toErrorType
-import com.peekr.core.domain.keyword.model.KeywordId
 import com.peekr.core.domain.keyword.repository.KeywordRepository
+import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.coEvery

@@ -2,8 +2,8 @@ package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.user.model.ProviderId
-import com.peekr.core.domain.user.model.SocialLoginProvider
+import com.peekr.core.domain.model.ProviderId
+import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.model.LoginWithExistsUser

@@ -8,7 +8,7 @@ import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.coroutine.trySendAndClose
-import com.peekr.core.domain.user.model.ProviderId
+import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.util.AuthManager

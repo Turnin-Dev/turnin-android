@@ -8,7 +8,7 @@ import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.networkCall
-import com.peekr.core.domain.user.model.DisplayId
+import com.peekr.core.domain.model.DisplayId
 import javax.inject.Inject
 
 class AuthNetworkDataSource @Inject constructor(

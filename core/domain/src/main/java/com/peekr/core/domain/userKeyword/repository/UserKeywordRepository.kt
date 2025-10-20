@@ -1,9 +1,9 @@
 package com.peekr.core.domain.userKeyword.repository
 
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result

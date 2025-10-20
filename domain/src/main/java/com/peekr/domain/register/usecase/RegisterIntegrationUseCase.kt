@@ -3,11 +3,11 @@ package com.peekr.domain.register.usecase
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.coroutine.flatMapResult
-import com.peekr.core.domain.user.model.DisplayId
-import com.peekr.core.domain.user.model.Introduce
-import com.peekr.core.domain.user.model.Name
-import com.peekr.core.domain.user.model.ProviderId
-import com.peekr.core.domain.user.model.SocialLoginProvider
+import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.Introduce
+import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.model.ProviderId
+import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.register.model.ImageFileDetail

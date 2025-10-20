@@ -1,6 +1,6 @@
 package com.peekr.domain.login.util
 
-import com.peekr.core.domain.user.model.SocialLoginProvider
+import com.peekr.core.domain.model.SocialLoginProvider
 
 /**
  * 소셜로그인 플랫폼에 맞는 [AuthManager]를 생성한다.

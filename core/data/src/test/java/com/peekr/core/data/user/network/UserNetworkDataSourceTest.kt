@@ -6,7 +6,7 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.user.network.request.UserPatchRequest
 import com.peekr.core.data.user.network.response.UserProfileResponse
 import com.peekr.core.data.user.network.response.UserResponse
-import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.model.UserId
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

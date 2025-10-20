@@ -1,6 +1,6 @@
 package com.peekr.core.domain.auth.model
 
-import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.model.UserId
 
 /**
  * 회원가입 결과

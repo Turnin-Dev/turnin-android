@@ -3,11 +3,11 @@ package com.peekr.data.profile.repository
 import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.domain.coroutine.combineWithResult
-import com.peekr.core.domain.keyword.model.KeywordValue
-import com.peekr.core.domain.user.model.UserId
+import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.KeywordDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.core.domain.util.ErrorType
