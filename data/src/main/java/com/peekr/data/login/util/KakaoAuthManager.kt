@@ -7,9 +7,9 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.coroutine.trySendAndClose
 import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.util.AuthManager
 import kotlinx.coroutines.channels.ProducerScope
@@ -17,12 +17,12 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-private typealias ProviderIdResult = Result<ProviderId, ErrorType>
+private typealias ProviderIdResult = Result<ProviderId, AuthErrorType>
 
 class KakaoAuthManager(private val context: Context) : AuthManager {
     private val tag = this::class.java.simpleName
 
-    override fun signIn(): Flow<Result<ProviderId, ErrorType>> = callbackFlow {
+    override fun signIn(): Flow<Result<ProviderId, AuthErrorType>> = callbackFlow {
         if (AuthApiClient.Companion.instance.hasToken()) {
             UserApiClient.Companion.instance.accessTokenInfo { tokenInfo, error ->
                 if (error != null) {
@@ -33,7 +33,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                     } else {
                         // 2. another error
                         AppLogger.i(tag, "Weird error during Kakao sign-in")
-                        trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignInError))
+                        trySendAndClose(Result.Error(AuthErrorType.KakaoSignInError))
                     }
                 } else {
                     // 3. token validity check successful (renew if necessary)
@@ -50,28 +50,28 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         awaitClose()
     }
 
-    override fun signOut(): Flow<Result<Unit, ErrorType>> = callbackFlow {
+    override fun signOut(): Flow<Result<Unit, AuthErrorType>> = callbackFlow {
         UserApiClient.Companion.instance.logout { e ->
             if (e == null) {
                 AppLogger.i(tag, "Kakao sign-out succeeded.")
                 trySendAndClose(Result.Success(Unit))
             } else {
                 AppLogger.e(tag, e, "Kakao sign-out failed.")
-                trySendAndClose(Result.Error(ErrorType.Auth.KakaoSignOutError, e.message))
+                trySendAndClose(Result.Error(AuthErrorType.KakaoSignOutError, e.message))
             }
         }
 
         awaitClose()
     }
 
-    override fun deleteAccount(): Flow<Result<Unit, ErrorType>> = callbackFlow {
+    override fun deleteAccount(): Flow<Result<Unit, AuthErrorType>> = callbackFlow {
         UserApiClient.Companion.instance.unlink { e ->
             if (e == null) {
                 AppLogger.i(tag, "Kakao account deleted.")
                 trySendAndClose(Result.Success(Unit))
             } else {
                 AppLogger.e(tag, e, "Failed to delete Kakao account.")
-                trySendAndClose(Result.Error(ErrorType.Auth.KakaoDeleteAccountError, e.message))
+                trySendAndClose(Result.Error(AuthErrorType.KakaoDeleteAccountError, e.message))
             }
         }
 
@@ -96,7 +96,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                 AppLogger.i(tag, "'Login with KakaoTalk' succeeded.")
                 loginSuccess()
             } else {
-                trySendAndClose(Result.Error(ErrorType.Unexpected(error)))
+                trySendAndClose(Result.Error(AuthErrorType.Unexpected(error)))
             }
         }
 
@@ -105,7 +105,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         error: Throwable?,
     ) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySendAndClose(Result.Error(ErrorType.Auth.Cancellation))
+            trySendAndClose(Result.Error(AuthErrorType.Cancellation))
         } else {
             loginWithKakaoAccount(context)
         }
@@ -120,13 +120,13 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                 AppLogger.i(tag, "'Login with KakaoAccount' succeeded.")
                 loginSuccess()
             } else {
-                trySendAndClose(Result.Error(ErrorType.Unexpected(error)))
+                trySendAndClose(Result.Error(AuthErrorType.Unexpected(error)))
             }
         }
 
     private fun ProducerScope<ProviderIdResult>.loginWithKakaoAccountError(error: Throwable?) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySendAndClose(Result.Error(ErrorType.Auth.Cancellation))
+            trySendAndClose(Result.Error(AuthErrorType.Cancellation))
         } else {
             close()
         }
@@ -140,7 +140,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                 trySendAndClose(Result.Success(providerId))
             } else {
                 AppLogger.i(tag, "Kakao user not found.")
-                trySendAndClose(Result.Error(ErrorType.Auth.UserNotFound))
+                trySendAndClose(Result.Error(AuthErrorType.UserNotFound))
             }
         }
     }

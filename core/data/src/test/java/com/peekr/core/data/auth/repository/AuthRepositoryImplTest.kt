@@ -6,9 +6,9 @@ import com.peekr.core.data.auth.network.response.LoginResponse
 import com.peekr.core.data.auth.network.response.RegisterResponse
 import com.peekr.core.data.auth.network.response.toDomainModel
 import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.Register
@@ -68,7 +68,7 @@ class AuthRepositoryImplTest {
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
             assertEquals(result.message, mockErrorMessage)
         }
 
@@ -113,7 +113,7 @@ class AuthRepositoryImplTest {
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
             assertEquals(result.message, mockErrorMessage)
         }
 
@@ -158,7 +158,7 @@ class AuthRepositoryImplTest {
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
             assertEquals(result.message, mockErrorMessage)
         }
 
@@ -190,7 +190,7 @@ class AuthRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
         assertEquals(result.message, mockErrorMessage)
     }
 

@@ -7,7 +7,6 @@ import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.every
 import io.mockk.mockk

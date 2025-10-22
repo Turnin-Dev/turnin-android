@@ -1,8 +1,8 @@
 package com.peekr.domain.login.usecase
 
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.util.AuthManagerFactory
 import javax.inject.Inject
@@ -24,7 +24,7 @@ class SocialLoginUseCase @Inject constructor(
     private val authManagerFactory: AuthManagerFactory,
 ) {
     /** @param provider 로그인에 사용할 소셜 플랫폼 */
-    operator fun invoke(provider: SocialLoginProvider): Flow<Result<Login, ErrorType>> {
+    operator fun invoke(provider: SocialLoginProvider): Flow<Result<Login, AuthErrorType>> {
         val authManager = authManagerFactory.create(provider)
         return authManager
             .signIn()
@@ -39,7 +39,7 @@ class SocialLoginUseCase @Inject constructor(
                     is Result.Error -> result
                 }
             }.catch { e ->
-                emit(Result.Error(error = ErrorType.Unexpected(e), message = e.message))
+                emit(Result.Error(error = AuthErrorType.Unexpected(e), message = e.message))
             }
     }
 }

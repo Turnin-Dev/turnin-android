@@ -1,7 +1,8 @@
 package com.peekr.core.data.network.util
 
 import android.util.MalformedJsonException
-import com.peekr.core.data.network.CommonErrorResponse
+import com.peekr.core.data.network.error.CommonErrorResponse
+import com.peekr.core.data.network.error.NetworkErrorType
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi

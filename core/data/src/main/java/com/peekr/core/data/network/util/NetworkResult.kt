@@ -1,5 +1,7 @@
 package com.peekr.core.data.network.util
 
+import com.peekr.core.data.network.error.NetworkErrorType
+
 /**
  * 네트워크 호출 결과 래퍼 클래스
  *
