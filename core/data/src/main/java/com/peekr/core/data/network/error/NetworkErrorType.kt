@@ -1,6 +1,8 @@
-package com.peekr.core.data.network.util
+package com.peekr.core.data.network.error
 
-sealed interface NetworkErrorType {
+import com.peekr.core.domain.util.BaseError
+
+sealed interface NetworkErrorType : BaseError {
     /** Network 에러 타입 */
     enum class Network : NetworkErrorType {
         EmptyResponse,

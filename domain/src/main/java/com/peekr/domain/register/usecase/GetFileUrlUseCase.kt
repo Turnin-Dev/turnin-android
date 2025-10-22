@@ -3,8 +3,8 @@ package com.peekr.domain.register.usecase
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.register.error.RegisterErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -23,7 +23,7 @@ internal class GetFileUrlUseCase @Inject internal constructor(
         file: ByteArray,
         fileName: String,
         mime: Mime,
-    ): Flow<Result<String?, ErrorType>> =
+    ): Flow<Result<String?, RegisterErrorType>> =
         getFileUploadPresignedUrlUseCase(fileName, mime)
             .flatMapResult { result: PresignedUrl ->
                 uploadFileUseCase(result.presignedUrl, file, fileName, mime)

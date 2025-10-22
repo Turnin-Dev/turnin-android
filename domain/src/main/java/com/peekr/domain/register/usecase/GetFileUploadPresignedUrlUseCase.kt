@@ -1,10 +1,12 @@
 package com.peekr.domain.register.usecase
 
+import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.util.mapError
+import com.peekr.domain.register.error.RegisterErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +14,13 @@ import kotlinx.coroutines.flow.Flow
 internal class GetFileUploadPresignedUrlUseCase @Inject constructor(
     private val fileRepository: FileRepository,
 ) {
-    operator fun invoke(fileName: String, mime: Mime): Flow<Result<PresignedUrl, ErrorType>> =
-        fileRepository.getFileUploadPresignedUrl(fileName, mime)
+    operator fun invoke(fileName: String, mime: Mime): Flow<Result<PresignedUrl, RegisterErrorType>> =
+        fileRepository
+            .getFileUploadPresignedUrl(fileName, mime)
+            .mapError { fileErrorType ->
+                when (fileErrorType) {
+                    is FileErrorType.Unexpected -> RegisterErrorType.Unexpected(fileErrorType.cause)
+                    else -> RegisterErrorType.FileError(fileErrorType)
+                }
+            }
 }

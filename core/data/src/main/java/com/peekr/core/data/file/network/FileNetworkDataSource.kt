@@ -3,7 +3,7 @@ package com.peekr.core.data.file.network
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.file.network.response.PresignedUrlResponse
 import com.peekr.core.data.network.DefaultOkHttpClient
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.networkCall
 import javax.inject.Inject

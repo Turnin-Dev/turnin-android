@@ -1,8 +1,8 @@
 package com.peekr.domain.register.usecase
 
+import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.every
 import io.mockk.mockk
@@ -35,7 +35,7 @@ class UploadFileUseCaseTest {
     @Test
     fun `파일 업로드 시 에러가 발생하면 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Network.ClientError
+        val expectedError = FileErrorType.Unexpected(null)
         every {
             repository.uploadFile(any(), any(), any(), any())
         } returns flowOf(Result.Error(expectedError))

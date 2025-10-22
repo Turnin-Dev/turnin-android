@@ -3,9 +3,9 @@ package com.peekr.core.data.file.repository
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.file.network.FileDataSource
 import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
@@ -58,7 +58,7 @@ class FileRepositoryImplTest {
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
             assertEquals(result.message, mockErrorMessage)
         }
 

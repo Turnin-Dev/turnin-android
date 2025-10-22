@@ -1,8 +1,8 @@
 package com.peekr.core.domain.file
 
+import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
@@ -17,7 +17,7 @@ interface FileRepository {
     fun getFileUploadPresignedUrl(
         fileName: String,
         mime: Mime,
-    ): Flow<Result<PresignedUrl, ErrorType>>
+    ): Flow<Result<PresignedUrl, FileErrorType>>
 
     /**
      * 파일 업로드
@@ -34,5 +34,5 @@ interface FileRepository {
         file: ByteArray,
         fileName: String,
         mime: Mime,
-    ): Flow<Result<String?, ErrorType>>
+    ): Flow<Result<String?, FileErrorType>>
 }

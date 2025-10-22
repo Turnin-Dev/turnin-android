@@ -1,6 +1,5 @@
 package com.peekr.domain.profile.usecase
 
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.model.ProfilePatch
 import com.peekr.domain.profile.repository.ProfileRepository
