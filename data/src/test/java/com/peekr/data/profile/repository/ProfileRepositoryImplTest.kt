@@ -12,15 +12,18 @@ import com.peekr.core.domain.model.Role
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.ProfilePatch
 import io.mockk.every
 import io.mockk.mockk
@@ -73,7 +76,7 @@ class ProfileRepositoryImplTest {
     @Test
     fun `사용자 프로필 조회 - 사용자 조회할 때 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Network.ClientError
+        val expectedError = UserErrorType.Unexpected(null)
         every { userRepository.getUserProfile() } returns
             flow {
                 emit(Result.Loading)
@@ -97,7 +100,7 @@ class ProfileRepositoryImplTest {
     @Test
     fun `사용자 프로필 조회 - 사용자 키워드 조회할 때 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Network.ClientError
+        val expectedError = UserKeywordErrorType.Unexpected(null)
         every { userRepository.getUserProfile() } returns
             flow {
                 emit(Result.Loading)
@@ -135,7 +138,7 @@ class ProfileRepositoryImplTest {
     @Test
     fun `사용자 프로필 수정 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Network.ClientError
+        val expectedError = UserErrorType.Unexpected(null)
         every {
             userRepository.updateUser(TestUserPatch)
         } returns flowOf(Result.Error(expectedError))
@@ -176,11 +179,11 @@ class ProfileRepositoryImplTest {
     @Test
     fun `사용자 프로필 키워드 추가 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedErrorType = ErrorType.Exception.IO
+        val expectedError = UserKeywordErrorType.Unexpected(null)
         every { dataStoreManager.getLongData(any()) } returns flowOf(TestUserId.value)
         every {
             userKeywordRepository.createUserKeyword(any())
-        } returns flowOf(Result.Error(expectedErrorType))
+        } returns flowOf(Result.Error(expectedError))
 
         // when
         val addedUserKeyword = repository
@@ -194,7 +197,7 @@ class ProfileRepositoryImplTest {
         // then
         assertTrue(addedUserKeyword is Result.Error)
         assertEquals(
-            expectedErrorType,
+            expectedError,
             (addedUserKeyword as Result.Error).error,
         )
     }
@@ -219,7 +222,7 @@ class ProfileRepositoryImplTest {
         // then
         assertTrue(addedUserKeyword is Result.Error)
         assertEquals(
-            ErrorType.Unexpected(null),
+            ProfileErrorType.Unexpected(null),
             (addedUserKeyword as Result.Error).error,
         )
     }

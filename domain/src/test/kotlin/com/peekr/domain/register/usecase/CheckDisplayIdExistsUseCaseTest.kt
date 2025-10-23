@@ -1,5 +1,6 @@
 package com.peekr.domain.register.usecase
 
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.util.Result
@@ -33,7 +34,7 @@ class CheckDisplayIdExistsUseCaseTest {
     @Test
     fun `사용자 표시 ID 중복 검사 시 에러가 발생하면 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Exception.IO
+        val expectedError = AuthErrorType.Unexpected(null)
         every {
             repository.existsDisplayId(TestDisplayId)
         } returns flowOf(Result.Error(expectedError))
