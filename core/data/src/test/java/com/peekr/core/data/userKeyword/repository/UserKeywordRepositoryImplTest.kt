@@ -1,8 +1,8 @@
 package com.peekr.core.data.userKeyword.repository
 
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
@@ -14,9 +14,9 @@ import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -66,7 +66,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toErrorType(),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -84,10 +84,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                UserKeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -124,7 +124,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toErrorType(),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -142,10 +142,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                UserKeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -192,7 +192,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toErrorType(),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -217,10 +217,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                UserKeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -253,7 +253,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toErrorType(),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -271,10 +271,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                UserKeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
             )
         }
     }

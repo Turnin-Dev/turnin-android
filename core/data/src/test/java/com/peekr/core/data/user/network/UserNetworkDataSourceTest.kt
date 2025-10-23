@@ -1,7 +1,7 @@
 package com.peekr.core.data.user.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.user.network.request.UserPatchRequest
 import com.peekr.core.data.user.network.response.UserProfileResponse

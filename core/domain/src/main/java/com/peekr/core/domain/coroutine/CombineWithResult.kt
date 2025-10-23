@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.combine
  * [combine] 확장 버전으로, Result 래퍼 클래스와 함께 사용한다.
  *
  * 이 확장함수를 사용할 때 [transform] 파라미터에 [Result.Success] 데이터만 넣어주면 된다.
+ *
+ * @param transform 두 개의 수신 타입([T1], [T2])을 [R] 타입으로 변환해서 반환한다.
  */
 fun <T1, T2, R> combineWithResult(
     flow1: Flow<Result<T1, BaseError>>,

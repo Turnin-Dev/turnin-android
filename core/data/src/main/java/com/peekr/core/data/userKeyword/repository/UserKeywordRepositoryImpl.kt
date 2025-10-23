@@ -1,8 +1,8 @@
 package com.peekr.core.data.userKeyword.repository
 
 import com.peekr.core.common.IO
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.toDataModel
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
@@ -13,7 +13,6 @@ import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,7 +32,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    emit(Result.Error(error = result.error.toCommonErrorType(), message = result.message))
                 }
             }
         }
@@ -48,7 +47,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    emit(Result.Error(error = result.error.toCommonErrorType(), message = result.message))
                 }
             }
         }
@@ -71,7 +70,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    emit(Result.Error(error = result.error.toCommonErrorType(), message = result.message))
                 }
             }
         }
@@ -86,7 +85,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    emit(Result.Error(error = result.error.toCommonErrorType(), message = result.message))
                 }
             }
         }
