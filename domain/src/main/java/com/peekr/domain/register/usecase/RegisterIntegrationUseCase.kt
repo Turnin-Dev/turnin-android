@@ -8,8 +8,9 @@ import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.util.mapError
+import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.domain.register.model.ImageFileDetail
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +33,7 @@ class RegisterIntegrationUseCase @Inject internal constructor(
         name: String,
         imageFileDetail: ImageFileDetail?,
         introduce: String?,
-    ): Flow<Result<Boolean, ErrorType>> = runCatching {
+    ): Flow<Result<Boolean, RegisterErrorType>> = runCatching {
         registerUseCase(
             provider = provider,
             providerId = ProviderId(providerId),
@@ -40,6 +41,10 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             name = Name(name),
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
-        ).flatMapResult { token: RegisterResult -> saveRefreshTokenUseCase(token.refreshToken) }
-    }.getOrElse { e -> flowOf(Result.Error(ErrorType.Unexpected(e))) }
+        ).flatMapResult { token: RegisterResult ->
+            saveRefreshTokenUseCase(token.refreshToken).mapError { authErrorType ->
+                RegisterErrorType.AuthError(authErrorType)
+            }
+        }
+    }.getOrElse { e -> flowOf(Result.Error(RegisterErrorType.Unexpected(e))) }
 }

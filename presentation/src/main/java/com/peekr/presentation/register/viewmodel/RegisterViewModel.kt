@@ -3,14 +3,12 @@ package com.peekr.presentation.register.viewmodel
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.core.domain.validation.ValidationResult
 import com.peekr.core.presentation.error.asUiText
-import com.peekr.core.presentation.error.asUiTextCodeFirst
-import com.peekr.core.presentation.error.asUiTextTypeFirst
 import com.peekr.core.presentation.image.toByteArray
 import com.peekr.core.presentation.model.UiSocialLoginProvider
+import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.domain.register.model.ExistsResult
 import com.peekr.domain.register.usecase.CheckDisplayIdExistsUseCase
 import com.peekr.domain.register.usecase.RegisterIntegrationUseCase
@@ -18,6 +16,7 @@ import com.peekr.domain.register.usecase.ValidateDisplayIdUseCase
 import com.peekr.domain.register.usecase.ValidateIntroduceUseCase
 import com.peekr.domain.register.usecase.ValidateNameUseCase
 import com.peekr.presentation.login.mapper.toDomainModel
+import com.peekr.presentation.register.error.asUiText
 import com.peekr.presentation.register.model.UiImageFileDetail
 import com.peekr.presentation.register.model.toDomainModel
 import com.peekr.presentation.register.state.RegisterDisplayIdState
@@ -119,9 +118,9 @@ class RegisterViewModel @Inject constructor(
                     _profileState.update { it.copy(loading = true) }
                 }
 
-                is Result.Error<ErrorType> -> {
+                is Result.Error<RegisterErrorType> -> {
                     _profileState.update {
-                        it.copy(introduceError = result.asUiTextCodeFirst(), loading = false)
+                        it.copy(introduceError = result.error.asUiText(), loading = false)
                     }
                 }
 
@@ -150,9 +149,9 @@ class RegisterViewModel @Inject constructor(
                             _displayIdState.update { it.copy(loading = true) }
                         }
 
-                        is Result.Error<ErrorType> -> {
+                        is Result.Error<RegisterErrorType> -> {
                             _displayIdState.update {
-                                it.copy(displayIdError = result.asUiTextTypeFirst(), loading = false)
+                                it.copy(displayIdError = result.error.asUiText(), loading = false)
                             }
                         }
 
@@ -160,7 +159,10 @@ class RegisterViewModel @Inject constructor(
                             val exists = result.data.exists
                             if (exists) { // 이미 존재하면 중복이므로 사용 X
                                 _displayIdState.update {
-                                    it.copy(displayIdError = RegisterError.DisplayIdNotAvailable.asUiText())
+                                    it.copy(
+                                        displayIdError =
+                                            RegisterErrorType.DisplayIdNotAvailable.asUiText(),
+                                    )
                                 }
                             } else {
                                 _displayIdState.update { it.copy(displayIdError = null) }
@@ -173,7 +175,7 @@ class RegisterViewModel @Inject constructor(
         } else {
             _displayIdState.update {
                 it.copy(
-                    displayIdError = RegisterError.CantUseEmptyOrBlank.asUiText(),
+                    displayIdError = RegisterErrorType.CantUseEmptyOrBlank.asUiText(),
                     loading = false,
                 )
             }

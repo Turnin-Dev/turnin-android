@@ -1,6 +1,7 @@
 package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.model.DisplayId
@@ -9,8 +10,8 @@ import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.register.error.RegisterErrorType
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -53,7 +54,7 @@ class RegisterIntegrationUseCaseTest {
     @Test
     fun `회원가입시 register 유스케이스에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Exception.IO
+        val expectedError = AuthErrorType.Unexpected(null)
         every {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Success(TestRegisterResult))
@@ -79,7 +80,7 @@ class RegisterIntegrationUseCaseTest {
     @Test
     fun `회원가입시 리프레쉬 토큰을 저장하는 과정에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Exception.IO
+        val expectedError = RegisterErrorType.Unexpected(null)
         every {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Error(expectedError))
@@ -124,7 +125,7 @@ class RegisterIntegrationUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertTrue((result as Result.Error).error is ErrorType.Unexpected)
+        assertTrue((result as Result.Error).error is RegisterErrorType.Unexpected)
     }
 
     companion object {
