@@ -5,6 +5,7 @@
     <!-- Error Code -->
     <!-- Error Code - Auth -->
     <string name="error_code_auth_a002">중복된 사용자 입니다.</string>
+    <string name="error_code_unexpected">알 수 없는 에러 코드</string>
 
     <!-- CommonErrorType -->
     <string name="common_error_exception_json">데이터가 손상되었습니다.</string>
