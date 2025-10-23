@@ -2,8 +2,6 @@ package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.util.Result
-import com.peekr.core.presentation.error.asUiText
-import com.peekr.core.presentation.userKeyword.model.toUiModel
 import com.peekr.core.presentation.util.MVIBaseViewModel
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.AddUserKeywordUseCase

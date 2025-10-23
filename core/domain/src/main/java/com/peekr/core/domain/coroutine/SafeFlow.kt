@@ -53,5 +53,3 @@ fun <T> safeFlow(
         if (exception is CancellationException) throw exception
         onError(exception)
     }
-
-private const val TAG = "SafeFlow"

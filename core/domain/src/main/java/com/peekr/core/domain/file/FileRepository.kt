@@ -1,6 +1,5 @@
 package com.peekr.core.domain.file
 
-import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
 import com.peekr.core.domain.util.Result
