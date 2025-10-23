@@ -7,8 +7,9 @@ import com.peekr.core.data.auth.network.response.ExistsResponse
 import com.peekr.core.data.auth.network.response.toDomainModel
 import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.LoginResult
@@ -17,7 +18,6 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.coroutine.safeResultFlow
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.core.domain.util.toErrorCode
 import javax.inject.Inject
@@ -29,8 +29,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
-    override fun login(login: Login): Flow<Result<LoginResult, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun login(login: Login): Flow<Result<LoginResult, AuthErrorType>> =
+        safeResultFlow<LoginResult, AuthErrorType>(ioDispatcher, { AuthErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = authDataSource.login(login.toDataModel())) {
                 is NetworkResult.Success -> {
@@ -42,25 +42,26 @@ class AuthRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    val error = AuthErrorType.CommonError(result.error.toCommonErrorType())
+                    emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
 
-    override fun existsUser(existsUser: ExistsUser): Flow<Result<Boolean, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun existsUser(existsUser: ExistsUser): Flow<Result<Boolean, AuthErrorType>> =
+        safeResultFlow<Boolean, AuthErrorType>(ioDispatcher, { AuthErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             emit(mapExistsResult(authDataSource.existsUser(existsUser.toDataModel())))
         }
 
-    override fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun existsDisplayId(displayId: DisplayId): Flow<Result<Boolean, AuthErrorType>> =
+        safeResultFlow<Boolean, AuthErrorType>(ioDispatcher, { AuthErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             emit(mapExistsResult(authDataSource.existsDisplayId(displayId)))
         }
 
-    override fun register(register: Register): Flow<Result<RegisterResult, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun register(register: Register): Flow<Result<RegisterResult, AuthErrorType>> =
+        safeResultFlow<RegisterResult, AuthErrorType>(ioDispatcher, { AuthErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = authDataSource.register(register.toDataModel())) {
                 is NetworkResult.Success -> {
@@ -72,9 +73,10 @@ class AuthRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
+                    val error = AuthErrorType.CommonError(result.error.toCommonErrorType())
                     emit(
                         Result.Error(
-                            error = result.error.toErrorType(),
+                            error = error,
                             message = result.message,
                             code = result.code?.toErrorCode(),
                         ),
@@ -83,17 +85,20 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun saveRefreshToken(token: String): Flow<Result<Unit, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun saveRefreshToken(token: String): Flow<Result<Unit, AuthErrorType>> =
+        safeResultFlow<Unit, AuthErrorType>(ioDispatcher, { AuthErrorType.Unexpected(it) }) {
             dataStoreManager.saveEncryptedStringData(
                 key = DataStoreKey.Auth.RefreshToken,
                 value = token,
             )
         }
 
-    private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, ErrorType> =
+    private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, AuthErrorType> =
         when (result) {
             is NetworkResult.Success -> Result.Success(result.data.exists)
-            is NetworkResult.Error -> Result.Error(error = result.error.toErrorType(), message = result.message)
+            is NetworkResult.Error -> Result.Error(
+                error = AuthErrorType.CommonError(result.error.toCommonErrorType()),
+                message = result.message,
+            )
         }
 }

@@ -11,8 +11,8 @@ import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.domain.register.model.ImageFileDetail
 import io.mockk.every
 import io.mockk.mockk
@@ -81,7 +81,7 @@ class RegisterUseCaseTest {
     @Test
     fun `업로드한 파일 url을 받아올 때 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = ErrorType.Network.ClientError
+        val expectedError = RegisterErrorType.Unexpected(null)
         every {
             authRepository.register(TestRegister)
         } returns flowOf(Result.Success(TestRegisterResult))

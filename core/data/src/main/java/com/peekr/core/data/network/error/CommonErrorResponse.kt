@@ -1,4 +1,4 @@
-package com.peekr.core.data.network
+package com.peekr.core.data.network.error
 
 import com.squareup.moshi.JsonClass
 

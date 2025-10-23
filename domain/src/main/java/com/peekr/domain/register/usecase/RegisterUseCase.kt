@@ -9,8 +9,9 @@ import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.util.mapError
+import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.domain.register.model.ImageFileDetail
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,7 @@ internal class RegisterUseCase @Inject internal constructor(
         name: Name,
         imageFileDetail: ImageFileDetail?,
         introduce: Introduce?,
-    ): Flow<Result<RegisterResult, ErrorType>> = if (imageFileDetail != null) {
+    ): Flow<Result<RegisterResult, RegisterErrorType>> = if (imageFileDetail != null) {
         getFileUrlUseCase(imageFileDetail.bytes, imageFileDetail.name, imageFileDetail.mime)
             .flatMapResult { profileImageUrl ->
                 val register = Register(
@@ -42,7 +43,9 @@ internal class RegisterUseCase @Inject internal constructor(
                     profileImageUrl = profileImageUrl,
                     introduce = introduce,
                 )
-                authRepository.register(register)
+                authRepository
+                    .register(register)
+                    .mapError { authErrorType -> RegisterErrorType.AuthError(authErrorType) }
             }
     } else {
         val register = Register(
@@ -53,6 +56,8 @@ internal class RegisterUseCase @Inject internal constructor(
             profileImageUrl = null,
             introduce = introduce,
         )
-        authRepository.register(register)
+        authRepository
+            .register(register)
+            .mapError { authErrorType -> RegisterErrorType.AuthError(authErrorType) }
     }
 }

@@ -1,0 +1,24 @@
+package com.peekr.domain.register.error
+
+import com.peekr.core.domain.auth.error.AuthErrorType
+import com.peekr.core.domain.file.FileErrorType
+import com.peekr.core.domain.util.BaseError
+
+sealed interface RegisterErrorType : BaseError {
+    /** 사용자 표시 ID를 사용할 수 없는 에러 */
+    data object DisplayIdNotAvailable : RegisterErrorType
+
+    /** 빈칸은 허용하지 않는다는 에러 */
+    data object CantUseEmptyOrBlank : RegisterErrorType
+
+    /** 변환된 사진이 null인 상황에 대한 에러 */
+    data object ImageFileIsNull : RegisterErrorType
+
+    /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
+    data class Unexpected(val cause: Throwable?) : RegisterErrorType
+
+    // ------------------------------ Other Error Type ------------------------------
+    data class FileError(val error: FileErrorType) : RegisterErrorType
+
+    data class AuthError(val error: AuthErrorType) : RegisterErrorType
+}

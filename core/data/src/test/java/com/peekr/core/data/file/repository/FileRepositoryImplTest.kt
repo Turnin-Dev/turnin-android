@@ -3,9 +3,10 @@ package com.peekr.core.data.file.repository
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.file.network.FileDataSource
 import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
@@ -49,16 +50,20 @@ class FileRepositoryImplTest {
     fun `getFileUploadPresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
+            val expected = NetworkErrorType.Network.Conflict
             coEvery {
                 dataSource.getFileUploadPresignedUrl(any(), any())
-            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+            } returns NetworkResult.Error(error = expected, message = mockErrorMessage)
 
             // when
             val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toErrorType())
+            assertEquals(
+                FileErrorType.CommonError(expected.toCommonErrorType()),
+                (result as Result.Error).error,
+            )
             assertEquals(result.message, mockErrorMessage)
         }
 

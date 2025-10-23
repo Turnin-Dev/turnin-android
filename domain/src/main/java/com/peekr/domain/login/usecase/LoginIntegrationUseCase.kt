@@ -1,11 +1,11 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.coroutine.mapSuccess
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,10 +24,10 @@ class LoginIntegrationUseCase @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase,
 ) {
-    operator fun invoke(login: Login): Flow<Result<Boolean, ErrorType>> =
+    operator fun invoke(login: Login): Flow<Result<Boolean, AuthErrorType>> =
         loginUseCase(login)
             .flatMapResult { result: LoginResult -> saveRefreshTokenUseCase(result.refreshToken) }
             .mapSuccess { true }
             .onStart { emit(Result.Loading) }
-            .catch { e -> emit(Result.Error(ErrorType.Auth.LoginFailed)) }
+            .catch { e -> emit(Result.Error(AuthErrorType.LoginFailed)) }
 }

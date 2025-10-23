@@ -4,12 +4,12 @@ import com.peekr.core.data.keyword.network.KeywordDataSource
 import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
 import com.peekr.core.data.keyword.network.response.KeywordResponse
 import com.peekr.core.data.keyword.network.response.toDomainModel
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
+import com.peekr.core.domain.keyword.error.KeywordErrorType
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -55,7 +55,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toErrorType(), (result as Result.Error).error)
+        assertEquals(
+            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -71,10 +74,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is KeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                KeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as KeywordErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -107,7 +110,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toErrorType(), (result as Result.Error).error)
+        assertEquals(
+            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -121,10 +127,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is KeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                KeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as KeywordErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -157,7 +163,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toErrorType(), (result as Result.Error).error)
+        assertEquals(
+            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -173,10 +182,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is ErrorType.Unexpected) {
+        if (result is Result.Error && result.error is KeywordErrorType.Unexpected) {
             assertEquals(
-                ErrorType.Unexpected(exception).cause?.message,
-                (result.error as ErrorType.Unexpected).cause?.message,
+                KeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as KeywordErrorType.Unexpected).cause?.message,
             )
         }
     }

@@ -4,14 +4,14 @@ import com.peekr.core.common.IO
 import com.peekr.core.data.keyword.network.KeywordDataSource
 import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
 import com.peekr.core.data.keyword.network.response.toDomainModel
-import com.peekr.core.data.network.util.NetworkErrorType
+import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.network.util.toErrorType
 import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.keyword.error.KeywordErrorType
 import com.peekr.core.domain.keyword.model.Keyword
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,8 +21,8 @@ class KeywordRepositoryImpl @Inject constructor(
     private val keywordDataSource: KeywordDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : KeywordRepository {
-    override fun getKeywordById(keywordId: KeywordId): Flow<Result<Keyword?, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun getKeywordById(keywordId: KeywordId): Flow<Result<Keyword?, KeywordErrorType>> =
+        safeResultFlow<Keyword?, KeywordErrorType>(ioDispatcher, { KeywordErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
             when (val result = keywordDataSource.getKeywordById(keywordId)) {
@@ -34,14 +34,15 @@ class KeywordRepositoryImpl @Inject constructor(
                     if (result.error == NetworkErrorType.Network.NotFound) {
                         emit(Result.Success(null))
                     } else {
-                        emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                        val error = KeywordErrorType.CommonError(result.error.toCommonErrorType())
+                        emit(Result.Error(error = error, message = result.message))
                     }
                 }
             }
         }
 
-    override fun getKeywordByName(keywordName: String): Flow<Result<Keyword?, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun getKeywordByName(keywordName: String): Flow<Result<Keyword?, KeywordErrorType>> =
+        safeResultFlow<Keyword?, KeywordErrorType>(ioDispatcher, { KeywordErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
             when (val result = keywordDataSource.getKeywordByName(keywordName)) {
@@ -53,14 +54,15 @@ class KeywordRepositoryImpl @Inject constructor(
                     if (result.error == NetworkErrorType.Network.NotFound) {
                         emit(Result.Success(null))
                     } else {
-                        emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                        val error = KeywordErrorType.CommonError(result.error.toCommonErrorType())
+                        emit(Result.Error(error = error, message = result.message))
                     }
                 }
             }
         }
 
-    override fun createKeyword(keyword: String): Flow<Result<Keyword, ErrorType>> =
-        safeResultFlow(ioDispatcher) {
+    override fun createKeyword(keyword: String): Flow<Result<Keyword, KeywordErrorType>> =
+        safeResultFlow<Keyword, KeywordErrorType>(ioDispatcher, { KeywordErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
             val createKeywordRequest = CreateKeywordRequest(keyword)
@@ -70,7 +72,8 @@ class KeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    emit(Result.Error(error = result.error.toErrorType(), message = result.message))
+                    val error = KeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    emit(Result.Error(error = error, message = result.message))
                 }
             }
         }

@@ -1,10 +1,10 @@
 package com.peekr.domain.login.usecase
 
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.model.LoginWithExistsUser
 import io.mockk.every
@@ -52,7 +52,7 @@ class GetLoginIfUserExistsUseCaseTest {
     @Test
     fun `UseCase에서 에러 발생 시 해당 에러를 반환하고 후속 UseCase는 실행되지 않는다`() = runTest {
         // given
-        val expectedError = ErrorType.Auth.Cancellation
+        val expectedError = AuthErrorType.Cancellation
         every { socialLoginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
@@ -77,7 +77,7 @@ class GetLoginIfUserExistsUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(ErrorType.Auth.LoginFailed, (result as Result.Error).error)
+        assertEquals(AuthErrorType.LoginFailed, (result as Result.Error).error)
     }
 
     @Test

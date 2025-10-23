@@ -1,6 +1,7 @@
 package com.peekr.core.domain.coroutine
 
-import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.BaseError
+import com.peekr.core.domain.util.CommonErrorType
 import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -37,8 +38,8 @@ class CombineWithResultKtTest {
     @Test
     fun `첫 번째 Flow가 Loading이면 Loading을 반환한다`() = runTest {
         // given
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Loading)
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Success(2))
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Loading)
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Success(2))
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->
@@ -53,8 +54,8 @@ class CombineWithResultKtTest {
     @Test
     fun `두 번째 Flow가 Loading이면 Loading을 반환한다`() = runTest {
         // given
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Success(2))
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Loading)
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Success(2))
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Loading)
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->
@@ -69,8 +70,8 @@ class CombineWithResultKtTest {
     @Test
     fun `두 Flow 모두 Loading이면 Loading을 반환한다`() = runTest {
         // given
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Loading)
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Loading)
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Loading)
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Loading)
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->
@@ -85,9 +86,9 @@ class CombineWithResultKtTest {
     @Test
     fun `첫 번째 Flow가 Error면 해당 Error를 반환한다`() = runTest {
         // given
-        val error = ErrorType.Network.ClientError
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Error(error))
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Success(1))
+        val error = CommonErrorType.Network.ClientError
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error))
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Success(1))
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->
@@ -103,9 +104,9 @@ class CombineWithResultKtTest {
     @Test
     fun `두 번째 Flow가 Error면 해당 Error를 반환한다`() = runTest {
         // given
-        val error = ErrorType.Network.ClientError
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Success(1))
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Error(error))
+        val error = CommonErrorType.Network.ClientError
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Success(1))
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error))
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->
@@ -121,10 +122,10 @@ class CombineWithResultKtTest {
     @Test
     fun `두 Flow 모두 Error일 때 첫 번째 Error를 반환한다`() = runTest {
         // given
-        val error1 = ErrorType.Network.ClientError
-        val error2 = ErrorType.Network.ServerError
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Error(error1))
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Error(error2))
+        val error1 = CommonErrorType.Network.ClientError
+        val error2 = CommonErrorType.Network.ServerError
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error1))
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error2))
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->
@@ -140,8 +141,8 @@ class CombineWithResultKtTest {
     @Test
     fun `Loading후 Success를 방출 시 정상적으로 처리된다`() = runTest {
         // given
-        val flow1: Flow<Result<Int, ErrorType>> = flowOf(Result.Loading, Result.Success(1))
-        val flow2: Flow<Result<Int, ErrorType>> = flowOf(Result.Success(2))
+        val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Loading, Result.Success(1))
+        val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Success(2))
 
         // when
         val result = combineWithResult(flow1, flow2) { f1, f2 ->

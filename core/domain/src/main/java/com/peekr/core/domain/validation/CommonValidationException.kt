@@ -19,16 +19,16 @@ sealed class CommonValidationException(message: String) : IllegalArgumentExcepti
     ) : CommonValidationException(field)
 }
 
-fun CommonValidationException.toCommonValidationError(): CommonValidationError = when (this) {
+fun CommonValidationException.toValidationErrorType(): ValidationErrorType = when (this) {
     is CommonValidationException.Empty -> {
-        CommonValidationError.Empty(field)
+        ValidationErrorType.Common.Empty(field)
     }
 
     is CommonValidationException.TooShortOrLong -> {
-        CommonValidationError.TooShortOrLong(field, min, max)
+        ValidationErrorType.Common.TooShortOrLong(field, min, max)
     }
 
     is CommonValidationException.InvalidFormat -> {
-        CommonValidationError.InvalidFormat(field, format)
+        ValidationErrorType.Common.InvalidFormat(field, format)
     }
 }

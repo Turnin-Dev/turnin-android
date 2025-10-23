@@ -1,6 +1,6 @@
 package com.peekr.core.domain.coroutine
 
-import com.peekr.core.domain.util.ErrorType
+import com.peekr.core.domain.util.CommonErrorType
 import com.peekr.core.domain.util.Result
 import io.mockk.clearAllMocks
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class SafeFlowTest {
         val expectedValue = "test data"
 
         // When
-        val flow = safeResultFlow<String>(testDispatcher) {
+        val flow = safeResultFlow<String, CommonErrorType>(testDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Success(expectedValue))
         }
 
@@ -54,12 +54,12 @@ class SafeFlowTest {
     fun `safeResultFlow - 예외 발생 시 Error 결과를 emit한다`() = testScope.runTest {
         // Given
         val exception = RuntimeException("Test exception")
-        val expectedErrorType = ErrorType.Unexpected(exception)
+        val expectedErrorType = CommonErrorType.Unexpected(exception)
 
         // When
-        val flow = safeResultFlow<String>(
+        val flow = safeResultFlow<String, CommonErrorType>(
             dispatcher = testDispatcher,
-            errorMapper = { ErrorType.Unexpected(exception) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(exception) },
         ) {
             throw exception
         }
@@ -76,15 +76,15 @@ class SafeFlowTest {
     fun `safeResultFlow - 커스텀 errorMapper를 사용한다`() = testScope.runTest {
         // Given
         val exception = IllegalArgumentException("Invalid argument")
-        val customErrorType = ErrorType.Exception.IO
+        val customErrorType = CommonErrorType.Exception.IO
 
         // When
-        val flow = safeResultFlow<String>(
+        val flow = safeResultFlow<String, CommonErrorType>(
             dispatcher = testDispatcher,
-            errorMapper = { throwable ->
+            unexpectedErrorMapper = { throwable ->
                 when (throwable) {
-                    is IllegalArgumentException -> ErrorType.Exception.IO
-                    else -> ErrorType.Unexpected(throwable)
+                    is IllegalArgumentException -> CommonErrorType.Exception.IO
+                    else -> CommonErrorType.Unexpected(throwable)
                 }
             },
         ) {
@@ -103,7 +103,7 @@ class SafeFlowTest {
         val values = listOf("value1", "value2", "value3")
 
         // When
-        val flow = safeResultFlow<String>(testDispatcher) {
+        val flow = safeResultFlow<String, CommonErrorType>(testDispatcher, { CommonErrorType.Unexpected(it) }) {
             values.forEach { value ->
                 emit(Result.Success(value))
             }

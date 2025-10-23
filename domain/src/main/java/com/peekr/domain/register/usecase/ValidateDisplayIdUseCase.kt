@@ -2,8 +2,9 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.validation.CommonValidationException
+import com.peekr.core.domain.validation.ValidationErrorType
 import com.peekr.core.domain.validation.ValidationResult
-import com.peekr.core.domain.validation.toCommonValidationError
+import com.peekr.core.domain.validation.toValidationErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,13 +15,14 @@ import kotlinx.coroutines.flow.flow
  * 사용자 표시 ID는 중복이 허용되지 않으므로 중복검사가 필요하다.
  */
 class ValidateDisplayIdUseCase @Inject constructor() {
-    operator fun invoke(displayId: String): Flow<ValidationResult<DisplayId>> = flow {
-        emit(ValidationResult.Loading)
-        try {
-            val result = DisplayId(displayId)
-            emit(ValidationResult.Valid(result))
-        } catch (e: CommonValidationException) {
-            emit(ValidationResult.Invalid(e.toCommonValidationError()))
+    operator fun invoke(displayId: String): Flow<ValidationResult<DisplayId, ValidationErrorType>> =
+        flow {
+            emit(ValidationResult.Loading)
+            try {
+                val result = DisplayId(displayId)
+                emit(ValidationResult.Valid(result))
+            } catch (e: CommonValidationException) {
+                emit(ValidationResult.Invalid(e.toValidationErrorType()))
+            }
         }
-    }
 }

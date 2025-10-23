@@ -1,13 +1,11 @@
 package com.peekr.core.domain.util
 
 /**
- * 도메인 에러 베이스 타입
+ * 에러 베이스 타입
  *
  * 다른 도메인에서 이를 확장하여 커스텀 에러를 정의할 때 도메인 계층에서 정의되어야 한다.
  */
-interface DomainError
-
-typealias BaseError = DomainError
+interface BaseError
 
 /** 결과 래퍼 클래스 */
 sealed interface Result<out T, out E : BaseError> {

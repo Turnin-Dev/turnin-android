@@ -1,11 +1,11 @@
 package com.peekr.domain.login.usecase
 
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.coroutine.flatMapResult
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.model.LoginWithExistsUser
 import javax.inject.Inject
@@ -23,12 +23,12 @@ class GetLoginIfUserExistsUseCase @Inject constructor(
     private val socialLoginUseCase: SocialLoginUseCase,
     private val authRepository: AuthRepository,
 ) {
-    operator fun invoke(provider: SocialLoginProvider): Flow<Result<LoginWithExistsUser, ErrorType>> =
+    operator fun invoke(provider: SocialLoginProvider): Flow<Result<LoginWithExistsUser, AuthErrorType>> =
         socialLoginUseCase(provider)
             .flatMapResult { result: Login ->
                 authRepository
                     .existsUser(ExistsUser(result.provider, result.providerId))
-                    .map { result2: Result<Boolean, ErrorType> ->
+                    .map { result2: Result<Boolean, AuthErrorType> ->
                         when (result2) {
                             Result.Loading -> Result.Loading
                             is Result.Error -> result2
@@ -42,5 +42,5 @@ class GetLoginIfUserExistsUseCase @Inject constructor(
                         }
                     }
             }.onStart { emit(Result.Loading) }
-            .catch { e -> emit(Result.Error(ErrorType.Auth.LoginFailed)) }
+            .catch { e -> emit(Result.Error(AuthErrorType.LoginFailed)) }
 }
