@@ -3,11 +3,11 @@ package com.peekr.domain.profile.usecase
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.core.domain.validation.CommonValidationException
 import com.peekr.core.domain.validation.toCommonValidationError
 import com.peekr.core.domain.validation.toErrorType
+import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.repository.ProfileRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +21,7 @@ class AddUserKeywordUseCase @Inject constructor(
     operator fun invoke(
         keyword: String,
         description: String,
-    ): Flow<Result<UserKeyword, ErrorType>> = flow {
+    ): Flow<Result<UserKeyword, ProfileErrorType>> = flow {
         try {
             emitAll(
                 profileRepository.addKeyword(

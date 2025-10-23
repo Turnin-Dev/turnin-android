@@ -5,8 +5,10 @@ import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.userKeyword.model.toUiModel
 import com.peekr.core.presentation.util.MVIBaseViewModel
+import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.AddUserKeywordUseCase
 import com.peekr.domain.profile.usecase.GetProfileUseCase
+import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +32,7 @@ class ProfileViewModel @Inject constructor(
                     this.copy(loading = true, error = null)
                 }
 
-                is Result.Error -> updateState {
+                is Result.Error<ProfileErrorType> -> updateState {
                     this.copy(loading = false, error = result.error.asUiText())
                 }
 

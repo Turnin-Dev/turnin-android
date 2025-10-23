@@ -20,7 +20,6 @@ import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.model.ProfilePatch
 import io.mockk.every

@@ -6,12 +6,15 @@ import com.peekr.core.domain.coroutine.combineWithResult
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.util.mapError
+import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.model.ProfilePatch
 import com.peekr.domain.profile.model.toUserPatch
@@ -27,7 +30,7 @@ class ProfileRepositoryImpl @Inject constructor(
     private val userKeywordRepository: UserKeywordRepository,
     private val dataStoreManager: DataStoreManager,
 ) : ProfileRepository {
-    override fun getProfile(): Flow<Result<Profile, ErrorType>> =
+    override fun getProfile(): Flow<Result<Profile, ProfileErrorType>> =
         combineWithResult(
             userRepository.getUserProfile(),
             userKeywordRepository.getUserKeywords(),
@@ -41,17 +44,25 @@ class ProfileRepositoryImpl @Inject constructor(
                 keywords = userKeywords.data.keywords,
             )
             Result.Success(profile)
+        }.mapError { baseError ->
+            when (baseError) {
+                is UserErrorType -> ProfileErrorType.UserError(baseError)
+                is UserKeywordErrorType -> ProfileErrorType.UserKeywordError(baseError)
+                else -> ProfileErrorType.Unexpected(null)
+            }
         }
 
-    override fun updateProfile(patch: ProfilePatch): Flow<Result<Unit, ErrorType>> =
-        userRepository.updateUser(patch.toUserPatch())
+    override fun updateProfile(patch: ProfilePatch): Flow<Result<Unit, ProfileErrorType>> =
+        userRepository
+            .updateUser(patch.toUserPatch())
+            .mapError { userErrorType -> ProfileErrorType.UserError(userErrorType) }
 
     override fun addKeyword(
         keyword: KeywordValue,
         description: KeywordDescription,
         offsetX: Double,
         offsetY: Double,
-    ): Flow<Result<UserKeyword, ErrorType>> = flow {
+    ): Flow<Result<UserKeyword, ProfileErrorType>> = flow {
         emit(Result.Loading)
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
         if (userId != null) {
@@ -62,10 +73,15 @@ class ProfileRepositoryImpl @Inject constructor(
                 offsetX = offsetX,
                 offsetY = offsetY,
             )
-            emitAll(userKeywordRepository.createUserKeyword(createUserKeyword))
+            emitAll(
+                userKeywordRepository
+                    .createUserKeyword(createUserKeyword)
+                    .mapError { userKeywordErrorType ->
+                        ProfileErrorType.UserKeywordError(userKeywordErrorType)
+                    },
+            )
         } else {
-            // TODO: Profile 전용 에러 타입 필요
-            emit(Result.Error(error = ErrorType.Unexpected(null)))
+            emit(Result.Error(error = ProfileErrorType.UserNotFound))
         }
     }
 }

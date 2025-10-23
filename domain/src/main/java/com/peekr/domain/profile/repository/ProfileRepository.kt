@@ -3,8 +3,8 @@ package com.peekr.domain.profile.repository
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.util.ErrorType
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.model.ProfilePatch
 import kotlinx.coroutines.flow.Flow
@@ -14,12 +14,12 @@ interface ProfileRepository {
     /**
      * 사용자 조회
      */
-    fun getProfile(): Flow<Result<Profile, ErrorType>>
+    fun getProfile(): Flow<Result<Profile, ProfileErrorType>>
 
     /**
      * 사용자 수정
      */
-    fun updateProfile(patch: ProfilePatch): Flow<Result<Unit, ErrorType>>
+    fun updateProfile(patch: ProfilePatch): Flow<Result<Unit, ProfileErrorType>>
 
     /**
      * 키워드 추가
@@ -41,5 +41,5 @@ interface ProfileRepository {
         description: KeywordDescription,
         offsetX: Double,
         offsetY: Double,
-    ): Flow<Result<UserKeyword, ErrorType>>
+    ): Flow<Result<UserKeyword, ProfileErrorType>>
 }
