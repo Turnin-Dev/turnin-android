@@ -65,7 +65,10 @@ class UserRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toCommonErrorType(), (result as Result.Error).error)
+        assertEquals(
+            UserErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -120,7 +123,10 @@ class UserRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toCommonErrorType(), (result as Result.Error).error)
+        assertEquals(
+            UserErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -169,7 +175,10 @@ class UserRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toCommonErrorType(), (result as Result.Error).error)
+        assertEquals(
+            UserErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test

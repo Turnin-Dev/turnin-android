@@ -9,6 +9,7 @@ import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.error.NetworkErrorType
 import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.Register
@@ -59,16 +60,20 @@ class AuthRepositoryImplTest {
     fun `login() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
+            val expectedError = NetworkErrorType.Network.Conflict
             coEvery {
                 dataSource.login(any())
-            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+            } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
             val result = repository.login(mockLogin).last()
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
+            assertEquals(
+                AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+                (result as Result.Error).error,
+            )
             assertEquals(result.message, mockErrorMessage)
         }
 
@@ -104,16 +109,20 @@ class AuthRepositoryImplTest {
     fun `existsUser() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
+            val expectedError = NetworkErrorType.Network.Conflict
             coEvery {
                 dataSource.existsUser(any())
-            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+            } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
             val result = repository.existsUser(mockExistsUser).last()
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
+            assertEquals(
+                AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+                (result as Result.Error).error,
+            )
             assertEquals(result.message, mockErrorMessage)
         }
 
@@ -149,16 +158,20 @@ class AuthRepositoryImplTest {
     fun `existsDisplayId() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
+            val expectedError = NetworkErrorType.Network.Conflict
             coEvery {
                 dataSource.existsDisplayId(mockDisplayId)
-            } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+            } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
             val result = repository.existsDisplayId(mockDisplayId).last()
 
             // then
             assertTrue(result is Result.Error)
-            assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
+            assertEquals(
+                AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+                (result as Result.Error).error,
+            )
             assertEquals(result.message, mockErrorMessage)
         }
 
@@ -181,16 +194,20 @@ class AuthRepositoryImplTest {
     @Test
     fun `register() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
         // given
+        val expectedError = NetworkErrorType.Network.Conflict
         coEvery {
             dataSource.register(any())
-        } returns NetworkResult.Error(error = NetworkErrorType.Network.Conflict, message = mockErrorMessage)
+        } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
         // when
         val result = repository.register(mockRegister).last()
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals((result as Result.Error).error, NetworkErrorType.Network.Conflict.toCommonErrorType())
+        assertEquals(
+            AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
         assertEquals(result.message, mockErrorMessage)
     }
 

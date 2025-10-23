@@ -66,7 +66,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toCommonErrorType(),
+            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
             (result as Result.Error).error,
         )
     }
@@ -124,7 +124,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toCommonErrorType(),
+            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
             (result as Result.Error).error,
         )
     }
@@ -192,7 +192,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toCommonErrorType(),
+            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
             (result as Result.Error).error,
         )
     }
@@ -253,7 +253,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            expectedError.toCommonErrorType(),
+            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
             (result as Result.Error).error,
         )
     }

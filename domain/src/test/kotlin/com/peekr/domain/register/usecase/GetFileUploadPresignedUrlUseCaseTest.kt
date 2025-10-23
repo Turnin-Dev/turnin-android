@@ -5,6 +5,7 @@ import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.register.error.RegisterErrorType
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -46,7 +47,10 @@ class GetFileUploadPresignedUrlUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError, (result as Result.Error).error)
+        assertEquals(
+            RegisterErrorType.Unexpected(null),
+            (result as Result.Error).error,
+        )
     }
 
     companion object {

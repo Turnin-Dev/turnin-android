@@ -94,7 +94,10 @@ class ProfileRepositoryImplTest {
         // then
         assertTrue(results.size >= 2) // 로딩, 성공/에러 데이터가 방출되므로 최소 2개 이상
         assertTrue(results.last() is Result.Error)
-        assertEquals(expectedError, (results.last() as Result.Error).error)
+        assertEquals(
+            ProfileErrorType.UserError(expectedError),
+            (results.last() as Result.Error).error,
+        )
     }
 
     @Test
@@ -118,7 +121,10 @@ class ProfileRepositoryImplTest {
         // then
         assertTrue(results.size >= 2) // 로딩, 성공/에러 데이터가 방출되므로 최소 2개 이상
         assertTrue(results.last() is Result.Error)
-        assertEquals(expectedError, (results.last() as Result.Error).error)
+        assertEquals(
+            ProfileErrorType.UserKeywordError(expectedError),
+            (results.last() as Result.Error).error,
+        )
     }
 
     @Test
@@ -148,7 +154,10 @@ class ProfileRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError, (result as Result.Error).error)
+        assertEquals(
+            ProfileErrorType.UserError(expectedError),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -197,7 +206,7 @@ class ProfileRepositoryImplTest {
         // then
         assertTrue(addedUserKeyword is Result.Error)
         assertEquals(
-            expectedError,
+            ProfileErrorType.UserKeywordError(expectedError),
             (addedUserKeyword as Result.Error).error,
         )
     }
@@ -222,7 +231,7 @@ class ProfileRepositoryImplTest {
         // then
         assertTrue(addedUserKeyword is Result.Error)
         assertEquals(
-            ProfileErrorType.Unexpected(null),
+            ProfileErrorType.UserNotFound,
             (addedUserKeyword as Result.Error).error,
         )
     }

@@ -4,6 +4,7 @@ import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.util.Result
+import com.peekr.domain.register.error.RegisterErrorType
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -44,7 +45,10 @@ class CheckDisplayIdExistsUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError, (result as Result.Error).error)
+        assertEquals(
+            RegisterErrorType.AuthError(expectedError),
+            (result as Result.Error).error,
+        )
     }
 
     companion object {

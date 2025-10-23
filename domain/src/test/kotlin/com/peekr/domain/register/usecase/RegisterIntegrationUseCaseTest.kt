@@ -74,7 +74,10 @@ class RegisterIntegrationUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError, (result as Result.Error).error)
+        assertEquals(
+            RegisterErrorType.AuthError(expectedError),
+            (result as Result.Error).error,
+        )
     }
 
     @Test

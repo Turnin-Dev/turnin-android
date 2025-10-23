@@ -55,7 +55,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toCommonErrorType(), (result as Result.Error).error)
+        assertEquals(
+            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -107,7 +110,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toCommonErrorType(), (result as Result.Error).error)
+        assertEquals(
+            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
@@ -157,7 +163,10 @@ class KeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError.toCommonErrorType(), (result as Result.Error).error)
+        assertEquals(
+            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
     }
 
     @Test
