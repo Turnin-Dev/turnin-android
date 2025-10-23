@@ -1,6 +1,6 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.validation.CommonValidationError
+import com.peekr.core.domain.validation.ValidationErrorType
 import com.peekr.core.domain.validation.ValidationResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.last
@@ -22,21 +22,21 @@ class ValidateDisplayIdUseCaseTest {
     fun `사용자 표시 ID 유효성 검사 실패 테스트 - 잘못된 형식`() = runTest {
         val result = usecase(INVALID_FORMAT_DISPLAY_ID).last()
         assertTrue(result is ValidationResult.Invalid)
-        assertTrue((result as ValidationResult.Invalid).error is CommonValidationError.InvalidFormat)
+        assertTrue((result as ValidationResult.Invalid).error is ValidationErrorType.Common.InvalidFormat)
     }
 
     @Test
     fun `사용자 표시 ID 유효성 검사 실패 테스트 - 길이 제약 위반`() = runTest {
         val result = usecase(TooLongDisplayId).last()
         assertTrue(result is ValidationResult.Invalid)
-        assertTrue((result as ValidationResult.Invalid).error is CommonValidationError.TooShortOrLong)
+        assertTrue((result as ValidationResult.Invalid).error is ValidationErrorType.Common.TooShortOrLong)
     }
 
     @Test
     fun `사용자 표시 ID 유효성 검사 실패 테스트 - 빈 문자열`() = runTest {
         val result = usecase(EMPTY_DISPLAY_ID).last()
         assertTrue(result is ValidationResult.Invalid)
-        assertTrue((result as ValidationResult.Invalid).error is CommonValidationError.Empty)
+        assertTrue((result as ValidationResult.Invalid).error is ValidationErrorType.Common.Empty)
     }
 
     companion object {

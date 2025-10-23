@@ -1,5 +1,7 @@
 package com.peekr.core.domain.validation
 
+import com.peekr.core.domain.util.BaseError
+
 /**
  * 유효성 검사 결과 클래스
  */
@@ -15,5 +17,5 @@ sealed interface ValidationResult<out T> {
      *
      * @param error 유효성 검사 에러
      */
-    data class Invalid(val error: ValidationError) : ValidationResult<Nothing>
+    data class Invalid(val error: BaseError) : ValidationResult<Nothing>
 }

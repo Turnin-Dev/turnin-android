@@ -3,7 +3,7 @@ package com.peekr.domain.register.usecase
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.validation.CommonValidationException
 import com.peekr.core.domain.validation.ValidationResult
-import com.peekr.core.domain.validation.toCommonValidationError
+import com.peekr.core.domain.validation.toValidationErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +20,7 @@ class ValidateNameUseCase @Inject constructor() {
             val result = Name(name)
             emit(ValidationResult.Valid(result))
         } catch (e: CommonValidationException) {
-            emit(ValidationResult.Invalid(e.toCommonValidationError()))
+            emit(ValidationResult.Invalid(e.toValidationErrorType()))
         }
     }
 }
