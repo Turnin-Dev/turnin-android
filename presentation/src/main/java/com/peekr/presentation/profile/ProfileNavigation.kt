@@ -31,6 +31,7 @@ fun NavGraphBuilder.profileNavigation() {
             modifier = Modifier.fillMaxSize(),
             isOpen = isAddKeywordModalOpen,
             loading = uiState.loading,
+            canAdd = uiState.keywordTextField.value.isNotBlank(),
             keywordTextFieldState = uiState.keywordTextField,
             onKeywordTextChanged = {
                 viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(it))

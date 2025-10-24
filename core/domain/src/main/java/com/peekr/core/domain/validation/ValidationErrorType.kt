@@ -20,4 +20,6 @@ sealed interface ValidationErrorType : BaseError {
             val format: String,
         ) : Common
     }
+
+    data object Unexpected : ValidationErrorType
 }

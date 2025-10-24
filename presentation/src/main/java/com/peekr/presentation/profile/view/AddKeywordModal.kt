@@ -45,6 +45,7 @@ import com.peekr.presentation.profile.state.KeywordTextFieldState
  * @param modifier [Modifier]
  * @param isOpen 모달 표시 유무
  * @param loading 로딩 표시 여부
+ * @param canAdd 추가 가능 여부
  * @param keywordTextFieldState 키워드 텍스트 필드 상태
  * @param keywordDescTextFieldState 키워드 내용 텍스트 필드 상태
  * @param onKeywordTextChanged 키워드 텍스트 변화 시 콜백
@@ -58,6 +59,7 @@ internal fun AddKeywordModal(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
     loading: Boolean,
+    canAdd: Boolean,
     keywordTextFieldState: KeywordTextFieldState,
     keywordDescTextFieldState: KeywordTextFieldState,
     onKeywordTextChanged: (String) -> Unit,
@@ -92,6 +94,7 @@ internal fun AddKeywordModal(
                     keywordDescText = keywordDescTextFieldState.value,
                     onKeywordDescTextChanged = onKeywordDescTextChanged,
                     keywordDescErrorMessage = keywordDescTextFieldState.error?.asString(),
+                    canAdd = canAdd,
                     onAddClick = onAddClick,
                     onCancelClick = onCancel,
                 )
@@ -122,6 +125,7 @@ internal fun AddKeywordModal(
  * @param keywordDescText 키워드 내용 텍스트
  * @param onKeywordDescTextChanged 키워드 내용 텍스트 변화 시 콜백
  * @param keywordDescErrorMessage 키워드 내용 에러 메시지
+ * @param canAdd 추가 가능 여부
  * @param onAddClick 추가 클릭 시 수행할 작업
  * @param onCancelClick 취소 클릭 시 수행할 작업
  */
@@ -134,6 +138,7 @@ private fun ModalContent(
     keywordDescText: String,
     onKeywordDescTextChanged: (String) -> Unit,
     keywordDescErrorMessage: String?,
+    canAdd: Boolean,
     onAddClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
@@ -177,6 +182,7 @@ private fun ModalContent(
         // 하단 버튼 (추가 & 취소)
         Buttons(
             modifier = Modifier.fillMaxWidth(),
+            canAdd = canAdd,
             onAddClick = onAddClick,
             onCancelClick = onCancelClick,
         )
@@ -258,12 +264,14 @@ private fun InputSection(
  * 하단 버튼 영역
  *
  * @param modifier [Modifier]
+ * @param canAdd 추가 가능 여부
  * @param onAddClick `추가` 클릭 시 수행할 작업
  * @param onCancelClick `취소` 클릭 시 수행할 작업
  */
 @Composable
 private fun Buttons(
     modifier: Modifier = Modifier,
+    canAdd: Boolean,
     onAddClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
@@ -276,6 +284,7 @@ private fun Buttons(
             text = stringResource(R.string.profile_screen_add_keyword_modal_btn_add),
             style = ButtonStyle,
             onClick = onAddClick,
+            enabled = canAdd,
         )
         PeekrNegativeButton(
             modifier = Modifier.weight(1f),
@@ -329,6 +338,7 @@ private fun ButtonsPreview() {
     PeekrAppTheme {
         Buttons(
             modifier = Modifier.fillMaxWidth(),
+            canAdd = true,
             onAddClick = {},
             onCancelClick = {},
         )
@@ -349,6 +359,7 @@ private fun ModalContentPreview() {
             keywordDescText = text2.value,
             onKeywordDescTextChanged = {},
             keywordDescErrorMessage = null,
+            canAdd = true,
             onAddClick = {},
             onCancelClick = {},
         )
@@ -376,6 +387,7 @@ private fun AddKeywordModalPreview() {
             AddKeywordModal(
                 isOpen = isOpen,
                 loading = false,
+                canAdd = true,
                 keywordTextFieldState = text,
                 keywordDescTextFieldState = text2,
                 onKeywordTextChanged = {},

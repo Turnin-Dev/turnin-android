@@ -1,9 +1,9 @@
 package com.peekr.presentation.profile.state
 
-import com.peekr.core.presentation.util.BaseUiEffect
-import com.peekr.core.presentation.util.BaseUiEvent
-import com.peekr.core.presentation.util.BaseUiState
 import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.viewmodel.BaseUiEffect
+import com.peekr.core.presentation.viewmodel.BaseUiEvent
+import com.peekr.core.presentation.viewmodel.BaseUiState
 import com.peekr.presentation.profile.model.UiProfile
 
 class ProfileContract {
