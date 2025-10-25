@@ -29,6 +29,7 @@ import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.navigation.BottomNav
+import com.peekr.core.presentation.navigation.bottom.BottomNavigationBarTokens
 import com.peekr.core.presentation.util.ObserveAsEvents
 import com.peekr.core.presentation.util.SnackbarController
 import com.peekr.peekrapp.navigation.BottomNavigation
@@ -90,6 +91,8 @@ class MainActivity : ComponentActivity() {
                     containerColor = PeekrTheme.colorScheme.backgroundNormal,
                     snackbarHost = {
                         PeekrSnackbar(
+                            modifier = Modifier
+                                .padding(bottom = BottomNavigationBarTokens.MinHeightDp),
                             snackBarHostState = snackbarHostState,
                             dismissSnackbarState = dismissSnackbarState,
                         )

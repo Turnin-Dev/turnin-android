@@ -45,6 +45,13 @@ import com.peekr.core.presentation.R
 import com.peekr.core.presentation.navigation.SubGraph
 
 /**
+ * 바텀 네비게이션 바 공개용 토큰 값들
+ */
+object BottomNavigationBarTokens {
+    val MinHeightDp = 64.dp
+}
+
+/**
  * 바텀 네비게이션 바
  *
  * @param modifier [Modifier]
@@ -61,7 +68,7 @@ fun BottomNavigationBar(
     NavigationBar(
         modifier = modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = BarMinHeightDp)
+            .defaultMinSize(minHeight = BottomNavigationBarTokens.MinHeightDp)
             .zIndex(1f),
         containerColor = PeekrTheme.colorScheme.backgroundNormal,
         windowInsets = WindowInsets(bottom = 0.dp),
@@ -164,7 +171,6 @@ private fun onItemClickWithOptions(
     }
 }
 
-private val BarMinHeightDp = 64.dp
 private val ItemIconTitleSpacingDp = 6.dp
 private val ItemVerticalSpacingDp = 8.dp
 private val DividerColor = Color(0xFFD5D5D5)

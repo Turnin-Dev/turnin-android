@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -82,11 +83,13 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun PeekrSnackbar(
+    modifier: Modifier = Modifier,
     snackBarHostState: SnackbarHostState,
     dismissSnackbarState: SwipeToDismissBoxState,
     dismissEnabled: Boolean = true,
 ) {
     SwipeToDismissBox(
+        modifier = modifier,
         state = dismissSnackbarState,
         backgroundContent = {},
         enableDismissFromEndToStart = dismissEnabled,
@@ -115,8 +118,8 @@ private fun CustomSnackbar(
 ) {
     Snackbar(
         modifier = modifier,
-        containerColor = PeekrTheme.colorScheme.textNormal,
-        contentColor = PeekrTheme.colorScheme.backgroundNormal,
+        containerColor = PeekrTheme.colorScheme.staticBlack,
+        contentColor = PeekrTheme.colorScheme.staticWhite,
         shape = RoundedCornerShape(PeekrTheme.shape.large),
         action = {
             snackbarData.visuals.actionLabel?.let { actionLabel ->
@@ -174,7 +177,6 @@ private fun Content(
             text = text,
             style = PeekrTheme.typography.body3Normal,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.staticWhite,
             textAlign = TextAlign.Start,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -185,7 +187,7 @@ private fun Content(
 private val SnackbarMinHeightDp = 56.dp
 
 // ------------------------------ Previews ------------------------------
-@Preview
+@PreviewLightDark
 @Composable
 private fun CustomSnackbarPreview() {
     val fakeSnackbarData = object : SnackbarData {
