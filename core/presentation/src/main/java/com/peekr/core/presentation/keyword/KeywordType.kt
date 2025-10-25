@@ -1,9 +1,9 @@
 package com.peekr.core.presentation.keyword
 
-import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.UserKeywordId
 
 /** 키워드 ID */
-typealias KeywordIdType = KeywordId
+typealias UserKeywordIdType = UserKeywordId
 
 /** 키워드 오프셋 X */
 typealias KeywordOffsetXType = Float

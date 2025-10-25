@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 
 /**
@@ -28,8 +28,8 @@ object NodeTokens {
  */
 @Stable
 class NodeState(
-    initialOffsetX: Float = 0f,
-    initialOffsetY: Float = 0f,
+    val initialOffsetX: Float = 0f,
+    val initialOffsetY: Float = 0f,
 ) {
     /** 계속해서 변하는 노드 오프셋 X 값 */
     var offsetX: Float by mutableFloatStateOf(initialOffsetX)
@@ -63,6 +63,14 @@ class NodeState(
     fun updateSize(newWidthPx: Float, newHeightPx: Float) {
         widthPx = newWidthPx
         heightPx = newHeightPx
+    }
+
+    /**
+     * 노드 오프셋 초기 값으로 리셋
+     */
+    fun resetPosition() {
+        offsetX = initialOffsetX
+        offsetY = initialOffsetY
     }
 
     companion object {
@@ -103,10 +111,10 @@ fun rememberNodeState(
     initialOffsetX: Float = 0f,
     initialOffsetY: Float = 0f,
 ): NodeState {
-    val config = LocalConfiguration.current
+    val containerSize = LocalWindowInfo.current.containerSize
     val density = LocalDensity.current
-    val screenWidth = with(density) { config.screenWidthDp.dp.toPx() }
-    val screenHeight = with(density) { config.screenHeightDp.dp.toPx() }
+    val screenWidth = with(density) { containerSize.width.dp.toPx() }
+    val screenHeight = with(density) { containerSize.height.dp.toPx() }
 
     return rememberSaveable(
         screenWidth,

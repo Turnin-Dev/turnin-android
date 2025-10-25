@@ -12,11 +12,17 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,19 +35,25 @@ import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
+import com.peekr.core.designsystem.component.icon.PeekrIcon
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.PeekrShadowType
+import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
+import com.peekr.core.designsystem.util.icon.Cancel
+import com.peekr.core.designsystem.util.icon.Check
+import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
+import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
 
@@ -81,16 +93,18 @@ internal fun ProfileScreen(
                         name = profile.name,
                         friendsTotal = profile.friendsTotal,
                         introduce = profile.introduce,
-                        onProfileImageClick = {},
-                        onFriendsTotalClick = {},
+                        onProfileImageClick = { TODO() },
+                        onFriendsTotalClick = { TODO() },
                     )
                 } ?: ProfileSkeleton()
             },
             keywordGraph = {
                 profile?.let {
                     KeywordGraph(
+                        modifier = Modifier.fillMaxWidth(),
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
+                        onNodeChangeAccept = { TODO() },
                     )
                 } ?: KeywordGraphSkeleton()
             },
@@ -100,7 +114,7 @@ internal fun ProfileScreen(
             PeekrFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(20.dp)
+                    .padding(FabPaddingDp)
                     .size(FabSize),
                 contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
                 onClick = onOpenAddKeywordModal,
@@ -146,9 +160,7 @@ private fun ProfileScreenFrame(
 
         // Keyword Graph
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = ScreenTokens.HorizontalPadding),
+            modifier = Modifier.weight(1f),
             contentAlignment = Alignment.Center,
         ) {
             keywordGraph()
@@ -307,17 +319,117 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * 키워드 그래프 뷰 영역
+ *
+ * @param modifier [Modifier]
+ * @param profileImageUrl 사용자 프로필 사진 url
+ * @param keywords 사용자 키워드 리스트
+ * @param onNodeChangeAccept 사용자 키워드 변경 값 저장
+ */
 @Composable
 private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
+    onNodeChangeAccept: () -> Unit,
 ) {
-    KeywordGraphView(
+    var nodeChanged by rememberSaveable { mutableStateOf(false) }
+    var nodeReset by rememberSaveable { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        KeywordGraphView(
+            modifier = Modifier,
+            profileImageUrl = profileImageUrl,
+            keywords = keywords,
+            nodeReset = nodeReset,
+            onNodeChanged = { userKeywordId, offsetX, offsetY ->
+                nodeReset = false
+                nodeChanged = keywords.any { it.id == userKeywordId }
+                // TODO: 노드 변경에 따른 처리
+                // 2. 저장: 서버로 위치 변경 저장 요청
+            },
+        )
+        if (nodeChanged) {
+            NodeChangedButtons(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(FabPaddingDp),
+                onChange = onNodeChangeAccept,
+                onCancel = {
+                    nodeChanged = false
+                    nodeReset = true
+                },
+            )
+        }
+    }
+}
+
+/**
+ * 노드 위치 변경 시 표시할 버튼 모음
+ *
+ * @param modifier [Modifier]
+ * @param onChange 노드 위치 변경 수락 시
+ * @param onCancel 노드 위치 변경 취소 시
+ */
+@Composable
+fun NodeChangedButtons(
+    modifier: Modifier = Modifier,
+    onChange: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Row(
         modifier = modifier,
-        profileImageUrl = profileImageUrl,
-        keywords = keywords,
-    )
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        NodeChangedButton(
+            modifier = Modifier,
+            icon = PeekrIcons.Default.Bold.Check,
+            contentDescription = stringResource(R.string.profile_screen_node_changed_btn_desc_ok),
+            onClick = onChange,
+        )
+        NodeChangedButton(
+            modifier = Modifier,
+            icon = PeekrIcons.Default.Bold.Cancel,
+            contentDescription = stringResource(R.string.profile_screen_node_changed_btn_desc_cancel),
+            onClick = onCancel,
+        )
+    }
+}
+
+/**
+ * 노드 위치 변경 시 표시할 버튼
+ *
+ * @param modifier [Modifier]
+ * @param icon [PeekrIconType]
+ * @param contentDescription 아이콘 설명
+ * @param onClick 버튼 클릭 시 콜백
+ */
+@Composable
+fun NodeChangedButton(
+    modifier: Modifier = Modifier,
+    icon: PeekrIconType,
+    contentDescription: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .peekrShadow(
+                type = PeekrShadowType.Normal,
+                shape = RoundedCornerShape(12.dp),
+            ).clip(RoundedCornerShape(12.dp))
+            .size(40.dp)
+            .background(PeekrTheme.colorScheme.backgroundNormal)
+            .clickableSingle(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        PeekrIcon(
+            icon = icon,
+            iconSize = PeekrIconSize.Small,
+            contentDescription = contentDescription,
+            tint = PeekrTheme.colorScheme.textNormal,
+        )
+    }
 }
 
 @Composable
@@ -347,6 +459,7 @@ private fun ShadowSection(modifier: Modifier = Modifier) {
 private val FabSize = 50.dp
 private val AvatarSize = 70.dp
 private val TopSectionMinHeightDp = 166.dp
+private val FabPaddingDp = 20.dp
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDark
@@ -376,6 +489,17 @@ private fun ProfilePreview() {
             introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" + "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
             onProfileImageClick = {},
             onFriendsTotalClick = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun NodeChangedButtonsPreview() {
+    PeekrAppTheme {
+        NodeChangedButtons(
+            onChange = {},
+            onCancel = {},
         )
     }
 }

@@ -23,21 +23,24 @@ import kotlin.math.roundToInt
  * [KeywordNode]와 [KeywordEdge] 통합 버전
  *
  * @param modifier [Modifier]
- * @param offsetX 키워드 오프셋 X
- * @param offsetY 키워드 오프셋 Y
+ * @param initialOffsetX 초기 키워드 오프셋 X
+ * @param initialOffsetY 초기 키워드 오프셋 Y
  * @param label 키워드 이름
+ * @param nodeReset 키워드 노드 리셋 여부
  * @param onNodeClick 키워드 노드 클릭 시
+ * @param onNodeChanged 키워드 노드 위치 변경 시
  */
 @Composable
 fun KeywordNodeEdge(
     modifier: Modifier = Modifier,
-    offsetX: Float,
-    offsetY: Float,
+    initialOffsetX: Float,
+    initialOffsetY: Float,
     label: String,
+    nodeReset: Boolean,
     onNodeClick: () -> Unit,
     onNodeChanged: (KeywordOffsetXType, KeywordOffsetYType) -> Unit,
 ) {
-    val nodeState = rememberNodeState(offsetX, offsetY)
+    val nodeState = rememberNodeState(initialOffsetX, initialOffsetY)
     var nodeDragging by rememberSaveable { mutableStateOf(false) }
 
     val animatedNodeOffsetX by animateFloatAsState(
@@ -53,8 +56,14 @@ fun KeywordNodeEdge(
 
     LaunchedEffect(nodeDragging) {
         // 드래그 하지 않은 상태에서 기존 위치에서 변화가 일어났다면 콜백 수행
-        if (!nodeDragging && (nodeState.offsetX != offsetX || nodeState.offsetY != offsetY)) {
+        if (!nodeDragging && (nodeState.offsetX != initialOffsetX || nodeState.offsetY != initialOffsetY)) {
             onNodeChanged(nodeState.offsetX, nodeState.offsetY)
+        }
+    }
+
+    LaunchedEffect(nodeReset) {
+        if (nodeReset) {
+            nodeState.resetPosition()
         }
     }
 
