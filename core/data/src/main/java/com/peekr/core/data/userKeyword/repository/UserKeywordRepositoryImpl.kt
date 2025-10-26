@@ -10,7 +10,8 @@ import com.peekr.core.domain.coroutine.safeResultFlow
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
@@ -61,24 +62,51 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun patchUserKeyword(
+    override fun patchOffset(
         userKeywordId: UserKeywordId,
-        patch: PatchUserKeyword,
-    ): Flow<Result<Unit, UserKeywordErrorType>> =
-        safeResultFlow<Unit, UserKeywordErrorType>(
+        patchOffset: PatchOffset,
+    ): Flow<Result<PatchOffset, UserKeywordErrorType>> =
+        safeResultFlow<PatchOffset, UserKeywordErrorType>(
             dispatcher = ioDispatcher,
             unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
             when (
-                val result = userKeywordDataSource.patchUserKeyword(
+                val result = userKeywordDataSource.patchOffset(
                     userKeywordId,
-                    patch.toDataModel(),
+                    patchOffset.toDataModel(),
                 )
             ) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(Unit))
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun patchDescription(
+        userKeywordId: UserKeywordId,
+        patchDescription: PatchDescription,
+    ): Flow<Result<PatchDescription, UserKeywordErrorType>> =
+        safeResultFlow<PatchDescription, UserKeywordErrorType>(
+            dispatcher = ioDispatcher,
+            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+        ) {
+            emit(Result.Loading)
+
+            when (
+                val result = userKeywordDataSource.patchDescription(
+                    userKeywordId,
+                    patchDescription.toDataModel(),
+                )
+            ) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
                 }
 
                 is NetworkResult.Error -> {

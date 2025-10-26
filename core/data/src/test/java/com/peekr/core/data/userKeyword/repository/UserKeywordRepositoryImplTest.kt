@@ -5,7 +5,10 @@ import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
-import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
+import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
+import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
+import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
+import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
@@ -16,7 +19,8 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -151,42 +155,46 @@ class UserKeywordRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 키워드 수정 - 성공 테스트`() = runTest {
+    fun `사용자 키워드 오프셋 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.patchUserKeyword(
+            dataSource.patchOffset(
                 userKeywordId = TestUserKeywordId,
-                patchUserKeywordRequest = TestPatchUserKeywordRequest,
+                patchOffsetRequest = TestPatchOffsetRequest,
             )
-        } returns NetworkResult.Success(Unit)
+        } returns NetworkResult.Success(TestPatchOffsetResponse)
 
         // when
         val result = repository
-            .patchUserKeyword(
+            .patchOffset(
                 userKeywordId = TestUserKeywordId,
-                patch = TestPatchUserKeyword,
+                patchOffset = TestPatchOffset,
             ).last()
 
         // then
         assertTrue(result is Result.Success)
+        assertEquals(
+            (result as Result.Success).data,
+            TestPatchOffset,
+        )
     }
 
     @Test
-    fun `사용자 키워드 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 오프셋 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Network.NotFound
         coEvery {
-            dataSource.patchUserKeyword(
+            dataSource.patchOffset(
                 userKeywordId = TestUserKeywordId,
-                patchUserKeywordRequest = TestPatchUserKeywordRequest,
+                patchOffsetRequest = TestPatchOffsetRequest,
             )
         } returns NetworkResult.Error(expectedError)
 
         // when
         val result = repository
-            .patchUserKeyword(
+            .patchOffset(
                 userKeywordId = TestUserKeywordId,
-                patch = TestPatchUserKeyword,
+                patchOffset = TestPatchOffset,
             ).last()
 
         // then
@@ -198,21 +206,100 @@ class UserKeywordRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 키워드 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 오프셋 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.patchUserKeyword(
+            dataSource.patchOffset(
                 userKeywordId = TestUserKeywordId,
-                patchUserKeywordRequest = TestPatchUserKeywordRequest,
+                patchOffsetRequest = TestPatchOffsetRequest,
             )
         } throws exception
 
         // when
         val result = repository
-            .patchUserKeyword(
+            .patchOffset(
                 userKeywordId = TestUserKeywordId,
-                patch = TestPatchUserKeyword,
+                patchOffset = TestPatchOffset,
+            ).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+            assertEquals(
+                UserKeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+            )
+        }
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescriptionRequest = TestPatchDescriptionRequest,
+            )
+        } returns NetworkResult.Success(TestPatchDescriptionResponse)
+
+        // when
+        val result = repository
+            .patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescription = TestPatchDescription,
+            ).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(
+            (result as Result.Success).data,
+            TestPatchDescription,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = NetworkErrorType.Network.NotFound
+        coEvery {
+            dataSource.patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescriptionRequest = TestPatchDescriptionRequest,
+            )
+        } returns NetworkResult.Error(expectedError)
+
+        // when
+        val result = repository
+            .patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescription = TestPatchDescription,
+            ).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(
+            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val exception = Exception("error!")
+        coEvery {
+            dataSource.patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescriptionRequest = TestPatchDescriptionRequest,
+            )
+        } throws exception
+
+        // when
+        val result = repository
+            .patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescription = TestPatchDescription,
             ).last()
 
         // then
@@ -313,15 +400,21 @@ class UserKeywordRepositoryImplTest {
             offsetX = 0.0,
             offsetY = 0.0,
         )
-        private val TestPatchUserKeywordRequest = PatchUserKeywordRequest(
-            offsetX = 0.0,
-            offsetY = 0.0,
-            description = TestKeywordDescription.value,
+        private val TestPatchOffset = PatchOffset(1.0, 2.0)
+        private val TestPatchOffsetRequest = PatchOffsetRequest(
+            offsetX = TestPatchOffset.offsetX.toFloat(),
+            offsetY = TestPatchOffset.offsetY.toFloat(),
         )
-        private val TestPatchUserKeyword = PatchUserKeyword(
-            offsetX = 0.0,
-            offsetY = 0.0,
-            description = TestKeywordDescription.value,
+        private val TestPatchOffsetResponse = PatchOffsetResponse(
+            offsetX = TestPatchOffset.offsetX.toFloat(),
+            offsetY = TestPatchOffset.offsetY.toFloat(),
+        )
+        private val TestPatchDescription = PatchDescription(KeywordDescription("hello"))
+        private val TestPatchDescriptionRequest = PatchDescriptionRequest(
+            description = TestPatchDescription.description.value,
+        )
+        private val TestPatchDescriptionResponse = PatchDescriptionResponse(
+            description = TestPatchDescription.description.value,
         )
     }
 }

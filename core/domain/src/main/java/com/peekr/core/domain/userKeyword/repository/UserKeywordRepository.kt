@@ -3,7 +3,8 @@ package com.peekr.core.domain.userKeyword.repository
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.util.Result
@@ -24,15 +25,26 @@ interface UserKeywordRepository {
     fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, UserKeywordErrorType>>
 
     /**
-     * 사용자 키워드 수정
+     * 사용자 키워드 오프셋 수정
      *
      * @param userKeywordId 사용자 키워드 ID
-     * @param patch 사용자 키워드 수정 요청 객체
+     * @param patchOffset 사용자 키워드 오프셋 수정 요청 객체
      */
-    fun patchUserKeyword(
+    fun patchOffset(
         userKeywordId: UserKeywordId,
-        patch: PatchUserKeyword,
-    ): Flow<Result<Unit, UserKeywordErrorType>>
+        patchOffset: PatchOffset,
+    ): Flow<Result<PatchOffset, UserKeywordErrorType>>
+
+    /**
+     * 사용자 키워드 설명 수정
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     * @param patchDescription 사용자 키워드 설명 수정 요청 객체
+     */
+    fun patchDescription(
+        userKeywordId: UserKeywordId,
+        patchDescription: PatchDescription,
+    ): Flow<Result<PatchDescription, UserKeywordErrorType>>
 
     /**
      * 사용자 키워드 삭제

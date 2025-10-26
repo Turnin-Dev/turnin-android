@@ -4,6 +4,8 @@ import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.network.error.NetworkErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
+import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
+import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
 import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
@@ -203,7 +205,7 @@ class UserKeywordDataSourceImplTest {
     }
 
     @Test
-    fun `사용자 키워드 수정 - 성공 테스트`() = runTest {
+    fun `사용자 키워드 오프셋 수정 - 성공 테스트`() = runTest {
         // given
         testRule.server.enqueue(
             MockResponse().apply {
@@ -212,32 +214,40 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.patchUserKeyword(
+        val response = dataSource.patchOffset(
             userKeywordId = TestUserKeywordId,
-            patchUserKeywordRequest = TestPatchUserKeywordRequest,
+            patchOffsetRequest = TestPatchOffsetRequest,
         )
 
         // then
         assertTrue(response is NetworkResult.Success)
+        assertEquals(
+            (response as NetworkResult.Success).data.offsetX,
+            TestPatchOffsetRequest.offsetX,
+        )
+        assertEquals(
+            response.data.offsetY,
+            TestPatchOffsetRequest.offsetY,
+        )
     }
 
     @Test
-    fun `사용자 키워드 수정 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 오프셋 수정 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
         dataSource = UserKeywordNetworkDataSource(mockApi)
         coEvery {
-            mockApi.patchUserKeyword(
+            mockApi.patchOffset(
                 userKeywordId = TestUserKeywordId.value,
-                patchUserKeywordRequest = TestPatchUserKeywordRequest,
+                patchOffsetRequest = TestPatchOffsetRequest,
             )
         } throws exception
 
         // when
-        val response = dataSource.patchUserKeyword(
+        val response = dataSource.patchOffset(
             userKeywordId = TestUserKeywordId,
-            patchUserKeywordRequest = TestPatchUserKeywordRequest,
+            patchOffsetRequest = TestPatchOffsetRequest,
         )
 
         // then
@@ -249,7 +259,7 @@ class UserKeywordDataSourceImplTest {
     }
 
     @Test
-    fun `사용자 키워드 수정 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 오프셋 수정 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
         // given
         testRule.server.enqueue(
             MockResponse().apply {
@@ -258,9 +268,82 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.patchUserKeyword(
+        val response = dataSource.patchOffset(
             userKeywordId = TestUserKeywordId,
-            patchUserKeywordRequest = TestPatchUserKeywordRequest,
+            patchOffsetRequest = TestPatchOffsetRequest,
+        )
+
+        // then
+        assertTrue(response is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Network.NotFound,
+            (response as NetworkResult.Error).error,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
+        // given
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(204)
+            },
+        )
+
+        // when
+        val response = dataSource.patchDescription(
+            userKeywordId = TestUserKeywordId,
+            patchDescriptionRequest = TestPatchDescriptionRequest,
+        )
+
+        // then
+        assertTrue(response is NetworkResult.Success)
+        assertEquals(
+            (response as NetworkResult.Success).data.description,
+            TestPatchDescriptionRequest.description,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
+        // given
+        val mockApi: UserKeywordApi = mockk()
+        val exception = Exception()
+        dataSource = UserKeywordNetworkDataSource(mockApi)
+        coEvery {
+            mockApi.patchDescription(
+                userKeywordId = TestUserKeywordId.value,
+                patchDescriptionRequest = TestPatchDescriptionRequest,
+            )
+        } throws exception
+
+        // when
+        val response = dataSource.patchDescription(
+            userKeywordId = TestUserKeywordId,
+            patchDescriptionRequest = TestPatchDescriptionRequest,
+        )
+
+        // then
+        assertTrue(response is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Unexpected(exception),
+            (response as NetworkResult.Error).error,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
+        // given
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(404)
+            },
+        )
+
+        // when
+        val response = dataSource.patchDescription(
+            userKeywordId = TestUserKeywordId,
+            patchDescriptionRequest = TestPatchDescriptionRequest,
         )
 
         // then
@@ -364,6 +447,13 @@ class UserKeywordDataSourceImplTest {
             offsetX = 0.0,
             offsetY = 0.0,
             description = "sample",
+        )
+        private val TestPatchOffsetRequest = PatchOffsetRequest(
+            offsetX = 1.0f,
+            offsetY = 2.0f,
+        )
+        private val TestPatchDescriptionRequest = PatchDescriptionRequest(
+            description = "hello",
         )
     }
 }
