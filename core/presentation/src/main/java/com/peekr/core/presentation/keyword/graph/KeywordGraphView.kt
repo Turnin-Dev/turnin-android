@@ -19,8 +19,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.peekr.core.presentation.keyword.KeywordOffsetXType
-import com.peekr.core.presentation.keyword.KeywordOffsetYType
+import com.peekr.core.presentation.keyword.NodeOffsetXType
+import com.peekr.core.presentation.keyword.NodeOffsetYType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.view.KeywordNodeEdge
 import com.peekr.core.presentation.keyword.view.UserNode
@@ -41,7 +41,7 @@ fun KeywordGraphView(
     profileImageUrl: String?,
     nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
-    onNodeChanged: (UserKeywordIdType, KeywordOffsetXType, KeywordOffsetYType) -> Unit,
+    onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     // 키워드 그래프 뷰
     GraphBoard(modifier = modifier) {

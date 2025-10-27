@@ -6,7 +6,7 @@ import com.peekr.core.domain.model.UserKeywordId
 typealias UserKeywordIdType = UserKeywordId
 
 /** 키워드 오프셋 X */
-typealias KeywordOffsetXType = Float
+typealias NodeOffsetXType = Float
 
 /** 키워드 오프셋 Y */
-typealias KeywordOffsetYType = Float
+typealias NodeOffsetYType = Float

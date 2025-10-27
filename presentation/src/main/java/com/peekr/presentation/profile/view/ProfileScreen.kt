@@ -50,12 +50,16 @@ import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
+import com.peekr.core.presentation.keyword.NodeOffsetXType
+import com.peekr.core.presentation.keyword.NodeOffsetYType
+import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
 import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
+import com.peekr.presentation.profile.state.ProfileContract
 
 /**
  * 프로필 화면
@@ -67,6 +71,7 @@ import com.peekr.presentation.profile.model.UiProfile
 internal fun ProfileScreen(
     modifier: Modifier = Modifier,
     profile: UiProfile?,
+    onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
 ) {
     Box(modifier) {
@@ -104,7 +109,18 @@ internal fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(),
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
-                        onNodeChangeAccept = { TODO() },
+                        onUiEvent = onUiEvent,
+                        onNodeChanged = { userKeywordId, offsetX, offsetY ->
+                            onUiEvent(
+                                ProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
+                                    userKeywordId = userKeywordId,
+                                    offsetX = offsetX,
+                                    offsetY = offsetY,
+                                ),
+                            )
+                        },
+                        onNodeChangeAccept = { userKeywordId, offsetX, offsetY ->
+                        },
                     )
                 } ?: KeywordGraphSkeleton()
             },
@@ -325,14 +341,18 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
  * @param modifier [Modifier]
  * @param profileImageUrl 사용자 프로필 사진 url
  * @param keywords 사용자 키워드 리스트
- * @param onNodeChangeAccept 사용자 키워드 변경 값 저장
+ * @param onUiEvent UI 이벤트
+ * @param onNodeChanged 사용자 키워드 오프셋 변경 시
+ * @param onNodeChangeAccept 사용자 키워드 오프셋 변경 값 저장
  */
 @Composable
 private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
-    onNodeChangeAccept: () -> Unit,
+    onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetXType) -> Unit,
+    onNodeChangeAccept: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     var nodeChanged by rememberSaveable { mutableStateOf(false) }
     var nodeReset by rememberSaveable { mutableStateOf(false) }
@@ -346,8 +366,7 @@ private fun KeywordGraph(
             onNodeChanged = { userKeywordId, offsetX, offsetY ->
                 nodeReset = false
                 nodeChanged = keywords.any { it.id == userKeywordId }
-                // TODO: 노드 변경에 따른 처리
-                // 2. 저장: 서버로 위치 변경 저장 요청
+                onNodeChanged(userKeywordId, offsetX, offsetY)
             },
         )
         if (nodeChanged) {
@@ -355,10 +374,13 @@ private fun KeywordGraph(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(FabPaddingDp),
-                onChange = onNodeChangeAccept,
+                onChange = {
+                    onUiEvent(ProfileContract.UiEvent.UpdateKeywordNodeOffset)
+                },
                 onCancel = {
                     nodeChanged = false
                     nodeReset = true
+                    onUiEvent(ProfileContract.UiEvent.ResetKeywordNodeOffset)
                 },
             )
         }
@@ -523,6 +545,7 @@ private fun ProfileScreenPreview() {
                 keywords = UiUserKeyword.samples,
             ),
             onOpenAddKeywordModal = {},
+            onUiEvent = {},
         )
     }
 }
@@ -535,6 +558,7 @@ private fun ProfileScreenShimmerPreview() {
             modifier = Modifier.fillMaxSize(),
             profile = null,
             onOpenAddKeywordModal = {},
+            onUiEvent = {},
         )
     }
 }

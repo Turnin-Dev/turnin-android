@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import com.peekr.core.presentation.keyword.KeywordOffsetXType
-import com.peekr.core.presentation.keyword.KeywordOffsetYType
+import com.peekr.core.presentation.keyword.NodeOffsetXType
+import com.peekr.core.presentation.keyword.NodeOffsetYType
 import com.peekr.core.presentation.keyword.state.NodeTokens
 import com.peekr.core.presentation.keyword.state.rememberNodeState
 import kotlin.math.roundToInt
@@ -38,7 +38,7 @@ fun KeywordNodeEdge(
     label: String,
     nodeReset: Boolean,
     onNodeClick: () -> Unit,
-    onNodeChanged: (KeywordOffsetXType, KeywordOffsetYType) -> Unit,
+    onNodeChanged: (NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     val nodeState = rememberNodeState(initialOffsetX, initialOffsetY)
     var nodeDragging by rememberSaveable { mutableStateOf(false) }

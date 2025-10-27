@@ -1,6 +1,7 @@
 package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
@@ -12,6 +13,7 @@ import com.peekr.domain.profile.usecase.ValidateKeywordDescriptionUseCase
 import com.peekr.domain.profile.usecase.ValidateKeywordUseCase
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
+import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
 import com.peekr.presentation.profile.state.ProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -82,6 +84,24 @@ class ProfileViewModel @Inject constructor(
                     description = currentUiState.keywordDescTextField.value,
                 )
             }
+
+            is ProfileContract.UiEvent.OnKeywordNodeOffsetChanged -> {
+                changeKeywordNodeOffset(
+                    userKeywordId = event.userKeywordId,
+                    offsetX = event.offsetX,
+                    offsetY = event.offsetY,
+                )
+            }
+
+            ProfileContract.UiEvent.UpdateKeywordNodeOffset -> {
+                // TODO: 노드 위치 값 저장 (서버 요청)
+            }
+
+            ProfileContract.UiEvent.ResetKeywordNodeOffset -> {
+                updateState {
+                    this.copy(updatedKeywordNodesOffset = emptyMap())
+                }
+            }
         }
     }
 
@@ -110,6 +130,20 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
                 }.launchIn(this)
+        }
+    }
+
+    private fun changeKeywordNodeOffset(
+        userKeywordId: UserKeywordId,
+        offsetX: Float,
+        offsetY: Float,
+    ) {
+        val changedKeywordNodeOffset = ChangedKeywordNodeOffset(offsetX, offsetY)
+        updateState {
+            this.copy(
+                updatedKeywordNodesOffset =
+                    this.updatedKeywordNodesOffset + (userKeywordId to changedKeywordNodeOffset),
+            )
         }
     }
 
