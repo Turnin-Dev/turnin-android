@@ -4,20 +4,23 @@ import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.error.asUiText
+import com.peekr.core.presentation.util.SnackbarController
+import com.peekr.core.presentation.util.SnackbarEvent
+import com.peekr.core.presentation.util.UiText
 import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.viewmodel.setTextFieldValidation
 import com.peekr.domain.profile.error.ProfileErrorType
-import com.peekr.domain.profile.usecase.AddUserKeywordUseCase
-import com.peekr.domain.profile.usecase.GetProfileUseCase
-import com.peekr.domain.profile.usecase.ValidateKeywordDescriptionUseCase
-import com.peekr.domain.profile.usecase.ValidateKeywordUseCase
+import com.peekr.domain.profile.usecase.ProfileUseCases
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
 import com.peekr.presentation.profile.state.ProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -25,10 +28,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val getProfileUseCase: GetProfileUseCase,
-    private val addUserKeywordUseCase: AddUserKeywordUseCase,
-    private val validateKeywordUseCase: ValidateKeywordUseCase,
-    private val validateKeywordDescriptionUseCase: ValidateKeywordDescriptionUseCase,
+    private val usecase: ProfileUseCases,
 ) : MVIBaseViewModel<ProfileContract.UiState, ProfileContract.UiEvent, ProfileContract.UiEffect>() {
     override fun createInitialState(): ProfileContract.UiState =
         ProfileContract.UiState()
@@ -39,7 +39,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun loadInitialData() {
-        getProfileUseCase().collect { result ->
+        usecase.getProfile().collect { result ->
             when (result) {
                 Result.Loading -> updateState {
                     this.copy(loading = true, error = null)
@@ -94,7 +94,7 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileContract.UiEvent.UpdateKeywordNodeOffset -> {
-                // TODO: 노드 위치 값 저장 (서버 요청)
+                updateKeywordNodeOffset(currentUiState.updatedKeywordNodesOffset)
             }
 
             ProfileContract.UiEvent.ResetKeywordNodeOffset -> {
@@ -110,7 +110,8 @@ class ProfileViewModel @Inject constructor(
         description: String,
     ) {
         viewModelScope.launch {
-            addUserKeywordUseCase(keyword, description)
+            usecase
+                .addUserKeyword(keyword, description)
                 .onEach { result ->
                     when (result) {
                         is Result.Error -> updateState {
@@ -147,11 +148,48 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun updateKeywordNodeOffset(keywordNodes: Map<UserKeywordId, ChangedKeywordNodeOffset>) {
+        viewModelScope.launch {
+            var successCount = AtomicInteger(0)
+            keywordNodes
+                .map { (userKeywordId, offset) ->
+                    async {
+                        usecase
+                            .updateUserKeywordOffset(userKeywordId, offset.offsetX, offset.offsetY)
+                            .collect { result ->
+                                when (result) {
+                                    Result.Loading -> updateState { this.copy(loading = true) }
+                                    is Result.Error -> updateState {
+                                        this.copy(loading = false, error = result.error.asUiText())
+                                    }
+
+                                    is Result.Success -> {
+                                        updateState {
+                                            this.copy(loading = false, error = null)
+                                        }
+                                        successCount.incrementAndGet()
+                                    }
+                                }
+                            }
+                    }
+                }.awaitAll()
+
+            if (successCount.get() == keywordNodes.size) {
+                showSnackBar(
+                    UiText.StringResource(
+                        com.peekr.presentation.R.string.profile_screen_update_user_keyword_offset_success,
+                    ),
+                )
+            }
+        }
+    }
+
+    // ------------------------------ Validation ------------------------------
     private fun setKeywordValidation() {
         uiState.setTextFieldValidation(
             scope = viewModelScope,
             value = { it.keywordTextField.value },
-            validator = { validateKeywordUseCase(it) },
+            validator = { usecase.validateKeyword(it) },
             onValid = { _ ->
                 updateState {
                     val updatedKeywordTextField = currentUiState
@@ -175,7 +213,7 @@ class ProfileViewModel @Inject constructor(
         uiState.setTextFieldValidation(
             scope = viewModelScope,
             value = { it.keywordDescTextField.value },
-            validator = { validateKeywordDescriptionUseCase(it) },
+            validator = { usecase.validateKeywordDescription(it) },
             onValid = { _ ->
                 updateState {
                     val updatedKeywordDescTextField = currentUiState
@@ -193,5 +231,9 @@ class ProfileViewModel @Inject constructor(
                 }
             },
         )
+    }
+
+    private suspend fun showSnackBar(message: UiText) {
+        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

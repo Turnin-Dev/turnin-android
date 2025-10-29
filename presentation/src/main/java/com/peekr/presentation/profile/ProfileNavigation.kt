@@ -72,6 +72,7 @@ fun NavGraphBuilder.profileNavigation() {
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             profile = uiState.profile,
+            loading = uiState.loading,
             onUiEvent = viewModel::processEvent,
             onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
         )
