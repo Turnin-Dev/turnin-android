@@ -31,6 +31,7 @@ fun NavGraphBuilder.profileNavigation() {
             modifier = Modifier.fillMaxSize(),
             isOpen = isAddKeywordModalOpen,
             loading = uiState.loading,
+            canAdd = uiState.keywordTextField.value.isNotBlank(),
             keywordTextFieldState = uiState.keywordTextField,
             onKeywordTextChanged = {
                 viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(it))
@@ -71,6 +72,8 @@ fun NavGraphBuilder.profileNavigation() {
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             profile = uiState.profile,
+            loading = uiState.loading,
+            onUiEvent = viewModel::processEvent,
             onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
         )
     }

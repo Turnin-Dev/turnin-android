@@ -4,7 +4,10 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.network.util.networkCall
 import com.peekr.core.data.network.util.networkCallWithoutResponse
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
-import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
+import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
+import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
+import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
+import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
 import com.peekr.core.domain.model.UserKeywordId
@@ -21,12 +24,20 @@ class UserKeywordNetworkDataSource @Inject constructor(
     ): NetworkResult<UserKeywordResponse> =
         networkCall { userKeywordApi.createUserKeyword(createUserKeywordRequest) }
 
-    override suspend fun patchUserKeyword(
+    override suspend fun patchOffset(
         userKeywordId: UserKeywordId,
-        patchUserKeywordRequest: PatchUserKeywordRequest,
-    ): NetworkResult<Unit> =
-        networkCallWithoutResponse {
-            userKeywordApi.patchUserKeyword(userKeywordId.value, patchUserKeywordRequest)
+        patchOffsetRequest: PatchOffsetRequest,
+    ): NetworkResult<PatchOffsetResponse> =
+        networkCall {
+            userKeywordApi.patchOffset(userKeywordId.value, patchOffsetRequest)
+        }
+
+    override suspend fun patchDescription(
+        userKeywordId: UserKeywordId,
+        patchDescriptionRequest: PatchDescriptionRequest,
+    ): NetworkResult<PatchDescriptionResponse> =
+        networkCall {
+            userKeywordApi.patchDescription(userKeywordId.value, patchDescriptionRequest)
         }
 
     override suspend fun deleteUserKeyword(

@@ -1,6 +1,5 @@
 package com.peekr.core.designsystem.component.modal
 
-import android.view.Window
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -9,16 +8,13 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
 import com.peekr.core.designsystem.component.loading.PeekrLoadingIndicator
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
@@ -119,9 +115,5 @@ private fun ModalContent(
         content()
     }
 }
-
-@ReadOnlyComposable
-@Composable
-private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWindowProvider)?.window
 
 private val ModalShape = RoundedCornerShape(25.dp)

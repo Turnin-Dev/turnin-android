@@ -30,7 +30,7 @@ import com.peekr.core.presentation.image.cropper.SinglePhotoPicker
 import com.peekr.core.presentation.navigation.RegisterGraph
 import com.peekr.core.presentation.navigation.SubGraph
 import com.peekr.core.presentation.util.LaunchedUiEffectHandler
-import com.peekr.core.presentation.util.sharedViewModel
+import com.peekr.core.presentation.viewmodel.sharedViewModel
 import com.peekr.presentation.R
 import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.register.view.RegisterCommonScreen

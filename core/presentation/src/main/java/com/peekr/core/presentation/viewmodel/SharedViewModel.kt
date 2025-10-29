@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.util
+package com.peekr.core.presentation.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -14,7 +14,7 @@ import androidx.navigation.NavController
  * 대부분은 화면과 뷰모델 1:1 관계가 권장되지만, 회원가입과 같은 경우처럼 특수케이스에서만 사용한다.
  *
  * @param navController 네비게이션 컨트롤러
- * @param useHiltViewModel [androidx.hilt.navigation.compose.hiltViewModel] 사용 여부 (false 시 기본 viewModel() 사용)
+ * @param useHiltViewModel [hiltViewModel] 사용 여부 (false 시 기본 viewModel() 사용)
  */
 @Composable
 inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
@@ -26,7 +26,21 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
         return if (useHiltViewModel) hiltViewModel() else viewModel()
     }
 
-    val parentEntry = remember(this) { navController.getBackStackEntry(parentRoute) }
+    val parentEntry = remember(this) {
+        try {
+            navController.getBackStackEntry(parentRoute)
+        } catch (_: IllegalArgumentException) {
+            null
+        }
+    }
+
+    if (parentEntry == null) {
+        return if (useHiltViewModel) {
+            hiltViewModel()
+        } else {
+            viewModel()
+        }
+    }
 
     val viewModel: T = if (useHiltViewModel) {
         hiltViewModel(parentEntry)

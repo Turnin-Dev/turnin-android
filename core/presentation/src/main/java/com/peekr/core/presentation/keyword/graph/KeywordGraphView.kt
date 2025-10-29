@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -19,6 +20,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.peekr.core.presentation.keyword.NodeOffsetXType
+import com.peekr.core.presentation.keyword.NodeOffsetYType
+import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.view.KeywordNodeEdge
 import com.peekr.core.presentation.keyword.view.UserNode
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
@@ -28,13 +32,17 @@ import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
  *
  * @param modifier [Modifier]
  * @param profileImageUrl 사용자 프로필 이미지 url (사용자 노드에서 사용)
+ * @param nodeReset 키워드 노드 리셋 여부
  * @param keywords 키워드 리스트
+ * @param onNodeChanged 키워드 노드 위치 변화 시 콜백
  */
 @Composable
 fun KeywordGraphView(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
+    nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
+    onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     // 키워드 그래프 뷰
     GraphBoard(modifier = modifier) {
@@ -50,15 +58,19 @@ fun KeywordGraphView(
 
         // 키워드 노드 & 엣지
         keywords.forEach { keyword ->
-            KeywordNodeEdge(
-                modifier = Modifier.zIndex(1f),
-                offsetX = keyword.offsetX.toFloat(),
-                offsetY = keyword.offsetY.toFloat(),
-                label = keyword.keywordName,
-                onNodeClick = { },
-                onNodeChanged = { offsetX, offsetY ->
-                },
-            )
+            key(keyword.id) {
+                KeywordNodeEdge(
+                    modifier = Modifier.zIndex(1f),
+                    initialOffsetX = keyword.offsetX.toFloat(),
+                    initialOffsetY = keyword.offsetY.toFloat(),
+                    label = keyword.keywordName,
+                    nodeReset = nodeReset,
+                    onNodeClick = { },
+                    onNodeChanged = { offsetX, offsetY ->
+                        onNodeChanged(keyword.id, offsetX, offsetY)
+                    },
+                )
+            }
         }
     }
 }
@@ -118,6 +130,8 @@ private fun KeywordGraphViewPreview() {
     KeywordGraphView(
         modifier = Modifier.fillMaxSize(),
         profileImageUrl = null,
+        nodeReset = false,
         keywords = UiUserKeyword.samples,
+        onNodeChanged = { _, _, _ -> },
     )
 }

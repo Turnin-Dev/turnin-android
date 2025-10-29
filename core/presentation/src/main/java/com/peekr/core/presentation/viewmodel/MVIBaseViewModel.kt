@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.util
+package com.peekr.core.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,9 +1,10 @@
 package com.peekr.presentation.profile.state
 
-import com.peekr.core.presentation.util.BaseUiEffect
-import com.peekr.core.presentation.util.BaseUiEvent
-import com.peekr.core.presentation.util.BaseUiState
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.viewmodel.BaseUiEffect
+import com.peekr.core.presentation.viewmodel.BaseUiEvent
+import com.peekr.core.presentation.viewmodel.BaseUiState
 import com.peekr.presentation.profile.model.UiProfile
 
 class ProfileContract {
@@ -20,6 +21,8 @@ class ProfileContract {
         val profile: UiProfile? = null,
         val keywordTextField: KeywordTextFieldState = KeywordTextFieldState(),
         val keywordDescTextField: KeywordTextFieldState = KeywordTextFieldState(),
+        val updatedKeywordNodesOffset: Map<UserKeywordId, ChangedKeywordNodeOffset> =
+            emptyMap<UserKeywordId, ChangedKeywordNodeOffset>(),
         val loading: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
@@ -28,6 +31,16 @@ class ProfileContract {
         data class OnKeywordTextChanged(val value: String) : UiEvent
 
         data class OnKeywordDescTextChanged(val value: String) : UiEvent
+
+        data class OnKeywordNodeOffsetChanged(
+            val userKeywordId: UserKeywordId,
+            val offsetX: Float,
+            val offsetY: Float,
+        ) : UiEvent
+
+        data object UpdateKeywordNodeOffset : UiEvent
+
+        data object ResetKeywordNodeOffset : UiEvent
 
         data object AddKeyword : UiEvent
     }

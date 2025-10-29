@@ -9,6 +9,8 @@ import com.peekr.core.domain.validation.ValidationErrorType
 sealed interface ProfileErrorType : BaseError {
     data object UserNotFound : ProfileErrorType
 
+    data object UpdateUserKeywordOffsetFailed : ProfileErrorType
+
     /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
     data class Unexpected(val cause: Throwable?) : ProfileErrorType
 

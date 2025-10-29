@@ -7,7 +7,7 @@ value class KeywordValue private constructor(val value: String) {
     /**
      * 키워드 명(값) VO
      *
-     * @throws com.peekr.core.domain.validation.CommonValidationException 유효성 검사 실패 시
+     * @throws CommonValidationException 유효성 검사 실패 시
      */
     companion object {
         const val MIN_LENGTH = 1

@@ -13,4 +13,6 @@ internal fun ProfileErrorType.asUiText(): UiText = when (this) {
     is ProfileErrorType.ValidationError -> this.error.asUiText()
     ProfileErrorType.UserNotFound -> StringResource(R.string.profile_error_user_not_found)
     is ProfileErrorType.Unexpected -> StringResource(R.string.profile_error_unexpected)
+    ProfileErrorType.UpdateUserKeywordOffsetFailed ->
+        StringResource(R.string.profile_error_update_user_keyword_offset_failed)
 }
