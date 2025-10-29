@@ -174,8 +174,8 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Success)
         assertEquals(
-            (result as Result.Success).data,
             TestPatchOffset,
+            (result as Result.Success).data,
         )
     }
 
@@ -253,8 +253,8 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Success)
         assertEquals(
-            (result as Result.Success).data,
             TestPatchDescription,
+            (result as Result.Success).data,
         )
     }
 

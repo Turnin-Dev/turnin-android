@@ -19,11 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
-import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 
 @Composable
-fun PeekrLoadingScreen(modifier: Modifier = Modifier) {
+fun PeekrLoadingScreen() {
     Dialog(onDismissRequest = {}) {
         val dialogWindow = getDialogWindow()
         SideEffect {
@@ -34,8 +33,7 @@ fun PeekrLoadingScreen(modifier: Modifier = Modifier) {
         }
 
         Box(
-            modifier = modifier
-                .zIndex(10f)
+            modifier = Modifier
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
@@ -60,7 +58,7 @@ private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWin
 private fun PeekrLoadingScreenPreview() {
     PeekrAppTheme {
         Box(Modifier.fillMaxSize()) {
-            PeekrLoadingScreen(Modifier.fillMaxSize())
+            PeekrLoadingScreen()
             Text("Hello World", fontSize = 50.sp)
         }
     }

@@ -76,7 +76,7 @@ fun LoginScreen(
         }
 
         if (loginState.loading) {
-            PeekrLoadingScreen(Modifier.fillMaxSize())
+            PeekrLoadingScreen()
         }
     }
 }

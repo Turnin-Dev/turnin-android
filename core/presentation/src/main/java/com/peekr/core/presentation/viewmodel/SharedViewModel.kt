@@ -26,7 +26,21 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
         return if (useHiltViewModel) hiltViewModel() else viewModel()
     }
 
-    val parentEntry = remember(this) { navController.getBackStackEntry(parentRoute) }
+    val parentEntry = remember(this) {
+        try {
+            navController.getBackStackEntry(parentRoute)
+        } catch (_: IllegalArgumentException) {
+            null
+        }
+    }
+
+    if (parentEntry == null) {
+        return if (useHiltViewModel) {
+            hiltViewModel()
+        } else {
+            viewModel()
+        }
+    }
 
     val viewModel: T = if (useHiltViewModel) {
         hiltViewModel(parentEntry)

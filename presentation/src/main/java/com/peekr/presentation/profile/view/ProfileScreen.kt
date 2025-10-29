@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,6 +53,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.presentation.keyword.NodeOffsetXType
+import com.peekr.core.presentation.keyword.NodeOffsetYType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.token.ScreenTokens
@@ -137,7 +139,7 @@ internal fun ProfileScreen(
         }
 
         if (loading) {
-            PeekrLoadingScreen(Modifier.fillMaxSize())
+            PeekrLoadingScreen()
         }
     }
 }
@@ -353,10 +355,11 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
-    onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetXType) -> Unit,
+    onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     var nodeChanged by rememberSaveable { mutableStateOf(false) }
     var nodeReset by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(nodeReset) { if (nodeReset) nodeReset = false }
 
     Box(modifier = modifier) {
         KeywordGraphView(
@@ -365,7 +368,6 @@ private fun KeywordGraph(
             keywords = keywords,
             nodeReset = nodeReset,
             onNodeChanged = { userKeywordId, offsetX, offsetY ->
-                nodeReset = false
                 nodeChanged = keywords.any { it.id == userKeywordId }
                 onNodeChanged(userKeywordId, offsetX, offsetY)
             },

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -57,17 +58,19 @@ fun KeywordGraphView(
 
         // 키워드 노드 & 엣지
         keywords.forEach { keyword ->
-            KeywordNodeEdge(
-                modifier = Modifier.zIndex(1f),
-                initialOffsetX = keyword.offsetX.toFloat(),
-                initialOffsetY = keyword.offsetY.toFloat(),
-                label = keyword.keywordName,
-                nodeReset = nodeReset,
-                onNodeClick = { },
-                onNodeChanged = { offsetX, offsetY ->
-                    onNodeChanged(keyword.id, offsetX, offsetY)
-                },
-            )
+            key(keyword.id) {
+                KeywordNodeEdge(
+                    modifier = Modifier.zIndex(1f),
+                    initialOffsetX = keyword.offsetX.toFloat(),
+                    initialOffsetY = keyword.offsetY.toFloat(),
+                    label = keyword.keywordName,
+                    nodeReset = nodeReset,
+                    onNodeClick = { },
+                    onNodeChanged = { offsetX, offsetY ->
+                        onNodeChanged(keyword.id, offsetX, offsetY)
+                    },
+                )
+            }
         }
     }
 }

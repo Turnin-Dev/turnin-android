@@ -6,7 +6,8 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
 import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
-import com.peekr.core.data.userKeyword.network.request.PatchUserKeywordRequest
+import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
+import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
 import com.peekr.core.domain.model.KeywordId
@@ -207,9 +208,11 @@ class UserKeywordDataSourceImplTest {
     @Test
     fun `사용자 키워드 오프셋 수정 - 성공 테스트`() = runTest {
         // given
+        val expectedResponse = testRule.encodeToJson(TestPatchOffsetResponse)
         testRule.server.enqueue(
             MockResponse().apply {
-                setResponseCode(204)
+                setResponseCode(200)
+                setBody(expectedResponse)
             },
         )
 
@@ -220,15 +223,9 @@ class UserKeywordDataSourceImplTest {
         )
 
         // then
-        assertTrue(response is NetworkResult.Success)
-        assertEquals(
-            (response as NetworkResult.Success).data.offsetX,
-            TestPatchOffsetRequest.offsetX,
-        )
-        assertEquals(
-            response.data.offsetY,
-            TestPatchOffsetRequest.offsetY,
-        )
+        val success = response as NetworkResult.Success
+        assertEquals(success.data.offsetX, TestPatchOffsetResponse.offsetX)
+        assertEquals(response.data.offsetY, TestPatchOffsetResponse.offsetY)
     }
 
     @Test
@@ -284,9 +281,11 @@ class UserKeywordDataSourceImplTest {
     @Test
     fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
         // given
+        val expectedResponse = testRule.encodeToJson(TestPatchDescriptionResponse)
         testRule.server.enqueue(
             MockResponse().apply {
-                setResponseCode(204)
+                setResponseCode(200)
+                setBody(expectedResponse)
             },
         )
 
@@ -297,11 +296,8 @@ class UserKeywordDataSourceImplTest {
         )
 
         // then
-        assertTrue(response is NetworkResult.Success)
-        assertEquals(
-            (response as NetworkResult.Success).data.description,
-            TestPatchDescriptionRequest.description,
-        )
+        val success = response as NetworkResult.Success
+        assertEquals(success.data.description, TestPatchDescriptionResponse.description)
     }
 
     @Test
@@ -443,16 +439,18 @@ class UserKeywordDataSourceImplTest {
             offsetY = 0.0,
             description = "sample",
         )
-        private val TestPatchUserKeywordRequest = PatchUserKeywordRequest(
-            offsetX = 0.0,
-            offsetY = 0.0,
-            description = "sample",
-        )
         private val TestPatchOffsetRequest = PatchOffsetRequest(
             offsetX = 1.0f,
             offsetY = 2.0f,
         )
+        private val TestPatchOffsetResponse = PatchOffsetResponse(
+            offsetX = 1.0f,
+            offsetY = 2.0f,
+        )
         private val TestPatchDescriptionRequest = PatchDescriptionRequest(
+            description = "hello",
+        )
+        private val TestPatchDescriptionResponse = PatchDescriptionResponse(
             description = "hello",
         )
     }
