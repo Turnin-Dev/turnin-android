@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,6 +11,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +22,9 @@ import kotlinx.coroutines.launch
 /**
  * ModalBottomSheet 프레임
  *
- * ModalBottomSheet를 사용할 때 해당 ModalBottomSheet를 사용하여 [content] 에 원하는 요소를 추가하면 된다.
+ * ModalBottomSheet를 사용할 때 [content] 에 원하는 요소를 추가하면 된다.
+ *
+ * **그리고 반드시 [content]의 파라미터인 [Modifier]를 사용해야 한다. (디자인 일관성 보장)**
  *
  * @param sheetState SheetState
  * @param onDismissRequest ModalBottomSheet 가 사라질 때 수행할 동작
@@ -62,8 +64,7 @@ fun PeekrModalBottomSheet(
         content(
             Modifier
                 .background(PeekrTheme.colorScheme.backgroundNormal)
-                .padding(BottomSheetContentPaddingValues)
-                .navigationBarsPadding(),
+                .padding(BottomSheetContentPaddingValues),
         )
     }
 }

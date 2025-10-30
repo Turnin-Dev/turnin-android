@@ -2,6 +2,7 @@ package com.peekr.domain.profile.repository
 
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -42,4 +43,13 @@ interface ProfileRepository {
         offsetX: Double,
         offsetY: Double,
     ): Flow<Result<UserKeyword, ProfileErrorType>>
+
+    /**
+     * 키워드 삭제
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     */
+    fun deleteKeyword(
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<Unit, ProfileErrorType>>
 }

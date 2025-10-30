@@ -1,6 +1,7 @@
 package com.peekr.core.designsystem.component.loading
 
 import android.view.Window
+import android.view.WindowManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -18,17 +19,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 
 @Composable
 fun PeekrLoadingScreen() {
-    Dialog(onDismissRequest = {}) {
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+        ),
+    ) {
         val dialogWindow = getDialogWindow()
         SideEffect {
-            dialogWindow.let { window ->
-                window?.setDimAmount(0f)
-                window?.setWindowAnimations(-1)
+            dialogWindow?.let { window ->
+                window.setDimAmount(0f)
+                window.setWindowAnimations(-1)
+                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             }
         }
 

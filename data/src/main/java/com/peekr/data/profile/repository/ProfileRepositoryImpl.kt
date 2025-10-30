@@ -6,6 +6,7 @@ import com.peekr.core.domain.coroutine.combineWithResult
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
@@ -84,4 +85,11 @@ class ProfileRepositoryImpl @Inject constructor(
             emit(Result.Error(error = ProfileErrorType.UserNotFound))
         }
     }
+
+    override fun deleteKeyword(userKeywordId: UserKeywordId): Flow<Result<Unit, ProfileErrorType>> =
+        userKeywordRepository
+            .deleteUserKeyword(userKeywordId)
+            .mapError { userKeywordErrorType ->
+                ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            }
 }

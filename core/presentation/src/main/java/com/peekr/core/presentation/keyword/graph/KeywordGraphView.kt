@@ -34,6 +34,7 @@ import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
  * @param profileImageUrl 사용자 프로필 이미지 url (사용자 노드에서 사용)
  * @param nodeReset 키워드 노드 리셋 여부
  * @param keywords 키워드 리스트
+ * @param onNodeLongClick 키워드 노드 길게 클릭 시 콜백
  * @param onNodeChanged 키워드 노드 위치 변화 시 콜백
  */
 @Composable
@@ -42,6 +43,7 @@ fun KeywordGraphView(
     profileImageUrl: String?,
     nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
+    onNodeLongClick: (UserKeywordIdType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     // 키워드 그래프 뷰
@@ -65,7 +67,8 @@ fun KeywordGraphView(
                     initialOffsetY = keyword.offsetY.toFloat(),
                     label = keyword.keywordName,
                     nodeReset = nodeReset,
-                    onNodeClick = { },
+                    onNodeClick = { TODO("사용자 키워드 정보 창 표시") },
+                    onNodeLongClick = { onNodeLongClick(keyword.id) },
                     onNodeChanged = { offsetX, offsetY ->
                         onNodeChanged(keyword.id, offsetX, offsetY)
                     },
@@ -108,7 +111,8 @@ private fun GraphBoard(
                             pinchZoom = newScale
                         },
                     )
-                }.graphicsLayer {
+                }
+                .graphicsLayer {
                     translationX = -dragOffsetX * pinchZoom
                     translationY = -dragOffsetY * pinchZoom
                     scaleX = pinchZoom
@@ -132,6 +136,7 @@ private fun KeywordGraphViewPreview() {
         profileImageUrl = null,
         nodeReset = false,
         keywords = UiUserKeyword.samples,
+        onNodeLongClick = { },
         onNodeChanged = { _, _, _ -> },
     )
 }

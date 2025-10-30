@@ -76,6 +76,7 @@ internal fun ProfileScreen(
     loading: Boolean,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
+    onOpenNodeOptionModal: (UserKeywordIdType) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -113,6 +114,9 @@ internal fun ProfileScreen(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                         onUiEvent = onUiEvent,
+                        onNodeLongClick = { userKeywordId ->
+                            onOpenNodeOptionModal(userKeywordId)
+                        },
                         onNodeChanged = { userKeywordId, offsetX, offsetY ->
                             onUiEvent(
                                 ProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
@@ -347,7 +351,8 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
  * @param profileImageUrl 사용자 프로필 사진 url
  * @param keywords 사용자 키워드 리스트
  * @param onUiEvent UI 이벤트
- * @param onNodeChanged 사용자 키워드 오프셋 변경 시
+ * @param onNodeLongClick 사용자 키워드 노드 길게 클릭 시
+ * @param onNodeChanged 사용자 키워드 노드 오프셋 변경 시
  */
 @Composable
 private fun KeywordGraph(
@@ -355,6 +360,7 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onNodeLongClick: (UserKeywordIdType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     var nodeChanged by rememberSaveable { mutableStateOf(false) }
@@ -367,6 +373,9 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
+            onNodeLongClick = { userKeywordId ->
+                onNodeLongClick(userKeywordId)
+            },
             onNodeChanged = { userKeywordId, offsetX, offsetY ->
                 nodeChanged = keywords.any { it.id == userKeywordId }
                 onNodeChanged(userKeywordId, offsetX, offsetY)
@@ -549,8 +558,9 @@ private fun ProfileScreenPreview() {
                 keywords = UiUserKeyword.samples,
             ),
             loading = false,
-            onOpenAddKeywordModal = {},
             onUiEvent = {},
+            onOpenAddKeywordModal = {},
+            onOpenNodeOptionModal = {},
         )
     }
 }
@@ -563,8 +573,9 @@ private fun ProfileScreenShimmerPreview() {
             modifier = Modifier.fillMaxSize(),
             profile = null,
             loading = false,
-            onOpenAddKeywordModal = {},
             onUiEvent = {},
+            onOpenAddKeywordModal = {},
+            onOpenNodeOptionModal = {},
         )
     }
 }

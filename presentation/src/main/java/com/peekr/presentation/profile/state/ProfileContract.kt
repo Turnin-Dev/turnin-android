@@ -43,7 +43,13 @@ class ProfileContract {
         data object ResetKeywordNodeOffset : UiEvent
 
         data object AddKeyword : UiEvent
+
+        data class DeleteKeyword(
+            val userKeywordId: UserKeywordId?,
+        ) : UiEvent
     }
 
-    sealed interface UiEffect : BaseUiEffect
+    sealed interface UiEffect : BaseUiEffect {
+        data object SuccessDeleteKeyword : UiEffect
+    }
 }
