@@ -396,11 +396,6 @@ private fun KeywordModalPreview() {
     var isOpen by remember { mutableStateOf(false) }
     val text by remember { mutableStateOf(KeywordTextFieldState()) }
     val text2 by remember { mutableStateOf(KeywordTextFieldState()) }
-    val isTextError by remember(text) {
-        derivedStateOf {
-            text.value.length > 5
-        }
-    }
 
     PeekrAppTheme {
         Box(Modifier.fillMaxSize()) {
