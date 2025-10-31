@@ -16,18 +16,17 @@ import com.peekr.presentation.R
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
+import com.peekr.presentation.profile.state.KeywordTextFieldState
 import com.peekr.presentation.profile.state.ProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val usecases: ProfileUseCases,
@@ -84,8 +83,8 @@ class ProfileViewModel @Inject constructor(
 
             is ProfileContract.UiEvent.AddKeyword -> {
                 addKeyword(
-                    keyword = currentUiState.keywordTextField.value,
-                    description = currentUiState.keywordDescTextField.value,
+                    keyword = event.keyword,
+                    description = event.description,
                 )
             }
 
@@ -116,38 +115,75 @@ class ProfileViewModel @Inject constructor(
 
             is ProfileContract.UiEvent.UpdateKeywordDescription -> {
                 event.userKeywordId?.let {
-                    updateKeywordNode(it, event.description)
+                    updateKeywordDescription(it, event.currentDescription, event.newDescription)
                 }
                     ?: showSnackBar(StringResource(R.string.profile_error_not_selected_user_keyword_id))
+            }
+
+            is ProfileContract.UiEvent.CheckSafeCancel -> safeCancel(event.keyword, event.description)
+
+            ProfileContract.UiEvent.AcceptSafeCancel -> {
+                sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                resetKeywordAndDescriptionTextField()
             }
         }
     }
 
-    private fun updateKeywordNode(
-        userKeywordId: UserKeywordId,
-        description: String,
-    ) {
-        usecases.updateUserKeywordDescription(userKeywordId, description).onEach { result ->
-            when (result) {
-                Result.Loading -> updateState { this.copy(loading = true) }
-                is Result.Error -> updateState {
-                    this.copy(loading = false, error = result.error.asUiText())
-                }
+    private fun resetKeywordAndDescriptionTextField() {
+        updateState {
+            this.copy(
+                keywordTextField = KeywordTextFieldState(),
+                keywordDescTextField = KeywordTextFieldState(),
+            )
+        }
+    }
 
-                is Result.Success -> {
-                    updateState {
-                        this.copy(loading = false, error = null)
+    private fun safeCancel(
+        keyword: String?,
+        description: String?,
+    ) {
+        if ((keyword != null && keyword.isNotEmpty()) ||
+            (description != null && description.isNotEmpty())
+        ) {
+            sendEffect { ProfileContract.UiEffect.OpenSafeCancelModal }
+        } else {
+            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+        }
+    }
+
+    private fun updateKeywordDescription(
+        userKeywordId: UserKeywordId,
+        currentDescription: String?,
+        newDescription: String,
+    ) {
+        if (currentDescription != null && currentDescription != newDescription) {
+            usecases.updateUserKeywordDescription(userKeywordId, newDescription).onEach { result ->
+                when (result) {
+                    Result.Loading -> updateState { this.copy(loading = true) }
+                    is Result.Error -> updateState {
+                        this.copy(loading = false, error = result.error.asUiText())
                     }
 
-                    sendEffect { ProfileContract.UiEffect.SuccessUpdateKeywordDesc }
-
-                    showSnackBar(StringResource(R.string.profile_success_update_user_keyword_desc))
-
-                    // 성공 시, 초기 데이터 다시 로드 (새로 고침)
-                    loadInitialData()
+                    is Result.Success -> {
+                        updateState {
+                            this.copy(
+                                loading = false,
+                                error = null,
+                                keywordTextField = KeywordTextFieldState(),
+                                keywordDescTextField = KeywordTextFieldState(),
+                            )
+                        }
+                        sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                        sendEffect { ProfileContract.UiEffect.ResetSelectedData }
+                        showSnackBar(StringResource(R.string.profile_success_update_user_keyword_desc))
+                        // 성공 시, 초기 데이터 다시 로드 (새로 고침)
+                        loadInitialData()
+                    }
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        } else {
+            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+        }
     }
 
     private fun deleteKeyword(userKeywordId: UserKeywordId) {
@@ -162,11 +198,9 @@ class ProfileViewModel @Inject constructor(
                     updateState {
                         this.copy(loading = false, error = null)
                     }
-
-                    sendEffect { ProfileContract.UiEffect.SuccessDeleteKeyword }
-
+                    sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                    sendEffect { ProfileContract.UiEffect.ResetSelectedData }
                     showSnackBar(StringResource(R.string.profile_success_delete_user_keyword))
-
                     // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                     loadInitialData()
                 }
@@ -193,11 +227,15 @@ class ProfileViewModel @Inject constructor(
 
                         is Result.Success -> {
                             updateState {
-                                this.copy(loading = false, error = null)
+                                this.copy(
+                                    loading = false,
+                                    error = null,
+                                    keywordTextField = KeywordTextFieldState(),
+                                    keywordDescTextField = KeywordTextFieldState(),
+                                )
                             }
-
-                            sendEffect { ProfileContract.UiEffect.SuccessAddKeyword }
-
+                            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                            sendEffect { ProfileContract.UiEffect.ResetSelectedData }
                             showSnackBar(
                                 UiText.StringResource(
                                     R.string.profile_success_add_user_keyword,

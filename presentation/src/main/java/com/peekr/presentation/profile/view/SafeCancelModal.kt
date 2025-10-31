@@ -35,22 +35,22 @@ import com.peekr.presentation.R
  * @param modifier [Modifier]
  * @param isOpen 모달 활성화 여부
  * @param onAnimationFinished 모달 사라지는 애니메이션이 끝나고 나서 수행할 작업
- * @param onDeleteClick 경고 모달에서 삭제 클릭 시 수행할 작업
- * @param onCancel 경고 모달에서 취소 클릭 시 수행할 작업
+ * @param onAcceptClick 경고 모달에서 확인 클릭 시 수행할 작업
+ * @param onCancelClick 경고 모달에서 취소 클릭 시 수행할 작업
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CancelWarningModal(
+fun SafeCancelModal(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
     onAnimationFinished: (() -> Unit)? = null,
-    onDeleteClick: () -> Unit,
-    onCancel: () -> Unit,
+    onAcceptClick: () -> Unit,
+    onCancelClick: () -> Unit,
 ) {
     PeekrModalWrapper(
         isOpen = isOpen,
         animated = true,
-        onDismissRequest = onCancel,
+        onDismissRequest = onCancelClick,
         onAnimationFinished = { onAnimationFinished?.invoke() },
     ) {
         Column {
@@ -62,8 +62,8 @@ fun CancelWarningModal(
             )
             Buttons(
                 modifier = Modifier.fillMaxWidth(),
-                onDeleteClick = onDeleteClick,
-                onCancelClick = onCancel,
+                onAcceptClick = onAcceptClick,
+                onCancelClick = onCancelClick,
             )
         }
     }
@@ -94,13 +94,13 @@ private fun Title(
  * 하단 버튼 영역
  *
  * @param modifier [Modifier]
- * @param onDeleteClick `삭제` 클릭 시 수행할 작업
+ * @param onAcceptClick `확인` 클릭 시 수행할 작업
  * @param onCancelClick `취소` 클릭 시 수행할 작업
  */
 @Composable
 private fun Buttons(
     modifier: Modifier = Modifier,
-    onDeleteClick: () -> Unit,
+    onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
     Row(
@@ -111,7 +111,7 @@ private fun Buttons(
             modifier = Modifier.weight(1f),
             text = stringResource(R.string.profile_screen_delete_keyword_modal_btn_ok),
             style = PeekrButtonStyle.Medium,
-            onClick = onDeleteClick,
+            onClick = onAcceptClick,
         )
         PeekrNegativeButton(
             modifier = Modifier.weight(1f),
@@ -133,11 +133,11 @@ private fun CancelWarningModalPreview() {
                 Text("Modal Open")
             }
 
-            CancelWarningModal(
+            SafeCancelModal(
                 isOpen = isOpen,
                 onAnimationFinished = {},
-                onDeleteClick = {},
-                onCancel = { isOpen = false },
+                onAcceptClick = {},
+                onCancelClick = { isOpen = false },
             )
         }
     }
