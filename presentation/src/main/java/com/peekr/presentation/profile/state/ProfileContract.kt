@@ -47,9 +47,18 @@ class ProfileContract {
         data class DeleteKeyword(
             val userKeywordId: UserKeywordId?,
         ) : UiEvent
+
+        data class UpdateKeywordDescription(
+            val userKeywordId: UserKeywordId?,
+            val description: String,
+        ) : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
+        data object SuccessAddKeyword : UiEffect
+
         data object SuccessDeleteKeyword : UiEffect
+
+        data object SuccessUpdateKeywordDesc : UiEffect
     }
 }

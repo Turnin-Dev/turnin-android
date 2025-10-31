@@ -109,7 +109,7 @@ private fun Buttons(
     ) {
         PeekrSolidButton(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.profile_screen_delete_keyword_modal_btn_delete),
+            text = stringResource(R.string.profile_screen_delete_keyword_modal_btn_ok),
             style = PeekrButtonStyle.Medium,
             onClick = onDeleteClick,
         )

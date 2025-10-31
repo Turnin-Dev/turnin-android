@@ -20,6 +20,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.peekr.core.presentation.keyword.KeywordDescType
+import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
@@ -43,7 +45,7 @@ fun KeywordGraphView(
     profileImageUrl: String?,
     nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
-    onNodeLongClick: (UserKeywordIdType) -> Unit,
+    onNodeLongClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     // 키워드 그래프 뷰
@@ -68,7 +70,13 @@ fun KeywordGraphView(
                     label = keyword.keywordName,
                     nodeReset = nodeReset,
                     onNodeClick = { TODO("사용자 키워드 정보 창 표시") },
-                    onNodeLongClick = { onNodeLongClick(keyword.id) },
+                    onNodeLongClick = {
+                        onNodeLongClick(
+                            keyword.id,
+                            keyword.keywordName,
+                            keyword.description,
+                        )
+                    },
                     onNodeChanged = { offsetX, offsetY ->
                         onNodeChanged(keyword.id, offsetX, offsetY)
                     },
@@ -136,7 +144,7 @@ private fun KeywordGraphViewPreview() {
         profileImageUrl = null,
         nodeReset = false,
         keywords = UiUserKeyword.samples,
-        onNodeLongClick = { },
+        onNodeLongClick = { _, _, _ -> },
         onNodeChanged = { _, _, _ -> },
     )
 }

@@ -5,6 +5,12 @@ import com.peekr.core.domain.model.UserKeywordId
 /** 사용자 키워드 ID 타입 */
 typealias UserKeywordIdType = UserKeywordId
 
+/** 키워드 명 타입 */
+typealias KeywordNameType = String
+
+/** 키워드 내용 타입 */
+typealias KeywordDescType = String?
+
 /** 키워드 오프셋 X 타입 */
 typealias NodeOffsetXType = Float
 

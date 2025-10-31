@@ -3,6 +3,8 @@ package com.peekr.domain.profile.repository
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -52,4 +54,26 @@ interface ProfileRepository {
     fun deleteKeyword(
         userKeywordId: UserKeywordId,
     ): Flow<Result<Unit, ProfileErrorType>>
+
+    /**
+     * 사용자 키워드 오프셋 수정
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     * @param patchOffset 사용자 키워드 오프셋 수정 요청 객체
+     */
+    fun updateOffset(
+        userKeywordId: UserKeywordId,
+        patchOffset: PatchOffset,
+    ): Flow<Result<PatchOffset, ProfileErrorType>>
+
+    /**
+     * 사용자 키워드 설명 수정
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     * @param patchDescription 사용자 키워드 설명 수정 요청 객체
+     */
+    fun updateDescription(
+        userKeywordId: UserKeywordId,
+        patchDescription: PatchDescription,
+    ): Flow<Result<PatchDescription, ProfileErrorType>>
 }

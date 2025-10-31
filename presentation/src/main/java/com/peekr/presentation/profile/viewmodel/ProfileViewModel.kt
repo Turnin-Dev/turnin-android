@@ -7,6 +7,7 @@ import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.util.SnackbarController
 import com.peekr.core.presentation.util.SnackbarEvent
 import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.util.UiText.StringResource
 import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.viewmodel.setTextFieldValidation
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -110,9 +111,43 @@ class ProfileViewModel @Inject constructor(
                 event.userKeywordId?.let {
                     deleteKeyword(it)
                 }
-                    ?: showSnackBar(UiText.StringResource(R.string.profile_error_not_selected_user_keyword_id))
+                    ?: showSnackBar(StringResource(R.string.profile_error_not_selected_user_keyword_id))
+            }
+
+            is ProfileContract.UiEvent.UpdateKeywordDescription -> {
+                event.userKeywordId?.let {
+                    updateKeywordNode(it, event.description)
+                }
+                    ?: showSnackBar(StringResource(R.string.profile_error_not_selected_user_keyword_id))
             }
         }
+    }
+
+    private fun updateKeywordNode(
+        userKeywordId: UserKeywordId,
+        description: String,
+    ) {
+        usecases.updateUserKeywordDescription(userKeywordId, description).onEach { result ->
+            when (result) {
+                Result.Loading -> updateState { this.copy(loading = true) }
+                is Result.Error -> updateState {
+                    this.copy(loading = false, error = result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(loading = false, error = null)
+                    }
+
+                    sendEffect { ProfileContract.UiEffect.SuccessUpdateKeywordDesc }
+
+                    showSnackBar(StringResource(R.string.profile_success_update_user_keyword_desc))
+
+                    // 성공 시, 초기 데이터 다시 로드 (새로 고침)
+                    loadInitialData()
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun deleteKeyword(userKeywordId: UserKeywordId) {
@@ -130,11 +165,7 @@ class ProfileViewModel @Inject constructor(
 
                     sendEffect { ProfileContract.UiEffect.SuccessDeleteKeyword }
 
-                    showSnackBar(
-                        UiText.StringResource(
-                            R.string.profile_success_delete_user_keyword,
-                        ),
-                    )
+                    showSnackBar(StringResource(R.string.profile_success_delete_user_keyword))
 
                     // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                     loadInitialData()
@@ -164,6 +195,8 @@ class ProfileViewModel @Inject constructor(
                             updateState {
                                 this.copy(loading = false, error = null)
                             }
+
+                            sendEffect { ProfileContract.UiEffect.SuccessAddKeyword }
 
                             showSnackBar(
                                 UiText.StringResource(

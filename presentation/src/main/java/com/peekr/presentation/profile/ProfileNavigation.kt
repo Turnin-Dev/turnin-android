@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -18,9 +19,11 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.navigation.SubGraph
 import com.peekr.core.presentation.util.ObserveAsEvents
+import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.ProfileContract
 import com.peekr.presentation.profile.view.AddKeywordModal
 import com.peekr.presentation.profile.view.CancelWarningModal
+import com.peekr.presentation.profile.view.EditKeywordModal
 import com.peekr.presentation.profile.view.NodeOptionModal
 import com.peekr.presentation.profile.view.ProfileScreen
 import com.peekr.presentation.profile.viewmodel.ProfileViewModel
@@ -33,9 +36,12 @@ fun NavGraphBuilder.profileNavigation() {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         var isAddKeywordModalOpen by remember { mutableStateOf(false) }
+        var isEditKeywordModalOpen by remember { mutableStateOf(false) }
         var isCancelWarningModalOpen by remember { mutableStateOf(false) }
         var isNodeOptionModelOpen by remember { mutableStateOf(false) }
         var selectedUserKeywordId: UserKeywordId? by rememberSaveable { mutableStateOf(null) }
+        var selectedKeyword: String? by rememberSaveable { mutableStateOf(null) }
+        var selectedDescription: String? by rememberSaveable { mutableStateOf(null) }
 
         // ------------------------------ UiEffect ------------------------------
         ObserveAsEvents(viewModel.effect) {
@@ -43,6 +49,17 @@ fun NavGraphBuilder.profileNavigation() {
                 ProfileContract.UiEffect.SuccessDeleteKeyword -> {
                     isNodeOptionModelOpen = false
                     selectedUserKeywordId = null
+                }
+
+                ProfileContract.UiEffect.SuccessUpdateKeywordDesc -> {
+                    isEditKeywordModalOpen = false
+                    selectedUserKeywordId = null
+                    viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(""))
+                    viewModel.processEvent(ProfileContract.UiEvent.OnKeywordDescTextChanged(""))
+                }
+
+                ProfileContract.UiEffect.SuccessAddKeyword -> {
+                    isAddKeywordModalOpen = false
                 }
             }
         }
@@ -52,7 +69,6 @@ fun NavGraphBuilder.profileNavigation() {
             modifier = Modifier.fillMaxSize(),
             isOpen = isAddKeywordModalOpen,
             loading = uiState.loading,
-            canAdd = uiState.keywordTextField.value.isNotBlank(),
             keywordTextFieldState = uiState.keywordTextField,
             onKeywordTextChanged = {
                 viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(it))
@@ -64,13 +80,47 @@ fun NavGraphBuilder.profileNavigation() {
             onAddClick = {
                 viewModel.processEvent(ProfileContract.UiEvent.AddKeyword)
             },
-            onCancel = {
+            onCancelClick = {
                 if (uiState.keywordTextField.value.isNotBlank() ||
                     uiState.keywordDescTextField.value.isNotBlank()
                 ) {
                     isCancelWarningModalOpen = true
                 } else {
                     isAddKeywordModalOpen = false
+                }
+            },
+        )
+
+        EditKeywordModal(
+            modifier = Modifier.fillMaxSize(),
+            isOpen = isEditKeywordModalOpen,
+            loading = uiState.loading,
+            keywordTextFieldReadOnly = true,
+            keyword = selectedKeyword
+                ?: stringResource(R.string.profile_error_not_selected_user_keyword_id),
+            keywordDescTextFieldState = uiState.keywordDescTextField,
+            onKeywordDescTextChanged = {
+                viewModel.processEvent(ProfileContract.UiEvent.OnKeywordDescTextChanged(it))
+            },
+            onEditClick = {
+                if (selectedDescription != uiState.keywordDescTextField.value) {
+                    viewModel.processEvent(
+                        ProfileContract.UiEvent.UpdateKeywordDescription(
+                            userKeywordId = selectedUserKeywordId,
+                            description = uiState.keywordDescTextField.value,
+                        ),
+                    )
+                } else {
+                    isEditKeywordModalOpen = false
+                }
+            },
+            onCancelClick = {
+                if (uiState.keywordTextField.value.isNotBlank() ||
+                    uiState.keywordDescTextField.value.isNotBlank()
+                ) {
+                    isCancelWarningModalOpen = true
+                } else {
+                    isEditKeywordModalOpen = false
                 }
             },
         )
@@ -83,6 +133,7 @@ fun NavGraphBuilder.profileNavigation() {
                 viewModel.processEvent(ProfileContract.UiEvent.OnKeywordDescTextChanged(""))
                 isCancelWarningModalOpen = false
                 isAddKeywordModalOpen = false
+                isEditKeywordModalOpen = false
             },
             onCancel = { isCancelWarningModalOpen = false },
         )
@@ -91,7 +142,13 @@ fun NavGraphBuilder.profileNavigation() {
             NodeOptionModal(
                 sheetState = sheetState,
                 onDismissRequest = { isNodeOptionModelOpen = false },
-                onEdit = {},
+                onEdit = {
+                    viewModel.processEvent(
+                        ProfileContract.UiEvent.OnKeywordDescTextChanged(selectedDescription ?: ""),
+                    )
+                    isEditKeywordModalOpen = true
+                    isNodeOptionModelOpen = false
+                },
                 onDelete = {
                     viewModel.processEvent(ProfileContract.UiEvent.DeleteKeyword(selectedUserKeywordId))
                 },
@@ -108,8 +165,10 @@ fun NavGraphBuilder.profileNavigation() {
             loading = uiState.loading,
             onUiEvent = viewModel::processEvent,
             onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
-            onOpenNodeOptionModal = { userKeywordId ->
+            onOpenNodeOptionModal = { userKeywordId, keyword, description ->
                 selectedUserKeywordId = userKeywordId
+                selectedKeyword = keyword
+                selectedDescription = description
                 isNodeOptionModelOpen = true
             },
         )

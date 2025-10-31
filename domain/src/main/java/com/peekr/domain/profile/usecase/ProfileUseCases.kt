@@ -8,6 +8,7 @@ class ProfileUseCases @Inject constructor(
     val getProfile: GetProfileUseCase,
     val updateProfile: UpdateProfileUseCase,
     val updateUserKeywordOffset: UpdateUserKeywordOffsetUseCase,
+    val updateUserKeywordDescription: UpdateUserKeywordDescriptionUseCase,
     val validateKeywordDescription: ValidateKeywordDescriptionUseCase,
     val validateKeyword: ValidateKeywordUseCase,
 )

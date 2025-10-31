@@ -52,6 +52,8 @@ import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
+import com.peekr.core.presentation.keyword.KeywordDescType
+import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
@@ -76,7 +78,7 @@ internal fun ProfileScreen(
     loading: Boolean,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
-    onOpenNodeOptionModal: (UserKeywordIdType) -> Unit,
+    onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -114,8 +116,8 @@ internal fun ProfileScreen(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                         onUiEvent = onUiEvent,
-                        onNodeLongClick = { userKeywordId ->
-                            onOpenNodeOptionModal(userKeywordId)
+                        onNodeLongClick = { userKeywordId, keyword, description ->
+                            onOpenNodeOptionModal(userKeywordId, keyword, description)
                         },
                         onNodeChanged = { userKeywordId, offsetX, offsetY ->
                             onUiEvent(
@@ -360,7 +362,7 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
-    onNodeLongClick: (UserKeywordIdType) -> Unit,
+    onNodeLongClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     var nodeChanged by rememberSaveable { mutableStateOf(false) }
@@ -373,8 +375,8 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
-            onNodeLongClick = { userKeywordId ->
-                onNodeLongClick(userKeywordId)
+            onNodeLongClick = { userKeywordId, keyword, description ->
+                onNodeLongClick(userKeywordId, keyword, description)
             },
             onNodeChanged = { userKeywordId, offsetX, offsetY ->
                 nodeChanged = keywords.any { it.id == userKeywordId }
@@ -452,7 +454,8 @@ fun NodeChangedButton(
             .peekrShadow(
                 type = PeekrShadowType.Normal,
                 shape = RoundedCornerShape(12.dp),
-            ).clip(RoundedCornerShape(12.dp))
+            )
+            .clip(RoundedCornerShape(12.dp))
             .size(40.dp)
             .background(PeekrTheme.colorScheme.backgroundNormal)
             .clickableSingle(onClick = onClick),
@@ -560,7 +563,7 @@ private fun ProfileScreenPreview() {
             loading = false,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
-            onOpenNodeOptionModal = {},
+            onOpenNodeOptionModal = { _, _, _ -> },
         )
     }
 }
@@ -575,7 +578,7 @@ private fun ProfileScreenShimmerPreview() {
             loading = false,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
-            onOpenNodeOptionModal = {},
+            onOpenNodeOptionModal = { _, _, _ -> },
         )
     }
 }

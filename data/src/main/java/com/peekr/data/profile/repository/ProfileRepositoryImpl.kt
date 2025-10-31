@@ -11,6 +11,8 @@ import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.core.domain.util.Result
@@ -91,5 +93,25 @@ class ProfileRepositoryImpl @Inject constructor(
             .deleteUserKeyword(userKeywordId)
             .mapError { userKeywordErrorType ->
                 ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            }
+
+    override fun updateOffset(
+        userKeywordId: UserKeywordId,
+        patchOffset: PatchOffset,
+    ): Flow<Result<PatchOffset, ProfileErrorType>> =
+        userKeywordRepository
+            .patchOffset(userKeywordId, patchOffset)
+            .mapError { userKeywordErrorType ->
+                ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            }
+
+    override fun updateDescription(
+        userKeywordId: UserKeywordId,
+        patchDescription: PatchDescription,
+    ): Flow<Result<PatchDescription, ProfileErrorType>> =
+        userKeywordRepository
+            .patchDescription(userKeywordId, patchDescription)
+            .mapError { userKeywordError ->
+                ProfileErrorType.UserKeywordError(userKeywordError)
             }
 }
