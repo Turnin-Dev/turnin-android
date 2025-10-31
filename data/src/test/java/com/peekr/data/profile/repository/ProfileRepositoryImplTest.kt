@@ -19,6 +19,8 @@ import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
@@ -161,7 +163,7 @@ class ProfileRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 프로필 키워드 추가 - 성공 테스트`() = runTest {
+    fun `사용자 키워드 추가 - 성공 테스트`() = runTest {
         // given
         every { dataStoreManager.getLongData(any()) } returns flowOf(TestUserId.value)
         every {
@@ -186,7 +188,7 @@ class ProfileRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 프로필 키워드 추가 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 추가 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = UserKeywordErrorType.Unexpected(null)
         every { dataStoreManager.getLongData(any()) } returns flowOf(TestUserId.value)
@@ -212,7 +214,7 @@ class ProfileRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 프로필 키워드 추가 - 사용자 ID가 존재하지 않는 경우 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 추가 - 사용자 ID가 존재하지 않는 경우 정상적으로 에러를 반환한다`() = runTest {
         // given
         every { dataStoreManager.getLongData(any()) } returns flowOf(null)
         every {
@@ -236,7 +238,109 @@ class ProfileRepositoryImplTest {
         )
     }
 
+    @Test
+    fun `사용자 키워드 삭제 - 성공 테스트`() = runTest {
+        // given
+        every {
+            userKeywordRepository.deleteUserKeyword(TestUserKeywordId)
+        } returns flowOf(Result.Success(Unit))
+
+        // when
+        val result = repository.deleteKeyword(TestUserKeywordId).last()
+
+        // then
+        assertTrue(result is Result.Success)
+    }
+
+    @Test
+    fun `사용자 키워드 삭제 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedUserKeywordError = UserKeywordErrorType.Unexpected(null)
+        every {
+            userKeywordRepository.deleteUserKeyword(TestUserKeywordId)
+        } returns flowOf(Result.Error(expectedUserKeywordError))
+
+        // when
+        val result = repository.deleteKeyword(TestUserKeywordId).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(
+            ProfileErrorType.UserKeywordError(expectedUserKeywordError),
+            error.error,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 오프셋 수정 - 성공 테스트`() = runTest {
+        // given
+        every {
+            userKeywordRepository.patchOffset(TestUserKeywordId, TestPatchOffset)
+        } returns flowOf(Result.Success(TestPatchOffset))
+
+        // when
+        val result = repository.updateOffset(TestUserKeywordId, TestPatchOffset).last()
+
+        // then
+        val success = result as Result.Success
+        assertEquals(TestPatchOffset, success.data)
+    }
+
+    @Test
+    fun `사용자 키워드 오프셋 수정 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedUserKeywordError = UserKeywordErrorType.Unexpected(null)
+        every {
+            userKeywordRepository.patchOffset(TestUserKeywordId, TestPatchOffset)
+        } returns flowOf(Result.Error(expectedUserKeywordError))
+
+        // when
+        val result = repository.updateOffset(TestUserKeywordId, TestPatchOffset).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(
+            ProfileErrorType.UserKeywordError(expectedUserKeywordError),
+            error.error,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
+        // given
+        every {
+            userKeywordRepository.patchDescription(TestUserKeywordId, TestPatchDescription)
+        } returns flowOf(Result.Success(TestPatchDescription))
+
+        // when
+        val result = repository.updateDescription(TestUserKeywordId, TestPatchDescription).last()
+
+        // then
+        val success = result as Result.Success
+        assertEquals(TestPatchDescription, success.data)
+    }
+
+    @Test
+    fun `사용자 키워드 설명 수정 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedUserKeywordError = UserKeywordErrorType.Unexpected(null)
+        every {
+            userKeywordRepository.patchDescription(TestUserKeywordId, TestPatchDescription)
+        } returns flowOf(Result.Error(expectedUserKeywordError))
+
+        // when
+        val result = repository.updateDescription(TestUserKeywordId, TestPatchDescription).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(
+            ProfileErrorType.UserKeywordError(expectedUserKeywordError),
+            error.error,
+        )
+    }
+
     companion object {
+        private val TestUserKeywordId = UserKeywordId(1L)
         private val TestUserId = UserId(1L)
         private val TestKeyword = KeywordValue("sampleKeyword")
         private val TestKeywordDescription = KeywordDescription("sample")
@@ -256,7 +360,7 @@ class ProfileRepositoryImplTest {
             friendsCount = 40,
         )
         private val TestUserKeyword = UserKeyword(
-            id = UserKeywordId(1L),
+            id = TestUserKeywordId,
             keywordId = KeywordId(1L),
             keyword = TestKeyword,
             userId = TestUserId,
@@ -288,5 +392,7 @@ class ProfileRepositoryImplTest {
             offsetX = 0.0,
             offsetY = 0.0,
         )
+        private val TestPatchOffset = PatchOffset(1.0, 2.0)
+        private val TestPatchDescription = PatchDescription(KeywordDescription(""))
     }
 }
