@@ -8,7 +8,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class PatchDescriptionRequest(
-    val description: String?,
+    val description: String,
 )
 
 fun PatchDescription.toDataModel(): PatchDescriptionRequest =

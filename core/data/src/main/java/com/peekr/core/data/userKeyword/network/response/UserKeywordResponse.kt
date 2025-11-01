@@ -31,7 +31,7 @@ data class UserKeywordResponse(
     val userId: Long,
     val offsetX: Double,
     val offsetY: Double,
-    val description: String,
+    val description: String?,
     val createdAt: Long,
     val updatedAt: Long,
 )
@@ -45,7 +45,7 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
         userId = UserId(userId),
         offsetX = offsetX,
         offsetY = offsetY,
-        description = KeywordDescription(description),
+        description = KeywordDescription(description ?: ""),
         createdAt = createdAt,
         updatedAt = updatedAt,
     )

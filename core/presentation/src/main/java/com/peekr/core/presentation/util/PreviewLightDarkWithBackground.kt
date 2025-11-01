@@ -12,12 +12,12 @@ import androidx.compose.ui.tooling.preview.Preview
     AnnotationTarget.ANNOTATION_CLASS,
     AnnotationTarget.FUNCTION,
 )
-@Preview(name = "Light", showBackground = true, backgroundColor = 0x00FFFFFF)
+@Preview(name = "Light", showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Preview(
     name = "Dark",
     showBackground = true,
     uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL,
-    backgroundColor = 0x00000000,
+    backgroundColor = 0xFF000000,
 )
 annotation class PreviewLightDarkWithBackground
 

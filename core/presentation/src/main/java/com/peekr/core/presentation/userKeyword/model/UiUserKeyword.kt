@@ -25,7 +25,7 @@ data class UiUserKeyword(
     val userId: UserId,
     val offsetX: Double,
     val offsetY: Double,
-    val description: String?,
+    val description: String,
     val createdAt: Long,
     val updatedAt: Long,
 ) {
@@ -54,7 +54,7 @@ fun UserKeyword.toUiModel(): UiUserKeyword =
         userId = userId,
         offsetX = offsetX,
         offsetY = offsetY,
-        description = description?.value,
+        description = description.value,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )

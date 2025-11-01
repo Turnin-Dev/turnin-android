@@ -26,7 +26,7 @@ data class UserKeyword(
     val userId: UserId,
     val offsetX: Double,
     val offsetY: Double,
-    val description: KeywordDescription?,
+    val description: KeywordDescription,
     val createdAt: Long,
     val updatedAt: Long,
 )

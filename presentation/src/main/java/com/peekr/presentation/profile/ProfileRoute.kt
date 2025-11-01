@@ -119,7 +119,7 @@ internal fun ProfileRoute() {
         onCancelClick = {
             viewModel.processEvent(
                 ProfileContract.UiEvent.CheckSafeCancel(
-                    keyword = uiState.keywordTextField.value,
+                    keyword = null,
                     description = uiState.keywordDescTextField.value,
                 ),
             )

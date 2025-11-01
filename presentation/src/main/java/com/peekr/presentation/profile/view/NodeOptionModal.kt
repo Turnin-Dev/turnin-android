@@ -56,7 +56,7 @@ fun NodeOptionModal(
 @Preview
 @Composable
 private fun NodeOptionModalPreview() {
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(true) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     PeekrAppTheme {

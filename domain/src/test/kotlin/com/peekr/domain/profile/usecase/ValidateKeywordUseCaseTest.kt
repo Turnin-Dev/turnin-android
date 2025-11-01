@@ -32,7 +32,7 @@ class ValidateKeywordUseCaseTest {
     @Test
     fun `키워드가 길이를 초과했을 때 유효성 검사 실패`() = runTest {
         // when
-        val result = usecase(TooLongKeyword)
+        val result = usecase(TOO_LONG_KEYWORD)
 
         // then
         val valid = result as ValidationResult.Invalid
@@ -42,6 +42,6 @@ class ValidateKeywordUseCaseTest {
     companion object {
         private const val VALID_KEYWORD = "sample"
         private const val EMPTY_KEYWORD = ""
-        private val TooLongKeyword = "a".repeat(KeywordValue.MAX_LENGTH + 1)
+        private val TOO_LONG_KEYWORD = "a".repeat(KeywordValue.MAX_LENGTH + 1)
     }
 }
