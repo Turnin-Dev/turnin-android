@@ -24,6 +24,7 @@ import com.peekr.presentation.profile.view.EditKeywordModal
 import com.peekr.presentation.profile.view.NodeOptionModal
 import com.peekr.presentation.profile.view.ProfileScreen
 import com.peekr.presentation.profile.view.SafeCancelModal
+import com.peekr.presentation.profile.view.SafeDeleteModal
 import com.peekr.presentation.profile.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +37,7 @@ internal fun ProfileRoute() {
     var isAddKeywordModalOpen by remember { mutableStateOf(false) }
     var isEditKeywordModalOpen by remember { mutableStateOf(false) }
     var isSafeCancelModalOpen by remember { mutableStateOf(false) }
+    var isSafeDeleteModalOpen by remember { mutableStateOf(false) }
     var isNodeOptionModelOpen by remember { mutableStateOf(false) }
 
     var selectedUserKeywordId: UserKeywordId? by rememberSaveable { mutableStateOf(null) }
@@ -51,6 +53,7 @@ internal fun ProfileRoute() {
             }
 
             ProfileContract.UiEffect.CloseAllModal -> {
+                isSafeDeleteModalOpen = false
                 isSafeCancelModalOpen = false
                 isNodeOptionModelOpen = false
                 isAddKeywordModalOpen = false
@@ -129,10 +132,21 @@ internal fun ProfileRoute() {
     SafeCancelModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeCancelModalOpen,
+        title = R.string.profile_screen_safe_modal_cancel,
         onAcceptClick = {
             viewModel.processEvent(ProfileContract.UiEvent.AcceptSafeCancel)
         },
         onCancelClick = { isSafeCancelModalOpen = false },
+    )
+
+    SafeDeleteModal(
+        modifier = Modifier.fillMaxSize(),
+        isOpen = isSafeDeleteModalOpen,
+        title = R.string.profile_screen_safe_modal_delete,
+        onAcceptClick = {
+            viewModel.processEvent(ProfileContract.UiEvent.DeleteKeyword(selectedUserKeywordId))
+        },
+        onCancelClick = { isSafeDeleteModalOpen = false },
     )
 
     if (isNodeOptionModelOpen) {
@@ -146,9 +160,7 @@ internal fun ProfileRoute() {
                 isEditKeywordModalOpen = true
                 isNodeOptionModelOpen = false
             },
-            onDelete = {
-                viewModel.processEvent(ProfileContract.UiEvent.DeleteKeyword(selectedUserKeywordId))
-            },
+            onDelete = { isSafeDeleteModalOpen = true },
             onCancel = { isNodeOptionModelOpen = false },
         )
     }

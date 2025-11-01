@@ -46,10 +46,9 @@
     <string name="profile_screen_edit_keyword_modal_title">키워드 수정</string>
     <string name="profile_screen_add_keyword_modal_btn">추가</string>
     <string name="profile_screen_edit_keyword_modal_btn">수정</string>
-    <!-- Profile Screen (Delete Keyword Modal) -->
-    <string name="profile_screen_delete_keyword_modal_title">변경사항을 버리시겠습니까?</string>
-    <string name="profile_screen_delete_keyword_modal_btn_ok">확인</string>
-    <string name="profile_screen_delete_keyword_modal_btn_cancel">취소</string>
+    <!-- Profile Screen (Safe Modal) -->
+    <string name="profile_screen_safe_modal_cancel">변경사항을 버리시겠습니까?</string>
+    <string name="profile_screen_safe_modal_delete">정말 삭제하시겠습니까?</string>
     <!-- Profile Screen (Node Option Bottom Modal) -->
     <string name="profile_screen_node_option_modal_btn_edit">수정</string>
     <string name="profile_screen_node_option_modal_btn_delete">삭제</string>
