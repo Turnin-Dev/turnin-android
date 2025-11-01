@@ -1,18 +1,19 @@
 package com.peekr.core.designsystem.component.button
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.ClickMode
@@ -27,6 +28,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIconType
  * @param contentDescription 아이콘 설명
  * @param modifier [Modifier]
  * @param enabled 아이콘 활성화 여부
+ * @param expandedTouchTarget `true`면 터치타겟이 레이아웃 영역 내에 포함되고, `false`면 포함되지 않는다.
  * @param tint 아이콘 색상
  * @param onClick 아이콘 클릭 시
  */
@@ -37,6 +39,7 @@ fun PeekrIconButton(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    expandedTouchTarget: Boolean = true,
     tint: Color = if (enabled) {
         PeekrTheme.colorScheme.textNormal
     } else {
@@ -44,26 +47,40 @@ fun PeekrIconButton(
     },
     onClick: () -> Unit,
 ) {
-    Icon(
+    Box(
         modifier = modifier
+            .size(
+                if (expandedTouchTarget) {
+                    iconSize.touchTargetRadius * 2
+                } else {
+                    iconSize.size
+                },
+            )
             .clip(CircleShape)
-            .semantics { role = Role.Button }
             .clickableSingle(
                 clickMode = ClickMode.Throttle,
                 enabled = enabled,
                 onClick = onClick,
-            ).padding(iconSize.getTouchTargetPadding())
-            .size(iconSize.size),
-        imageVector = icon.imageVector,
-        contentDescription = contentDescription,
-        tint = tint,
-    )
-}
-
-private fun PeekrIconSize.getTouchTargetPadding(): Dp = when (this) {
-    PeekrIconSize.Large -> 14.dp
-    PeekrIconSize.Medium -> 12.dp
-    PeekrIconSize.Normal -> 10.dp
-    PeekrIconSize.Small -> 8.dp
-    PeekrIconSize.Tiny -> 6.dp
+                indication = ripple(
+                    bounded = !expandedTouchTarget,
+                    radius = iconSize.touchTargetRadius,
+                ),
+            )
+            .semantics { role = Role.Button }
+            .then(
+                if (expandedTouchTarget) {
+                    Modifier
+                } else {
+                    Modifier.minimumInteractiveComponentSize()
+                },
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            modifier = Modifier.size(iconSize.size),
+            imageVector = icon.imageVector,
+            contentDescription = contentDescription,
+            tint = tint,
+        )
+    }
 }
