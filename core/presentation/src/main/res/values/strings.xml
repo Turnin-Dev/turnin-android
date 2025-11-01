@@ -60,4 +60,8 @@
 
     <!-- Keyword Common UserNode -->
     <string name="keyword_common_user_node">본인</string>
+
+    <!-- Simple Modal -->
+    <string name="simple_modal_btn_accept">확인</string>
+    <string name="simple_modal_btn_cancel">취소</string>
 </resources>
