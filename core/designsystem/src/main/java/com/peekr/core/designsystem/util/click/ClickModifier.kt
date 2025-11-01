@@ -2,7 +2,7 @@ package com.peekr.core.designsystem.util.click
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,8 +38,10 @@ import androidx.compose.ui.unit.sp
  * @param interactionSource 기존 파라미터와 동일
  * @param indication 기존 파라미터와 동일
  * @param enabled 기존 파라미터와 동일
+ * @param onLongClickLabel 기존 파라미터와 동일
  * @param onClickLabel 기존 파라미터와 동일
  * @param role 기존 파라미터와 동일
+ * @param onLongClick 기존 파라미터와 동일
  * @param onClick 기존 파라미터와 동일
  *
  * @see throttleClickable
@@ -51,8 +53,10 @@ fun Modifier.clickableSingle(
     interactionSource: MutableInteractionSource? = null,
     indication: Indication? = null,
     enabled: Boolean = true,
+    onLongClickLabel: String? = null,
     onClickLabel: String? = null,
     role: Role? = null,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ): Modifier = this.then(
     when (clickMode) {
@@ -63,8 +67,10 @@ fun Modifier.clickableSingle(
                 interactionSource = interactionSource,
                 indication = indication,
                 enabled = enabled,
+                onLongClickLabel = onLongClickLabel,
                 onClickLabel = onClickLabel,
                 role = role,
+                onLongClick = onLongClick,
                 onClick = onClick,
             )
         }
@@ -76,8 +82,10 @@ fun Modifier.clickableSingle(
                 interactionSource = interactionSource,
                 indication = indication,
                 enabled = enabled,
+                onLongClickLabel = onLongClickLabel,
                 onClickLabel = onClickLabel,
                 role = role,
+                onLongClick = onLongClick,
                 onClick = onClick,
             )
         }
@@ -93,8 +101,10 @@ fun Modifier.clickableSingle(
  * @param interactionSource 기존 파라미터와 동일
  * @param indication 기존 파라미터와 동일
  * @param enabled 기존 파라미터와 동일
+ * @param onLongClickLabel 기존 파라미터와 동일
  * @param onClickLabel 기존 파라미터와 동일
  * @param role 기존 파라미터와 동일
+ * @param onLongClick 기존 파라미터와 동일
  * @param onClick 기존 파라미터와 동일
  */
 private fun Modifier.throttleClickable(
@@ -102,19 +112,23 @@ private fun Modifier.throttleClickable(
     interactionSource: MutableInteractionSource? = null,
     indication: Indication? = null,
     enabled: Boolean = true,
+    onLongClickLabel: String? = null,
     onClickLabel: String? = null,
     role: Role? = null,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ): Modifier = composed {
     val throttleClickEventProcessor = remember { ClickEventProcessor.getThrottle(throttleTime) }
 
     this.then(
-        Modifier.clickable(
+        Modifier.combinedClickable(
             interactionSource = interactionSource ?: remember { MutableInteractionSource() },
             indication = indication ?: ripple(),
             enabled = enabled,
+            onLongClickLabel = onLongClickLabel,
             onClickLabel = onClickLabel,
             role = role,
+            onLongClick = onLongClick,
             onClick = { throttleClickEventProcessor.processEvent(onClick) },
         ),
     )
@@ -129,8 +143,10 @@ private fun Modifier.throttleClickable(
  * @param interactionSource 기존 파라미터와 동일
  * @param indication 기존 파라미터와 동일
  * @param enabled 기존 파라미터와 동일
+ * @param onLongClickLabel 기존 파라미터와 동일
  * @param onClickLabel 기존 파라미터와 동일
  * @param role 기존 파라미터와 동일
+ * @param onLongClick 기존 파라미터와 동일
  * @param onClick 기존 파라미터와 동일
  */
 private fun Modifier.debounceClickable(
@@ -138,8 +154,10 @@ private fun Modifier.debounceClickable(
     interactionSource: MutableInteractionSource? = null,
     indication: Indication? = null,
     enabled: Boolean = true,
+    onLongClickLabel: String? = null,
     onClickLabel: String? = null,
     role: Role? = null,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ): Modifier = composed {
     val coroutineScope = rememberCoroutineScope()
@@ -148,12 +166,14 @@ private fun Modifier.debounceClickable(
     }
 
     this.then(
-        Modifier.clickable(
+        Modifier.combinedClickable(
             interactionSource = interactionSource ?: remember { MutableInteractionSource() },
             indication = indication ?: ripple(),
             enabled = enabled,
+            onLongClickLabel = onLongClickLabel,
             onClickLabel = onClickLabel,
             role = role,
+            onLongClick = onLongClick,
             onClick = { debounceClickEventProcessor.processEvent(onClick) },
         ),
     )
@@ -173,7 +193,8 @@ private fun ClickableSample() {
                         .background(Color.LightGray)
                         .clickableSingle(ClickMode.Throttle) {
                             count++
-                        }.padding(16.dp),
+                        }
+                        .padding(16.dp),
                     contentAlignment = Alignment.Center,
                 ) { Text("Throttle") }
                 Box(
@@ -181,7 +202,8 @@ private fun ClickableSample() {
                         .background(Color.LightGray)
                         .clickableSingle(ClickMode.Debounce) {
                             count++
-                        }.padding(16.dp),
+                        }
+                        .padding(16.dp),
                     contentAlignment = Alignment.Center,
                 ) { Text("Debounce") }
             }

@@ -123,6 +123,8 @@ class UserKeywordRepositoryImpl @Inject constructor(
             dispatcher = ioDispatcher,
             unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
         ) {
+            emit(Result.Loading)
+
             when (val result = userKeywordDataSource.deleteUserKeyword(userKeywordId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(Unit))

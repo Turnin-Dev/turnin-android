@@ -6,10 +6,13 @@ import com.peekr.core.domain.coroutine.combineWithResult
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
+import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.core.domain.util.Result
@@ -84,4 +87,31 @@ class ProfileRepositoryImpl @Inject constructor(
             emit(Result.Error(error = ProfileErrorType.UserNotFound))
         }
     }
+
+    override fun deleteKeyword(userKeywordId: UserKeywordId): Flow<Result<Unit, ProfileErrorType>> =
+        userKeywordRepository
+            .deleteUserKeyword(userKeywordId)
+            .mapError { userKeywordErrorType ->
+                ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            }
+
+    override fun updateOffset(
+        userKeywordId: UserKeywordId,
+        patchOffset: PatchOffset,
+    ): Flow<Result<PatchOffset, ProfileErrorType>> =
+        userKeywordRepository
+            .patchOffset(userKeywordId, patchOffset)
+            .mapError { userKeywordErrorType ->
+                ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            }
+
+    override fun updateDescription(
+        userKeywordId: UserKeywordId,
+        patchDescription: PatchDescription,
+    ): Flow<Result<PatchDescription, ProfileErrorType>> =
+        userKeywordRepository
+            .patchDescription(userKeywordId, patchDescription)
+            .mapError { userKeywordError ->
+                ProfileErrorType.UserKeywordError(userKeywordError)
+            }
 }

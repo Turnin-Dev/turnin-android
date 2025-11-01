@@ -9,8 +9,8 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class PatchDescriptionResponse(
-    val description: String?,
+    val description: String,
 )
 
 fun PatchDescriptionResponse.toDomainModel(): PatchDescription =
-    PatchDescription(KeywordDescription(description ?: ""))
+    PatchDescription(KeywordDescription(description))

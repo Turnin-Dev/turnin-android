@@ -28,22 +28,61 @@ class ProfileContract {
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
+        /** 키워드 추가 및 수정 모달에서 키워드 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordTextChanged(val value: String) : UiEvent
 
+        /** 키워드 추가 및 수정 모달에서 키워드 설명 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordDescTextChanged(val value: String) : UiEvent
 
+        /** 키워드 위치 변경 이벤트 */
         data class OnKeywordNodeOffsetChanged(
             val userKeywordId: UserKeywordId,
             val offsetX: Float,
             val offsetY: Float,
         ) : UiEvent
 
+        /** 키워드 위치 변경 업데이트 이벤트 */
         data object UpdateKeywordNodeOffset : UiEvent
 
+        /** 키워드 위치 기존 값으로 초기화 이벤트 */
         data object ResetKeywordNodeOffset : UiEvent
 
-        data object AddKeyword : UiEvent
+        /** 키워드 추가 이벤트 */
+        data class AddKeyword(
+            val keyword: String,
+            val description: String,
+        ) : UiEvent
+
+        /** 키워드 삭제 이벤트 */
+        data class DeleteKeyword(
+            val userKeywordId: UserKeywordId?,
+        ) : UiEvent
+
+        /** 키워드 설명 수정 이벤트 */
+        data class UpdateKeywordDescription(
+            val userKeywordId: UserKeywordId?,
+            val currentDescription: String?,
+            val newDescription: String,
+        ) : UiEvent
+
+        /** 키워드 추가 및 수정 모달에서 취소 전에 텍스트 필드에 입력된 값이 있는지 확인하는 이벤트 */
+        data class CheckSafeCancel(
+            val keyword: String?,
+            val description: String?,
+        ) : UiEvent
+
+        /** 모든 모달을 닫기 이벤트 */
+        data object AcceptSafeCancel : UiEvent
     }
 
-    sealed interface UiEffect : BaseUiEffect
+    sealed interface UiEffect : BaseUiEffect {
+        /** 취소 경고 모달 열기 */
+        data object OpenSafeCancelModal : UiEffect
+
+        /** 모든 모달 닫기 */
+        data object CloseAllModal : UiEffect
+
+        /** 선택된 데이터(키워드, 설명, ID 등) */
+        data object ResetSelectedData : UiEffect
+    }
 }

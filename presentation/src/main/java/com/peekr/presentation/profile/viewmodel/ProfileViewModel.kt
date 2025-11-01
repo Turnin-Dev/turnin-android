@@ -11,24 +11,24 @@ import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.viewmodel.setTextFieldValidation
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.ProfileUseCases
+import com.peekr.presentation.R
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
+import com.peekr.presentation.profile.state.KeywordTextFieldState
 import com.peekr.presentation.profile.state.ProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val usecase: ProfileUseCases,
+    private val usecases: ProfileUseCases,
 ) : MVIBaseViewModel<ProfileContract.UiState, ProfileContract.UiEvent, ProfileContract.UiEffect>() {
     override fun createInitialState(): ProfileContract.UiState =
         ProfileContract.UiState()
@@ -39,7 +39,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun loadInitialData() {
-        usecase.getProfile().collect { result ->
+        // 새로고침으로 해당 함수를 호출해도 상관은 없으나, 아래 로직에 캐싱 로직이 있다면
+        // 삭제, 수정 후 해당 함수를 호출 시 변경 전 캐시 데이터를 조회할 가능성이 있을 수 있다.
+        usecases.getProfile().collect { result ->
             when (result) {
                 Result.Loading -> updateState {
                     this.copy(loading = true, error = null)
@@ -80,8 +82,8 @@ class ProfileViewModel @Inject constructor(
 
             is ProfileContract.UiEvent.AddKeyword -> {
                 addKeyword(
-                    keyword = currentUiState.keywordTextField.value,
-                    description = currentUiState.keywordDescTextField.value,
+                    keyword = event.keyword,
+                    description = event.description,
                 )
             }
 
@@ -102,7 +104,108 @@ class ProfileViewModel @Inject constructor(
                     this.copy(updatedKeywordNodesOffset = emptyMap())
                 }
             }
+
+            is ProfileContract.UiEvent.DeleteKeyword -> {
+                event.userKeywordId?.let {
+                    deleteKeyword(it)
+                }
+                    ?: showSnackBar(UiText.StringResource(R.string.profile_error_not_selected_user_keyword_id))
+            }
+
+            is ProfileContract.UiEvent.UpdateKeywordDescription -> {
+                event.userKeywordId?.let {
+                    updateKeywordDescription(it, event.currentDescription, event.newDescription)
+                }
+                    ?: showSnackBar(UiText.StringResource(R.string.profile_error_not_selected_user_keyword_id))
+            }
+
+            is ProfileContract.UiEvent.CheckSafeCancel -> safeCancel(event.keyword, event.description)
+
+            ProfileContract.UiEvent.AcceptSafeCancel -> {
+                sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                resetKeywordAndDescriptionTextField()
+            }
         }
+    }
+
+    private fun resetKeywordAndDescriptionTextField() {
+        updateState {
+            this.copy(
+                keywordTextField = KeywordTextFieldState(),
+                keywordDescTextField = KeywordTextFieldState(),
+            )
+        }
+    }
+
+    private fun safeCancel(
+        keyword: String?,
+        description: String?,
+    ) {
+        if ((keyword != null && keyword.isNotEmpty()) ||
+            (description != null && description.isNotEmpty())
+        ) {
+            sendEffect { ProfileContract.UiEffect.OpenSafeCancelModal }
+        } else {
+            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+        }
+    }
+
+    private fun updateKeywordDescription(
+        userKeywordId: UserKeywordId,
+        currentDescription: String?,
+        newDescription: String,
+    ) {
+        if (currentDescription == newDescription) {
+            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+            return
+        }
+
+        usecases.updateUserKeywordDescription(userKeywordId, newDescription).onEach { result ->
+            when (result) {
+                Result.Loading -> updateState { this.copy(loading = true) }
+                is Result.Error -> updateState {
+                    this.copy(loading = false, error = result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                            keywordTextField = KeywordTextFieldState(),
+                            keywordDescTextField = KeywordTextFieldState(),
+                        )
+                    }
+                    sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                    sendEffect { ProfileContract.UiEffect.ResetSelectedData }
+                    showSnackBar(UiText.StringResource(R.string.profile_success_update_user_keyword_desc))
+                    // 성공 시, 초기 데이터 다시 로드 (새로 고침)
+                    loadInitialData()
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteKeyword(userKeywordId: UserKeywordId) {
+        usecases.deleteUserKeyword(userKeywordId).onEach { result ->
+            when (result) {
+                Result.Loading -> updateState { this.copy(loading = true) }
+                is Result.Error -> updateState {
+                    this.copy(loading = false, error = result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(loading = false, error = null)
+                    }
+                    sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                    sendEffect { ProfileContract.UiEffect.ResetSelectedData }
+                    showSnackBar(UiText.StringResource(R.string.profile_success_delete_user_keyword))
+                    // 성공 시, 초기 데이터 다시 로드 (새로 고침)
+                    loadInitialData()
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun addKeyword(
@@ -110,7 +213,7 @@ class ProfileViewModel @Inject constructor(
         description: String,
     ) {
         viewModelScope.launch {
-            usecase
+            usecases
                 .addUserKeyword(keyword, description)
                 .onEach { result ->
                     when (result) {
@@ -124,8 +227,21 @@ class ProfileViewModel @Inject constructor(
 
                         is Result.Success -> {
                             updateState {
-                                this.copy(loading = false, error = null)
+                                this.copy(
+                                    loading = false,
+                                    error = null,
+                                    keywordTextField = KeywordTextFieldState(),
+                                    keywordDescTextField = KeywordTextFieldState(),
+                                )
                             }
+                            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                            sendEffect { ProfileContract.UiEffect.ResetSelectedData }
+                            showSnackBar(
+                                UiText.StringResource(
+                                    R.string.profile_success_add_user_keyword,
+                                ),
+                            )
+
                             // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                             loadInitialData()
                         }
@@ -154,7 +270,7 @@ class ProfileViewModel @Inject constructor(
             keywordNodes
                 .map { (userKeywordId, offset) ->
                     async {
-                        usecase
+                        usecases
                             .updateUserKeywordOffset(userKeywordId, offset.offsetX, offset.offsetY)
                             .collect { result ->
                                 when (result) {
@@ -177,7 +293,7 @@ class ProfileViewModel @Inject constructor(
             if (successCount.get() == keywordNodes.size) {
                 showSnackBar(
                     UiText.StringResource(
-                        com.peekr.presentation.R.string.profile_screen_update_user_keyword_offset_success,
+                        R.string.profile_success_update_user_keyword_offset,
                     ),
                 )
             }
@@ -189,7 +305,7 @@ class ProfileViewModel @Inject constructor(
         uiState.setTextFieldValidation(
             scope = viewModelScope,
             value = { it.keywordTextField.value },
-            validator = { usecase.validateKeyword(it) },
+            validator = { usecases.validateKeyword(it) },
             onValid = { _ ->
                 updateState {
                     val updatedKeywordTextField = currentUiState
@@ -213,7 +329,7 @@ class ProfileViewModel @Inject constructor(
         uiState.setTextFieldValidation(
             scope = viewModelScope,
             value = { it.keywordDescTextField.value },
-            validator = { usecase.validateKeywordDescription(it) },
+            validator = { usecases.validateKeywordDescription(it) },
             onValid = { _ ->
                 updateState {
                     val updatedKeywordDescTextField = currentUiState

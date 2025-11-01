@@ -28,6 +28,7 @@ import kotlin.math.roundToInt
  * @param label 키워드 이름
  * @param nodeReset 키워드 노드 리셋 여부
  * @param onNodeClick 키워드 노드 클릭 시
+ * @param onNodeLongClick 키워드 노드 길게 클릭 시
  * @param onNodeChanged 키워드 노드 위치 변경 시
  */
 @Composable
@@ -38,6 +39,7 @@ fun KeywordNodeEdge(
     label: String,
     nodeReset: Boolean,
     onNodeClick: () -> Unit,
+    onNodeLongClick: () -> Unit,
     onNodeChanged: (NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     val nodeState = rememberNodeState(initialOffsetX, initialOffsetY)
@@ -82,10 +84,12 @@ fun KeywordNodeEdge(
                         newWidthPx = intSize.width.toFloat(),
                         newHeightPx = intSize.height.toFloat(),
                     )
-                }.graphicsLayer {
+                }
+                .graphicsLayer {
                     translationX = animatedNodeOffsetX
                     translationY = animatedNodeOffsetY
-                }.pointerInput(Unit) {
+                }
+                .pointerInput(Unit) {
                     detectDragGestures(
                         onDragStart = { nodeDragging = true },
                         onDragEnd = { nodeDragging = false },
@@ -102,6 +106,7 @@ fun KeywordNodeEdge(
                 },
             label = label,
             onClick = onNodeClick,
+            onLongClick = onNodeLongClick,
         )
     }
 }

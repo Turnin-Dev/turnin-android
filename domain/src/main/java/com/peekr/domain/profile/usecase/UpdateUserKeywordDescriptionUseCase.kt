@@ -1,6 +1,8 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -9,25 +11,24 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
- * 사용자 키워드 오프셋 업데이트
+ * 사용자 키워드 설명 업데이트
  */
-class UpdateUserKeywordOffsetUseCase @Inject constructor(
+class UpdateUserKeywordDescriptionUseCase @Inject constructor(
     private val profileRepository: ProfileRepository,
 ) {
     /**
      * @param userKeywordId 사용자 키워드 ID
-     * @param offsetX 키워드 오프셋 X
-     * @param offsetY 키워드 오프셋 Y
+     * @param description 키워드 설명
      *
      * @see PatchOffset
      */
     operator fun invoke(
         userKeywordId: UserKeywordId,
-        offsetX: Float,
-        offsetY: Float,
-    ): Flow<Result<PatchOffset, ProfileErrorType>> =
-        profileRepository.updateOffset(
+        description: String,
+    ): Flow<Result<PatchDescription, ProfileErrorType>> =
+        profileRepository.updateDescription(
             userKeywordId = userKeywordId,
-            patchOffset = PatchOffset(offsetX.toDouble(), offsetY.toDouble()),
+            patchDescription = PatchDescription(KeywordDescription(description)),
         )
+    // 만약, KeywordDescription에서 유효성 검사가 추가 된다면 예외 처리를 추가 해야한다.
 }

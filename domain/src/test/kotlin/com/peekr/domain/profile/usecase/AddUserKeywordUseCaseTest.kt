@@ -7,6 +7,9 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.validation.CommonValidationException
+import com.peekr.core.domain.validation.toValidationErrorType
+import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.repository.ProfileRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -40,6 +43,27 @@ class AddUserKeywordUseCaseTest {
             TestUserKeyword,
             (result as Result.Success).data,
         )
+    }
+
+    @Test
+    fun `키워드 유효성 검사 실패 시 예외가 발생하고 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedException = CommonValidationException.InvalidFormat("a", "b")
+        val expectedError =
+            ProfileErrorType.ValidationError(expectedException.toValidationErrorType())
+        every {
+            profileRepository.addKeyword(TestKeyword, TestKeywordDescription, any(), any())
+        } throws expectedException
+
+        // when
+        val result = usecase(
+            keyword = TestKeyword.value,
+            description = TestKeywordDescription.value,
+        ).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(expectedError, error.error)
     }
 
     companion object {

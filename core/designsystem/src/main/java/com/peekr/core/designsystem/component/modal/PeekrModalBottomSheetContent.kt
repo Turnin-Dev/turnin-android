@@ -33,6 +33,12 @@ typealias ModalContentToken = Triple<ModalText, ModalTextColor, OnModalTextClick
  * [PeekrModalBottomSheet] 내부에서 사용하는 컨텐츠
  *
  * 기본적으로 취소 항목은 활성화 되어있다.
+ *
+ * @param modifier [Modifier]
+ * @param onCancel 취소 항목 클릭 시
+ * @param token [ModalContentToken] 모달 항목 토큰 (여러 개 허용)
+ *
+ * @sample PeekrModalBottomSheetContentPreview
  */
 @Composable
 fun PeekrModalBottomSheetContent(
@@ -64,7 +70,7 @@ fun PeekrModalBottomSheetContent(
 private fun ContentDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(
         modifier = modifier,
-        thickness = 1.5.dp,
+        thickness = 0.5.dp,
         color = PeekrTheme.colorScheme.lineNormal,
     )
 }

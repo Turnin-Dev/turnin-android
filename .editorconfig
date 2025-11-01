@@ -25,10 +25,14 @@ ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_function-signature = disabled
 # 함수 정의 시 반환 값 Line을 새로운 Line에서 시작 (off)
 ktlint_standard_block-comment-initial-star-alignment = disabled
+# 메서드 체이닝 체킹 해제
+# 메서드 체이닝 기본 자동 정렬이 무조건 다음 줄에서 작성해야 하는데 해당 옵션이 활성화 되어있으면 린트 경고가 발생하기 때문
+ktlint_standard_chain-method-continuation = disabled
 
 [**/generated/**]
 ktlint = disabled
 
 [build-logic/**]
 ktlint = disabled
+
 

@@ -18,7 +18,7 @@ data class CreateUserKeywordRequest(
     val userId: Long,
     @Json(name = "keywordName")
     val keyword: String,
-    val description: String?,
+    val description: String,
     val offsetX: Double,
     val offsetY: Double,
 )

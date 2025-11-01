@@ -39,6 +39,7 @@ import com.peekr.core.designsystem.theme.PeekrTheme
  * @param modifier [Modifier]
  * @param singleLine 한 줄 제한 여부
  * @param isError 에러 발생 여부
+ * @param readOnly 읽기 전용 여부
  * @param supportingText 보조 텍스트로 보통 에러 메시지를 표시하는 데 사용한다. (텍스트 필드 하단에 위치)
  */
 @Composable
@@ -49,6 +50,7 @@ fun PeekrTextField(
     modifier: Modifier = Modifier,
     singleLine: Boolean = false,
     isError: Boolean = false,
+    readOnly: Boolean = false,
     supportingText: (@Composable () -> Unit)? = null,
 ) {
     CoreTextField(
@@ -59,6 +61,7 @@ fun PeekrTextField(
         singleLine = singleLine,
         isError = isError,
         supportingText = supportingText,
+        readOnly = readOnly,
     )
 }
 
@@ -81,6 +84,7 @@ private fun CoreTextField(
     modifier: Modifier = Modifier,
     singleLine: Boolean = false,
     isError: Boolean = false,
+    readOnly: Boolean = false,
     supportingText: (@Composable () -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -112,6 +116,7 @@ private fun CoreTextField(
         singleLine = singleLine,
         interactionSource = interactionSource,
         cursorBrush = SolidColor(color),
+        readOnly = readOnly,
     ) { innerTextField ->
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -209,6 +214,14 @@ private fun PeekrTextFieldPreview() {
                 onTextChanged = onText2Changed,
                 placeholder = "Placeholder",
                 isError = isError2,
+            )
+            PeekrTextField(
+                modifier = Modifier.background(Color.White.copy(0.5f)),
+                text = "Fixed Text",
+                onTextChanged = {},
+                placeholder = "Placeholder",
+                isError = false,
+                readOnly = true,
             )
         }
     }
