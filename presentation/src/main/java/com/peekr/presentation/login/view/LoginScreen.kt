@@ -32,9 +32,9 @@ import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.logo.PeekrLogoWithText
 import com.peekr.core.presentation.model.UiSocialLoginProvider
-import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.presentation.R
 import com.peekr.presentation.login.state.LoginState
 

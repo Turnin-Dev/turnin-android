@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.token
+package com.peekr.core.designsystem.util.token
 
 import androidx.compose.ui.unit.dp
 

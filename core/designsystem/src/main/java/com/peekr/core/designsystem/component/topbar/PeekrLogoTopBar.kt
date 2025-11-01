@@ -1,9 +1,7 @@
 package com.peekr.core.designsystem.component.topbar
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,7 +29,7 @@ fun PeekrLogoTopBar(
     onLogoClick: () -> Unit = {},
 ) {
     CoreTopBar(
-        modifier = modifier.padding(TopBarPaddingValues),
+        modifier = modifier,
         optionSlot = optionSlot,
         logoSlot = {
             Image(
@@ -51,6 +49,3 @@ fun PeekrLogoTopBar(
 
 // 로고 사이즈
 private val LogoSize = DpSize(77.dp, 30.dp)
-
-// 탑바 패딩
-private val TopBarPaddingValues = PaddingValues(start = 20.dp, end = 10.dp)

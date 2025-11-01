@@ -32,8 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.button.PeekrButtonStyle
 import com.peekr.core.designsystem.component.button.PeekrSolidButton
+import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.R
-import com.peekr.core.presentation.token.ScreenTokens
 
 /**
  * 이미지 자르기 화면

@@ -52,13 +52,13 @@ import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
+import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.keyword.KeywordDescType
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
-import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
 import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -207,7 +207,10 @@ private fun TopBar(
     title: String,
 ) {
     PeekrTopBar(
-        modifier = modifier,
+        modifier = modifier.padding(
+            start = ScreenTokens.HorizontalPadding,
+            end = ScreenTokens.HorizontalPaddingWithTouchTarget,
+        ),
         title = title,
         optionSlot = {
             PeekrIconButton(

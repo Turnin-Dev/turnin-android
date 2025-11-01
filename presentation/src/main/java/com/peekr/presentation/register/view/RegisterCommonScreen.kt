@@ -28,7 +28,7 @@ import com.peekr.core.designsystem.component.button.PeekrSolidButton
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.token.ScreenTokens
+import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.util.bottomAutoPadding
 import com.peekr.presentation.R
 
@@ -75,7 +75,9 @@ fun RegisterCommonScreen(
         modifier = modifier,
         topBar = {
             PeekrTopBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                 onBackPressed = { onBackPressed?.invoke() },
             )
         },
