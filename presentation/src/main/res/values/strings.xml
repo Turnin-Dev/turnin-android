@@ -72,6 +72,7 @@
     <!-- MyKeywordDetail -->
     <!-- MyKeywordDetail (Modal) -->
     <string name="my_keyword_detail_modal_tab_bar_title">내용</string>
+    <string name="my_keyword_detail_modal_desc_cancel">취소</string>
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->

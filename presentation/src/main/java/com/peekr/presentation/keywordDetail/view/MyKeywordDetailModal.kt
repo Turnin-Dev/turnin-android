@@ -1,5 +1,7 @@
 package com.peekr.presentation.keywordDetail.view
 
+import android.inputmethodservice.Keyboard.Row
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -27,10 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.peekr.core.designsystem.component.button.PeekrIconButton
+import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.component.modal.PeekrModalBottomSheet
 import com.peekr.core.designsystem.component.tabBar.PeekrTabBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.icon.Cancel
+import com.peekr.core.designsystem.util.icon.PeekrIcons
+import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 
 // TODO: 1. `본인 키워드 조회 시`: 키워드 내용, 같은 키워드를 등록한 다른 사용자 표시
@@ -67,6 +75,7 @@ fun MyKeywordDetailModal(
                 Title(
                     modifier = Modifier.fillMaxWidth(),
                     keyword = keyword,
+                    onCancel = {},
                 )
             },
             description = {
@@ -121,22 +130,37 @@ private fun KeywordDetailModalFrame(
  *
  * @param modifier [Modifier]
  * @param keyword 키워드 명
+ * @param onCancel 취소 클릭 시
  */
 @Composable
 private fun Title(
     modifier: Modifier = Modifier,
     keyword: String,
+    onCancel: () -> Unit,
 ) {
     Row(
         modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
+        PeekrIconButton(
+            modifier = Modifier.wrapContentWidth(Alignment.Start),
+            icon = PeekrIcons.Default.Bold.Cancel,
+            iconSize = PeekrIconSize.Normal,
+            contentDescription = stringResource(R.string.my_keyword_detail_modal_desc_cancel),
+            tint = PeekrTheme.colorScheme.textNormal,
+            expandedTouchTarget = false,
+            onClick = onCancel,
+        )
         Text(
+            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
             text = keyword,
             style = PeekrTheme.typography.headline2,
             fontWeight = FontWeight.Bold,
             color = PeekrTheme.colorScheme.textNormal,
             textAlign = TextAlign.Center,
         )
+        Spacer(Modifier.size(PeekrIconSize.Normal.size))
     }
 }
 
@@ -161,13 +185,14 @@ private fun Description(
 }
 
 // ------------------------------ Preview ------------------------------
-@Preview
+@PreviewLightDarkWithBackground
 @Composable
 private fun TitlePreview() {
     PeekrAppTheme {
         Title(
             modifier = Modifier.fillMaxWidth(),
             keyword = "키워드",
+            onCancel = {},
         )
     }
 }
