@@ -1,6 +1,7 @@
 package com.peekr.core.designsystem.component.modal
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.theme.PeekrTheme
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
  * @param onDismissRequest ModalBottomSheet 가 사라질 때 수행할 동작
  * @param modifier [Modifier]
  * @param shouldDismissOnBackPress 뒤로가기 버튼으로 모달이 사라지게 할 지에 대한 여부
+ * @param sheetGesturesEnabled 제스처 허용 여부
  * @param content ModalBottomSheet 컨텐츠
  *
  * @sample PeekrModalBottomSheetPreview
@@ -40,12 +43,17 @@ fun PeekrModalBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shouldDismissOnBackPress: Boolean = true,
+    sheetGesturesEnabled: Boolean = true,
     content: @Composable (Modifier) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheet(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+                detectDragGestures { _, _ -> }
+            },
         onDismissRequest = {
             coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
                 onDismissRequest()
@@ -59,6 +67,7 @@ fun PeekrModalBottomSheet(
         shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         properties = ModalBottomSheetProperties(shouldDismissOnBackPress),
+        sheetGesturesEnabled = sheetGesturesEnabled,
     ) {
         content(
             Modifier
