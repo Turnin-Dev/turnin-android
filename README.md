@@ -78,3 +78,12 @@ graph TB
 ```
 
 (`:core:common`과 `:core:designsystem`는 필요에 맞게 사용)
+
+## 3. Feature Dependencies
+
+(다이어그램에 없는 기능들은 독립적인 기능이다.)
+
+```mermaid
+graph TB
+    post(post) --> keywordDetail(keywordDetail)
+```

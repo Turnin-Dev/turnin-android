@@ -1,15 +1,15 @@
 package com.peekr.presentation.keywordDetail.view
 
-import android.inputmethodservice.Keyboard.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -46,7 +46,7 @@ import com.peekr.presentation.R
 // TODO: 3. `다른 사용자 키워드 조회 시(친구 관계 X)`: 아무것도 표시 하지 않음
 
 /**
- * 나의 키워드 상세정보 모달 프레임
+ * 키워드 상세정보 모달 프레임
  *
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
@@ -56,33 +56,38 @@ import com.peekr.presentation.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyKeywordDetailModal(
+fun KeywordDetailModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
-    onDismissRequest: () -> Unit,
+    myKeyword: Boolean,
     keyword: String,
     description: String,
+    onCancel: () -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
     PeekrModalBottomSheet(
-        modifier = modifier,
+        modifier = modifier.statusBarsPadding(),
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         sheetGesturesEnabled = false,
     ) { contentModifier ->
         KeywordDetailModalFrame(
-            modifier = contentModifier.fillMaxHeight(0.9f),
+            modifier = contentModifier,
             title = {
                 Title(
                     modifier = Modifier.fillMaxWidth(),
                     keyword = keyword,
-                    onCancel = {},
+                    onCancel = onCancel,
                 )
             },
             description = {
-                Description(
+                DescriptionTab(
                     modifier = Modifier.fillMaxWidth(),
                     description = description,
                 )
+            },
+            otherUsers = {
+                OtherUsers()
             },
         )
     }
@@ -99,7 +104,8 @@ fun MyKeywordDetailModal(
 private fun KeywordDetailModalFrame(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
-    description: @Composable () -> Unit,
+    description: @Composable BoxScope.() -> Unit,
+    otherUsers: @Composable BoxScope.() -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -110,15 +116,20 @@ private fun KeywordDetailModalFrame(
         // 탭바 & 키워드 내용
         PeekrTabBar(
             modifier = Modifier.fillMaxWidth(),
-            tabs = listOf(stringResource(R.string.my_keyword_detail_modal_tab_bar_title)),
-            userScrollEnabled = false,
-            pageContent = {
+            tabs = listOf(
+                stringResource(R.string.my_keyword_detail_modal_tab_bar_title_1),
+                stringResource(R.string.my_keyword_detail_modal_tab_bar_title_2),
+            ),
+            pageContent = { page ->
                 // 키워드 내용
                 Box(
                     modifier = Modifier.verticalScroll(rememberScrollState()),
                     contentAlignment = Alignment.TopCenter,
                 ) {
-                    description()
+                    when (page) {
+                        0 -> description()
+                        1 -> otherUsers()
+                    }
                 }
             },
         )
@@ -165,13 +176,13 @@ private fun Title(
 }
 
 /**
- * 키워드 내용
+ * 키워드 내용 탭
  *
  * @param modifier [Modifier]
  * @param description 키워드 내용
  */
 @Composable
-private fun Description(
+private fun BoxScope.DescriptionTab(
     modifier: Modifier = Modifier,
     description: String,
 ) {
@@ -181,6 +192,19 @@ private fun Description(
         style = PeekrTheme.typography.body3Normal,
         fontWeight = FontWeight.Normal,
         color = PeekrTheme.colorScheme.textNormal,
+        textAlign = TextAlign.Start,
+    )
+}
+
+/**
+ * 다른 사람들(같은 키워드를 사용중인 다른 사용자들) 탭
+ */
+@Composable
+private fun BoxScope.OtherUsers(modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier.align(Alignment.Center),
+        text = "구현 예정",
+        style = PeekrTheme.typography.headline1,
     )
 }
 
@@ -200,7 +224,7 @@ private fun TitlePreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun MyKeywordDetailModalPreview() {
+private fun KeywordDetailModalPreview() {
     var isOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -209,12 +233,14 @@ private fun MyKeywordDetailModalPreview() {
             Button(onClick = { isOpen = true }) { Text(text = "open") }
 
             if (isOpen) {
-                MyKeywordDetailModal(
+                KeywordDetailModal(
                     modifier = Modifier,
                     sheetState = sheetState,
-                    onDismissRequest = { isOpen = false },
+                    myKeyword = true,
                     keyword = "Sample Keyword",
                     description = "이 키워드는 내가 최근에 가장 관심이 많은 어쩌구 저쩌구".repeat(50),
+                    onCancel = { isOpen = false },
+                    onDismissRequest = { isOpen = false },
                 )
             }
         }

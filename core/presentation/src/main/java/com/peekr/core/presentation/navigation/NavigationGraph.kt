@@ -64,7 +64,7 @@ sealed interface RegisterGraph {
     data object CropProfileImage : RegisterGraph
 }
 
-// ------------------------------ 바텀 네비게이션 ------------------------------
+// ------------------------------ Graph (중첩 네비게이션 내부, 바텀 네비게이션) ------------------------------
 
 /** 바텀 네비게이션(홈) */
 sealed interface HomeGraph {
@@ -90,4 +90,7 @@ sealed interface ProfileGraph {
 sealed interface Screens {
     @Serializable
     data object TempMain : Screens
+
+    @Serializable
+    data object KeywordDetail : Screens
 }

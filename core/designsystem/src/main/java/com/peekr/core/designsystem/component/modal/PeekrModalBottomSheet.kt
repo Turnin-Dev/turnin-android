@@ -1,7 +1,6 @@
 package com.peekr.core.designsystem.component.modal
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.theme.PeekrTheme
 import kotlinx.coroutines.launch
@@ -49,11 +47,7 @@ fun PeekrModalBottomSheet(
     val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheet(
-        modifier = modifier
-            .fillMaxWidth()
-            .pointerInput(Unit) {
-                detectDragGestures { _, _ -> }
-            },
+        modifier = modifier.fillMaxWidth(),
         onDismissRequest = {
             coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
                 onDismissRequest()
@@ -80,4 +74,4 @@ fun PeekrModalBottomSheet(
 private val BottomSheetContentPaddingValues =
     PaddingValues(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
 
-private val ScrimColor = Color(0xB3353535)
+private val ScrimColor = Color(0xB3141414)

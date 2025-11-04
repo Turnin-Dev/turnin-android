@@ -79,6 +79,7 @@ internal fun ProfileScreen(
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
+    onOpenKeywordDetailModal: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -116,6 +117,9 @@ internal fun ProfileScreen(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                         onUiEvent = onUiEvent,
+                        onNodeClick = { userKeywordId, keyword, description ->
+                            onOpenKeywordDetailModal(userKeywordId, keyword, description)
+                        },
                         onNodeLongClick = { userKeywordId, keyword, description ->
                             onOpenNodeOptionModal(userKeywordId, keyword, description)
                         },
@@ -356,6 +360,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
  * @param profileImageUrl 사용자 프로필 사진 url
  * @param keywords 사용자 키워드 리스트
  * @param onUiEvent UI 이벤트
+ * @param onNodeClick 사용자 키워드 노드 클릭 시
  * @param onNodeLongClick 사용자 키워드 노드 길게 클릭 시
  * @param onNodeChanged 사용자 키워드 노드 오프셋 변경 시
  */
@@ -365,6 +370,7 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onNodeClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
     onNodeLongClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
@@ -378,6 +384,9 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
+            onNodeClick = { userKeywordId, keyword, description ->
+                onNodeClick(userKeywordId, keyword, description)
+            },
             onNodeLongClick = { userKeywordId, keyword, description ->
                 onNodeLongClick(userKeywordId, keyword, description)
             },
@@ -567,6 +576,7 @@ private fun ProfileScreenPreview() {
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _, _ -> },
+            onOpenKeywordDetailModal = { _, _, _ -> },
         )
     }
 }
@@ -582,6 +592,7 @@ private fun ProfileScreenShimmerPreview() {
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _, _ -> },
+            onOpenKeywordDetailModal = { _, _, _ -> },
         )
     }
 }

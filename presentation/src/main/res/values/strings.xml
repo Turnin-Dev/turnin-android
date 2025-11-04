@@ -71,7 +71,8 @@
 
     <!-- MyKeywordDetail -->
     <!-- MyKeywordDetail (Modal) -->
-    <string name="my_keyword_detail_modal_tab_bar_title">내용</string>
+    <string name="my_keyword_detail_modal_tab_bar_title_1">내용</string>
+    <string name="my_keyword_detail_modal_tab_bar_title_2">다른 사람들</string>
     <string name="my_keyword_detail_modal_desc_cancel">취소</string>
 
     <!-- Error Code -->
