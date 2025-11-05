@@ -11,10 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSwipeToDismissBoxState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -48,22 +45,7 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
-            val dismissSnackbarState =
-                rememberSwipeToDismissBoxState(
-                    confirmValueChange = { value ->
-                        if (value != SwipeToDismissBoxValue.Settled) {
-                            snackbarHostState.currentSnackbarData?.dismiss()
-                            true
-                        } else {
-                            false
-                        }
-                    },
-                )
-            LaunchedEffect(dismissSnackbarState.currentValue) {
-                if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
-                    dismissSnackbarState.reset()
-                }
-            }
+
             ObserveAsEvents(
                 flow = SnackbarController.events,
                 key1 = snackbarHostState,
@@ -93,8 +75,7 @@ class MainActivity : ComponentActivity() {
                         PeekrSnackbar(
                             modifier = Modifier
                                 .padding(bottom = BottomNavigationBarTokens.MinHeightDp),
-                            snackBarHostState = snackbarHostState,
-                            dismissSnackbarState = dismissSnackbarState,
+                            snackbarHostState = snackbarHostState,
                         )
                     },
                 ) { innerPadding ->

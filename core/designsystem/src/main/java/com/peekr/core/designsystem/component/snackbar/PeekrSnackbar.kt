@@ -19,7 +19,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -48,57 +47,49 @@ import kotlinx.coroutines.launch
 /**
  * Peekr 스낵바
  *
- * @param snackBarHostState SnackbarHostState
- * @param dismissSnackbarState [SwipeToDismissBoxState]
+ * @param modifier [Modifier]
+ * @param snackbarHostState [SnackbarHostState]
  * @param dismissEnabled SwipeToDismiss 활성화 여부
  *
  * ### 사용 예시
  *    val snackbarHostState = remember { SnackbarHostState() }
- *    val dismissSnackbarState = rememberSwipeToDismissBoxState(
- *        confirmValueChange = { value ->
- *            if (value != SwipeToDismissBoxValue.Settled) {
- *                snackbarHostState.currentSnackbarData?.dismiss()
- *                true
- *            } else {
- *                false
- *            }
- *        }
- *    )
- *
- *    LaunchedEffect(dismissSnackbarState.currentValue) {
- *        if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
- *            dismissSnackbarState.reset()
- *        }
- *    }
  *
  *    Scaffold(
  *        modifier = Modifier.fillMaxSize(),
  *        snackbarHost = {
- *            PeekrSnackbar(
- *                snackBarHostState = snackbarHostState,
- *                dismissSnackbarState = dismissSnackbarState,
- *            )
+ *            PeekrSnackbar(snackBarHostState = snackbarHostState)
  *        }
  *    ) { ... }
  */
 @Composable
 fun PeekrSnackbar(
     modifier: Modifier = Modifier,
-    snackBarHostState: SnackbarHostState,
-    dismissSnackbarState: SwipeToDismissBoxState,
+    snackbarHostState: SnackbarHostState,
     dismissEnabled: Boolean = true,
 ) {
-    SwipeToDismissBox(
-        modifier = modifier,
-        state = dismissSnackbarState,
-        backgroundContent = {},
-        enableDismissFromEndToStart = dismissEnabled,
-        enableDismissFromStartToEnd = dismissEnabled,
-        content = {
-            SnackbarHost(
-                modifier = Modifier.imePadding(),
-                hostState = snackBarHostState,
-            ) { snackbarData ->
+    SnackbarHost(
+        modifier = Modifier.imePadding(),
+        hostState = snackbarHostState,
+    ) { snackbarData ->
+        val dismissSnackbarState = rememberSwipeToDismissBoxState()
+        LaunchedEffect(snackbarData) {
+            if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
+                dismissSnackbarState.reset()
+            }
+        }
+
+        SwipeToDismissBox(
+            modifier = modifier,
+            state = dismissSnackbarState,
+            backgroundContent = {},
+            enableDismissFromEndToStart = dismissEnabled,
+            enableDismissFromStartToEnd = dismissEnabled,
+            onDismiss = { value ->
+                if (value != SwipeToDismissBoxValue.Settled) {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                }
+            },
+            content = {
                 CustomSnackbar(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -106,9 +97,9 @@ fun PeekrSnackbar(
                         .heightIn(min = SnackbarMinHeightDp),
                     snackbarData = snackbarData,
                 )
-            }
-        },
-    )
+            },
+        )
+    }
 }
 
 @Composable
@@ -216,34 +207,13 @@ private fun CustomSnackbarPreview() {
 private fun PeekrSnackbarPreview() {
     val coroutineScope = rememberCoroutineScope()
     var snackbarJob: Job? by remember { mutableStateOf(null) }
-
     val snackbarHostState = remember { SnackbarHostState() }
-    val dismissSnackbarState =
-        rememberSwipeToDismissBoxState(
-            confirmValueChange = { value ->
-                if (value != SwipeToDismissBoxValue.Settled) {
-                    snackbarHostState.currentSnackbarData?.dismiss()
-                    true
-                } else {
-                    false
-                }
-            },
-        )
-
-    LaunchedEffect(dismissSnackbarState.currentValue) {
-        if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
-            dismissSnackbarState.reset()
-        }
-    }
 
     PeekrAppTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             snackbarHost = {
-                PeekrSnackbar(
-                    snackBarHostState = snackbarHostState,
-                    dismissSnackbarState = dismissSnackbarState,
-                )
+                PeekrSnackbar(snackbarHostState = snackbarHostState)
             },
         ) {
             Box(
@@ -261,6 +231,7 @@ private fun PeekrSnackbarPreview() {
                                 snackbarHostState.showSnackbar(
                                     message = "네트워크 상태를 확인 해 주세요.",
                                     actionLabel = "action",
+                                    duration = SnackbarDuration.Short,
                                 )
                             }
                     },
