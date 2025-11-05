@@ -2,8 +2,8 @@ package com.peekr.presentation.keywordDetail.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -104,8 +104,8 @@ fun KeywordDetailModal(
 private fun KeywordDetailModalFrame(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
-    description: @Composable BoxScope.() -> Unit,
-    otherUsers: @Composable BoxScope.() -> Unit,
+    description: @Composable ColumnScope.() -> Unit,
+    otherUsers: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -117,15 +117,19 @@ private fun KeywordDetailModalFrame(
         PeekrTabBar(
             modifier = Modifier.fillMaxWidth(),
             tabs = listOf(
-                stringResource(R.string.my_keyword_detail_modal_tab_bar_title_1),
-                stringResource(R.string.my_keyword_detail_modal_tab_bar_title_2),
+                stringResource(R.string.keyword_detail_modal_tab_bar_title_1),
+                stringResource(R.string.keyword_detail_modal_tab_bar_title_2),
             ),
             pageContent = { page ->
                 // 키워드 내용
-                Box(
-                    modifier = Modifier.verticalScroll(rememberScrollState()),
-                    contentAlignment = Alignment.TopCenter,
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    Spacer(Modifier.size(14.dp))
                     when (page) {
                         0 -> description()
                         1 -> otherUsers()
@@ -158,7 +162,7 @@ private fun Title(
             modifier = Modifier.wrapContentWidth(Alignment.Start),
             icon = PeekrIcons.Default.Bold.Cancel,
             iconSize = PeekrIconSize.Normal,
-            contentDescription = stringResource(R.string.my_keyword_detail_modal_desc_cancel),
+            contentDescription = stringResource(R.string.keyword_detail_modal_desc_cancel),
             tint = PeekrTheme.colorScheme.textNormal,
             expandedTouchTarget = false,
             onClick = onCancel,
@@ -182,27 +186,38 @@ private fun Title(
  * @param description 키워드 내용
  */
 @Composable
-private fun BoxScope.DescriptionTab(
+private fun ColumnScope.DescriptionTab(
     modifier: Modifier = Modifier,
     description: String,
 ) {
-    Text(
-        modifier = modifier,
-        text = description,
-        style = PeekrTheme.typography.body3Normal,
-        fontWeight = FontWeight.Normal,
-        color = PeekrTheme.colorScheme.textNormal,
-        textAlign = TextAlign.Start,
-    )
+    if (description.isNotEmpty()) {
+        Text(
+            modifier = modifier,
+            text = description,
+            style = PeekrTheme.typography.body3Normal,
+            fontWeight = FontWeight.Normal,
+            color = PeekrTheme.colorScheme.textNormal,
+            textAlign = TextAlign.Start,
+        )
+    } else {
+        Text(
+            modifier = modifier.align(Alignment.CenterHorizontally),
+            text = stringResource(R.string.keyword_detail_modal_desc_if_empty),
+            style = PeekrTheme.typography.body1,
+            fontWeight = FontWeight.Normal,
+            color = PeekrTheme.colorScheme.interactionInactive,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 /**
  * 다른 사람들(같은 키워드를 사용중인 다른 사용자들) 탭
  */
 @Composable
-private fun BoxScope.OtherUsers(modifier: Modifier = Modifier) {
+private fun ColumnScope.OtherUsers(modifier: Modifier = Modifier) {
     Text(
-        modifier = modifier.align(Alignment.Center),
+        modifier = modifier.align(Alignment.CenterHorizontally),
         text = "구현 예정",
         style = PeekrTheme.typography.headline1,
     )

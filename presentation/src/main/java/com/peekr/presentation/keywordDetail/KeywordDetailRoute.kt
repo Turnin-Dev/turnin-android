@@ -26,8 +26,8 @@ fun KeywordDetailRoute(
         modifier = modifier,
         sheetState = sheetState,
         myKeyword = true, // TODO: 추후 구현 예정
-        keyword = "Sample",
-        description = "asdasdasdasdasdasdad".repeat(100),
+        keyword = uiState.keyword,
+        description = uiState.description,
         onCancel = onCancel,
         onDismissRequest = onCancel,
     )

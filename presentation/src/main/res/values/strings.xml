@@ -69,11 +69,11 @@
     </string>
     <string name="profile_error_not_selected_user_keyword_id">키워드가 선택되지 않았어요. 다시 선택해주세요.</string>
 
-    <!-- MyKeywordDetail -->
-    <!-- MyKeywordDetail (Modal) -->
-    <string name="my_keyword_detail_modal_tab_bar_title_1">내용</string>
-    <string name="my_keyword_detail_modal_tab_bar_title_2">다른 사람들</string>
-    <string name="my_keyword_detail_modal_desc_cancel">취소</string>
+    <!-- KeywordDetailModal -->
+    <string name="keyword_detail_modal_tab_bar_title_1">내용</string>
+    <string name="keyword_detail_modal_tab_bar_title_2">다른 사람들</string>
+    <string name="keyword_detail_modal_desc_cancel">취소</string>
+    <string name="keyword_detail_modal_desc_if_empty">아직 내용을 작성하지 않았어요.</string>
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->
