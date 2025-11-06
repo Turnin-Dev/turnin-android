@@ -14,7 +14,13 @@ package com.peekr.core.designsystem.util.icon
  */
 object PeekrIcons {
     /** 색상이 채워진 아이콘 */
-    object Filled
+    object Filled {
+        /** 색상이 채워진 아이콘 + 일반 두께 */
+        object Normal
+
+        /** 색상이 채워진 아이콘 + 두꺼운 두께 */
+        object Bold
+    }
 
     /** 테두리만 있는 아이콘 */
     object Outlined {

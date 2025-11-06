@@ -183,13 +183,13 @@ private fun IconPreview() {
         Row(Modifier.width(150.dp)) {
             Item(
                 modifier = Modifier.weight(1f).clickable {},
-                icon = PeekrIcons.Filled.Home,
+                icon = PeekrIcons.Filled.Normal.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = false,
             )
             Item(
                 modifier = Modifier.weight(1f),
-                icon = PeekrIcons.Filled.Home,
+                icon = PeekrIcons.Filled.Normal.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = true,
             )

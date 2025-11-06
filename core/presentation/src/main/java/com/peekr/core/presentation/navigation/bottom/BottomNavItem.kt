@@ -24,19 +24,19 @@ sealed class BottomNavItem(
     data object Home : BottomNavItem(
         route = SubGraph.Home,
         title = R.string.bottom_nav_item_home,
-        icon = PeekrIcons.Filled.Home,
+        icon = PeekrIcons.Filled.Normal.Home,
     )
 
     data object Discover : BottomNavItem(
         route = SubGraph.Discover,
         title = R.string.bottom_nav_item_discover,
-        icon = PeekrIcons.Filled.Discover,
+        icon = PeekrIcons.Filled.Normal.Discover,
     )
 
     data object Profile : BottomNavItem(
         route = SubGraph.Profile,
         title = R.string.bottom_nav_item_profile,
-        icon = PeekrIcons.Filled.Profile,
+        icon = PeekrIcons.Filled.Normal.Profile,
     )
 }
 

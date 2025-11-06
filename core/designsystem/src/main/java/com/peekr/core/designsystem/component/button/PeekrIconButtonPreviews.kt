@@ -24,7 +24,7 @@ private fun IconButton_Size() {
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
                 PeekrIconButton(
-                    icon = PeekrIcons.Filled.Home,
+                    icon = PeekrIcons.Filled.Normal.Home,
                     iconSize = iconSize,
                     contentDescription = "",
                     onClick = { },
@@ -45,7 +45,7 @@ private fun IconButton_Expanded_TouchTarget_False() {
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
                 PeekrIconButton(
-                    icon = PeekrIcons.Filled.Home,
+                    icon = PeekrIcons.Filled.Normal.Home,
                     iconSize = iconSize,
                     contentDescription = "",
                     expandedTouchTarget = false,
@@ -67,7 +67,7 @@ private fun IconButton_Disabled() {
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
                 PeekrIconButton(
-                    icon = PeekrIcons.Filled.Home,
+                    icon = PeekrIcons.Filled.Normal.Home,
                     iconSize = iconSize,
                     contentDescription = "",
                     enabled = false,
