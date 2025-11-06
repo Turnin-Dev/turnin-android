@@ -4,6 +4,7 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
 import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
+import com.peekr.core.data.userKeyword.network.response.DescriptionResponse
 import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
 import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
@@ -16,6 +17,15 @@ interface UserKeywordDataSource {
      * 사용자 키워드 리스트 조회
      */
     suspend fun getUserKeywords(): NetworkResult<UserKeywordsResponse>
+
+    /**
+     * 사용자 키워드 설명 조회
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     */
+    suspend fun getDescription(
+        userKeywordId: UserKeywordId,
+    ): NetworkResult<DescriptionResponse>
 
     /**
      * 사용자 키워드 생성
