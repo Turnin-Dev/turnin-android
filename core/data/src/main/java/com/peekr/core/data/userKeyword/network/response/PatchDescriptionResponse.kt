@@ -5,7 +5,7 @@ import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.squareup.moshi.JsonClass
 
 /**
- * 사용자 키워드 설명 수정 요청 바디
+ * 사용자 키워드 설명 수정 응답 바디
  */
 @JsonClass(generateAdapter = true)
 data class PatchDescriptionResponse(
@@ -13,4 +13,4 @@ data class PatchDescriptionResponse(
 )
 
 fun PatchDescriptionResponse.toDomainModel(): PatchDescription =
-    PatchDescription(KeywordDescription(description))
+    PatchDescription(KeywordDescription(this.description))

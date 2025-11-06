@@ -112,13 +112,6 @@ class ProfileViewModel @Inject constructor(
                     ?: showSnackBar(UiText.StringResource(R.string.profile_error_not_selected_user_keyword_id))
             }
 
-            is ProfileContract.UiEvent.UpdateKeywordDescription -> {
-                event.userKeywordId?.let {
-                    updateKeywordDescription(it, event.currentDescription, event.newDescription)
-                }
-                    ?: showSnackBar(UiText.StringResource(R.string.profile_error_not_selected_user_keyword_id))
-            }
-
             is ProfileContract.UiEvent.CheckSafeCancel -> safeCancel(event.keyword, event.description)
 
             ProfileContract.UiEvent.AcceptSafeCancel -> {
@@ -148,42 +141,6 @@ class ProfileViewModel @Inject constructor(
         } else {
             sendEffect { ProfileContract.UiEffect.CloseAllModal }
         }
-    }
-
-    private fun updateKeywordDescription(
-        userKeywordId: UserKeywordId,
-        currentDescription: String?,
-        newDescription: String,
-    ) {
-        if (currentDescription == newDescription) {
-            sendEffect { ProfileContract.UiEffect.CloseAllModal }
-            return
-        }
-
-        usecases.updateUserKeywordDescription(userKeywordId, newDescription).onEach { result ->
-            when (result) {
-                Result.Loading -> updateState { this.copy(loading = true) }
-                is Result.Error -> updateState {
-                    this.copy(loading = false, error = result.error.asUiText())
-                }
-
-                is Result.Success -> {
-                    updateState {
-                        this.copy(
-                            loading = false,
-                            error = null,
-                            keywordTextField = KeywordTextFieldState(),
-                            keywordDescTextField = KeywordTextFieldState(),
-                        )
-                    }
-                    sendEffect { ProfileContract.UiEffect.CloseAllModal }
-                    sendEffect { ProfileContract.UiEffect.ResetSelectedData }
-                    showSnackBar(UiText.StringResource(R.string.profile_success_update_user_keyword_desc))
-                    // 성공 시, 초기 데이터 다시 로드 (새로 고침)
-                    loadInitialData()
-                }
-            }
-        }.launchIn(viewModelScope)
     }
 
     private fun deleteKeyword(userKeywordId: UserKeywordId) {

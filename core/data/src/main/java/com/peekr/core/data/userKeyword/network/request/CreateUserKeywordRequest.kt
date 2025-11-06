@@ -18,16 +18,16 @@ data class CreateUserKeywordRequest(
     val userId: Long,
     @Json(name = "keywordName")
     val keyword: String,
-    val description: String,
     val offsetX: Double,
     val offsetY: Double,
+    val description: String,
 )
 
 fun CreateUserKeyword.toDataModel(): CreateUserKeywordRequest =
     CreateUserKeywordRequest(
         userId = userId.value,
         keyword = keyword.value,
-        description = description.value,
         offsetX = offsetX,
         offsetY = offsetY,
+        description = description.value,
     )

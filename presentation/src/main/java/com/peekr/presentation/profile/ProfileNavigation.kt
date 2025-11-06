@@ -16,7 +16,7 @@ fun NavGraphBuilder.profileNavigation(navController: NavHostController) {
     navigation<SubGraph.Profile>(startDestination = ProfileGraph.Main) {
         composable<ProfileGraph.Main> {
             ProfileRoute(
-                onOpenKeywordDetailModal = { userKeywordId, keyword, description ->
+                onOpenKeywordDetailModal = { userKeywordId, keyword ->
                     navController.navigate(Screens.KeywordDetail)
                 },
             )

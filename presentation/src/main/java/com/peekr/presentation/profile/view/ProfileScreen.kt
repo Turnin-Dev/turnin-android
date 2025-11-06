@@ -53,7 +53,6 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.presentation.keyword.KeywordDescType
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
@@ -78,8 +77,8 @@ internal fun ProfileScreen(
     loading: Boolean,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
-    onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
-    onOpenKeywordDetailModal: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
+    onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onOpenKeywordDetailModal: (UserKeywordIdType, KeywordNameType) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -117,11 +116,11 @@ internal fun ProfileScreen(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                         onUiEvent = onUiEvent,
-                        onNodeClick = { userKeywordId, keyword, description ->
-                            onOpenKeywordDetailModal(userKeywordId, keyword, description)
+                        onNodeClick = { userKeywordId, keyword ->
+                            onOpenKeywordDetailModal(userKeywordId, keyword)
                         },
-                        onNodeLongClick = { userKeywordId, keyword, description ->
-                            onOpenNodeOptionModal(userKeywordId, keyword, description)
+                        onNodeLongClick = { userKeywordId, keyword ->
+                            onOpenNodeOptionModal(userKeywordId, keyword)
                         },
                         onNodeChanged = { userKeywordId, offsetX, offsetY ->
                             onUiEvent(
@@ -370,8 +369,8 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
-    onNodeClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
-    onNodeLongClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
+    onNodeClick: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     var nodeChanged by rememberSaveable { mutableStateOf(false) }
@@ -384,11 +383,11 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
-            onNodeClick = { userKeywordId, keyword, description ->
-                onNodeClick(userKeywordId, keyword, description)
+            onNodeClick = { userKeywordId, keyword ->
+                onNodeClick(userKeywordId, keyword)
             },
-            onNodeLongClick = { userKeywordId, keyword, description ->
-                onNodeLongClick(userKeywordId, keyword, description)
+            onNodeLongClick = { userKeywordId, keyword ->
+                onNodeLongClick(userKeywordId, keyword)
             },
             onNodeChanged = { userKeywordId, offsetX, offsetY ->
                 nodeChanged = keywords.any { it.id == userKeywordId }
@@ -575,8 +574,8 @@ private fun ProfileScreenPreview() {
             loading = false,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
-            onOpenNodeOptionModal = { _, _, _ -> },
-            onOpenKeywordDetailModal = { _, _, _ -> },
+            onOpenNodeOptionModal = { _, _ -> },
+            onOpenKeywordDetailModal = { _, _ -> },
         )
     }
 }
@@ -591,8 +590,8 @@ private fun ProfileScreenShimmerPreview() {
             loading = false,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
-            onOpenNodeOptionModal = { _, _, _ -> },
-            onOpenKeywordDetailModal = { _, _, _ -> },
+            onOpenNodeOptionModal = { _, _ -> },
+            onOpenKeywordDetailModal = { _, _ -> },
         )
     }
 }
