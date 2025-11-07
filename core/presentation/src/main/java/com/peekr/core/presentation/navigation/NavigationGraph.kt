@@ -92,5 +92,9 @@ sealed interface Screens {
     data object TempMain : Screens
 
     @Serializable
-    data object KeywordDetail : Screens
+    data class KeywordDetail(
+        val userKeywordId: Long,
+        val userId: Long,
+        val keyword: String,
+    ) : Screens
 }

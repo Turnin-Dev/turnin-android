@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.keyword.KeywordNameType
+import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.util.ObserveAsEvents
 import com.peekr.presentation.R
@@ -30,7 +31,7 @@ import com.peekr.presentation.profile.viewmodel.ProfileViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ProfileRoute(
-    onOpenKeywordDetailModal: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
 ) {
     val viewModel: ProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -141,8 +142,8 @@ internal fun ProfileRoute(
             selectedKeyword = keyword
             isNodeOptionModelOpen = true
         },
-        onOpenKeywordDetailModal = { userKeywordId, keyword ->
-            onOpenKeywordDetailModal(userKeywordId, keyword)
+        onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
+            onOpenKeywordDetailModal(userKeywordId, userId, keyword)
         },
     )
 }

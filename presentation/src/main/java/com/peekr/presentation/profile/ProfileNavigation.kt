@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile
 
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -10,25 +10,35 @@ import com.peekr.core.presentation.navigation.ProfileGraph
 import com.peekr.core.presentation.navigation.Screens
 import com.peekr.core.presentation.navigation.SubGraph
 import com.peekr.presentation.keywordDetail.KeywordDetailRoute
-import com.peekr.presentation.keywordDetail.viewmodel.KeywordDetailViewModel
 
 fun NavGraphBuilder.profileNavigation(navController: NavHostController) {
     navigation<SubGraph.Profile>(startDestination = ProfileGraph.Main) {
         composable<ProfileGraph.Main> {
             ProfileRoute(
-                onOpenKeywordDetailModal = { userKeywordId, keyword ->
-                    navController.navigate(Screens.KeywordDetail)
+                onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
+                    navController.navigateKeywordDetail(userKeywordId.value, userId.value, keyword)
                 },
             )
         }
 
-        dialog<Screens.KeywordDetail> {
-            val viewModel: KeywordDetailViewModel = hiltViewModel()
-
+        dialog<Screens.KeywordDetail> { navBackStackEntry ->
             KeywordDetailRoute(
-                viewModel = viewModel,
                 onCancel = { navController.popBackStack() },
             )
         }
     }
+}
+
+private fun NavController.navigateKeywordDetail(
+    userKeywordId: Long,
+    userId: Long,
+    keyword: String,
+) {
+    navigate(
+        Screens.KeywordDetail(
+            userKeywordId = userKeywordId,
+            userId = userId,
+            keyword = keyword,
+        ),
+    )
 }

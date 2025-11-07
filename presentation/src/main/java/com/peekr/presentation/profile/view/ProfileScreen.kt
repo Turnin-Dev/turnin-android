@@ -56,6 +56,7 @@ import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
+import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
@@ -78,7 +79,7 @@ internal fun ProfileScreen(
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
-    onOpenKeywordDetailModal: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -116,8 +117,8 @@ internal fun ProfileScreen(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                         onUiEvent = onUiEvent,
-                        onNodeClick = { userKeywordId, keyword ->
-                            onOpenKeywordDetailModal(userKeywordId, keyword)
+                        onNodeClick = { userKeywordId, userId, keyword ->
+                            onOpenKeywordDetailModal(userKeywordId, userId, keyword)
                         },
                         onNodeLongClick = { userKeywordId, keyword ->
                             onOpenNodeOptionModal(userKeywordId, keyword)
@@ -369,7 +370,7 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
-    onNodeClick: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
     onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
@@ -383,8 +384,8 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
-            onNodeClick = { userKeywordId, keyword ->
-                onNodeClick(userKeywordId, keyword)
+            onNodeClick = { userKeywordId, userId, keyword ->
+                onNodeClick(userKeywordId, userId, keyword)
             },
             onNodeLongClick = { userKeywordId, keyword ->
                 onNodeLongClick(userKeywordId, keyword)
@@ -575,7 +576,7 @@ private fun ProfileScreenPreview() {
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _ -> },
-            onOpenKeywordDetailModal = { _, _ -> },
+            onOpenKeywordDetailModal = { _, _, _ -> },
         )
     }
 }
@@ -591,7 +592,7 @@ private fun ProfileScreenShimmerPreview() {
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _ -> },
-            onOpenKeywordDetailModal = { _, _ -> },
+            onOpenKeywordDetailModal = { _, _, _ -> },
         )
     }
 }

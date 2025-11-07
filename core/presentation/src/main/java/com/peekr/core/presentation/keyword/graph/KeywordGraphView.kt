@@ -23,6 +23,7 @@ import androidx.compose.ui.zIndex
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
+import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.view.KeywordNodeEdge
 import com.peekr.core.presentation.keyword.view.UserNode
@@ -45,7 +46,7 @@ fun KeywordGraphView(
     profileImageUrl: String?,
     nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
-    onNodeClick: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
     onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
@@ -73,6 +74,7 @@ fun KeywordGraphView(
                     onNodeClick = {
                         onNodeClick(
                             keyword.id,
+                            keyword.userId,
                             keyword.keywordName,
                         )
                     },
@@ -149,7 +151,7 @@ private fun KeywordGraphViewPreview() {
         profileImageUrl = null,
         nodeReset = false,
         keywords = UiUserKeyword.samples,
-        onNodeClick = { _, _ -> },
+        onNodeClick = { _, _, _ -> },
         onNodeLongClick = { _, _ -> },
         onNodeChanged = { _, _, _ -> },
     )

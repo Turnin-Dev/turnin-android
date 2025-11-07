@@ -73,7 +73,12 @@
     <string name="keyword_detail_modal_tab_bar_title_1">내용</string>
     <string name="keyword_detail_modal_tab_bar_title_2">다른 사람들</string>
     <string name="keyword_detail_modal_desc_cancel">취소</string>
+    <string name="keyword_detail_modal_desc_edit">수정</string>
+    <string name="keyword_detail_modal_desc_edit_accept">수정 완료</string>
     <string name="keyword_detail_modal_desc_if_empty">아직 내용을 작성하지 않았어요.</string>
+    <!-- KeywordDetailModal Error -->
+    <string name="keyword_detail_modal_error_nav_arg_null">초기 데이터 로드에 실패했습니다. 다시 시도해주세요.</string>
+    <string name="keyword_detail_modal_error_unexpected">키워드 조회에 문제가 발생했습니다. 다시 시도해주세요.</string>
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->
