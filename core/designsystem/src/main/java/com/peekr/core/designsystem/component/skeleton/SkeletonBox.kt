@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -18,19 +17,18 @@ import com.peekr.core.designsystem.util.shimmerEffect
 /**
  * 스켈레톤 스크린에서 사용
  *
- * @param size 요소의 DP 단위 사이즈
+ * @param modifier [Modifier]
  * @param shape 요소의 모양
  */
 @Composable
 fun SkeletonBox(
-    size: DpSize,
+    modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(11.dp),
 ) {
     Box(
         modifier =
-            Modifier
+            modifier
                 .clip(shape)
-                .size(size)
                 .shimmerEffect()
                 .background(PeekrTheme.colorScheme.componentShimmer, shape),
     )
@@ -40,6 +38,6 @@ fun SkeletonBox(
 @Composable
 private fun SkeletonBoxPreview() {
     PeekrAppTheme {
-        SkeletonBox(DpSize(200.dp, 50.dp))
+        SkeletonBox(Modifier.size(200.dp, 50.dp))
     }
 }

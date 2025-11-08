@@ -30,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
@@ -332,15 +331,15 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SkeletonBox(DpSize(AvatarSize, AvatarSize), CircleShape)
+            SkeletonBox(Modifier.size(AvatarSize, AvatarSize), CircleShape)
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                SkeletonBox(DpSize(59.dp, 24.dp))
+                SkeletonBox(Modifier.size(59.dp, 24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SkeletonBox(DpSize(94.dp, 20.dp))
+                    SkeletonBox(Modifier.size(94.dp, 20.dp))
                 }
             }
         }
@@ -348,7 +347,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            SkeletonBox(DpSize(218.dp, 18.dp))
+            SkeletonBox(Modifier.size(218.dp, 18.dp))
         }
     }
 }
@@ -485,7 +484,7 @@ fun NodeChangedButton(
 @Composable
 private fun KeywordGraphSkeleton() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
-        SkeletonBox(DpSize(49.dp, 49.dp), CircleShape)
+        SkeletonBox(Modifier.size(49.dp, 49.dp), CircleShape)
     }
 }
 
