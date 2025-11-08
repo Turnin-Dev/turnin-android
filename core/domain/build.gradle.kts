@@ -7,8 +7,8 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.dagger.hilt.javax)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.dagger.hilt.javax)
 
     // Testing
     testImplementation(libs.junit)

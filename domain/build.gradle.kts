@@ -9,9 +9,6 @@ kotlin {
 dependencies {
     api(projects.core.domain)
 
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.dagger.hilt.javax)
-
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockK)
