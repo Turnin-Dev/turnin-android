@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -20,13 +21,15 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -37,7 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.modal.PeekrModalBottomSheet
+import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.tabBar.PeekrTabBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -57,8 +62,13 @@ import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
  * @param myKeyword 내 키워드 여부
  * @param keyword 키워드 명
  * @param description 키워드 내용
+ * @param editMode 수정 모드 활성화 여부
+ * @param loading 로딩 여부
+ * @param loadingDescription 키워드 설명 로딩 여부
  * @param fullScreenError 전체 화면 에러 여부
+ * @param fullScreenErrorMessage 전체 화면 에러 메시지
  * @param onUiEvent UI 이벤트 전달
+ * @param onForceCancel 강제 취소 시
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,65 +78,73 @@ fun KeywordDetailModal(
     myKeyword: Boolean,
     keyword: String,
     description: TextFieldValue,
+    editMode: Boolean,
+    loading: Boolean,
+    loadingDescription: Boolean,
     fullScreenError: Boolean,
     fullScreenErrorMessage: String,
     onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
     onForceCancel: () -> Unit,
 ) {
-    var editMode by rememberSaveable { mutableStateOf(false) }
+    Box(modifier) {
+        PeekrModalBottomSheet(
+            modifier = Modifier.statusBarsPadding(),
+            sheetState = sheetState,
+            onDismissRequest = { onUiEvent(KeywordDetailContract.UiEvent.SafeCancel) },
+            sheetGesturesEnabled = false,
+        ) { contentModifier ->
+            KeywordDetailModalFrame(
+                modifier = contentModifier,
+                myKeyword = myKeyword,
+                loadingDescription = loadingDescription,
+                isFullScreenError = fullScreenError,
+                title = {
+                    Title(
+                        modifier = Modifier.fillMaxWidth(),
+                        myKeyword = myKeyword,
+                        editMode = editMode,
+                        keyword = keyword,
+                        onCancel = { onUiEvent(KeywordDetailContract.UiEvent.SafeCancel) },
+                        onEdit = { onUiEvent(KeywordDetailContract.UiEvent.EnableEditMode) },
+                        onEditAccept = {
+                            onUiEvent(KeywordDetailContract.UiEvent.UpdateDescription(description.text))
+                        },
+                    )
+                },
+                otherUserDescriptionTab = {
+                    OtherUserDescriptionTab(
+                        modifier = Modifier.fillMaxWidth(),
+                        description = description.text,
+                    )
+                },
+                myDescriptionTab = {
+                    MyDescriptionTab(
+                        modifier = Modifier.fillMaxWidth(),
+                        description = description,
+                        editMode = editMode,
+                        onDescriptionChanged = {
+                            onUiEvent(
+                                KeywordDetailContract.UiEvent.OnDescriptionChanged(value = it),
+                            )
+                        },
+                    )
+                },
+                otherUsersTab = {
+                    OtherUsers()
+                },
+                fullScreenError = {
+                    FullScreenError(
+                        modifier = Modifier.fillMaxSize(),
+                        errorMessage = fullScreenErrorMessage,
+                        onCancel = onForceCancel,
+                    )
+                },
+            )
+        }
 
-    PeekrModalBottomSheet(
-        modifier = modifier.statusBarsPadding(),
-        sheetState = sheetState,
-        onDismissRequest = { onUiEvent(KeywordDetailContract.UiEvent.SafeCancel) },
-        sheetGesturesEnabled = false,
-    ) { contentModifier ->
-        KeywordDetailModalFrame(
-            modifier = contentModifier,
-            myKeyword = myKeyword,
-            isFullScreenError = fullScreenError,
-            title = {
-                Title(
-                    modifier = Modifier.fillMaxWidth(),
-                    myKeyword = myKeyword,
-                    editMode = editMode,
-                    keyword = keyword,
-                    onCancel = { onUiEvent(KeywordDetailContract.UiEvent.SafeCancel) },
-                    onEdit = { editMode = true },
-                    onEditAccept = {
-                        onUiEvent(KeywordDetailContract.UiEvent.UpdateDescription(description.text))
-                    },
-                )
-            },
-            otherUserDescriptionTab = {
-                OtherUserDescriptionTab(
-                    modifier = Modifier.fillMaxWidth(),
-                    description = description.text,
-                )
-            },
-            myDescriptionTab = {
-                MyDescriptionTab(
-                    modifier = Modifier.fillMaxWidth(),
-                    description = description,
-                    editMode = editMode,
-                    onDescriptionChanged = {
-                        onUiEvent(
-                            KeywordDetailContract.UiEvent.OnDescriptionChanged(value = description),
-                        )
-                    },
-                )
-            },
-            otherUsersTab = {
-                OtherUsers()
-            },
-            fullScreenError = {
-                FullScreenError(
-                    modifier = Modifier.fillMaxSize(),
-                    errorMessage = fullScreenErrorMessage,
-                    onCancel = onForceCancel,
-                )
-            },
-        )
+        if (loading) {
+            PeekrLoadingScreen()
+        }
     }
 }
 
@@ -146,6 +164,7 @@ fun KeywordDetailModal(
 private fun KeywordDetailModalFrame(
     modifier: Modifier = Modifier,
     myKeyword: Boolean,
+    loadingDescription: Boolean,
     isFullScreenError: Boolean,
     title: @Composable () -> Unit,
     otherUserDescriptionTab: @Composable ColumnScope.() -> Unit,
@@ -179,9 +198,13 @@ private fun KeywordDetailModalFrame(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Spacer(Modifier.size(14.dp))
-                        when (page) {
-                            0 -> if (myKeyword) myDescriptionTab() else otherUserDescriptionTab()
-                            1 -> if (myKeyword) otherUsersTab()
+                        if (loadingDescription) {
+                            DescriptionSkeletonScreen()
+                        } else {
+                            when (page) {
+                                0 -> if (myKeyword) myDescriptionTab() else otherUserDescriptionTab()
+                                1 -> if (myKeyword) otherUsersTab()
+                            }
                         }
                     }
                 },
@@ -315,33 +338,40 @@ private fun ColumnScope.MyDescriptionTab(
     editMode: Boolean,
     onDescriptionChanged: (TextFieldValue) -> Unit,
 ) {
-    if (description.text.isNotEmpty()) {
-        BasicTextField(
-            value = description,
-            onValueChange = onDescriptionChanged,
-            textStyle = PeekrTheme.typography.body3Normal.copy(
-                fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textNormal,
-            ),
-            cursorBrush = SolidColor(PeekrTheme.colorScheme.textNormal),
-            readOnly = !editMode,
-        ) { innerTextField ->
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopStart,
-            ) {
-                innerTextField()
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(editMode) {
+        if (editMode) {
+            focusRequester.requestFocus()
+        }
+    }
+
+    BasicTextField(
+        modifier = modifier.focusRequester(focusRequester),
+        value = description,
+        onValueChange = { onDescriptionChanged(it) },
+        textStyle = PeekrTheme.typography.body3Normal.copy(
+            fontWeight = FontWeight.Normal,
+            color = PeekrTheme.colorScheme.textNormal,
+        ),
+        cursorBrush = SolidColor(PeekrTheme.colorScheme.textNormal),
+        readOnly = !editMode,
+    ) { innerTextField ->
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopStart,
+        ) {
+            innerTextField()
+            if (description.text.isEmpty() && !editMode) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.keyword_detail_modal_desc_if_empty),
+                    style = PeekrTheme.typography.body1,
+                    fontWeight = FontWeight.Normal,
+                    color = PeekrTheme.colorScheme.interactionInactive,
+                    textAlign = TextAlign.Center,
+                )
             }
         }
-    } else {
-        Text(
-            modifier = modifier.align(Alignment.CenterHorizontally),
-            text = stringResource(R.string.keyword_detail_modal_desc_if_empty),
-            style = PeekrTheme.typography.body1,
-            fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.interactionInactive,
-            textAlign = TextAlign.Center,
-        )
     }
 }
 
@@ -384,6 +414,24 @@ private fun FullScreenError(
     }
 }
 
+@Composable
+private fun DescriptionSkeletonScreen(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        SkeletonBox(
+            Modifier
+                .fillMaxWidth()
+                .height(14.dp),
+        )
+        SkeletonBox(Modifier.size(249.dp, 14.dp))
+        SkeletonBox(Modifier.size(290.dp, 14.dp))
+        SkeletonBox(Modifier.size(290.dp, 14.dp))
+        SkeletonBox(Modifier.size(213.dp, 14.dp))
+    }
+}
+
 // ------------------------------ Preview ------------------------------
 @PreviewLightDarkWithBackground
 @Composable
@@ -414,6 +462,14 @@ private fun Title2Preview() {
             onEdit = {},
             onEditAccept = {},
         )
+    }
+}
+
+@Preview
+@Composable
+private fun DescriptionSkeletonScreenPreview() {
+    PeekrAppTheme {
+        DescriptionSkeletonScreen()
     }
 }
 
@@ -457,6 +513,9 @@ private fun KeywordDetailModalPreview() {
                     myKeyword = myKeyword,
                     keyword = "Sample Keyword",
                     description = description,
+                    editMode = false,
+                    loading = false,
+                    loadingDescription = false,
                     fullScreenError = false,
                     fullScreenErrorMessage = "",
                     onUiEvent = {},

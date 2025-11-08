@@ -13,6 +13,7 @@ class KeywordDetailContract {
      * @property keyword 키워드
      * @property description 키워드 설명
      * @property myKeyword 내 키워드 여부
+     * @property editMode 수정 모드 활성화 여부
      * @property loading 로딩 상태
      * @property error 에러 상태
      */
@@ -20,7 +21,9 @@ class KeywordDetailContract {
         val keyword: String = "",
         val description: TextFieldValue = TextFieldValue(""),
         val myKeyword: Boolean = false,
+        val editMode: Boolean = false,
         val loading: Boolean = false,
+        val loadingDescription: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
 
@@ -32,11 +35,14 @@ class KeywordDetailContract {
 
         /** 키워드 설명 수정 완료 시 콜백 이벤트 */
         data class UpdateDescription(
-            val value: String,
+            val description: String,
         ) : UiEvent
 
         /** 안전 취소 이벤트 */
         data object SafeCancel : UiEvent
+
+        /** 수정 모드 활성화 */
+        data object EnableEditMode : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
