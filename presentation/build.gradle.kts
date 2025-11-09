@@ -16,6 +16,7 @@ kotlin {
 
 dependencies {
     implementation(projects.core.presentation)
+    testImplementation(testFixtures(projects.core.presentation))
     implementation(projects.core.designsystem)
     implementation(projects.domain)
 
