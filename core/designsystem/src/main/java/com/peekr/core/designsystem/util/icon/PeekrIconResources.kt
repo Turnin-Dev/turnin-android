@@ -38,10 +38,10 @@ val PeekrIcons.Filled.Normal.Lock: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_normal_lock)
 
 val PeekrIcons.Filled.Normal.Report: PeekrIconType
-    get() = PeekrIconType(R.drawable.ic_filled_bold_report)
+    get() = PeekrIconType(R.drawable.ic_filled_normal_report)
 
 val PeekrIcons.Filled.Normal.Block: PeekrIconType
-    get() = PeekrIconType(R.drawable.ic_filled_bold_block)
+    get() = PeekrIconType(R.drawable.ic_filled_normal_block)
 
 val PeekrIcons.Filled.Normal.Edit: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_normal_edit)

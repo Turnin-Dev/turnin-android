@@ -38,9 +38,9 @@ abstract class MVIBaseViewModelTest<
      *
      * 해당 함수를 사용할 때 [assertAllState] 파라미터를 주의해야 한다.
      *
-     * [assertAllState]가 `true`인 경우에는 예상되는 상태 값(1개)만 검증하면 되지만,
+     * [assertAllState]가 `false`인 경우에는 예상되는 상태 값(1개)만 검증하면 되지만,
      *
-     * [assertAllState]가 `false`인 경우에는 초기 상태 값을 포함하여 순서대로 상태 값들을 나열해서 검증해야 한다.
+     * [assertAllState]가 `true`인 경우에는 초기 상태 값을 포함하여 순서대로 상태 값들을 나열해서 검증해야 한다.
      * (**만약 초기 데이터 로직이 있어서 뷰모델 초기화 시 상태 변화가 일어난다면 해당 상태 값도 포함해줘야 한다.**)
      *
      * ```

@@ -9,6 +9,7 @@ import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.MVIBaseViewModelTest
+import com.peekr.core.presentation.util.UiText
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
 import com.peekr.domain.keywordDetail.usecase.GetUserIdUseCase
@@ -86,7 +87,9 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
             viewModel = viewModel,
             assertTypeOnly = true,
             intents = emptyList(),
-            assertions = listOf(KeywordDetailContract.UiEffect.FullScreenError()),
+            assertions = listOf(
+                KeywordDetailContract.UiEffect.FullScreenError(UiText.DynamicString("")),
+            ),
         )
     }
 

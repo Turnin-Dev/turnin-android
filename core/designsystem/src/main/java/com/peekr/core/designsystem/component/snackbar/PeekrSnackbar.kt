@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
  *    Scaffold(
  *        modifier = Modifier.fillMaxSize(),
  *        snackbarHost = {
- *            PeekrSnackbar(snackBarHostState = snackbarHostState)
+ *            PeekrSnackbar(snackbarHostState = snackbarHostState)
  *        }
  *    ) { ... }
  */

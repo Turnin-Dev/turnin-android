@@ -5,7 +5,8 @@ package com.peekr.core.designsystem.util.icon
  *
  * ```
  * 사용 예시
- * 1. PeekrIcons.Filled.(IconName)
+ * 1. PeekrIcons.Filled.Normal.(IconName)
+ * 1. PeekrIcons.Filled.Bold.(IconName)
  * 2. PeekrIcons.Outlined.Normal.(IconName)
  * 3. PeekrIcons.Outlined.Bold.(IconName)
  * 4. PeekrIcons.Default.Normal.(IconName)

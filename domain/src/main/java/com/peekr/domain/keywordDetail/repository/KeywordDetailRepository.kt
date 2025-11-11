@@ -26,7 +26,7 @@ interface KeywordDetailRepository {
      * @param userKeywordId 사용자 키워드 ID
      * @param description 키워드 설명
      *
-     * @return [KeywordDescription] 키워드 설명 VO
+     * @return [PatchDescription] 키워드 설명 수정 모델
      */
     fun updateDescription(
         userKeywordId: Long,

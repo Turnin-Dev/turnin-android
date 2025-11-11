@@ -48,7 +48,7 @@ class KeywordDetailContract {
     sealed interface UiEffect : BaseUiEffect {
         /** 치명적인 에러 발생으로 전체화면에 에러를 표시해야한다. */
         data class FullScreenError(
-            val errorMessage: UiText = UiText.DynamicString(""),
+            val errorMessage: UiText,
         ) : UiEffect
 
         /** 뒤로가기 */
