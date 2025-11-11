@@ -41,13 +41,31 @@ class KeywordDetailViewModel @Inject constructor(
         KeywordDetailContract.UiState()
 
     override suspend fun loadInitialData() {
+        val initResult = initNavArgumentData()
+        // initNavArgumentData 가 결과를 반환하기 전(false를 반환할 경우)
+        // 화면 전체를 에러로 표시하는 이벤트를 UI로 보내기 때문에 다른 기능이 실행될 수 없다.
+        if (!initResult) return
+
         viewModelScope.launch {
-            launch { initNavArgumentData() }
-            launch { checkMyKeyword() }
             launch { setKeyword() }
+            launch { checkMyKeyword() }
             launch { getDescription() }
         }
     }
+
+    private fun initNavArgumentData(): Boolean = runCatching {
+        currentUserKeywordId
+        currentUserId
+        currentKeyword
+    }
+        .onFailure {
+            sendEffect {
+                KeywordDetailContract.UiEffect.FullScreenError(
+                    errorMessage = UiText.StringResource(R.string.keyword_detail_modal_error_nav_arg_null),
+                )
+            }
+        }
+        .isSuccess
 
     override suspend fun handleEvent(event: KeywordDetailContract.UiEvent) {
         when (event) {
@@ -79,41 +97,32 @@ class KeywordDetailViewModel @Inject constructor(
     private fun updateDescription(description: String) {
         updateDescriptionUseCase(currentUserKeywordId, description).onEach { result ->
             when (result) {
-                Result.Loading -> updateState {
-                    this.copy(loading = true)
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
+                    }
                 }
 
-                is Result.Error -> updateState {
-                    this.copy(
-                        loading = false,
-                        error = result.error.asUiText(),
-                    )
+                is Result.Error -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = result.error.asUiText(),
+                        )
+                    }
                 }
 
-                is Result.Success -> updateState {
-                    this.copy(
-                        loading = false,
-                        error = null,
-                        editMode = false,
-                    )
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                            editMode = false,
+                        )
+                    }
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun initNavArgumentData() {
-        runCatching {
-            currentUserKeywordId
-            currentUserId
-            currentKeyword
-        }
-            .onFailure {
-                sendEffect {
-                    KeywordDetailContract.UiEffect.FullScreenError(
-                        errorMessage = UiText.StringResource(R.string.keyword_detail_modal_error_nav_arg_null),
-                    )
-                }
-            }
     }
 
     private fun setKeyword() {
@@ -125,23 +134,29 @@ class KeywordDetailViewModel @Inject constructor(
     private suspend fun checkMyKeyword() {
         getUserIdUseCase().collect { result ->
             when (result) {
-                Result.Loading -> updateState {
-                    this.copy(loading = true)
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
+                    }
                 }
 
-                is Result.Error -> updateState {
-                    this.copy(
-                        loading = false,
-                        error = result.error.asUiText(),
-                    )
+                is Result.Error -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = result.error.asUiText(),
+                        )
+                    }
                 }
 
-                is Result.Success -> updateState {
-                    this.copy(
-                        loading = false,
-                        error = null,
-                        myKeyword = result.data.value == currentUserId,
-                    )
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                            myKeyword = result.data.value == currentUserId,
+                        )
+                    }
                 }
             }
         }
@@ -150,26 +165,32 @@ class KeywordDetailViewModel @Inject constructor(
     private suspend fun getDescription() {
         getDescriptionUseCase(currentUserKeywordId).collect { result ->
             when (result) {
-                Result.Loading -> updateState {
-                    this.copy(loadingDescription = true)
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loadingDescription = true)
+                    }
                 }
 
-                is Result.Error -> updateState {
-                    this.copy(
-                        loadingDescription = false,
-                        error = result.error.asUiText(),
-                    )
+                is Result.Error -> {
+                    updateState {
+                        this.copy(
+                            loadingDescription = false,
+                            error = result.error.asUiText(),
+                        )
+                    }
                 }
 
-                is Result.Success -> updateState {
-                    this.copy(
-                        loadingDescription = false,
-                        error = null,
-                        description = this.description.copy(
-                            text = result.data.value,
-                            selection = TextRange(result.data.value.length),
-                        ),
-                    )
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loadingDescription = false,
+                            error = null,
+                            description = this.description.copy(
+                                text = result.data.value,
+                                selection = TextRange(result.data.value.length),
+                            ),
+                        )
+                    }
                 }
             }
         }
