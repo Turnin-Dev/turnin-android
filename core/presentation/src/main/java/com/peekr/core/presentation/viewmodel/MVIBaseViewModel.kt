@@ -49,7 +49,7 @@ abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect
 
     /** 단순히 UI State 값을 읽을 때 사용한다. */
     protected val currentUiState: State
-        get() = uiState.value
+        get() = _uiState.value
 
     /** Update UiState */
     protected fun updateState(newUiState: State) {
