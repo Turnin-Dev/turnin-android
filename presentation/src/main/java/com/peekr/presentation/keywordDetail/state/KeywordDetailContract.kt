@@ -15,6 +15,7 @@ class KeywordDetailContract {
      * @property myKeyword 내 키워드 여부
      * @property editMode 수정 모드 활성화 여부
      * @property loading 로딩 상태
+     * @property loadingDescription 키워드 설명 로딩 상태
      * @property error 에러 상태
      */
     data class UiState(
