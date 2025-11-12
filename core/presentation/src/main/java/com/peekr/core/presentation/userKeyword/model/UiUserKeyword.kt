@@ -14,7 +14,6 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
  * @property userId 사용자 ID
  * @property offsetX 키워드 위치 오프셋 X
  * @property offsetY 키워드 위치 오프셋 Y
- * @property description 키워드 설명
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
  */
@@ -25,7 +24,6 @@ data class UiUserKeyword(
     val userId: UserId,
     val offsetX: Double,
     val offsetY: Double,
-    val description: String,
     val createdAt: Long,
     val updatedAt: Long,
 ) {
@@ -38,7 +36,6 @@ data class UiUserKeyword(
                 userId = UserId(1L),
                 offsetY = 0.0,
                 offsetX = 0.0,
-                description = "desc ${it + 1}",
                 createdAt = 0L,
                 updatedAt = 0L,
             )
@@ -54,7 +51,6 @@ fun UserKeyword.toUiModel(): UiUserKeyword =
         userId = userId,
         offsetX = offsetX,
         offsetY = offsetY,
-        description = description.value,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )

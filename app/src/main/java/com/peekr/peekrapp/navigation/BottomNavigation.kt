@@ -45,7 +45,7 @@ fun BottomNavigation(
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
             }
 
-            profileNavigation()
+            profileNavigation(bottomNavController)
         }
     }
 }

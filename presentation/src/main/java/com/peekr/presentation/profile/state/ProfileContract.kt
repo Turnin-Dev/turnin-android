@@ -28,10 +28,10 @@ class ProfileContract {
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
-        /** 키워드 추가 및 수정 모달에서 키워드 텍스트 필드 값 변경 이벤트 */
+        /** 키워드 추가 모달에서 키워드 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordTextChanged(val value: String) : UiEvent
 
-        /** 키워드 추가 및 수정 모달에서 키워드 설명 텍스트 필드 값 변경 이벤트 */
+        /** 키워드 추가 모달에서 키워드 설명 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordDescTextChanged(val value: String) : UiEvent
 
         /** 키워드 위치 변경 이벤트 */
@@ -58,14 +58,7 @@ class ProfileContract {
             val userKeywordId: UserKeywordId?,
         ) : UiEvent
 
-        /** 키워드 설명 수정 이벤트 */
-        data class UpdateKeywordDescription(
-            val userKeywordId: UserKeywordId?,
-            val currentDescription: String?,
-            val newDescription: String,
-        ) : UiEvent
-
-        /** 키워드 추가 및 수정 모달에서 취소 전에 텍스트 필드에 입력된 값이 있는지 확인하는 이벤트 */
+        /** 키워드 추가 모달에서 취소 전에 텍스트 필드에 입력된 값이 있는지 확인하는 이벤트 */
         data class CheckSafeCancel(
             val keyword: String?,
             val description: String?,

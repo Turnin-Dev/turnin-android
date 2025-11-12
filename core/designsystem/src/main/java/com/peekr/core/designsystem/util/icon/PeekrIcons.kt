@@ -5,7 +5,8 @@ package com.peekr.core.designsystem.util.icon
  *
  * ```
  * 사용 예시
- * 1. PeekrIcons.Filled.(IconName)
+ * 1. PeekrIcons.Filled.Normal.(IconName)
+ * 1. PeekrIcons.Filled.Bold.(IconName)
  * 2. PeekrIcons.Outlined.Normal.(IconName)
  * 3. PeekrIcons.Outlined.Bold.(IconName)
  * 4. PeekrIcons.Default.Normal.(IconName)
@@ -14,7 +15,13 @@ package com.peekr.core.designsystem.util.icon
  */
 object PeekrIcons {
     /** 색상이 채워진 아이콘 */
-    object Filled
+    object Filled {
+        /** 색상이 채워진 아이콘 + 일반 두께 */
+        object Normal
+
+        /** 색상이 채워진 아이콘 + 두꺼운 두께 */
+        object Bold
+    }
 
     /** 테두리만 있는 아이콘 */
     object Outlined {

@@ -20,10 +20,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.peekr.core.presentation.keyword.KeywordDescType
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
+import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.view.KeywordNodeEdge
 import com.peekr.core.presentation.keyword.view.UserNode
@@ -36,6 +36,7 @@ import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
  * @param profileImageUrl 사용자 프로필 이미지 url (사용자 노드에서 사용)
  * @param nodeReset 키워드 노드 리셋 여부
  * @param keywords 키워드 리스트
+ * @param onNodeClick 키워드 노드 클릭 시 콜백
  * @param onNodeLongClick 키워드 노드 길게 클릭 시 콜백
  * @param onNodeChanged 키워드 노드 위치 변화 시 콜백
  */
@@ -45,7 +46,8 @@ fun KeywordGraphView(
     profileImageUrl: String?,
     nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
-    onNodeLongClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
+    onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
+    onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     // 키워드 그래프 뷰
@@ -69,12 +71,17 @@ fun KeywordGraphView(
                     initialOffsetY = keyword.offsetY.toFloat(),
                     label = keyword.keywordName,
                     nodeReset = nodeReset,
-                    onNodeClick = { TODO("사용자 키워드 정보 창 표시") },
+                    onNodeClick = {
+                        onNodeClick(
+                            keyword.id,
+                            keyword.userId,
+                            keyword.keywordName,
+                        )
+                    },
                     onNodeLongClick = {
                         onNodeLongClick(
                             keyword.id,
                             keyword.keywordName,
-                            keyword.description,
                         )
                     },
                     onNodeChanged = { offsetX, offsetY ->
@@ -144,7 +151,8 @@ private fun KeywordGraphViewPreview() {
         profileImageUrl = null,
         nodeReset = false,
         keywords = UiUserKeyword.samples,
-        onNodeLongClick = { _, _, _ -> },
+        onNodeClick = { _, _, _ -> },
+        onNodeLongClick = { _, _ -> },
         onNodeChanged = { _, _, _ -> },
     )
 }

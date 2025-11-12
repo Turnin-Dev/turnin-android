@@ -18,7 +18,6 @@ import com.squareup.moshi.JsonClass
  * @property userId 사용자 ID
  * @property offsetX 키워드 위치 오프셋 X
  * @property offsetY 키워드 위치 오프셋 Y
- * @property description 키워드 설명
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
  */
@@ -31,7 +30,6 @@ data class UserKeywordResponse(
     val userId: Long,
     val offsetX: Double,
     val offsetY: Double,
-    val description: String?,
     val createdAt: Long,
     val updatedAt: Long,
 )
@@ -45,7 +43,7 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
         userId = UserId(userId),
         offsetX = offsetX,
         offsetY = offsetY,
-        description = KeywordDescription(description ?: ""),
+        description = KeywordDescription(""),
         createdAt = createdAt,
         updatedAt = updatedAt,
     )

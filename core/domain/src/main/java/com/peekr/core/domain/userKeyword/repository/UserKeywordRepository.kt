@@ -1,5 +1,6 @@
 package com.peekr.core.domain.userKeyword.repository
 
+import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
@@ -16,6 +17,13 @@ interface UserKeywordRepository {
      * 사용자 키워드 리스트 조회
      */
     fun getUserKeywords(): Flow<Result<UserKeywords, UserKeywordErrorType>>
+
+    /**
+     * 사용자 키워드 설명 조회
+     */
+    fun getDescription(
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<KeywordDescription, UserKeywordErrorType>>
 
     /**
      * 사용자 키워드 생성

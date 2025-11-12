@@ -1,5 +1,6 @@
 package com.peekr.core.domain.user.repository
 
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
@@ -9,6 +10,11 @@ import kotlinx.coroutines.flow.Flow
 
 /** 사용자 리포지토리 */
 interface UserRepository {
+    /**
+     * 사용자 ID 조회
+     */
+    fun getUserId(): Flow<Result<UserId, UserErrorType>>
+
     /**
      * 사용자 조회
      *

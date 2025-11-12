@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
-import com.peekr.core.presentation.token.ScreenTokens
+import com.peekr.core.designsystem.util.token.ScreenTokens
 
 /**
  * 제스처 바와 키보드 패딩이 계산된 하단 패딩을 반환한다.

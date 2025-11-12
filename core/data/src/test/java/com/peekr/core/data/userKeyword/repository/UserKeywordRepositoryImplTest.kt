@@ -7,6 +7,7 @@ import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
 import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
+import com.peekr.core.data.userKeyword.network.response.DescriptionResponse
 import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
 import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
@@ -85,6 +86,64 @@ class UserKeywordRepositoryImplTest {
 
         // when
         val result = repository.getUserKeywords().last()
+
+        // then
+        assertTrue(result is Result.Error)
+        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+            assertEquals(
+                UserKeywordErrorType.Unexpected(exception).cause?.message,
+                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+            )
+        }
+    }
+
+    @Test
+    fun `사용자 키워드 설명 조회 - 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getDescription(TestUserKeywordId)
+        } returns NetworkResult.Success(TestDescriptionResponse)
+
+        // when
+        val result = repository.getDescription(TestUserKeywordId).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(
+            TestDescriptionResponse.toDomainModel(),
+            (result as Result.Success).data,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = NetworkErrorType.Network.NotFound
+        coEvery {
+            dataSource.getDescription(TestUserKeywordId)
+        } returns NetworkResult.Error(expectedError)
+
+        // when
+        val result = repository.getDescription(TestUserKeywordId).last()
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(
+            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            (result as Result.Error).error,
+        )
+    }
+
+    @Test
+    fun `사용자 키워드 설명 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val exception = Exception("error!")
+        coEvery {
+            dataSource.getDescription(TestUserKeywordId)
+        } throws exception
+
+        // when
+        val result = repository.getDescription(TestUserKeywordId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -379,7 +438,6 @@ class UserKeywordRepositoryImplTest {
             userId = TestUserId.value,
             offsetX = 0.0,
             offsetY = 0.0,
-            description = TestKeywordDescription.value,
             createdAt = 1000,
             updatedAt = 1000,
         )
@@ -414,6 +472,9 @@ class UserKeywordRepositoryImplTest {
             description = TestPatchDescription.description.value,
         )
         private val TestPatchDescriptionResponse = PatchDescriptionResponse(
+            description = TestPatchDescription.description.value,
+        )
+        private val TestDescriptionResponse = DescriptionResponse(
             description = TestPatchDescription.description.value,
         )
     }

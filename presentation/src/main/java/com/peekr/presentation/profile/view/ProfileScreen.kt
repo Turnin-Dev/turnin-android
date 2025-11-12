@@ -30,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
@@ -52,13 +51,13 @@ import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
-import com.peekr.core.presentation.keyword.KeywordDescType
+import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.NodeOffsetXType
 import com.peekr.core.presentation.keyword.NodeOffsetYType
+import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
-import com.peekr.core.presentation.token.ScreenTokens
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
 import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -78,7 +77,8 @@ internal fun ProfileScreen(
     loading: Boolean,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
-    onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
+    onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
+    onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -116,8 +116,11 @@ internal fun ProfileScreen(
                         profileImageUrl = profile.profileImageUrl,
                         keywords = profile.keywords,
                         onUiEvent = onUiEvent,
-                        onNodeLongClick = { userKeywordId, keyword, description ->
-                            onOpenNodeOptionModal(userKeywordId, keyword, description)
+                        onNodeClick = { userKeywordId, userId, keyword ->
+                            onOpenKeywordDetailModal(userKeywordId, userId, keyword)
+                        },
+                        onNodeLongClick = { userKeywordId, keyword ->
+                            onOpenNodeOptionModal(userKeywordId, keyword)
                         },
                         onNodeChanged = { userKeywordId, offsetX, offsetY ->
                             onUiEvent(
@@ -207,7 +210,10 @@ private fun TopBar(
     title: String,
 ) {
     PeekrTopBar(
-        modifier = modifier,
+        modifier = modifier.padding(
+            start = ScreenTokens.HorizontalPadding,
+            end = ScreenTokens.HorizontalPaddingWithTouchTarget,
+        ),
         title = title,
         optionSlot = {
             PeekrIconButton(
@@ -325,15 +331,15 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SkeletonBox(DpSize(AvatarSize, AvatarSize), CircleShape)
+            SkeletonBox(Modifier.size(AvatarSize, AvatarSize), CircleShape)
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                SkeletonBox(DpSize(59.dp, 24.dp))
+                SkeletonBox(Modifier.size(59.dp, 24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SkeletonBox(DpSize(94.dp, 20.dp))
+                    SkeletonBox(Modifier.size(94.dp, 20.dp))
                 }
             }
         }
@@ -341,7 +347,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            SkeletonBox(DpSize(218.dp, 18.dp))
+            SkeletonBox(Modifier.size(218.dp, 18.dp))
         }
     }
 }
@@ -353,6 +359,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
  * @param profileImageUrl 사용자 프로필 사진 url
  * @param keywords 사용자 키워드 리스트
  * @param onUiEvent UI 이벤트
+ * @param onNodeClick 사용자 키워드 노드 클릭 시
  * @param onNodeLongClick 사용자 키워드 노드 길게 클릭 시
  * @param onNodeChanged 사용자 키워드 노드 오프셋 변경 시
  */
@@ -362,7 +369,8 @@ private fun KeywordGraph(
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
-    onNodeLongClick: (UserKeywordIdType, KeywordNameType, KeywordDescType) -> Unit,
+    onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
+    onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
 ) {
     var nodeChanged by rememberSaveable { mutableStateOf(false) }
@@ -375,8 +383,11 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
-            onNodeLongClick = { userKeywordId, keyword, description ->
-                onNodeLongClick(userKeywordId, keyword, description)
+            onNodeClick = { userKeywordId, userId, keyword ->
+                onNodeClick(userKeywordId, userId, keyword)
+            },
+            onNodeLongClick = { userKeywordId, keyword ->
+                onNodeLongClick(userKeywordId, keyword)
             },
             onNodeChanged = { userKeywordId, offsetX, offsetY ->
                 nodeChanged = keywords.any { it.id == userKeywordId }
@@ -473,7 +484,7 @@ fun NodeChangedButton(
 @Composable
 private fun KeywordGraphSkeleton() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
-        SkeletonBox(DpSize(49.dp, 49.dp), CircleShape)
+        SkeletonBox(Modifier.size(49.dp, 49.dp), CircleShape)
     }
 }
 
@@ -563,7 +574,8 @@ private fun ProfileScreenPreview() {
             loading = false,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
-            onOpenNodeOptionModal = { _, _, _ -> },
+            onOpenNodeOptionModal = { _, _ -> },
+            onOpenKeywordDetailModal = { _, _, _ -> },
         )
     }
 }
@@ -578,7 +590,8 @@ private fun ProfileScreenShimmerPreview() {
             loading = false,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
-            onOpenNodeOptionModal = { _, _, _ -> },
+            onOpenNodeOptionModal = { _, _ -> },
+            onOpenKeywordDetailModal = { _, _, _ -> },
         )
     }
 }

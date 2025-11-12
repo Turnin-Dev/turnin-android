@@ -6,6 +6,7 @@ plugins {
 
 android {
     namespace = "com.peekr.core.presentation"
+    testFixtures.enable = true
 }
 
 kotlin {
@@ -40,4 +41,11 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Test Fixtures
+    testFixturesImplementation(libs.junit)
+    testFixturesImplementation(libs.androidx.test.core)
+    testFixturesImplementation(libs.kotlinx.coroutines.test)
+    testFixturesImplementation(libs.androidx.lifecycle.viewmodel.compose)
 }

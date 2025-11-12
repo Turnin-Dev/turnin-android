@@ -24,9 +24,31 @@ private fun IconButton_Size() {
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
                 PeekrIconButton(
-                    icon = PeekrIcons.Filled.Home,
+                    icon = PeekrIcons.Filled.Normal.Home,
                     iconSize = iconSize,
                     contentDescription = "",
+                    onClick = { },
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun IconButton_Expanded_TouchTarget_False() {
+    PeekrAppTheme {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PeekrIconSize.entries.forEach { iconSize ->
+                PeekrIconButton(
+                    icon = PeekrIcons.Filled.Normal.Home,
+                    iconSize = iconSize,
+                    contentDescription = "",
+                    expandedTouchTarget = false,
                     onClick = { },
                 )
             }
@@ -45,7 +67,7 @@ private fun IconButton_Disabled() {
         ) {
             PeekrIconSize.entries.forEach { iconSize ->
                 PeekrIconButton(
-                    icon = PeekrIcons.Filled.Home,
+                    icon = PeekrIcons.Filled.Normal.Home,
                     iconSize = iconSize,
                     contentDescription = "",
                     enabled = false,

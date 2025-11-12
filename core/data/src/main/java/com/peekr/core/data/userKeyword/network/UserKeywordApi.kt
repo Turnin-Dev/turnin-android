@@ -4,6 +4,7 @@ import com.peekr.core.data.network.NetworkApiPath
 import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
 import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
 import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
+import com.peekr.core.data.userKeyword.network.response.DescriptionResponse
 import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
 import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
@@ -21,6 +22,12 @@ interface UserKeywordApi {
     @GET(NetworkApiPath.UserKeyword.ROUTE)
     suspend fun getUserKeywords(): Response<UserKeywordsResponse>
 
+    /** 사용자 키워드 설명 조회 */
+    @GET(NetworkApiPath.UserKeyword.DESCRIPTION)
+    suspend fun getDescription(
+        @Query("userKeywordId") userKeywordId: Long,
+    ): Response<DescriptionResponse>
+
     /** 사용자 키워드 생성 */
     @POST(NetworkApiPath.UserKeyword.ROUTE)
     suspend fun createUserKeyword(
@@ -35,7 +42,7 @@ interface UserKeywordApi {
     ): Response<PatchOffsetResponse>
 
     /** 사용자 키워드 설명 수정 */
-    @PATCH(NetworkApiPath.UserKeyword.PATCH_DESCRIPTION)
+    @PATCH(NetworkApiPath.UserKeyword.DESCRIPTION)
     suspend fun patchDescription(
         @Query("userKeywordId") userKeywordId: Long,
         @Body patchDescriptionRequest: PatchDescriptionRequest,

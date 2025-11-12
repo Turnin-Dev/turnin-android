@@ -25,7 +25,6 @@ fun NodeOptionModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
-    onEdit: () -> Unit,
     onDelete: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -37,11 +36,6 @@ fun NodeOptionModal(
         PeekrModalBottomSheetContent(
             modifier = contentModifier.fillMaxWidth(),
             onCancel = onCancel,
-            ModalContentToken(
-                stringResource(R.string.profile_screen_node_option_modal_btn_edit),
-                PeekrTheme.colorScheme.textNormal,
-                onEdit,
-            ),
             ModalContentToken(
                 stringResource(R.string.profile_screen_node_option_modal_btn_delete),
                 PeekrTheme.colorScheme.statusNegative,
@@ -67,7 +61,6 @@ private fun NodeOptionModalPreview() {
                     showBottomSheet = false
                 }
             },
-            onEdit = {},
             onDelete = {},
             onCancel = {},
         )

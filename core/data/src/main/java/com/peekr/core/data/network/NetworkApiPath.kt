@@ -26,7 +26,7 @@ object NetworkApiPath {
     object UserKeyword {
         const val ROUTE = "$BASE/user-keyword"
         const val PATCH_OFFSET = "$ROUTE/offset"
-        const val PATCH_DESCRIPTION = "$ROUTE/description"
+        const val DESCRIPTION = "$ROUTE/description"
     }
 
     object File {

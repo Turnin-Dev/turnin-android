@@ -21,7 +21,7 @@ private fun Icon_Size() {
     ) {
         PeekrIconSize.entries.forEach { iconSize ->
             PeekrIcon(
-                icon = PeekrIcons.Filled.Home,
+                icon = PeekrIcons.Filled.Normal.Home,
                 iconSize = iconSize,
                 contentDescription = "",
             )

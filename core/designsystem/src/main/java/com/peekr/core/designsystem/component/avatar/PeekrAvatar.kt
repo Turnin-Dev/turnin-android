@@ -148,7 +148,7 @@ private fun AvatarPlaceholder(modifier: Modifier = Modifier) {
             modifier = modifier
                 .fillMaxSize()
                 .padding(12.dp),
-            imageVector = PeekrIcons.Filled.Profile.imageVector,
+            imageVector = PeekrIcons.Filled.Normal.Profile.imageVector,
             tint = PeekrTheme.colorScheme.staticWhite,
             contentDescription = stringResource(R.string.avatar_placeholder_content_desc),
         )

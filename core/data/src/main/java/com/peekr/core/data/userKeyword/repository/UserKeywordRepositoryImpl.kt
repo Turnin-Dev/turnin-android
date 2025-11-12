@@ -7,6 +7,7 @@ import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.toDataModel
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
 import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
@@ -32,6 +33,27 @@ class UserKeywordRepositoryImpl @Inject constructor(
             emit(Result.Loading)
 
             when (val result = userKeywordDataSource.getUserKeywords()) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun getDescription(
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<KeywordDescription, UserKeywordErrorType>> =
+        safeResultFlow<KeywordDescription, UserKeywordErrorType>(
+            dispatcher = ioDispatcher,
+            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+        ) {
+            emit(Result.Loading)
+
+            when (val result = userKeywordDataSource.getDescription(userKeywordId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }

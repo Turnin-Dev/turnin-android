@@ -19,7 +19,16 @@ sealed class UiText {
     class StringResource(
         @StringRes val id: Int,
         vararg val args: Any,
-    ) : UiText()
+    ) : UiText() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is StringResource) return false
+            return id == other.id && args.contentEquals(other.args)
+        }
+
+        override fun hashCode(): Int =
+            31 * id + args.contentHashCode()
+    }
 
     /** [Composable]에서 사용 가능한 String 변환 함수이다. */
     @Composable

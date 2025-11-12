@@ -17,7 +17,7 @@ private fun PeekrChipPreview() {
     PeekrAppTheme {
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             PeekrChip(text = "Label", onClick = {})
-            PeekrChip(text = "Label", icon = PeekrIcons.Filled.Profile, onClick = {})
+            PeekrChip(text = "Label", icon = PeekrIcons.Filled.Normal.Profile, onClick = {})
         }
     }
 }

@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
  * @param onDismissRequest ModalBottomSheet 가 사라질 때 수행할 동작
  * @param modifier [Modifier]
  * @param shouldDismissOnBackPress 뒤로가기 버튼으로 모달이 사라지게 할 지에 대한 여부
+ * @param sheetGesturesEnabled 제스처 허용 여부
  * @param content ModalBottomSheet 컨텐츠
  *
  * @sample PeekrModalBottomSheetPreview
@@ -40,6 +41,7 @@ fun PeekrModalBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shouldDismissOnBackPress: Boolean = true,
+    sheetGesturesEnabled: Boolean = true,
     content: @Composable (Modifier) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -59,6 +61,7 @@ fun PeekrModalBottomSheet(
         shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         properties = ModalBottomSheetProperties(shouldDismissOnBackPress),
+        sheetGesturesEnabled = sheetGesturesEnabled,
     ) {
         content(
             Modifier
@@ -71,4 +74,4 @@ fun PeekrModalBottomSheet(
 private val BottomSheetContentPaddingValues =
     PaddingValues(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
 
-private val ScrimColor = Color(0xB3353535)
+private val ScrimColor = Color(0xB3141414)
