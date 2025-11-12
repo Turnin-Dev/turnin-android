@@ -23,6 +23,7 @@ class ProfileContract {
         val keywordDescTextField: KeywordTextFieldState = KeywordTextFieldState(),
         val updatedKeywordNodesOffset: Map<UserKeywordId, ChangedKeywordNodeOffset> =
             emptyMap<UserKeywordId, ChangedKeywordNodeOffset>(),
+        val selectedKeywordState: SelectedKeywordState = SelectedKeywordState(),
         val loading: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
@@ -66,6 +67,11 @@ class ProfileContract {
 
         /** 모든 모달을 닫기 이벤트 */
         data object AcceptSafeCancel : UiEvent
+
+        data class SetSelectedKeyword(
+            val userKeywordId: UserKeywordId,
+            val keyword: String,
+        ) : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
@@ -74,8 +80,5 @@ class ProfileContract {
 
         /** 모든 모달 닫기 */
         data object CloseAllModal : UiEffect
-
-        /** 선택된 데이터(키워드, 설명, ID 등) */
-        data object ResetSelectedData : UiEffect
     }
 }

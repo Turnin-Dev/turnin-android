@@ -7,14 +7,12 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.keyword.KeywordNameType
 import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
@@ -37,14 +35,11 @@ internal fun ProfileRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var isAddKeywordModalOpen by remember { mutableStateOf(false) }
-    var isEditKeywordModalOpen by remember { mutableStateOf(false) }
-    var isSafeCancelModalOpen by remember { mutableStateOf(false) }
-    var isSafeDeleteModalOpen by remember { mutableStateOf(false) }
-    var isNodeOptionModelOpen by remember { mutableStateOf(false) }
-
-    var selectedUserKeywordId: UserKeywordId? by rememberSaveable { mutableStateOf(null) }
-    var selectedKeyword: String? by rememberSaveable { mutableStateOf(null) }
+    var isAddKeywordModalOpen by rememberSaveable { mutableStateOf(false) }
+    var isEditKeywordModalOpen by rememberSaveable { mutableStateOf(false) }
+    var isSafeCancelModalOpen by rememberSaveable { mutableStateOf(false) }
+    var isSafeDeleteModalOpen by rememberSaveable { mutableStateOf(false) }
+    var isNodeOptionModelOpen by rememberSaveable { mutableStateOf(false) }
 
     // ------------------------------ UiEffect ------------------------------
     ObserveAsEvents(viewModel.effect) {
@@ -59,11 +54,6 @@ internal fun ProfileRoute(
                 isNodeOptionModelOpen = false
                 isAddKeywordModalOpen = false
                 isEditKeywordModalOpen = false
-            }
-
-            ProfileContract.UiEffect.ResetSelectedData -> {
-                selectedKeyword = null
-                selectedUserKeywordId = null
             }
         }
     }
@@ -114,7 +104,9 @@ internal fun ProfileRoute(
         isOpen = isSafeDeleteModalOpen,
         title = R.string.profile_screen_safe_modal_delete,
         onAcceptClick = {
-            viewModel.processEvent(ProfileContract.UiEvent.DeleteKeyword(selectedUserKeywordId))
+            viewModel.processEvent(
+                ProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeywordState.userKeywordId),
+            )
         },
         onCancelClick = { isSafeDeleteModalOpen = false },
     )
@@ -138,8 +130,9 @@ internal fun ProfileRoute(
         onUiEvent = viewModel::processEvent,
         onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
         onOpenNodeOptionModal = { userKeywordId, keyword ->
-            selectedUserKeywordId = userKeywordId
-            selectedKeyword = keyword
+            viewModel.processEvent(
+                ProfileContract.UiEvent.SetSelectedKeyword(userKeywordId, keyword),
+            )
             isNodeOptionModelOpen = true
         },
         onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->

@@ -7,6 +7,7 @@ import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.util.SnackbarController
 import com.peekr.core.presentation.util.SnackbarEvent
 import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.util.UiText.StringResource
 import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.viewmodel.setTextFieldValidation
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -17,6 +18,7 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
 import com.peekr.presentation.profile.state.KeywordTextFieldState
 import com.peekr.presentation.profile.state.ProfileContract
+import com.peekr.presentation.profile.state.SelectedKeywordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -109,7 +111,7 @@ class ProfileViewModel @Inject constructor(
                 event.userKeywordId?.let {
                     deleteKeyword(it)
                 }
-                    ?: showSnackBar(UiText.StringResource(R.string.profile_error_not_selected_user_keyword_id))
+                    ?: showSnackBar(StringResource(R.string.profile_error_not_selected_user_keyword_id))
             }
 
             is ProfileContract.UiEvent.CheckSafeCancel -> safeCancel(event.keyword, event.description)
@@ -117,6 +119,17 @@ class ProfileViewModel @Inject constructor(
             ProfileContract.UiEvent.AcceptSafeCancel -> {
                 sendEffect { ProfileContract.UiEffect.CloseAllModal }
                 resetKeywordAndDescriptionTextField()
+            }
+
+            is ProfileContract.UiEvent.SetSelectedKeyword -> {
+                updateState {
+                    this.copy(
+                        selectedKeywordState = this.selectedKeywordState.copy(
+                            userKeywordId = event.userKeywordId,
+                            keyword = event.keyword,
+                        ),
+                    )
+                }
             }
         }
     }
@@ -156,7 +169,7 @@ class ProfileViewModel @Inject constructor(
                         this.copy(loading = false, error = null)
                     }
                     sendEffect { ProfileContract.UiEffect.CloseAllModal }
-                    sendEffect { ProfileContract.UiEffect.ResetSelectedData }
+                    resetSelectedKeyword()
                     showSnackBar(UiText.StringResource(R.string.profile_success_delete_user_keyword))
                     // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                     loadInitialData()
@@ -192,7 +205,7 @@ class ProfileViewModel @Inject constructor(
                                 )
                             }
                             sendEffect { ProfileContract.UiEffect.CloseAllModal }
-                            sendEffect { ProfileContract.UiEffect.ResetSelectedData }
+                            resetSelectedKeyword()
                             showSnackBar(
                                 UiText.StringResource(
                                     R.string.profile_success_add_user_keyword,
@@ -254,6 +267,12 @@ class ProfileViewModel @Inject constructor(
                     ),
                 )
             }
+        }
+    }
+
+    private fun resetSelectedKeyword() {
+        updateState {
+            this.copy(selectedKeywordState = SelectedKeywordState())
         }
     }
 
