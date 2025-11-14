@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +61,7 @@ import com.peekr.core.presentation.keyword.UserIdType
 import com.peekr.core.presentation.keyword.UserKeywordIdType
 import com.peekr.core.presentation.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
+import com.peekr.core.presentation.util.LockScreenOrientation
 import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
@@ -80,6 +83,8 @@ internal fun ProfileScreen(
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
 ) {
+    LockScreenOrientation()
+
     Box(modifier) {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
@@ -167,7 +172,7 @@ private fun ProfileScreenFrame(
     profile: @Composable () -> Unit,
     keywordGraph: @Composable () -> Unit,
 ) {
-    Column(modifier) {
+    Column(modifier.verticalScroll(rememberScrollState())) {
         Column(
             Modifier
                 .heightIn(min = TopSectionMinHeightDp)
