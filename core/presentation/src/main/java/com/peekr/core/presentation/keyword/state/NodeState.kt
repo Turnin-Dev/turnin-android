@@ -8,9 +8,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.unit.dp
 
 /**
  * 노드와 관련된 토큰 값들
@@ -96,8 +94,8 @@ class NodeState(
                 val centerY = screenHeight / 2f
 
                 NodeState(
-                    initialOffsetX = savedValues[0] + centerX,
-                    initialOffsetY = savedValues[1] + centerY,
+                    initialOffsetX = centerX + savedValues[0],
+                    initialOffsetY = centerY + savedValues[1],
                 ).apply {
                     updateSize(savedValues[2], savedValues[3])
                 }
@@ -112,13 +110,10 @@ fun rememberNodeState(
     initialOffsetY: Float = 0f,
 ): NodeState {
     val containerSize = LocalWindowInfo.current.containerSize
-    val density = LocalDensity.current
-    val screenWidth = with(density) { containerSize.width.dp.toPx() }
-    val screenHeight = with(density) { containerSize.height.dp.toPx() }
+    val screenWidth = containerSize.width.toFloat()
+    val screenHeight = containerSize.height.toFloat()
 
     return rememberSaveable(
-        screenWidth,
-        screenHeight,
         saver = NodeState.createSaver(screenWidth, screenHeight),
         init = { NodeState(initialOffsetX, initialOffsetY) },
     )

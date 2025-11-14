@@ -97,36 +97,44 @@ fun KeywordGraphView(
  * 모든 키워드 노드들의 부모 뷰로서, 그래프 뷰 제어를 담당한다.
  *
  * @param modifier [Modifier]
+ * @param freeGesture 자유로운 제스처 모드 활성화 여부 (첫 번째 버전에선 막아놓은 상태)
  * @param contents 모든 노드(사용자 노드, 키워드 노드 등)들이 위치한다.
  */
 @Composable
 private fun GraphBoard(
     modifier: Modifier = Modifier,
+    freeGesture: Boolean = false,
     contents: @Composable BoxScope.() -> Unit,
 ) {
     var dragOffsetX by rememberSaveable { mutableFloatStateOf(0f) }
     var dragOffsetY by rememberSaveable { mutableFloatStateOf(0f) }
     var pinchZoom by rememberSaveable { mutableFloatStateOf(1f) }
+    val freeGestureModifier = if (freeGesture) {
+        Modifier.pointerInput(Unit) {
+            detectTransformGestures(
+                onGesture = { centroid, pan, zoom, _ ->
+                    val oldScale = pinchZoom
+                    val newScale = pinchZoom * zoom
+
+                    val oldOffset = Offset(dragOffsetX, dragOffsetY)
+                    val newOffset = (oldOffset + centroid / oldScale) -
+                        (centroid / newScale + pan / oldScale)
+
+                    dragOffsetX = newOffset.x
+                    dragOffsetY = newOffset.y
+                    pinchZoom = newScale
+                },
+            )
+        }
+    } else {
+        Modifier
+    }
 
     Box(modifier) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTransformGestures(
-                        onGesture = { centroid, pan, zoom, _ ->
-                            val oldScale = pinchZoom
-                            val newScale = pinchZoom * zoom
-
-                            val oldOffset = Offset(dragOffsetX, dragOffsetY)
-                            val newOffset = (oldOffset + centroid / oldScale) - (centroid / newScale + pan / oldScale)
-
-                            dragOffsetX = newOffset.x
-                            dragOffsetY = newOffset.y
-                            pinchZoom = newScale
-                        },
-                    )
-                }
+                .then(freeGestureModifier)
                 .graphicsLayer {
                     translationX = -dragOffsetX * pinchZoom
                     translationY = -dragOffsetY * pinchZoom
