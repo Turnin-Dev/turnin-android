@@ -1,4 +1,4 @@
-package com.peekr.core.domain.validation
+package com.peekr.core.domain.common.validation
 
 /** 공통 유효성 검사 예외 */
 sealed class CommonValidationException(message: String) : IllegalArgumentException(message) {

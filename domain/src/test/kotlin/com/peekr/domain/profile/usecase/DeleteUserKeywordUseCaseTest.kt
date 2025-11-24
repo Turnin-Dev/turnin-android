@@ -1,7 +1,7 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.repository.ProfileRepository
 import io.mockk.every
 import io.mockk.mockk

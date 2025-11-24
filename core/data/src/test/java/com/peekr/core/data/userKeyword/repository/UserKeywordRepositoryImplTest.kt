@@ -13,6 +13,7 @@ import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
 import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordValue
@@ -22,7 +23,6 @@ import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
-import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -6,7 +6,8 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
 import com.peekr.core.data.userKeyword.network.request.toDataModel
 import com.peekr.core.data.userKeyword.network.response.toDomainModel
-import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
@@ -16,7 +17,6 @@ import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.core.domain.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

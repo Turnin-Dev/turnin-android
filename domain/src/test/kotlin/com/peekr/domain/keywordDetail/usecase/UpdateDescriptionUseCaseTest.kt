@@ -1,8 +1,8 @@
 package com.peekr.domain.keywordDetail.usecase
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.keywordDetail.repository.KeywordDetailRepository
 import io.mockk.every
 import io.mockk.mockk

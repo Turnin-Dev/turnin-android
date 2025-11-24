@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.Login
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.model.UiSocialLoginProvider
 import com.peekr.domain.login.usecase.GetLoginIfUserExistsUseCase

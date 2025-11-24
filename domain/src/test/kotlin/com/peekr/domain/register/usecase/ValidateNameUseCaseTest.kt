@@ -1,7 +1,7 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.validation.ValidationErrorType
-import com.peekr.core.domain.validation.ValidationResult
+import com.peekr.core.domain.common.validation.ValidationErrorType
+import com.peekr.core.domain.common.validation.ValidationResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest

@@ -1,6 +1,6 @@
 package com.peekr.core.data.network.error
 
-import com.peekr.core.domain.util.BaseError
+import com.peekr.core.domain.common.BaseError
 
 sealed interface NetworkErrorType : BaseError {
     /** Network 에러 타입 */

@@ -1,6 +1,6 @@
-package com.peekr.core.domain.validation
+package com.peekr.core.domain.common.validation
 
-import com.peekr.core.domain.util.BaseError
+import com.peekr.core.domain.common.BaseError
 
 /**
  * 유효성 검사 결과 클래스

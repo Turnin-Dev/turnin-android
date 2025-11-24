@@ -3,7 +3,7 @@ package com.peekr.presentation.keywordDetail.viewmodel
 import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.util.SnackbarController
 import com.peekr.core.presentation.util.SnackbarEvent
 import com.peekr.core.presentation.util.UiText

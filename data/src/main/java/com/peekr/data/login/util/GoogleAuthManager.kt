@@ -17,8 +17,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.error.AuthErrorType
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.util.Result
 import com.peekr.data.BuildConfig
 import com.peekr.domain.login.util.AuthManager
 import kotlinx.coroutines.flow.Flow

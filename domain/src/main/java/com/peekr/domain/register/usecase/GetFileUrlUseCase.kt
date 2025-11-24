@@ -1,9 +1,9 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.coroutine.flatMapResult
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.register.error.RegisterErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

@@ -1,7 +1,7 @@
-package com.peekr.core.domain.coroutine
+package com.peekr.core.domain.common.coroutine
 
-import com.peekr.core.domain.util.BaseError
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 

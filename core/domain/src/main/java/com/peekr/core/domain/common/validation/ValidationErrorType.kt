@@ -1,6 +1,6 @@
-package com.peekr.core.domain.validation
+package com.peekr.core.domain.common.validation
 
-import com.peekr.core.domain.util.BaseError
+import com.peekr.core.domain.common.BaseError
 
 sealed interface ValidationErrorType : BaseError {
     sealed interface Common : ValidationErrorType {

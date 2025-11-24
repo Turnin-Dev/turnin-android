@@ -7,12 +7,12 @@ import com.peekr.core.data.keyword.network.response.toDomainModel
 import com.peekr.core.data.network.error.NetworkErrorType
 import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.keyword.error.KeywordErrorType
 import com.peekr.core.domain.keyword.model.Keyword
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

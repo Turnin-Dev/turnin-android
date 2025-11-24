@@ -1,9 +1,9 @@
 package com.peekr.domain.keywordDetail.repository
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import kotlinx.coroutines.flow.Flow
 

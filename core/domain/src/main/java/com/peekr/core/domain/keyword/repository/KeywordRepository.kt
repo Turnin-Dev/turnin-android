@@ -1,9 +1,9 @@
 package com.peekr.core.domain.keyword.repository
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.keyword.error.KeywordErrorType
 import com.peekr.core.domain.keyword.model.Keyword
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 키워드 리포지토리 */

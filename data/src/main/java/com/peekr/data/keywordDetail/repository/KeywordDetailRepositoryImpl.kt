@@ -1,13 +1,13 @@
 package com.peekr.data.keywordDetail.repository
 
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.mapError
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.util.mapError
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.repository.KeywordDetailRepository
 import javax.inject.Inject

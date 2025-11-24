@@ -8,14 +8,14 @@ import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.user.network.UserDataSource
 import com.peekr.core.data.user.network.request.toDataModel
 import com.peekr.core.data.user.network.response.toDomainModel
-import com.peekr.core.domain.coroutine.safeResultFlow
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.core.domain.util.Result
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

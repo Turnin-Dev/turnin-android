@@ -1,9 +1,9 @@
 package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.repository.AuthRepository
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.mapError
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.util.mapError
 import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.domain.register.model.ExistsResult
 import javax.inject.Inject

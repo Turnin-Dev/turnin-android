@@ -1,6 +1,6 @@
 package com.peekr.core.domain.model
 
-import com.peekr.core.domain.validation.CommonValidationException
+import com.peekr.core.domain.common.validation.CommonValidationException
 
 @JvmInline
 value class Name private constructor(val value: String) {

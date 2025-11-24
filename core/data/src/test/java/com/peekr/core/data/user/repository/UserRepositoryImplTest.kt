@@ -8,6 +8,7 @@ import com.peekr.core.data.user.network.request.UserPatchRequest
 import com.peekr.core.data.user.network.response.UserProfileResponse
 import com.peekr.core.data.user.network.response.UserResponse
 import com.peekr.core.data.user.network.response.toDomainModel
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -17,7 +18,6 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

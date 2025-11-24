@@ -1,7 +1,7 @@
 package com.peekr.core.presentation.viewmodel
 
-import com.peekr.core.domain.validation.ValidationErrorType
-import com.peekr.core.domain.validation.ValidationResult
+import com.peekr.core.domain.common.validation.ValidationErrorType
+import com.peekr.core.domain.common.validation.ValidationResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job

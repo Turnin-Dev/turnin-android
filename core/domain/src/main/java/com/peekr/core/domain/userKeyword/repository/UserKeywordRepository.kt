@@ -1,5 +1,6 @@
 package com.peekr.core.domain.userKeyword.repository
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
@@ -8,7 +9,6 @@ import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
-import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 사용자 키워드 리포지토리 */

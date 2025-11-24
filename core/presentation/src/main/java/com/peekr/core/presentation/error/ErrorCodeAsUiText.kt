@@ -1,6 +1,6 @@
 package com.peekr.core.presentation.error
 
-import com.peekr.core.domain.util.ErrorCode
+import com.peekr.core.domain.common.ErrorCode
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.util.UiText
 

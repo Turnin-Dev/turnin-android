@@ -1,8 +1,9 @@
 package com.peekr.core.domain.coroutine
 
-import com.peekr.core.domain.util.BaseError
-import com.peekr.core.domain.util.CommonErrorType
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.combineWithResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList

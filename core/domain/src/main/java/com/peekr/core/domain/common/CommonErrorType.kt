@@ -1,4 +1,4 @@
-package com.peekr.core.domain.util
+package com.peekr.core.domain.common
 
 sealed interface CommonErrorType : BaseError {
     /** 네트워크에서 발생한 에러 타입 */

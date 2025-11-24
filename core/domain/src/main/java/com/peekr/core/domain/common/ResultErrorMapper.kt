@@ -1,4 +1,4 @@
-package com.peekr.core.domain.util
+package com.peekr.core.domain.common
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

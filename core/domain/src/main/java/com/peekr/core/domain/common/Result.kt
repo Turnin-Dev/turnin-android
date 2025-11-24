@@ -1,4 +1,4 @@
-package com.peekr.core.domain.util
+package com.peekr.core.domain.common
 
 /**
  * 에러 베이스 타입

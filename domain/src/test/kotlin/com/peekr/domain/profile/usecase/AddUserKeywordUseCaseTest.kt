@@ -1,14 +1,14 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.validation.CommonValidationException
+import com.peekr.core.domain.common.validation.toValidationErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.validation.CommonValidationException
-import com.peekr.core.domain.validation.toValidationErrorType
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.repository.ProfileRepository
 import io.mockk.every

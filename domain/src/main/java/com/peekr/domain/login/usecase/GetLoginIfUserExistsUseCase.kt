@@ -4,9 +4,9 @@ import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.coroutine.flatMapResult
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.model.LoginWithExistsUser
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

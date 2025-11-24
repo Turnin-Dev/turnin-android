@@ -1,6 +1,6 @@
 package com.peekr.core.data.network.error
 
-import com.peekr.core.domain.util.CommonErrorType
+import com.peekr.core.domain.common.CommonErrorType
 
 fun NetworkErrorType.toCommonErrorType(): CommonErrorType = when (this) {
     // ------------------------------ Exception ------------------------------

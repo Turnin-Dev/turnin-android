@@ -1,8 +1,8 @@
 package com.peekr.domain.register.error
 
 import com.peekr.core.domain.auth.error.AuthErrorType
+import com.peekr.core.domain.common.BaseError
 import com.peekr.core.domain.file.FileErrorType
-import com.peekr.core.domain.util.BaseError
 
 sealed interface RegisterErrorType : BaseError {
     /** 사용자 표시 ID를 사용할 수 없는 에러 */

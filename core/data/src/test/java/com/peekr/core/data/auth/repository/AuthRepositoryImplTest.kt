@@ -14,12 +14,12 @@ import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.repository.AuthRepository
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.util.Result
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just

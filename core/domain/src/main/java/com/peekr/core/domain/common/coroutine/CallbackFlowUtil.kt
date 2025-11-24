@@ -1,4 +1,4 @@
-package com.peekr.core.domain.coroutine
+package com.peekr.core.domain.common.coroutine
 
 import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.channels.SendChannel

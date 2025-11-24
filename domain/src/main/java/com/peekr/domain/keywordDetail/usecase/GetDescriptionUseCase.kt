@@ -1,7 +1,7 @@
 package com.peekr.domain.keywordDetail.usecase
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.repository.KeywordDetailRepository
 import javax.inject.Inject

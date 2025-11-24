@@ -3,8 +3,8 @@ package com.peekr.presentation.register.viewmodel
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.validation.ValidationResult
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.validation.ValidationResult
 import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.image.toByteArray
 import com.peekr.core.presentation.model.UiSocialLoginProvider

@@ -1,8 +1,8 @@
 package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.util.Result
 import com.peekr.core.presentation.error.asUiText
 import com.peekr.core.presentation.util.SnackbarController
 import com.peekr.core.presentation.util.SnackbarEvent

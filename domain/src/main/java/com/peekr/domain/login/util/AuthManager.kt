@@ -1,8 +1,8 @@
 package com.peekr.domain.login.util
 
 import com.peekr.core.domain.auth.error.AuthErrorType
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
-import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 소셜로그인 인증을 관리한다. */

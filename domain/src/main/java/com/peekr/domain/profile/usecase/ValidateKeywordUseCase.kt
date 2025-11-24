@@ -1,10 +1,10 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.common.validation.CommonValidationException
+import com.peekr.core.domain.common.validation.ValidationErrorType
+import com.peekr.core.domain.common.validation.ValidationResult
+import com.peekr.core.domain.common.validation.toValidationErrorType
 import com.peekr.core.domain.model.KeywordValue
-import com.peekr.core.domain.validation.CommonValidationException
-import com.peekr.core.domain.validation.ValidationErrorType
-import com.peekr.core.domain.validation.ValidationResult
-import com.peekr.core.domain.validation.toValidationErrorType
 import javax.inject.Inject
 
 /** 키워드 유효성 검사 */
