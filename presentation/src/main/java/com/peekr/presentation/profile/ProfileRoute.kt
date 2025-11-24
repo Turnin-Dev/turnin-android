@@ -48,7 +48,7 @@ internal fun ProfileRoute(
                 isSafeCancelModalOpen = true
             }
 
-            ProfileContract.UiEffect.CloseAllModal -> {
+            ProfileContract.UiEffect.CloseAllModals -> {
                 isSafeDeleteModalOpen = false
                 isSafeCancelModalOpen = false
                 isNodeOptionModelOpen = false
@@ -94,7 +94,7 @@ internal fun ProfileRoute(
         isOpen = isSafeCancelModalOpen,
         title = R.string.profile_screen_safe_modal_cancel,
         onAcceptClick = {
-            viewModel.processEvent(ProfileContract.UiEvent.AcceptSafeCancel)
+            viewModel.processEvent(ProfileContract.UiEvent.CloseAllModals)
         },
         onCancelClick = { isSafeCancelModalOpen = false },
     )
@@ -105,7 +105,7 @@ internal fun ProfileRoute(
         title = R.string.profile_screen_safe_modal_delete,
         onAcceptClick = {
             viewModel.processEvent(
-                ProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeywordState.userKeywordId),
+                ProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeyword.userKeywordId),
             )
         },
         onCancelClick = { isSafeDeleteModalOpen = false },
@@ -131,7 +131,7 @@ internal fun ProfileRoute(
         onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
         onOpenNodeOptionModal = { userKeywordId, keyword ->
             viewModel.processEvent(
-                ProfileContract.UiEvent.SetSelectedKeyword(userKeywordId, keyword),
+                ProfileContract.UiEvent.OnSelectedKeywordChanged(userKeywordId, keyword),
             )
             isNodeOptionModelOpen = true
         },

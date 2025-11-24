@@ -67,19 +67,11 @@ class ProfileViewModel @Inject constructor(
     override suspend fun handleEvent(event: ProfileContract.UiEvent) {
         when (event) {
             is ProfileContract.UiEvent.OnKeywordTextChanged -> {
-                updateState {
-                    this.copy(
-                        keywordTextField = this.keywordTextField.copy(value = event.value),
-                    )
-                }
+                onKeywordTextChanged(event.value)
             }
 
             is ProfileContract.UiEvent.OnKeywordDescTextChanged -> {
-                updateState {
-                    this.copy(
-                        keywordDescTextField = this.keywordDescTextField.copy(value = event.value),
-                    )
-                }
+                onKeywordDescTextChanged(event.value)
             }
 
             is ProfileContract.UiEvent.AddKeyword -> {
@@ -102,43 +94,80 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileContract.UiEvent.ResetKeywordNodeOffset -> {
-                updateState {
-                    this.copy(updatedKeywordNodesOffset = emptyMap())
-                }
+                resetKeywordNodeOffset()
             }
 
             is ProfileContract.UiEvent.DeleteKeyword -> {
-                event.userKeywordId?.let {
-                    deleteKeyword(it)
-                }
-                    ?: showSnackBar(StringResource(R.string.profile_error_not_selected_user_keyword_id))
+                deleteKeyword(event.userKeywordId)
             }
 
-            is ProfileContract.UiEvent.CheckSafeCancel -> safeCancel(event.keyword, event.description)
-
-            ProfileContract.UiEvent.AcceptSafeCancel -> {
-                sendEffect { ProfileContract.UiEffect.CloseAllModal }
-                resetKeywordAndDescriptionTextField()
+            is ProfileContract.UiEvent.CheckSafeCancel -> {
+                safeCancel(event.keyword, event.description)
             }
 
-            is ProfileContract.UiEvent.SetSelectedKeyword -> {
-                updateState {
-                    this.copy(
-                        selectedKeywordState = this.selectedKeywordState.copy(
-                            userKeywordId = event.userKeywordId,
-                            keyword = event.keyword,
-                        ),
-                    )
-                }
+            ProfileContract.UiEvent.CloseAllModals -> {
+                closeAllModalsAndResetTextFields()
+            }
+
+            is ProfileContract.UiEvent.OnSelectedKeywordChanged -> {
+                onSelectedKeywordChanged(
+                    userKeywordId = event.userKeywordId,
+                    keyword = event.keyword,
+                )
+            }
+
+            is ProfileContract.UiEvent.ReportProfile -> {
+                reportProfile()
+            }
+
+            is ProfileContract.UiEvent.UpdateIntroduce -> {
+                updateIntroduce()
             }
         }
     }
 
-    private fun resetKeywordAndDescriptionTextField() {
+    private fun onKeywordTextChanged(keyword: String) {
+        updateState {
+            this.copy(
+                keywordTextField = this.keywordTextField.copy(value = keyword),
+            )
+        }
+    }
+
+    private fun onKeywordDescTextChanged(description: String) {
+        updateState {
+            this.copy(
+                keywordDescTextField = this.keywordDescTextField.copy(value = description),
+            )
+        }
+    }
+
+    private fun resetKeywordNodeOffset() {
+        updateState {
+            this.copy(updatedKeywordNodesOffset = emptyMap())
+        }
+    }
+
+    private fun closeAllModalsAndResetTextFields() {
+        sendEffect { ProfileContract.UiEffect.CloseAllModals }
         updateState {
             this.copy(
                 keywordTextField = KeywordTextFieldState(),
                 keywordDescTextField = KeywordTextFieldState(),
+            )
+        }
+    }
+
+    private fun onSelectedKeywordChanged(
+        userKeywordId: UserKeywordId,
+        keyword: String,
+    ) {
+        updateState {
+            this.copy(
+                selectedKeyword = this.selectedKeyword.copy(
+                    userKeywordId = userKeywordId,
+                    keyword = keyword,
+                ),
             )
         }
     }
@@ -152,30 +181,35 @@ class ProfileViewModel @Inject constructor(
         ) {
             sendEffect { ProfileContract.UiEffect.OpenSafeCancelModal }
         } else {
-            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+            sendEffect { ProfileContract.UiEffect.CloseAllModals }
         }
     }
 
-    private fun deleteKeyword(userKeywordId: UserKeywordId) {
-        usecases.deleteUserKeyword(userKeywordId).onEach { result ->
-            when (result) {
-                Result.Loading -> updateState { this.copy(loading = true) }
-                is Result.Error -> updateState {
-                    this.copy(loading = false, error = result.error.asUiText())
-                }
-
-                is Result.Success -> {
-                    updateState {
-                        this.copy(loading = false, error = null)
+    private suspend fun deleteKeyword(userKeywordId: UserKeywordId?) {
+        if (userKeywordId == null) {
+            showSnackBar(StringResource(R.string.profile_error_not_selected_user_keyword_id))
+            return
+        } else {
+            usecases.deleteUserKeyword(userKeywordId).onEach { result ->
+                when (result) {
+                    Result.Loading -> updateState { this.copy(loading = true) }
+                    is Result.Error -> updateState {
+                        this.copy(loading = false, error = result.error.asUiText())
                     }
-                    sendEffect { ProfileContract.UiEffect.CloseAllModal }
-                    resetSelectedKeyword()
-                    showSnackBar(UiText.StringResource(R.string.profile_success_delete_user_keyword))
-                    // 성공 시, 초기 데이터 다시 로드 (새로 고침)
-                    loadInitialData()
+
+                    is Result.Success -> {
+                        updateState {
+                            this.copy(loading = false, error = null)
+                        }
+                        sendEffect { ProfileContract.UiEffect.CloseAllModals }
+                        resetSelectedKeyword()
+                        showSnackBar(UiText.StringResource(R.string.profile_success_delete_user_keyword))
+                        // 성공 시, 초기 데이터 다시 로드 (새로 고침)
+                        loadInitialData()
+                    }
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
 
     private fun addKeyword(
@@ -204,7 +238,7 @@ class ProfileViewModel @Inject constructor(
                                     keywordDescTextField = KeywordTextFieldState(),
                                 )
                             }
-                            sendEffect { ProfileContract.UiEffect.CloseAllModal }
+                            sendEffect { ProfileContract.UiEffect.CloseAllModals }
                             resetSelectedKeyword()
                             showSnackBar(
                                 UiText.StringResource(
@@ -272,8 +306,18 @@ class ProfileViewModel @Inject constructor(
 
     private fun resetSelectedKeyword() {
         updateState {
-            this.copy(selectedKeywordState = SelectedKeywordState())
+            this.copy(selectedKeyword = SelectedKeywordState())
         }
+    }
+
+    private fun reportProfile() {
+    }
+
+    private fun updateIntroduce() {
+    }
+
+    private suspend fun showSnackBar(message: UiText) {
+        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 
     // ------------------------------ Validation ------------------------------
@@ -323,9 +367,5 @@ class ProfileViewModel @Inject constructor(
                 }
             },
         )
-    }
-
-    private suspend fun showSnackBar(message: UiText) {
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }
