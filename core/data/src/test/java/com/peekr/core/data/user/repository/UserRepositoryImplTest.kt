@@ -1,5 +1,6 @@
 package com.peekr.core.data.user.repository
 
+import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.error.NetworkErrorType
 import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
@@ -31,8 +32,9 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryImplTest {
     private val dataSource: UserDataSource = mockk()
+    private val dataStoreManager: DataStoreManager = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository: UserRepository = UserRepositoryImpl(dataSource, dispatcher)
+    private val repository: UserRepository = UserRepositoryImpl(dataSource, dataStoreManager, dispatcher)
 
     @Test
     fun `사용자 조회 - 성공 테스트`() = runTest {
