@@ -1,7 +1,9 @@
 package com.peekr.core.data.network.util
 
-import com.peekr.core.data.network.error.CommonErrorResponse
-import com.peekr.core.data.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.CommonErrorResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.data.source.network.util.networkCall
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi

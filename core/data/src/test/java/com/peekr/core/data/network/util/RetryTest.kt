@@ -1,5 +1,6 @@
 package com.peekr.core.data.network.util
 
+import com.peekr.core.data.source.network.util.retry
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

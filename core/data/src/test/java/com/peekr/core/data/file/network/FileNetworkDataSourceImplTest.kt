@@ -1,9 +1,11 @@
 package com.peekr.core.data.file.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.source.network.api.FileApi
+import com.peekr.core.data.source.network.datasource.FileNetworkDataSource
+import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.squareup.moshi.JsonDataException
 import io.mockk.coEvery
 import io.mockk.mockk

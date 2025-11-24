@@ -1,14 +1,14 @@
 package com.peekr.core.data.user.repository
 
-import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.user.network.UserDataSource
-import com.peekr.core.data.user.network.request.UserPatchRequest
-import com.peekr.core.data.user.network.response.UserProfileResponse
-import com.peekr.core.data.user.network.response.UserResponse
-import com.peekr.core.data.user.network.response.toDomainModel
+import com.peekr.core.data.repository.UserRepositoryImpl
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
+import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
+import com.peekr.core.data.source.network.dto.user.response.UserResponse
+import com.peekr.core.data.source.network.dto.user.response.toDomainModel
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce

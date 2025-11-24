@@ -1,6 +1,6 @@
 package com.peekr.data.profile.repository
 
-import com.peekr.core.data.datastore.DataStoreManager
+import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce

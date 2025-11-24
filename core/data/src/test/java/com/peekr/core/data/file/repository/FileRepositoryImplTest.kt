@@ -1,11 +1,11 @@
 package com.peekr.core.data.file.repository
 
-import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.data.file.network.FileDataSource
-import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.repository.FileRepositoryImpl
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository

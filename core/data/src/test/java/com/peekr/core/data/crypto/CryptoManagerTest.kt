@@ -1,6 +1,8 @@
 package com.peekr.core.data.crypto
 
 import android.os.Build
+import com.peekr.core.common.crypto.CryptoManager
+import com.peekr.core.common.crypto.DecryptException
 import java.util.Base64
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

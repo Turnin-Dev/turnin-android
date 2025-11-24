@@ -1,14 +1,16 @@
 package com.peekr.core.data.auth.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.auth.network.request.ExistsUserRequest
-import com.peekr.core.data.auth.network.request.LoginRequest
-import com.peekr.core.data.auth.network.request.RegisterRequest
-import com.peekr.core.data.auth.network.response.LoginResponse
-import com.peekr.core.data.auth.network.response.RegisterResponse
-import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.source.network.api.AuthApi
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
+import com.peekr.core.data.source.network.dto.auth.request.ExistsUserRequest
+import com.peekr.core.data.source.network.dto.auth.request.LoginRequest
+import com.peekr.core.data.source.network.dto.auth.request.RegisterRequest
+import com.peekr.core.data.source.network.dto.auth.response.LoginResponse
+import com.peekr.core.data.source.network.dto.auth.response.RegisterResponse
+import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
