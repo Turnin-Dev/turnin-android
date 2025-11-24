@@ -26,7 +26,7 @@ sealed interface Result<out T, out E : BaseError> {
     data class Error<out E : BaseError>(
         val error: E,
         val message: String? = null,
-        val code: ErrorCode? = null,
+        val code: ServerErrorCode? = null,
     ) : Result<Nothing, E>
 
     data object Loading : Result<Nothing, Nothing>
