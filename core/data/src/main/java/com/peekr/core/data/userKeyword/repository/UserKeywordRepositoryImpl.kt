@@ -1,6 +1,6 @@
 package com.peekr.core.data.userKeyword.repository
 
-import com.peekr.core.common.IO
+import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.network.error.toCommonErrorType
 import com.peekr.core.data.network.util.NetworkResult
 import com.peekr.core.data.userKeyword.network.UserKeywordDataSource

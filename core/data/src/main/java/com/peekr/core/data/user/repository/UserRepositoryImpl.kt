@@ -1,6 +1,6 @@
 package com.peekr.core.data.user.repository
 
-import com.peekr.core.common.IO
+import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.datastore.DataStoreKey
 import com.peekr.core.data.datastore.DataStoreManager
 import com.peekr.core.data.network.error.toCommonErrorType

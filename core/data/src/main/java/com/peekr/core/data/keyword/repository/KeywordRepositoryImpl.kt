@@ -1,6 +1,6 @@
 package com.peekr.core.data.keyword.repository
 
-import com.peekr.core.common.IO
+import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.keyword.network.KeywordDataSource
 import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
 import com.peekr.core.data.keyword.network.response.toDomainModel

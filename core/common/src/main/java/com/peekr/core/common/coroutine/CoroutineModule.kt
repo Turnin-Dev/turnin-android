@@ -1,4 +1,4 @@
-package com.peekr.core.common
+package com.peekr.core.common.coroutine
 
 import dagger.Module
 import dagger.Provides

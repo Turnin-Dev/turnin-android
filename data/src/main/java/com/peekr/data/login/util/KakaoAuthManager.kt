@@ -6,10 +6,10 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import com.peekr.core.common.coroutine.trySendAndClose
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.common.coroutine.trySendAndClose
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.domain.login.util.AuthManager
 import kotlinx.coroutines.channels.ProducerScope

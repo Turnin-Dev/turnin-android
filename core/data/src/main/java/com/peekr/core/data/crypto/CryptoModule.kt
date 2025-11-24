@@ -1,6 +1,6 @@
 package com.peekr.core.data.crypto
 
-import com.peekr.core.common.IO
+import com.peekr.core.common.coroutine.IO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

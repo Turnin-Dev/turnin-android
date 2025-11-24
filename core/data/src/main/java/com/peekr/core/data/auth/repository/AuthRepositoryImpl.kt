@@ -1,6 +1,6 @@
 package com.peekr.core.data.auth.repository
 
-import com.peekr.core.common.IO
+import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.auth.network.AuthDataSource
 import com.peekr.core.data.auth.network.request.toDataModel
 import com.peekr.core.data.auth.network.response.ExistsResponse
