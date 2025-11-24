@@ -1,6 +1,7 @@
 package com.peekr.core.data.keyword.repository
 
 import com.peekr.core.data.repository.KeywordRepositoryImpl
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSource
 import com.peekr.core.data.source.network.dto.keyword.request.CreateKeywordRequest
 import com.peekr.core.data.source.network.dto.keyword.response.KeywordResponse
 import com.peekr.core.data.source.network.dto.keyword.response.toDomainModel
@@ -23,7 +24,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class KeywordRepositoryImplTest {
-    private val dataSource: KeywordDataSource = mockk()
+    private val dataSource: KeywordNetworkDataSource = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: KeywordRepository = KeywordRepositoryImpl(dataSource, dispatcher)
 

@@ -1,10 +1,10 @@
 package com.peekr.core.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.peekr.core.presentation.viewmodel.BaseUiEffect
-import com.peekr.core.presentation.viewmodel.BaseUiEvent
-import com.peekr.core.presentation.viewmodel.BaseUiState
-import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
+import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
+import com.peekr.core.presentation.common.viewmodel.BaseUiState
+import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import kotlin.reflect.KClass
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

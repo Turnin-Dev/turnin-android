@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.common.Result
-import com.peekr.core.presentation.error.asUiText
-import com.peekr.core.presentation.model.UiSocialLoginProvider
+import com.peekr.core.presentation.common.error.asUiText
+import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
 import com.peekr.domain.login.usecase.GetLoginIfUserExistsUseCase
 import com.peekr.domain.login.usecase.LoginIntegrationUseCase
 import com.peekr.presentation.login.mapper.toDomainModel

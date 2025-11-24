@@ -33,7 +33,7 @@ class UserKeywordDataSourceImplTest {
     private val userKeywordApi: UserKeywordApi
         get() = testRule.createNetworkApi<UserKeywordApi>(testRule.moshi)
 
-    private lateinit var dataSource: UserKeywordDataSource
+    private lateinit var dataSource: UserKeywordNetworkDataSource
 
     @Before
     fun setUp() {

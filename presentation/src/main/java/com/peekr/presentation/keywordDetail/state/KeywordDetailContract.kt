@@ -1,10 +1,10 @@
 package com.peekr.presentation.keywordDetail.state
 
 import androidx.compose.ui.text.input.TextFieldValue
-import com.peekr.core.presentation.util.UiText
-import com.peekr.core.presentation.viewmodel.BaseUiEffect
-import com.peekr.core.presentation.viewmodel.BaseUiEvent
-import com.peekr.core.presentation.viewmodel.BaseUiState
+import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
+import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
+import com.peekr.core.presentation.common.viewmodel.BaseUiState
+import com.peekr.core.presentation.ui.util.UiText
 
 class KeywordDetailContract {
     /**

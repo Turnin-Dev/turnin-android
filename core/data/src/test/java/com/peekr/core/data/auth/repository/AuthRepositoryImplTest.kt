@@ -2,6 +2,7 @@ package com.peekr.core.data.auth.repository
 
 import com.peekr.core.data.repository.AuthRepositoryImpl
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
 import com.peekr.core.data.source.network.dto.auth.response.LoginResponse
 import com.peekr.core.data.source.network.dto.auth.response.RegisterResponse
@@ -33,7 +34,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AuthRepositoryImplTest {
-    private val dataSource: AuthDataSource = mockk()
+    private val dataSource: AuthNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)

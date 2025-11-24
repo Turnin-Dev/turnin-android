@@ -1,10 +1,10 @@
 package com.peekr.presentation.profile.state
 
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.presentation.util.UiText
-import com.peekr.core.presentation.viewmodel.BaseUiEffect
-import com.peekr.core.presentation.viewmodel.BaseUiEvent
-import com.peekr.core.presentation.viewmodel.BaseUiState
+import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
+import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
+import com.peekr.core.presentation.common.viewmodel.BaseUiState
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.profile.model.UiProfile
 
 class ProfileContract {

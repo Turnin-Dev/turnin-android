@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.peekr.core.presentation.modal.PeekrSimpleModal
+import com.peekr.core.presentation.ui.component.modal.PeekrSimpleModal
 
 /**
  * 키워드 삭제 경고 모달

@@ -25,7 +25,7 @@ class UserNetworkDataSourceTest {
     private val userApi: UserApi
         get() = testRule.createNetworkApi<UserApi>(testRule.moshi)
 
-    private lateinit var dataSource: UserDataSource
+    private lateinit var dataSource: UserNetworkDataSource
 
     @Before
     fun setUp() {

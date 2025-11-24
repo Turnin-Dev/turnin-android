@@ -31,7 +31,7 @@ class AuthNetworkDataSourceImplTest {
     val testRule = ServerTestRule()
     private val authApi: AuthApi
         get() = testRule.createNetworkApi<AuthApi>(testRule.moshi)
-    private lateinit var dataSource: AuthDataSource
+    private lateinit var dataSource: AuthNetworkDataSource
     private lateinit var testOkHttpClient: OkHttpClient
 
     @Before

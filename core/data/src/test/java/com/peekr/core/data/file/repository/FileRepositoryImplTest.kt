@@ -2,6 +2,7 @@ package com.peekr.core.data.file.repository
 
 import com.peekr.core.data.repository.FileRepositoryImpl
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.datasource.FileNetworkDataSource
 import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
@@ -22,7 +23,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class FileRepositoryImplTest {
-    private val dataSource: FileDataSource = mockk()
+    private val dataSource: FileNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)

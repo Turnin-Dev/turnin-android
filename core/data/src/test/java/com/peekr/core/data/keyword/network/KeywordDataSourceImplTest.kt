@@ -25,7 +25,7 @@ class KeywordDataSourceImplTest {
     private val keywordByIdApi: KeywordApi
         get() = testRule.createNetworkApi<KeywordApi>(testRule.moshi)
 
-    private lateinit var dataSource: KeywordDataSource
+    private lateinit var dataSource: KeywordNetworkDataSource
 
     @Before
     fun setUp() {

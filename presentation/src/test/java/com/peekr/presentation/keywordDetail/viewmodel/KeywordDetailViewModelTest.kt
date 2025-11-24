@@ -9,7 +9,7 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.presentation.MVIBaseViewModelTest
-import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
 import com.peekr.domain.keywordDetail.usecase.GetUserIdUseCase

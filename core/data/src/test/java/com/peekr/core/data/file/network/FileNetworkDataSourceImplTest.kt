@@ -26,7 +26,7 @@ class FileNetworkDataSourceImplTest {
     val testRule = ServerTestRule()
     private val fileApi: FileApi
         get() = testRule.createNetworkApi<FileApi>(testRule.moshi)
-    private lateinit var dataSource: FileDataSource
+    private lateinit var dataSource: FileNetworkDataSource
     private lateinit var testOkHttpClient: OkHttpClient
 
     @Before

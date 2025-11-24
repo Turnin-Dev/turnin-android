@@ -1,6 +1,7 @@
 package com.peekr.core.data.userKeyword.repository
 
 import com.peekr.core.data.repository.UserKeywordRepositoryImpl
+import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
@@ -35,7 +36,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserKeywordRepositoryImplTest {
-    private val dataSource: UserKeywordDataSource = mockk()
+    private val dataSource: UserKeywordNetworkDataSource = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository = UserKeywordRepositoryImpl(dataSource, dispatcher)
 

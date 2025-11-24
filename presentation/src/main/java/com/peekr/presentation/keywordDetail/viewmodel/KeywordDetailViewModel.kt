@@ -4,10 +4,10 @@ import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
-import com.peekr.core.presentation.util.SnackbarController
-import com.peekr.core.presentation.util.SnackbarEvent
-import com.peekr.core.presentation.util.UiText
-import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
 import com.peekr.domain.keywordDetail.usecase.GetUserIdUseCase
 import com.peekr.domain.keywordDetail.usecase.UpdateDescriptionUseCase

@@ -2,6 +2,7 @@ package com.peekr.core.data.user.repository
 
 import com.peekr.core.data.repository.UserRepositoryImpl
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
@@ -31,7 +32,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryImplTest {
-    private val dataSource: UserDataSource = mockk()
+    private val dataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: UserRepository = UserRepositoryImpl(dataSource, dataStoreManager, dispatcher)
