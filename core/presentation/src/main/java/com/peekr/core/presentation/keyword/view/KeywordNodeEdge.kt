@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -45,6 +46,9 @@ fun KeywordNodeEdge(
     val nodeState = rememberNodeState(initialOffsetX, initialOffsetY)
     var nodeDragging by rememberSaveable { mutableStateOf(false) }
 
+    var containerWidthPx by rememberSaveable { mutableFloatStateOf(0f) }
+    var containerHeightPx by rememberSaveable { mutableFloatStateOf(0f) }
+
     val animatedNodeOffsetX by animateFloatAsState(
         targetValue = nodeState.offsetX,
         animationSpec = NodeTokens.animation,
@@ -69,7 +73,13 @@ fun KeywordNodeEdge(
         }
     }
 
-    Box(modifier) {
+    Box(
+        modifier = modifier
+            .onSizeChanged { intSize ->
+                containerWidthPx = intSize.width.toFloat()
+                containerHeightPx = intSize.height.toFloat()
+            },
+    ) {
         // 키워드 엣지(간선)
         KeywordEdge(
             targetX = animatedNodeOffsetX + nodeState.widthPx / 2,
@@ -97,9 +107,17 @@ fun KeywordNodeEdge(
                         onDrag = { change, dragAmount ->
                             change.consume()
                             val sensitivity = 1.0f
+                            val draggedNodeOffsetX =
+                                nodeState.offsetX + (dragAmount.x * sensitivity).roundToInt()
+                            val draggedNodeOffsetY =
+                                nodeState.offsetY + (dragAmount.y * sensitivity).roundToInt()
+                            val newOffsetX =
+                                draggedNodeOffsetX.coerceIn(0f, containerWidthPx - nodeState.widthPx)
+                            val newOffsetY =
+                                draggedNodeOffsetY.coerceIn(0f, containerHeightPx - nodeState.heightPx)
                             nodeState.updatePosition(
-                                newOffsetX = nodeState.offsetX + (dragAmount.x * sensitivity).roundToInt(),
-                                newOffsetY = nodeState.offsetY + (dragAmount.y * sensitivity).roundToInt(),
+                                newOffsetX = newOffsetX,
+                                newOffsetY = newOffsetY,
                             )
                         },
                     )
