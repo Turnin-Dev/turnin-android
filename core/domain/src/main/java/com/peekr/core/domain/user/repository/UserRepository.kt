@@ -15,7 +15,7 @@ interface UserRepository {
     /**
      * 사용자 ID 조회
      */
-    fun getUserId(): Flow<Result<UserId, UserErrorType>>
+    suspend fun getUserId(): UserId?
 
     /**
      * 사용자 조회

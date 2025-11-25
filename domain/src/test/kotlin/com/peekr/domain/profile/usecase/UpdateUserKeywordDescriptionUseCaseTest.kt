@@ -4,7 +4,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.domain.profile.repository.ProfileRepository
+import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -14,14 +14,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class UpdateUserKeywordDescriptionUseCaseTest {
-    private val profileRepository: ProfileRepository = mockk()
-    private val usecase = UpdateUserKeywordDescriptionUseCase(profileRepository)
+    private val userKeywordRepository: UserKeywordRepository = mockk()
+    private val usecase = UpdateUserKeywordDescriptionUseCase(userKeywordRepository)
 
     @Test
     fun `사용자 키워드 설명 수정 성공 테스트`() = runTest {
         // given
         every {
-            profileRepository.updateDescription(TestUserKeywordId, TestPatchDescription)
+            userKeywordRepository.patchDescription(TestUserKeywordId, TestPatchDescription)
         } returns flowOf(Result.Success(TestPatchDescription))
 
         // when
