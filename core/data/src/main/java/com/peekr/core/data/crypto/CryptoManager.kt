@@ -1,4 +1,4 @@
-package com.peekr.core.common.crypto
+package com.peekr.core.data.crypto
 
 import com.peekr.core.common.logger.AppLogger
 import java.util.Base64

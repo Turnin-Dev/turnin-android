@@ -1,4 +1,4 @@
-package com.peekr.core.common.crypto
+package com.peekr.core.data.crypto
 
 import java.io.InputStream
 import java.io.OutputStream

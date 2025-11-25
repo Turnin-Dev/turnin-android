@@ -2,8 +2,8 @@ package com.peekr.core.data.source.local.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.peekr.core.common.crypto.CryptoManager
-import com.peekr.core.common.crypto.DecryptException
+import com.peekr.core.data.crypto.CryptoManager
+import com.peekr.core.data.crypto.DecryptException
 import com.peekr.core.data.source.local.error.WritingDataException
 import io.mockk.coEvery
 import io.mockk.mockk

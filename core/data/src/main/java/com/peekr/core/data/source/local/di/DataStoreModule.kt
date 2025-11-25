@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.peekr.core.common.crypto.CryptoManager
 import com.peekr.core.data.BuildConfig
+import com.peekr.core.data.crypto.CryptoManager
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.datastore.DataStoreManagerImpl
 import dagger.Module

@@ -1,4 +1,4 @@
-package com.peekr.core.common.crypto
+package com.peekr.core.data.crypto
 
 /**
  * 암호화/복호화 시 발생하는 예외
