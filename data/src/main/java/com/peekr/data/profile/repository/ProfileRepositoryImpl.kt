@@ -1,8 +1,10 @@
 package com.peekr.data.profile.repository
 
-import com.peekr.core.data.datastore.DataStoreKey
-import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.domain.coroutine.combineWithResult
+import com.peekr.core.data.source.local.datastore.DataStoreKey
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.combineWithResult
+import com.peekr.core.domain.common.mapError
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
@@ -15,8 +17,6 @@ import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.util.mapError
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.model.ProfilePatch

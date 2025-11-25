@@ -1,8 +1,8 @@
 package com.peekr.core.domain.file
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** 파일 리포지토리 */

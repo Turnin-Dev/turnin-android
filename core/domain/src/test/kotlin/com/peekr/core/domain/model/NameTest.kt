@@ -1,7 +1,7 @@
 package com.peekr.core.domain.model
 
 import com.peekr.core.domain.assertThrows
-import com.peekr.core.domain.validation.CommonValidationException
+import com.peekr.core.domain.common.validation.CommonValidationException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -5,10 +5,10 @@ import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.LoginResult
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

@@ -1,9 +1,9 @@
 package com.peekr.presentation.login.mapper
 
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.presentation.model.UiSocialLoginProvider
-import com.peekr.core.presentation.model.UiSocialLoginProvider.GOOGLE
-import com.peekr.core.presentation.model.UiSocialLoginProvider.KAKAO
+import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
+import com.peekr.core.presentation.ui.model.UiSocialLoginProvider.GOOGLE
+import com.peekr.core.presentation.ui.model.UiSocialLoginProvider.KAKAO
 
 fun UiSocialLoginProvider.toDomainModel(): SocialLoginProvider = when (this) {
     GOOGLE -> SocialLoginProvider.GOOGLE

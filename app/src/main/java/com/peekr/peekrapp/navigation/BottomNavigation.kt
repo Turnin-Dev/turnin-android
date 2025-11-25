@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peekr.core.presentation.navigation.SubGraph
-import com.peekr.core.presentation.navigation.bottom.BottomNavigationFrame
+import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.home.main.HomeMainScreen
 import com.peekr.presentation.profile.profileNavigation

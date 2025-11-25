@@ -2,7 +2,7 @@ package com.peekr.core.domain.auth
 
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.Result
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

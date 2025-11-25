@@ -1,10 +1,10 @@
 package com.peekr.domain.profile.error
 
+import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.validation.ValidationErrorType
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
-import com.peekr.core.domain.util.BaseError
-import com.peekr.core.domain.util.CommonErrorType
-import com.peekr.core.domain.validation.ValidationErrorType
 
 sealed interface ProfileErrorType : BaseError {
     data object UserNotFound : ProfileErrorType

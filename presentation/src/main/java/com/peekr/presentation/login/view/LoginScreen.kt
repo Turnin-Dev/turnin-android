@@ -33,8 +33,8 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.presentation.logo.PeekrLogoWithText
-import com.peekr.core.presentation.model.UiSocialLoginProvider
+import com.peekr.core.presentation.ui.component.logo.PeekrLogoWithText
+import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
 import com.peekr.presentation.R
 import com.peekr.presentation.login.state.LoginState
 

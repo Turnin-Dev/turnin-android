@@ -1,9 +1,9 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.repository.ProfileRepository
 import io.mockk.every

@@ -6,8 +6,8 @@ import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 /** Auth 리포지토리 */

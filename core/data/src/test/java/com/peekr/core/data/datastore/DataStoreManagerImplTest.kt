@@ -2,8 +2,12 @@ package com.peekr.core.data.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.peekr.core.data.crypto.CryptoManager
-import com.peekr.core.data.crypto.DecryptException
+import com.peekr.core.common.crypto.CryptoManager
+import com.peekr.core.common.crypto.DecryptException
+import com.peekr.core.data.source.local.datastore.DataStoreKey
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.local.datastore.DataStoreManagerImpl
+import com.peekr.core.data.source.local.error.WritingDataException
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -151,7 +155,7 @@ class DataStoreManagerImplTest {
 
         // then
         // 예외 발생 후에는 Domain 계층의 예외
-        assertTrue(exception is com.peekr.core.data.datastore.DecryptException)
+        assertTrue(exception is com.peekr.core.data.source.local.error.DecryptException)
     }
 
     @Test

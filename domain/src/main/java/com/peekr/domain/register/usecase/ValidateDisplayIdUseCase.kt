@@ -1,10 +1,10 @@
 package com.peekr.domain.register.usecase
 
+import com.peekr.core.domain.common.validation.CommonValidationException
+import com.peekr.core.domain.common.validation.ValidationErrorType
+import com.peekr.core.domain.common.validation.ValidationResult
+import com.peekr.core.domain.common.validation.toValidationErrorType
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.validation.CommonValidationException
-import com.peekr.core.domain.validation.ValidationErrorType
-import com.peekr.core.domain.validation.ValidationResult
-import com.peekr.core.domain.validation.toValidationErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

@@ -1,16 +1,19 @@
 package com.peekr.core.data.userKeyword.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
-import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
-import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
-import com.peekr.core.data.userKeyword.network.response.DescriptionResponse
-import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
-import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
-import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
-import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
+import com.peekr.core.data.source.network.api.UserKeywordApi
+import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSourceImpl
+import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
+import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
@@ -31,11 +34,11 @@ class UserKeywordDataSourceImplTest {
     private val userKeywordApi: UserKeywordApi
         get() = testRule.createNetworkApi<UserKeywordApi>(testRule.moshi)
 
-    private lateinit var dataSource: UserKeywordDataSource
+    private lateinit var dataSource: UserKeywordNetworkDataSource
 
     @Before
     fun setUp() {
-        dataSource = UserKeywordNetworkDataSource(userKeywordApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(userKeywordApi)
     }
 
     @Test
@@ -86,7 +89,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getUserKeywords() } throws exception
 
         // when
@@ -170,7 +173,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getDescription(TestUserKeywordId.value) } throws exception
 
         // when
@@ -254,7 +257,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.createUserKeyword(TestCreateUserKeywordRequest) } throws exception
 
         // when
@@ -318,7 +321,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
             mockApi.patchOffset(
                 userKeywordId = TestUserKeywordId.value,
@@ -390,7 +393,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
             mockApi.patchDescription(
                 userKeywordId = TestUserKeywordId.value,
@@ -456,7 +459,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
             mockApi.deleteUserKeyword(userKeywordId = TestUserKeywordId.value)
         } throws exception

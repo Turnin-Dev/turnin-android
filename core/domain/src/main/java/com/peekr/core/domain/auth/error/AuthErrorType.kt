@@ -1,7 +1,7 @@
 package com.peekr.core.domain.auth.error
 
-import com.peekr.core.domain.util.BaseError
-import com.peekr.core.domain.util.CommonErrorType
+import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.CommonErrorType
 
 sealed interface AuthErrorType : BaseError {
     /** ID 토큰 파싱 에러 */

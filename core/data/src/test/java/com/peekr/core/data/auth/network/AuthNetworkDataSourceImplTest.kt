@@ -1,14 +1,17 @@
 package com.peekr.core.data.auth.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.auth.network.request.ExistsUserRequest
-import com.peekr.core.data.auth.network.request.LoginRequest
-import com.peekr.core.data.auth.network.request.RegisterRequest
-import com.peekr.core.data.auth.network.response.LoginResponse
-import com.peekr.core.data.auth.network.response.RegisterResponse
-import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.source.network.api.AuthApi
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSourceImpl
+import com.peekr.core.data.source.network.dto.auth.request.ExistsUserRequest
+import com.peekr.core.data.source.network.dto.auth.request.LoginRequest
+import com.peekr.core.data.source.network.dto.auth.request.RegisterRequest
+import com.peekr.core.data.source.network.dto.auth.response.LoginResponse
+import com.peekr.core.data.source.network.dto.auth.response.RegisterResponse
+import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
@@ -29,13 +32,13 @@ class AuthNetworkDataSourceImplTest {
     val testRule = ServerTestRule()
     private val authApi: AuthApi
         get() = testRule.createNetworkApi<AuthApi>(testRule.moshi)
-    private lateinit var dataSource: AuthDataSource
+    private lateinit var dataSource: AuthNetworkDataSource
     private lateinit var testOkHttpClient: OkHttpClient
 
     @Before
     fun setUp() {
         testOkHttpClient = OkHttpClient.Builder().build()
-        dataSource = AuthNetworkDataSource(authApi)
+        dataSource = AuthNetworkDataSourceImpl(authApi)
     }
 
     @Test
@@ -85,7 +88,7 @@ class AuthNetworkDataSourceImplTest {
         // given
         val mockApi: AuthApi = mockk()
         val exception = IllegalStateException()
-        dataSource = AuthNetworkDataSource(mockApi)
+        dataSource = AuthNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.login(any()) } throws exception
 
         // when
@@ -100,7 +103,7 @@ class AuthNetworkDataSourceImplTest {
     fun `login() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSource(mockApi)
+        dataSource = AuthNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.login(any()) } throws JsonDataException("smile")
 
         // when
@@ -150,7 +153,7 @@ class AuthNetworkDataSourceImplTest {
     fun `existsUser() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSource(mockApi)
+        dataSource = AuthNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.existsUser(any(), any()) } throws JsonDataException("smile")
 
         // when
@@ -183,7 +186,7 @@ class AuthNetworkDataSourceImplTest {
     fun `existsDisplayId() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSource(mockApi)
+        dataSource = AuthNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.existsDisplayId(any()) } throws JsonDataException("smile")
 
         // when
@@ -216,7 +219,7 @@ class AuthNetworkDataSourceImplTest {
     fun `register() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: AuthApi = mockk()
-        dataSource = AuthNetworkDataSource(mockApi)
+        dataSource = AuthNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.register(any()) } throws JsonDataException("smile")
 
         // when

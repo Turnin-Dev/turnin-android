@@ -2,14 +2,14 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.RegisterResult
-import com.peekr.core.domain.coroutine.flatMapResult
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.flatMapResult
+import com.peekr.core.domain.common.mapError
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.util.mapError
 import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.domain.register.model.ImageFileDetail
 import javax.inject.Inject

@@ -1,7 +1,7 @@
 package com.peekr.presentation.profile.model
 
-import com.peekr.core.presentation.userKeyword.model.UiUserKeyword
-import com.peekr.core.presentation.userKeyword.model.toUiModel
+import com.peekr.core.presentation.ui.model.UiUserKeyword
+import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.model.Profile
 
 /**

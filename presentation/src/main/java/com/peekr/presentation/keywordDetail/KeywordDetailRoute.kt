@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.peekr.core.presentation.util.ObserveAsEvents
+import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 import com.peekr.presentation.keywordDetail.view.KeywordDetailModal
 import com.peekr.presentation.keywordDetail.viewmodel.KeywordDetailViewModel

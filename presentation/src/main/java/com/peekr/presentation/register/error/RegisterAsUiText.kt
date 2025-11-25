@@ -1,8 +1,8 @@
 package com.peekr.presentation.register.error
 
-import com.peekr.core.presentation.error.asUiText
-import com.peekr.core.presentation.util.UiText
-import com.peekr.core.presentation.util.UiText.StringResource
+import com.peekr.core.presentation.common.error.asUiText
+import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.core.presentation.ui.util.UiText.StringResource
 import com.peekr.domain.register.error.RegisterErrorType
 import com.peekr.presentation.R
 

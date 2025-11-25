@@ -1,16 +1,17 @@
 package com.peekr.core.data.keyword.repository
 
-import com.peekr.core.data.keyword.network.KeywordDataSource
-import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
-import com.peekr.core.data.keyword.network.response.KeywordResponse
-import com.peekr.core.data.keyword.network.response.toDomainModel
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.repository.KeywordRepositoryImpl
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSource
+import com.peekr.core.data.source.network.dto.keyword.request.CreateKeywordRequest
+import com.peekr.core.data.source.network.dto.keyword.response.KeywordResponse
+import com.peekr.core.data.source.network.dto.keyword.response.toDomainModel
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.keyword.error.KeywordErrorType
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +24,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class KeywordRepositoryImplTest {
-    private val dataSource: KeywordDataSource = mockk()
+    private val dataSource: KeywordNetworkDataSource = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: KeywordRepository = KeywordRepositoryImpl(dataSource, dispatcher)
 

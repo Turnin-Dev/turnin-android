@@ -50,7 +50,7 @@ import com.peekr.core.designsystem.util.icon.Cancel
 import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.Edit
 import com.peekr.core.designsystem.util.icon.PeekrIcons
-import com.peekr.core.presentation.util.PreviewLightDarkWithBackground
+import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 

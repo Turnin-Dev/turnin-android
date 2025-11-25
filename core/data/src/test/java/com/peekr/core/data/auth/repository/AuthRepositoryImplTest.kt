@@ -1,25 +1,26 @@
 package com.peekr.core.data.auth.repository
 
-import com.peekr.core.data.auth.network.AuthDataSource
-import com.peekr.core.data.auth.network.response.ExistsResponse
-import com.peekr.core.data.auth.network.response.LoginResponse
-import com.peekr.core.data.auth.network.response.RegisterResponse
-import com.peekr.core.data.auth.network.response.toDomainModel
-import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.repository.AuthRepositoryImpl
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
+import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
+import com.peekr.core.data.source.network.dto.auth.response.LoginResponse
+import com.peekr.core.data.source.network.dto.auth.response.RegisterResponse
+import com.peekr.core.data.source.network.dto.auth.response.toDomainModel
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.Login
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.repository.AuthRepository
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.util.Result
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
@@ -33,7 +34,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AuthRepositoryImplTest {
-    private val dataSource: AuthDataSource = mockk()
+    private val dataSource: AuthNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -1,9 +1,9 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.login.util.AuthManager
 import com.peekr.domain.login.util.AuthManagerFactory
 import io.mockk.every

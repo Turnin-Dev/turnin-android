@@ -56,22 +56,22 @@ graph TB
         :core:domain[domain]:::jvm-library
         :core:presentation[presentation]:::android-library
     end
-    subgraph :layer
+    subgraph :feature
         direction TB
-        :layer:data[data]:::android-library
-        :layer:domain[domain]:::jvm-library
-        :layer:presentation[presentation]:::android-library
+        :feature:data[data]:::android-library
+        :feature:domain[domain]:::jvm-library
+        :feature:presentation[presentation]:::android-library
     end
     :app[app]:::android-application
-    :app -.-> :layer
+    :app -.-> :feature
     :app -.-> :core
     :core:data ---> :core:domain
     :core:presentation ---> :core:domain
-    :layer:data ---> :layer:domain
-    :layer:presentation ---> :layer:domain
-    :layer:data -.-> :core:data
-    :layer:domain -. api .-> :core:domain
-    :layer:presentation -.-> :core:presentation
+    :feature:data ---> :feature:domain
+    :feature:presentation ---> :feature:domain
+    :feature:data -.-> :core:data
+    :feature:domain -. api .-> :core:domain
+    :feature:presentation -.-> :core:presentation
     classDef android-application fill: #CAFFBF
     classDef android-library fill: #9BF6FF
     classDef jvm-library fill: #BDB2FF

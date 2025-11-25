@@ -1,7 +1,7 @@
 package com.peekr.presentation.register.model
 
 import com.peekr.core.domain.file.model.Mime
-import com.peekr.core.presentation.util.FileNameGenerator
+import com.peekr.core.presentation.common.util.FileNameGenerator
 import com.peekr.domain.register.model.ImageFileDetail
 
 /**

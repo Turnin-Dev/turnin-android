@@ -1,8 +1,8 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchOffset
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.repository.ProfileRepository
 import javax.inject.Inject

@@ -1,7 +1,7 @@
 package com.peekr.core.domain.user.error
 
-import com.peekr.core.domain.util.BaseError
-import com.peekr.core.domain.util.CommonErrorType
+import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.CommonErrorType
 
 sealed interface UserErrorType : BaseError {
     /** 사용자 ID를 조회 에러 */

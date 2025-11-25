@@ -29,7 +29,7 @@ import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.presentation.util.bottomAutoPadding
+import com.peekr.core.presentation.ui.util.bottomAutoPadding
 import com.peekr.presentation.R
 
 /**

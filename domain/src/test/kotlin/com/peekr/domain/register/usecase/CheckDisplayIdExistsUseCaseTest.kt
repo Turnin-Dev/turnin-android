@@ -2,8 +2,8 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.repository.AuthRepository
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.util.Result
 import com.peekr.domain.register.error.RegisterErrorType
 import io.mockk.every
 import io.mockk.mockk

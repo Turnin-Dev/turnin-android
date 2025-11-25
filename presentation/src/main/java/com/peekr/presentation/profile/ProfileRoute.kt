@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.keyword.KeywordNameType
-import com.peekr.core.presentation.keyword.UserIdType
-import com.peekr.core.presentation.keyword.UserKeywordIdType
-import com.peekr.core.presentation.util.ObserveAsEvents
+import com.peekr.core.presentation.common.util.ObserveAsEvents
+import com.peekr.core.presentation.feature.keyword.KeywordNameType
+import com.peekr.core.presentation.feature.keyword.UserIdType
+import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.ProfileContract
 import com.peekr.presentation.profile.view.AddKeywordModal

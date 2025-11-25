@@ -1,7 +1,9 @@
 package com.peekr.core.domain.coroutine
 
-import com.peekr.core.domain.util.CommonErrorType
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.safeFlow
+import com.peekr.core.domain.common.coroutine.safeResultFlow
 import io.mockk.clearAllMocks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

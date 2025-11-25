@@ -1,18 +1,20 @@
 package com.peekr.core.data.userKeyword.repository
 
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.userKeyword.network.UserKeywordDataSource
-import com.peekr.core.data.userKeyword.network.request.CreateUserKeywordRequest
-import com.peekr.core.data.userKeyword.network.request.PatchDescriptionRequest
-import com.peekr.core.data.userKeyword.network.request.PatchOffsetRequest
-import com.peekr.core.data.userKeyword.network.response.DescriptionResponse
-import com.peekr.core.data.userKeyword.network.response.PatchDescriptionResponse
-import com.peekr.core.data.userKeyword.network.response.PatchOffsetResponse
-import com.peekr.core.data.userKeyword.network.response.UserKeywordResponse
-import com.peekr.core.data.userKeyword.network.response.UserKeywordsResponse
-import com.peekr.core.data.userKeyword.network.response.toDomainModel
+import com.peekr.core.data.repository.UserKeywordRepositoryImpl
+import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
+import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordValue
@@ -22,7 +24,6 @@ import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
-import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +36,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserKeywordRepositoryImplTest {
-    private val dataSource: UserKeywordDataSource = mockk()
+    private val dataSource: UserKeywordNetworkDataSource = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository = UserKeywordRepositoryImpl(dataSource, dispatcher)
 

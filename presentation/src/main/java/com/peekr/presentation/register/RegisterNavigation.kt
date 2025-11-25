@@ -26,11 +26,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.image.cropper.SinglePhotoPicker
-import com.peekr.core.presentation.navigation.RegisterGraph
-import com.peekr.core.presentation.navigation.SubGraph
-import com.peekr.core.presentation.util.LaunchedUiEffectHandler
-import com.peekr.core.presentation.viewmodel.sharedViewModel
+import com.peekr.core.presentation.common.navigation.RegisterGraph
+import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.core.presentation.common.util.LaunchedUiEffectHandler
+import com.peekr.core.presentation.common.viewmodel.sharedViewModel
+import com.peekr.core.presentation.feature.image.SinglePhotoPicker
 import com.peekr.presentation.R
 import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.register.view.RegisterCommonScreen

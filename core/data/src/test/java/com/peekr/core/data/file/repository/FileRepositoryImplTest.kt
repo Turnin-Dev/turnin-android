@@ -1,16 +1,17 @@
 package com.peekr.core.data.file.repository
 
-import com.peekr.core.data.datastore.DataStoreManager
-import com.peekr.core.data.file.network.FileDataSource
-import com.peekr.core.data.file.network.response.PresignedUrlResponse
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.repository.FileRepositoryImpl
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.datasource.FileNetworkDataSource
+import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,7 +23,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class FileRepositoryImplTest {
-    private val dataSource: FileDataSource = mockk()
+    private val dataSource: FileNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)

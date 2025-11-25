@@ -1,11 +1,14 @@
 package com.peekr.core.data.user.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.user.network.request.UserPatchRequest
-import com.peekr.core.data.user.network.response.UserProfileResponse
-import com.peekr.core.data.user.network.response.UserResponse
+import com.peekr.core.data.source.network.api.UserApi
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSourceImpl
+import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
+import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
+import com.peekr.core.data.source.network.dto.user.response.UserResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.model.UserId
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -23,11 +26,11 @@ class UserNetworkDataSourceTest {
     private val userApi: UserApi
         get() = testRule.createNetworkApi<UserApi>(testRule.moshi)
 
-    private lateinit var dataSource: UserDataSource
+    private lateinit var dataSource: UserNetworkDataSource
 
     @Before
     fun setUp() {
-        dataSource = UserNetworkDataSource(userApi)
+        dataSource = UserNetworkDataSourceImpl(userApi)
     }
 
     @Test
@@ -77,7 +80,7 @@ class UserNetworkDataSourceTest {
         // given
         val mockApi: UserApi = mockk()
         val exception = Exception()
-        dataSource = UserNetworkDataSource(mockApi)
+        dataSource = UserNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getUser() } throws exception
 
         // when
@@ -158,7 +161,7 @@ class UserNetworkDataSourceTest {
         // given
         val mockApi: UserApi = mockk()
         val exception = Exception()
-        dataSource = UserNetworkDataSource(mockApi)
+        dataSource = UserNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getUserProfile() } throws exception
 
         // when
@@ -214,7 +217,7 @@ class UserNetworkDataSourceTest {
         // given
         val mockApi: UserApi = mockk()
         val exception = Exception()
-        dataSource = UserNetworkDataSource(mockApi)
+        dataSource = UserNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.updateUser(TestUserPatchRequest) } throws exception
 
         // when

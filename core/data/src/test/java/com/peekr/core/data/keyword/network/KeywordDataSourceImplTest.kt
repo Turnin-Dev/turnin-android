@@ -1,10 +1,13 @@
 package com.peekr.core.data.keyword.network
 
 import com.peekr.core.data.ServerTestRule
-import com.peekr.core.data.keyword.network.request.CreateKeywordRequest
-import com.peekr.core.data.keyword.network.response.KeywordResponse
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.util.NetworkResult
+import com.peekr.core.data.source.network.api.KeywordApi
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSourceImpl
+import com.peekr.core.data.source.network.dto.keyword.request.CreateKeywordRequest
+import com.peekr.core.data.source.network.dto.keyword.response.KeywordResponse
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.model.KeywordId
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -23,11 +26,11 @@ class KeywordDataSourceImplTest {
     private val keywordByIdApi: KeywordApi
         get() = testRule.createNetworkApi<KeywordApi>(testRule.moshi)
 
-    private lateinit var dataSource: KeywordDataSource
+    private lateinit var dataSource: KeywordNetworkDataSource
 
     @Before
     fun setUp() {
-        dataSource = KeywordNetworkDataSource(keywordByIdApi)
+        dataSource = KeywordNetworkDataSourceImpl(keywordByIdApi)
     }
 
     @Test
@@ -76,7 +79,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordNetworkDataSource(mockApi)
+        dataSource = KeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getKeywordById(any()) } throws exception
 
         // when
@@ -151,7 +154,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordNetworkDataSource(mockApi)
+        dataSource = KeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getKeywordByName(any()) } throws exception
 
         // when
@@ -224,7 +227,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordNetworkDataSource(mockApi)
+        dataSource = KeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.createKeyword(any()) } throws exception
         // when
         val response = dataSource.createKeyword(TestCreateKeywordRequest)

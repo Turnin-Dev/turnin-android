@@ -1,11 +1,11 @@
 package com.peekr.domain.register.usecase
 
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.mapError
 import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
-import com.peekr.core.domain.util.Result
-import com.peekr.core.domain.util.mapError
 import com.peekr.domain.register.error.RegisterErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

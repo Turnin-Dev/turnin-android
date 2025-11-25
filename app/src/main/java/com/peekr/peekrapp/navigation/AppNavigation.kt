@@ -10,9 +10,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.peekr.core.presentation.navigation.BottomNav
-import com.peekr.core.presentation.navigation.Screens
-import com.peekr.core.presentation.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.BottomNav
+import com.peekr.core.presentation.common.navigation.Screens
+import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
 

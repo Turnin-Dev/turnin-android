@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile.state
 
-import com.peekr.core.presentation.util.UiText
+import com.peekr.core.presentation.ui.util.UiText
 
 /**
  * 키워드 관련 텍스트 필드 UI 상태

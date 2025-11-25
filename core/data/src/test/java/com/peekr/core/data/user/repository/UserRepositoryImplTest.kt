@@ -1,13 +1,16 @@
 package com.peekr.core.data.user.repository
 
-import com.peekr.core.data.network.error.NetworkErrorType
-import com.peekr.core.data.network.error.toCommonErrorType
-import com.peekr.core.data.network.util.NetworkResult
-import com.peekr.core.data.user.network.UserDataSource
-import com.peekr.core.data.user.network.request.UserPatchRequest
-import com.peekr.core.data.user.network.response.UserProfileResponse
-import com.peekr.core.data.user.network.response.UserResponse
-import com.peekr.core.data.user.network.response.toDomainModel
+import com.peekr.core.data.repository.UserRepositoryImpl
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
+import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
+import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
+import com.peekr.core.data.source.network.dto.user.response.UserResponse
+import com.peekr.core.data.source.network.dto.user.response.toDomainModel
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
+import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -17,7 +20,6 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.core.domain.util.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,9 +32,10 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryImplTest {
-    private val dataSource: UserDataSource = mockk()
+    private val dataSource: UserNetworkDataSource = mockk()
+    private val dataStoreManager: DataStoreManager = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository: UserRepository = UserRepositoryImpl(dataSource, dispatcher)
+    private val repository: UserRepository = UserRepositoryImpl(dataSource, dataStoreManager, dispatcher)
 
     @Test
     fun `사용자 조회 - 성공 테스트`() = runTest {

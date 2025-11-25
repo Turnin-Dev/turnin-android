@@ -27,10 +27,10 @@ import androidx.navigation.compose.rememberNavController
 import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.navigation.BottomNav
-import com.peekr.core.presentation.navigation.bottom.BottomNavigationBarTokens
-import com.peekr.core.presentation.util.ObserveAsEvents
-import com.peekr.core.presentation.util.SnackbarController
+import com.peekr.core.presentation.common.navigation.BottomNav
+import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
+import com.peekr.core.presentation.common.util.ObserveAsEvents
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.peekrapp.navigation.BottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

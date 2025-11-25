@@ -1,15 +1,15 @@
 package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.util.Result
-import com.peekr.core.presentation.error.asUiText
-import com.peekr.core.presentation.util.SnackbarController
-import com.peekr.core.presentation.util.SnackbarEvent
-import com.peekr.core.presentation.util.UiText
-import com.peekr.core.presentation.util.UiText.StringResource
-import com.peekr.core.presentation.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.viewmodel.setTextFieldValidation
+import com.peekr.core.presentation.common.error.asUiText
+import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
+import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.core.presentation.ui.util.UiText.StringResource
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.ProfileUseCases
 import com.peekr.presentation.R
@@ -203,7 +203,7 @@ class ProfileViewModel @Inject constructor(
                         }
                         sendEffect { ProfileContract.UiEffect.CloseAllModals }
                         resetSelectedKeyword()
-                        showSnackBar(UiText.StringResource(R.string.profile_success_delete_user_keyword))
+                        showSnackBar(StringResource(R.string.profile_success_delete_user_keyword))
                         // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                         loadInitialData()
                     }
@@ -241,7 +241,7 @@ class ProfileViewModel @Inject constructor(
                             sendEffect { ProfileContract.UiEffect.CloseAllModals }
                             resetSelectedKeyword()
                             showSnackBar(
-                                UiText.StringResource(
+                                StringResource(
                                     R.string.profile_success_add_user_keyword,
                                 ),
                             )
@@ -296,7 +296,7 @@ class ProfileViewModel @Inject constructor(
 
             if (successCount.get() == keywordNodes.size) {
                 showSnackBar(
-                    UiText.StringResource(
+                    StringResource(
                         R.string.profile_success_update_user_keyword_offset,
                     ),
                 )

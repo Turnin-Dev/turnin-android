@@ -1,7 +1,7 @@
 package com.peekr.core.domain.auth
 
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.util.Result
+import com.peekr.core.domain.common.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf

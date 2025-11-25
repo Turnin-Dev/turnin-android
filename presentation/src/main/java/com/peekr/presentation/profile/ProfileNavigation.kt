@@ -6,9 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
-import com.peekr.core.presentation.navigation.ProfileGraph
-import com.peekr.core.presentation.navigation.Screens
-import com.peekr.core.presentation.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.ProfileGraph
+import com.peekr.core.presentation.common.navigation.Screens
+import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.keywordDetail.KeywordDetailRoute
 
 fun NavGraphBuilder.profileNavigation(navController: NavHostController) {
