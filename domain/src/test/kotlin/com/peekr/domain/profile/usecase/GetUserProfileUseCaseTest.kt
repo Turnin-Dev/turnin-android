@@ -2,22 +2,14 @@ package com.peekr.domain.profile.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.DisplayId.Companion.invoke
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.Introduce.Companion.invoke
 import com.peekr.core.domain.model.KeywordDescription
-import com.peekr.core.domain.model.KeywordDescription.Companion.invoke
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordId.Companion.invoke
 import com.peekr.core.domain.model.KeywordValue
-import com.peekr.core.domain.model.KeywordValue.Companion.invoke
 import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.model.Name.Companion.invoke
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserId.Companion.invoke
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.model.UserKeywordId.Companion.invoke
 import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword

@@ -6,7 +6,6 @@ import com.peekr.core.domain.common.validation.CommonValidationException
 import com.peekr.core.domain.common.validation.toValidationErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordValue
-import com.peekr.core.domain.model.UserId.Companion.invoke
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword

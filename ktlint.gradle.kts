@@ -39,7 +39,7 @@ tasks.register<JavaExec>("ktlintFormat") {
     args(
         "-F",
         "**/src/**/*.kt",
-        "**.kts",
+        "**/src/**/*.kts",
         "!**/build/**",
         // "!:some-module-name/**", // <- ! exclude specific module from formatting
     )
