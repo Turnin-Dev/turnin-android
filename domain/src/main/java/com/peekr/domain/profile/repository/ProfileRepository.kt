@@ -8,17 +8,11 @@ import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.domain.profile.error.ProfileErrorType
-import com.peekr.domain.profile.model.Profile
 import com.peekr.domain.profile.model.ProfilePatch
 import kotlinx.coroutines.flow.Flow
 
 /** 프로필 리포지토리 */
 interface ProfileRepository {
-    /**
-     * 사용자 조회
-     */
-    fun getProfile(): Flow<Result<Profile, ProfileErrorType>>
-
     /**
      * 사용자 수정
      */

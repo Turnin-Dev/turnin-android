@@ -7,10 +7,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.peekr.core.common.crypto.CryptoException
-import com.peekr.core.common.crypto.CryptoManager
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.source.local.datastore.DataStoreKey
+import com.peekr.core.data.crypto.CryptoException
+import com.peekr.core.data.crypto.CryptoManager
 import com.peekr.core.data.source.local.error.DecryptException
 import com.peekr.core.data.source.local.error.WritingDataException
 import java.io.IOException

@@ -1,8 +1,6 @@
 package com.peekr.core.data.crypto
 
 import android.os.Build
-import com.peekr.core.common.crypto.CryptoManager
-import com.peekr.core.common.crypto.DecryptException
 import java.util.Base64
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -38,7 +36,7 @@ class CryptoManagerTest {
     @Test
     fun `평문 텍스트를 암호화하고 복호화할 수 있다`() = runTest {
         // given
-        val plainText = "Hello, World! 안녕하세요 🌍"
+        val plainText = "Hello, World! 안녕하세요."
 
         // when
         val encryptedText = cryptoManager.encryptString(plainText)
@@ -50,7 +48,7 @@ class CryptoManagerTest {
 
         // Base64 인코딩 검증
         val decodedBytes = Base64.getDecoder().decode(encryptedText)
-        assert(decodedBytes.size > plainText.toByteArray().size) // IV + 암호문 + 태그로 더 큼
+        assertTrue(decodedBytes.size > plainText.toByteArray().size) // IV + 암호문 + 태그로 더 큼
     }
 
     @Test

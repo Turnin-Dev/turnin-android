@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.network.api
 
-import com.peekr.core.data.source.network.api.NetworkApiPath
 import com.peekr.core.data.source.network.dto.keyword.request.CreateKeywordRequest
 import com.peekr.core.data.source.network.dto.keyword.response.KeywordResponse
 import retrofit2.Response
