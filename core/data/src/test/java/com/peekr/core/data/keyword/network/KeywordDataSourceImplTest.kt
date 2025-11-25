@@ -3,6 +3,7 @@ package com.peekr.core.data.keyword.network
 import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.KeywordApi
 import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSourceImpl
 import com.peekr.core.data.source.network.dto.keyword.request.CreateKeywordRequest
 import com.peekr.core.data.source.network.dto.keyword.response.KeywordResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
@@ -29,7 +30,7 @@ class KeywordDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = KeywordNetworkDataSource(keywordByIdApi)
+        dataSource = KeywordNetworkDataSourceImpl(keywordByIdApi)
     }
 
     @Test
@@ -78,7 +79,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordNetworkDataSource(mockApi)
+        dataSource = KeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getKeywordById(any()) } throws exception
 
         // when
@@ -153,7 +154,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordNetworkDataSource(mockApi)
+        dataSource = KeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getKeywordByName(any()) } throws exception
 
         // when
@@ -226,7 +227,7 @@ class KeywordDataSourceImplTest {
         // given
         val mockApi: KeywordApi = mockk()
         val exception = Exception()
-        dataSource = KeywordNetworkDataSource(mockApi)
+        dataSource = KeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.createKeyword(any()) } throws exception
         // when
         val response = dataSource.createKeyword(TestCreateKeywordRequest)

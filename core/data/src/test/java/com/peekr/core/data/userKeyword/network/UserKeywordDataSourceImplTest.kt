@@ -3,6 +3,7 @@ package com.peekr.core.data.userKeyword.network
 import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.UserKeywordApi
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSourceImpl
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
@@ -37,7 +38,7 @@ class UserKeywordDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = UserKeywordNetworkDataSource(userKeywordApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(userKeywordApi)
     }
 
     @Test
@@ -88,7 +89,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getUserKeywords() } throws exception
 
         // when
@@ -172,7 +173,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getDescription(TestUserKeywordId.value) } throws exception
 
         // when
@@ -256,7 +257,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.createUserKeyword(TestCreateUserKeywordRequest) } throws exception
 
         // when
@@ -320,7 +321,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
             mockApi.patchOffset(
                 userKeywordId = TestUserKeywordId.value,
@@ -392,7 +393,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
             mockApi.patchDescription(
                 userKeywordId = TestUserKeywordId.value,
@@ -458,7 +459,7 @@ class UserKeywordDataSourceImplTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
-        dataSource = UserKeywordNetworkDataSource(mockApi)
+        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
             mockApi.deleteUserKeyword(userKeywordId = TestUserKeywordId.value)
         } throws exception

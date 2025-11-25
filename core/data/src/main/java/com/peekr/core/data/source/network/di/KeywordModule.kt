@@ -2,6 +2,8 @@ package com.peekr.core.data.source.network.di
 
 import com.peekr.core.data.repository.KeywordRepositoryImpl
 import com.peekr.core.data.source.network.api.KeywordApi
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSourceImpl
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import dagger.Binds
 import dagger.Module
@@ -29,6 +31,9 @@ class KeywordModule {
 @Module
 @InstallIn(SingletonComponent::class)
 interface KeywordBindModule {
+    @Binds
+    fun bindsKeywordNetworkDataSource(impl: KeywordNetworkDataSourceImpl): KeywordNetworkDataSource
+
     @Binds
     fun bindsKeywordRepository(impl: KeywordRepositoryImpl): KeywordRepository
 }

@@ -3,6 +3,7 @@ package com.peekr.core.data.user.network
 import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.UserApi
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSourceImpl
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
@@ -29,7 +30,7 @@ class UserNetworkDataSourceTest {
 
     @Before
     fun setUp() {
-        dataSource = UserNetworkDataSource(userApi)
+        dataSource = UserNetworkDataSourceImpl(userApi)
     }
 
     @Test
@@ -79,7 +80,7 @@ class UserNetworkDataSourceTest {
         // given
         val mockApi: UserApi = mockk()
         val exception = Exception()
-        dataSource = UserNetworkDataSource(mockApi)
+        dataSource = UserNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getUser() } throws exception
 
         // when
@@ -160,7 +161,7 @@ class UserNetworkDataSourceTest {
         // given
         val mockApi: UserApi = mockk()
         val exception = Exception()
-        dataSource = UserNetworkDataSource(mockApi)
+        dataSource = UserNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.getUserProfile() } throws exception
 
         // when
@@ -216,7 +217,7 @@ class UserNetworkDataSourceTest {
         // given
         val mockApi: UserApi = mockk()
         val exception = Exception()
-        dataSource = UserNetworkDataSource(mockApi)
+        dataSource = UserNetworkDataSourceImpl(mockApi)
         coEvery { mockApi.updateUser(TestUserPatchRequest) } throws exception
 
         // when

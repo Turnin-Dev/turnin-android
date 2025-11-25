@@ -3,6 +3,7 @@ package com.peekr.core.data.file.network
 import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.FileApi
 import com.peekr.core.data.source.network.datasource.FileNetworkDataSource
+import com.peekr.core.data.source.network.datasource.FileNetworkDataSourceImpl
 import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -32,7 +33,7 @@ class FileNetworkDataSourceImplTest {
     @Before
     fun setUp() {
         testOkHttpClient = OkHttpClient.Builder().build()
-        dataSource = FileNetworkDataSource(fileApi, testOkHttpClient)
+        dataSource = FileNetworkDataSourceImpl(fileApi, testOkHttpClient)
     }
 
     @Test
@@ -60,7 +61,7 @@ class FileNetworkDataSourceImplTest {
     fun `getFileUploadPresignedUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
         // given
         val mockApi: FileApi = mockk()
-        dataSource = FileNetworkDataSource(mockApi, testOkHttpClient)
+        dataSource = FileNetworkDataSourceImpl(mockApi, testOkHttpClient)
         coEvery { mockApi.getFileUploadPresignedUrl(any(), any()) } throws JsonDataException("smile")
 
         // when

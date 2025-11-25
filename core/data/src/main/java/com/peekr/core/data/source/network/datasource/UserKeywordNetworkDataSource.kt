@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.network.datasource
 
-import com.peekr.core.data.source.network.api.UserKeywordApi
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
@@ -10,20 +9,14 @@ import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetRe
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.data.source.network.util.networkCall
-import com.peekr.core.data.source.network.util.networkCallWithoutResponse
 import com.peekr.core.domain.model.UserKeywordId
-import javax.inject.Inject
 
 /** UserKeyword 네트워크 데이터 소스 */
-class UserKeywordNetworkDataSource @Inject constructor(
-    private val userKeywordApi: UserKeywordApi,
-) {
+interface UserKeywordNetworkDataSource {
     /**
      * 사용자 키워드 리스트 조회
      */
-    suspend fun getUserKeywords(): NetworkResult<UserKeywordsResponse> =
-        networkCall { userKeywordApi.getUserKeywords() }
+    suspend fun getUserKeywords(): NetworkResult<UserKeywordsResponse>
 
     /**
      * 사용자 키워드 설명 조회
@@ -32,8 +25,7 @@ class UserKeywordNetworkDataSource @Inject constructor(
      */
     suspend fun getDescription(
         userKeywordId: UserKeywordId,
-    ): NetworkResult<DescriptionResponse> =
-        networkCall { userKeywordApi.getDescription(userKeywordId.value) }
+    ): NetworkResult<DescriptionResponse>
 
     /**
      * 사용자 키워드 생성
@@ -42,8 +34,7 @@ class UserKeywordNetworkDataSource @Inject constructor(
      */
     suspend fun createUserKeyword(
         createUserKeywordRequest: CreateUserKeywordRequest,
-    ): NetworkResult<UserKeywordResponse> =
-        networkCall { userKeywordApi.createUserKeyword(createUserKeywordRequest) }
+    ): NetworkResult<UserKeywordResponse>
 
     /**
      * 사용자 키워드 오프셋 수정
@@ -54,10 +45,7 @@ class UserKeywordNetworkDataSource @Inject constructor(
     suspend fun patchOffset(
         userKeywordId: UserKeywordId,
         patchOffsetRequest: PatchOffsetRequest,
-    ): NetworkResult<PatchOffsetResponse> =
-        networkCall {
-            userKeywordApi.patchOffset(userKeywordId.value, patchOffsetRequest)
-        }
+    ): NetworkResult<PatchOffsetResponse>
 
     /**
      * 사용자 키워드 설명 수정
@@ -68,10 +56,7 @@ class UserKeywordNetworkDataSource @Inject constructor(
     suspend fun patchDescription(
         userKeywordId: UserKeywordId,
         patchDescriptionRequest: PatchDescriptionRequest,
-    ): NetworkResult<PatchDescriptionResponse> =
-        networkCall {
-            userKeywordApi.patchDescription(userKeywordId.value, patchDescriptionRequest)
-        }
+    ): NetworkResult<PatchDescriptionResponse>
 
     /**
      * 사용자 키워드 삭제
@@ -84,8 +69,5 @@ class UserKeywordNetworkDataSource @Inject constructor(
      */
     suspend fun deleteUserKeyword(
         userKeywordId: UserKeywordId,
-    ): NetworkResult<Unit> =
-        networkCallWithoutResponse {
-            userKeywordApi.deleteUserKeyword(userKeywordId.value)
-        }
+    ): NetworkResult<Unit>
 }

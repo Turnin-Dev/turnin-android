@@ -2,6 +2,8 @@ package com.peekr.core.data.source.network.di
 
 import com.peekr.core.data.repository.AuthRepositoryImpl
 import com.peekr.core.data.source.network.api.AuthApi
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
+import com.peekr.core.data.source.network.datasource.AuthNetworkDataSourceImpl
 import com.peekr.core.domain.auth.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
@@ -27,6 +29,9 @@ class AuthModule {
 @Module
 @InstallIn(SingletonComponent::class)
 interface AuthBindModule {
+    @Binds
+    fun bindsAuthNetworkDataSource(impl: AuthNetworkDataSourceImpl): AuthNetworkDataSource
+
     @Binds
     fun bindsAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 }
