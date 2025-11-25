@@ -36,6 +36,11 @@ object NetworkApiPath {
 
     object User {
         const val ROUTE = "$BASE/user"
-        const val PROFILE = "$BASE/user-profile"
+        const val INTRODUCE = "$ROUTE/introduce"
+
+        object Profile {
+            const val ROUTE = "${User.ROUTE}/profile"
+            const val ME = "$ROUTE/me"
+        }
     }
 }

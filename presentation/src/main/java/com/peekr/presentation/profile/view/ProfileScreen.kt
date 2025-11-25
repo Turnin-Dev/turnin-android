@@ -54,6 +54,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.presentation.feature.keyword.KeywordNameType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
@@ -107,7 +108,7 @@ internal fun ProfileScreen(
                             .padding(vertical = 20.dp),
                         profileImageUrl = profile.profileImageUrl,
                         name = profile.name,
-                        friendsTotal = profile.friendsTotal,
+                        friendsTotal = profile.friendsCount,
                         introduce = profile.introduce,
                         onProfileImageClick = { TODO() },
                         onFriendsTotalClick = { TODO() },
@@ -570,10 +571,13 @@ private fun ProfileScreenPreview() {
             profile = UiProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
-                friendsTotal = 86,
                 profileImageUrl = null,
                 introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
                     "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+                friendsCount = 86,
+                lastLoginAt = 1000L,
+                active = true,
+                friendshipStatus = FriendshipStatus.NOTHING,
                 keywords = UiUserKeyword.samples,
             ),
             loading = false,

@@ -14,9 +14,9 @@ import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.error.UserErrorType
+import com.peekr.core.domain.user.model.MyProfile
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
-import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
@@ -51,7 +51,7 @@ class ProfileRepositoryImplTest {
         every { userRepository.getUserProfile() } returns
             flow {
                 emit(Result.Loading)
-                emit(Result.Success(TestUserProfile))
+                emit(Result.Success(TestMyProfile))
             }
         every { userKeywordRepository.getUserKeywords() } returns
             flow {
@@ -66,11 +66,11 @@ class ProfileRepositoryImplTest {
         assertTrue(results.size >= 2) // 로딩, 성공/에러 데이터가 방출되므로 최소 2개 이상
         assertTrue(results.last() is Result.Success)
         assertEquals(
-            TestUserProfile.user.displayId,
+            TestMyProfile.user.displayId,
             (results.last() as Result.Success).data.displayId,
         )
         assertEquals(
-            TestUserProfile.user.name,
+            TestMyProfile.user.name,
             (results.last() as Result.Success).data.name,
         )
     }
@@ -109,7 +109,7 @@ class ProfileRepositoryImplTest {
         every { userRepository.getUserProfile() } returns
             flow {
                 emit(Result.Loading)
-                emit(Result.Success(TestUserProfile))
+                emit(Result.Success(TestMyProfile))
             }
         every { userKeywordRepository.getUserKeywords() } returns
             flow {
@@ -344,7 +344,7 @@ class ProfileRepositoryImplTest {
         private val TestUserId = UserId(1L)
         private val TestKeyword = KeywordValue("sampleKeyword")
         private val TestKeywordDescription = KeywordDescription("sample")
-        private val TestUserProfile = UserProfile(
+        private val TestMyProfile = MyProfile(
             user = User(
                 id = TestUserId,
                 role = Role.USER,

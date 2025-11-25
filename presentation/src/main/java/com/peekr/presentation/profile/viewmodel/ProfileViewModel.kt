@@ -43,7 +43,7 @@ class ProfileViewModel @Inject constructor(
     override suspend fun loadInitialData() {
         // 새로고침으로 해당 함수를 호출해도 상관은 없으나, 아래 로직에 캐싱 로직이 있다면
         // 삭제, 수정 후 해당 함수를 호출 시 변경 전 캐시 데이터를 조회할 가능성이 있을 수 있다.
-        usecases.getProfile().collect { result ->
+        usecases.getMyProfile().collect { result ->
             when (result) {
                 Result.Loading -> updateState {
                     this.copy(loading = true, error = null)
