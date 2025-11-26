@@ -2,7 +2,6 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.mapError
-import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
@@ -18,9 +17,6 @@ internal class GetFileUploadPresignedUrlUseCase @Inject constructor(
         fileRepository
             .getFileUploadPresignedUrl(fileName, mime)
             .mapError { fileErrorType ->
-                when (fileErrorType) {
-                    is FileErrorType.Unexpected -> RegisterErrorType.Unexpected(fileErrorType.cause)
-                    else -> RegisterErrorType.FileError(fileErrorType)
-                }
+                RegisterErrorType.FileError(fileErrorType)
             }
 }

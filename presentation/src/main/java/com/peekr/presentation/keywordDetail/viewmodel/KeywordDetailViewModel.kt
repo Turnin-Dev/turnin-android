@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.user.usecase.GetUserIdUseCase
-import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
@@ -15,6 +14,7 @@ import com.peekr.domain.keywordDetail.usecase.UpdateDescriptionUseCase
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.error.asUiText
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
+import com.peekr.presentation.login.error.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn

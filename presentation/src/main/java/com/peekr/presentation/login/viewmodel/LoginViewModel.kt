@@ -2,13 +2,13 @@ package com.peekr.presentation.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.peekr.core.domain.auth.error.AuthErrorType
-import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.common.Result
-import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
-import com.peekr.domain.login.usecase.GetLoginIfUserExistsUseCase
+import com.peekr.domain.login.error.LoginErrorType
+import com.peekr.domain.login.usecase.GetExistingLoginCredentialsUseCase
 import com.peekr.domain.login.usecase.LoginIntegrationUseCase
+import com.peekr.presentation.login.error.asUiText
 import com.peekr.presentation.login.mapper.toDomainModel
 import com.peekr.presentation.login.mapper.toUiModel
 import com.peekr.presentation.login.state.LoginState
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.update
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginIntegrationUseCase: LoginIntegrationUseCase,
-    private val getLoginIfUserExistsUseCase: GetLoginIfUserExistsUseCase,
+    private val getExistingLoginCredentialsUseCase: GetExistingLoginCredentialsUseCase,
 ) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
@@ -45,28 +45,28 @@ class LoginViewModel @Inject constructor(
     fun login(uiSocialLoginProvider: UiSocialLoginProvider) {
         val socialLoginProvider = uiSocialLoginProvider.toDomainModel()
         // 사용자 존재 여부 파악
-        getLoginIfUserExistsUseCase(socialLoginProvider)
+        getExistingLoginCredentialsUseCase(socialLoginProvider)
             .onEach { result ->
                 updateLoginState(result) { loginWithExistsUser ->
                     if (loginWithExistsUser.isExistsUser) {
                         // 로그인 계속 진행
-                        proceedWithLoginAndNavigateToMain(loginWithExistsUser.login)
+                        proceedWithLoginAndNavigateToMain(loginWithExistsUser.loginCredentials)
                     } else {
                         // 회원가입 진행
-                        navigateToRegister(loginWithExistsUser.login)
+                        navigateToRegister(loginWithExistsUser.loginCredentials)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
     // 회원가입 페이지로 이동
-    private fun navigateToRegister(login: Login) {
+    private fun navigateToRegister(loginCredentials: LoginCredentials) {
         _loginState.update {
             it.copy(
                 loading = false,
                 event = LoginUiEvent.NavigateToRegister(
-                    login.provider.toUiModel(),
-                    login.providerId.uid,
+                    loginCredentials.provider.toUiModel(),
+                    loginCredentials.providerId.uid,
                 ),
             )
         }
@@ -81,8 +81,8 @@ class LoginViewModel @Inject constructor(
     }
 
     // 로그인을 계속 진행하고 성공 시 메인 페이지로 이동
-    private fun proceedWithLoginAndNavigateToMain(login: Login) {
-        loginIntegrationUseCase(login)
+    private fun proceedWithLoginAndNavigateToMain(loginCredentials: LoginCredentials) {
+        loginIntegrationUseCase(loginCredentials)
             .onEach { result ->
                 updateLoginState(result) { success ->
                     _loginState.update { it.copy(loading = false, event = LoginUiEvent.NavigateToMain) }
@@ -97,7 +97,7 @@ class LoginViewModel @Inject constructor(
      * @param onSuccess [Result.Success] 시 수행할 작업
      */
     private inline fun <T> updateLoginState(
-        result: Result<T, AuthErrorType>,
+        result: Result<T, LoginErrorType>,
         onSuccess: (T) -> Unit,
     ) {
         when (result) {
@@ -105,7 +105,7 @@ class LoginViewModel @Inject constructor(
                 _loginState.update { it.copy(loading = true) }
             }
 
-            is Result.Error<AuthErrorType> -> {
+            is Result.Error<LoginErrorType> -> {
                 val error = result.error.asUiText()
                 _loginState.update { it.copy(loading = false, error = error) }
             }

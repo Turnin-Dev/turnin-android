@@ -1,14 +1,15 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
-import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.JWTToken
-import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.LoginResult
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
+import com.peekr.domain.login.error.LoginErrorType
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -43,24 +44,24 @@ class LoginIntegrationUseCaseTest {
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
 
         // when
-        val result = loginIntegrationUseCase(MockLogin).last()
+        val result = loginIntegrationUseCase(MockLoginCredentials).last()
 
         // then
         assertTrue(result is Result.Success)
         assertTrue((result as Result.Success).data)
 
-        verify { loginUseCase(MockLogin) }
+        verify { loginUseCase(MockLoginCredentials) }
         verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
     }
 
     @Test
     fun `로그인 UseCase에서 에러 발생 시 해당 에러를 반환하고 후속 UseCase는 실행되지 않는다`() = runTest {
         // given
-        val expectedError = AuthErrorType.KakaoSignInError
+        val expectedError = LoginErrorType.Unexpected(null)
         every { loginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
-        val result = loginIntegrationUseCase(MockLogin).last()
+        val result = loginIntegrationUseCase(MockLoginCredentials).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -72,35 +73,35 @@ class LoginIntegrationUseCaseTest {
     @Test
     fun `로그인 UseCase에서 에러 발생 시 해당 에러를 반환하고 토큰 저장 UseCase는 실행되지 않는다`() = runTest {
         // given
-        val expectedError = AuthErrorType.LoginFailed
+        val expectedError = LoginErrorType.Unexpected(null)
         every { loginUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
-        val result = loginIntegrationUseCase(MockLogin).last()
+        val result = loginIntegrationUseCase(MockLoginCredentials).last()
 
         // then
         assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
 
-        verify { loginUseCase(MockLogin) }
+        verify { loginUseCase(MockLoginCredentials) }
         verify(exactly = 0) { saveRefreshTokenUseCase(any()) }
     }
 
     @Test
     fun `토큰 저장 UseCase에서 에러 발생 시 해당 에러를 반환한다`() = runTest {
         // given
-        val expectedError = AuthErrorType.SaveTokenFailed
+        val expectedError = CommonErrorType.Unexpected(null)
         every { loginUseCase(any()) } returns flowOf(Result.Success(MockLoginResult))
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
-        val result = loginIntegrationUseCase(MockLogin).last()
+        val result = loginIntegrationUseCase(MockLoginCredentials).last()
 
         // then
         assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
 
-        verify { loginUseCase(MockLogin) }
+        verify { loginUseCase(MockLoginCredentials) }
         verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
     }
 
@@ -112,13 +113,13 @@ class LoginIntegrationUseCaseTest {
         }
 
         // when
-        val result = loginIntegrationUseCase(MockLogin).last()
+        val result = loginIntegrationUseCase(MockLoginCredentials).last()
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(AuthErrorType.LoginFailed, (result as Result.Error).error)
+        assertEquals(LoginErrorType.LoginFailed, (result as Result.Error).error)
 
-        verify { loginUseCase(MockLogin) }
+        verify { loginUseCase(MockLoginCredentials) }
     }
 
     @Test
@@ -132,7 +133,7 @@ class LoginIntegrationUseCaseTest {
         every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
 
         // when
-        val results = loginIntegrationUseCase(MockLogin).toList()
+        val results = loginIntegrationUseCase(MockLoginCredentials).toList()
 
         // then
         assertTrue(results.first() is Result.Loading)
@@ -141,7 +142,7 @@ class LoginIntegrationUseCaseTest {
     }
 
     companion object {
-        internal val MockLogin = Login(SocialLoginProvider.GOOGLE, ProviderId("123"))
+        internal val MockLoginCredentials = LoginCredentials(SocialLoginProvider.GOOGLE, ProviderId("123"))
         private val MockUserId = UserId(1L)
         private val MockJwtToken = JWTToken("aaa.bbb.ccc", "rrr.bbb.ccc")
         private val MockLoginResult =

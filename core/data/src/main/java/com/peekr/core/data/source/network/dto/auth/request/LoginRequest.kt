@@ -1,6 +1,6 @@
 package com.peekr.core.data.source.network.dto.auth.request
 
-import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.squareup.moshi.JsonClass
 
@@ -16,4 +16,4 @@ data class LoginRequest(
     val providerId: String,
 )
 
-fun Login.toDataModel(): LoginRequest = LoginRequest(provider, providerId.uid)
+fun LoginCredentials.toDataModel(): LoginRequest = LoginRequest(provider, providerId.uid)

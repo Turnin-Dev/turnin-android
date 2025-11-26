@@ -1,7 +1,7 @@
 package com.peekr.domain.register.error
 
-import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.file.FileErrorType
 
 sealed interface RegisterErrorType : BaseError {
@@ -20,5 +20,5 @@ sealed interface RegisterErrorType : BaseError {
     // ------------------------------ Other Error Type ------------------------------
     data class FileError(val error: FileErrorType) : RegisterErrorType
 
-    data class AuthError(val error: AuthErrorType) : RegisterErrorType
+    data class CommonError(val error: CommonErrorType) : RegisterErrorType
 }

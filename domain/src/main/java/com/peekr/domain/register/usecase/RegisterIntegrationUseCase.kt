@@ -43,7 +43,7 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             introduce = introduce?.let { Introduce(it) },
         ).flatMapResult { token: RegisterResult ->
             saveRefreshTokenUseCase(token.refreshToken).mapError { authErrorType ->
-                RegisterErrorType.AuthError(authErrorType)
+                RegisterErrorType.CommonError(authErrorType)
             }
         }
     }.getOrElse { e -> flowOf(Result.Error(RegisterErrorType.Unexpected(e))) }

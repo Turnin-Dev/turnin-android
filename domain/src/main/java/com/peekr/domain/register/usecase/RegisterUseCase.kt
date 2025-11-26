@@ -45,7 +45,7 @@ internal class RegisterUseCase @Inject internal constructor(
                 )
                 authRepository
                     .register(register)
-                    .mapError { authErrorType -> RegisterErrorType.AuthError(authErrorType) }
+                    .mapError { authErrorType -> RegisterErrorType.CommonError(authErrorType) }
             }
     } else {
         val register = Register(
@@ -58,6 +58,6 @@ internal class RegisterUseCase @Inject internal constructor(
         )
         authRepository
             .register(register)
-            .mapError { authErrorType -> RegisterErrorType.AuthError(authErrorType) }
+            .mapError { authErrorType -> RegisterErrorType.CommonError(authErrorType) }
     }
 }

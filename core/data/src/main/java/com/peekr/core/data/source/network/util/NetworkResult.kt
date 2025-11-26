@@ -18,10 +18,10 @@ sealed interface NetworkResult<out T> {
     /**
      * 네트워크 호출 실패 시
      *
-     * @property error 에러 타입
-     * @property code 에러 코드
-     * @property status 에러 상태 코드
-     * @property message 에러 메시지
+     * @property error 네트워크 에러 타입
+     * @property code 서버 에러 코드
+     * @property status HTTP 상태 코드
+     * @property message 서버 에러 메시지 (이 메시지가 직접적으로 사용자에게 노출되면 안된다.)
      */
     data class Error(
         val error: NetworkErrorType,

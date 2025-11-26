@@ -11,7 +11,7 @@ import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
-import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
@@ -48,7 +48,7 @@ class AuthRepositoryImplTest {
             coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
 
             // when
-            val result = repository.login(mockLogin).last()
+            val result = repository.login(mockLoginCredentials).last()
 
             // then
             Assert.assertTrue(result is Result.Success)
@@ -65,7 +65,7 @@ class AuthRepositoryImplTest {
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
-            val result = repository.login(mockLogin).last()
+            val result = repository.login(mockLoginCredentials).last()
 
             // then
             Assert.assertTrue(result is Result.Error)
@@ -213,7 +213,7 @@ class AuthRepositoryImplTest {
     companion object {
         private val mockProviderId = ProviderId("123")
         private val mockUserId = UserId.Companion(1L)
-        private val mockLogin = Login(SocialLoginProvider.GOOGLE, mockProviderId)
+        private val mockLoginCredentials = LoginCredentials(SocialLoginProvider.GOOGLE, mockProviderId)
         private val mockAccessToken = "aaa.bbb.ccc"
         private val mockRefreshToken = "rrr.bbb.ccc"
         private val mockLoginResponse =

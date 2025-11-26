@@ -1,10 +1,10 @@
 package com.peekr.presentation.profile.error
 
-import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.core.presentation.ui.util.UiText.StringResource
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.presentation.R
+import com.peekr.presentation.login.error.asUiText
 
 internal fun ProfileErrorType.asUiText(): UiText = when (this) {
     is ProfileErrorType.CommonError -> this.error.asUiText()
