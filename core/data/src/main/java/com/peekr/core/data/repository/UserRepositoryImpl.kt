@@ -29,16 +29,11 @@ class UserRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserRepository {
-    override fun getUserId(): Flow<Result<UserId, UserErrorType>> =
-        safeResultFlow<UserId, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {
-            emit(Result.Loading)
-            val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-            if (userId != null) {
-                emit(Result.Success(UserId.Companion(userId)))
-            } else {
-                emit(Result.Error(error = UserErrorType.UserIdNotFound))
-            }
-        }
+    override suspend fun getUserId(): UserId? {
+        val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+        if (userId == null) return null
+        return UserId(userId)
+    }
 
     override fun getUser(): Flow<Result<User, UserErrorType>> =
         safeResultFlow<User, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {

@@ -4,8 +4,8 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.profile.model.ProfilePatch
-import com.peekr.domain.profile.repository.ProfileRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -15,14 +15,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UpdateProfileUseCaseTest {
-    private val profileRepository: ProfileRepository = mockk()
-    private val usecase = UpdateProfileUseCase(profileRepository)
+    private val userRepository: UserRepository = mockk()
+    private val usecase = UpdateProfileUseCase(userRepository)
 
     @Test
     fun `사용자 프로필 수정 - 성공 테스트`() = runTest {
         // given
         every {
-            profileRepository.updateProfile(any())
+            userRepository.updateUser(any())
         } returns flowOf(Result.Success(Unit))
 
         // when

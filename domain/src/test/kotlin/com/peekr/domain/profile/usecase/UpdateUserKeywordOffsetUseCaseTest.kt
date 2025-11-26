@@ -3,7 +3,7 @@ package com.peekr.domain.profile.usecase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchOffset
-import com.peekr.domain.profile.repository.ProfileRepository
+import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -13,14 +13,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class UpdateUserKeywordOffsetUseCaseTest {
-    private val profileRepository: ProfileRepository = mockk()
-    private val usecase = UpdateUserKeywordOffsetUseCase(profileRepository)
+    private val userKeywordRepository: UserKeywordRepository = mockk()
+    private val usecase = UpdateUserKeywordOffsetUseCase(userKeywordRepository)
 
     @Test
     fun `사용자 키워드 오프셋 수정 성공 테스트`() = runTest {
         // given
         every {
-            profileRepository.updateOffset(TestUserKeywordId, TestPatchOffset)
+            userKeywordRepository.patchOffset(TestUserKeywordId, TestPatchOffset)
         } returns flowOf(Result.Success(TestPatchOffset))
 
         // when
