@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GetFileUploadPresignedUrlUseCaseTest {
@@ -30,8 +29,8 @@ class GetFileUploadPresignedUrlUseCaseTest {
         val result = usecase("fileName", Mime.IMAGE_JPEG).last()
 
         // then
-        assertTrue(result is Result.Success)
-        assertEquals(TestPresignedUrl, (result as Result.Success).data)
+        val success = (result as Result.Success)
+        assertEquals(TestPresignedUrl, success.data)
     }
 
     @Test
@@ -46,10 +45,10 @@ class GetFileUploadPresignedUrlUseCaseTest {
         val result = usecase("fileName", Mime.IMAGE_JPEG).last()
 
         // then
-        assertTrue(result is Result.Error)
+        val errorResult = result as Result.Error
         assertEquals(
-            RegisterErrorType.Unexpected(null),
-            (result as Result.Error).error,
+            RegisterErrorType.CommonError(expectedError),
+            errorResult.error,
         )
     }
 

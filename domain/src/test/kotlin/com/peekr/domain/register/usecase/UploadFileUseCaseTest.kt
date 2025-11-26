@@ -47,7 +47,7 @@ class UploadFileUseCaseTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            RegisterErrorType.Unexpected(null),
+            RegisterErrorType.CommonError(expectedError),
             (result as Result.Error).error,
         )
     }

@@ -9,6 +9,7 @@ import com.peekr.domain.login.error.LoginErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 
@@ -39,4 +40,5 @@ class LoginIntegrationUseCase @Inject constructor(
                     }
                 }
             }
+            .catch { emit(Result.Error(LoginErrorType.LoginFailed)) }
 }

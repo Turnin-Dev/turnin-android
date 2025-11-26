@@ -99,7 +99,10 @@ class LoginIntegrationUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(expectedError, (result as Result.Error).error)
+        assertEquals(
+            LoginErrorType.CommonError(expectedError),
+            (result as Result.Error).error,
+        )
 
         verify { loginUseCase(MockLoginCredentials) }
         verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
@@ -109,7 +112,7 @@ class LoginIntegrationUseCaseTest {
     fun `예외 발생 시 catch에서 LoginFailed 에러를 반환한다`() = runTest {
         // given - Flow 내에서 예외 발생
         every { loginUseCase(any()) } returns flow {
-            throw RuntimeException("예상치 못한 에러")
+            throw RuntimeException("예상하지 못한 에러")
         }
 
         // when

@@ -35,9 +35,9 @@ class NetworkCallTest {
 
         val client = OkHttpClient
             .Builder()
-            .readTimeout(2000, TimeUnit.MICROSECONDS)
-            .connectTimeout(2000, TimeUnit.MICROSECONDS)
-            .writeTimeout(2000, TimeUnit.MICROSECONDS)
+            .readTimeout(100, TimeUnit.MILLISECONDS)
+            .connectTimeout(100, TimeUnit.MILLISECONDS)
+            .writeTimeout(100, TimeUnit.MILLISECONDS)
             .build()
 
         apiService =
