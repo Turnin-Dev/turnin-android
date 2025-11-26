@@ -18,7 +18,6 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
-import com.peekr.core.domain.common.toErrorCode
 import com.peekr.core.domain.model.DisplayId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -78,7 +77,6 @@ class AuthRepositoryImpl @Inject constructor(
                         Result.Error(
                             error = error,
                             message = result.message,
-                            code = result.code?.toErrorCode(),
                         ),
                     )
                 }
