@@ -16,7 +16,7 @@ internal class GetFileUploadPresignedUrlUseCase @Inject constructor(
     operator fun invoke(fileName: String, mime: Mime): Flow<Result<PresignedUrl, RegisterErrorType>> =
         fileRepository
             .getFileUploadPresignedUrl(fileName, mime)
-            .mapError { fileErrorType ->
-                RegisterErrorType.FileError(fileErrorType)
+            .mapError { commonError ->
+                RegisterErrorType.CommonError(commonError)
             }
 }

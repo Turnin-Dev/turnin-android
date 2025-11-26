@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.validation.ValidationResult
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.feature.image.toByteArray
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
 import com.peekr.domain.register.error.RegisterErrorType

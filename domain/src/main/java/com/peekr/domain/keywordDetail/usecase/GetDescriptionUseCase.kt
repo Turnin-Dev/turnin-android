@@ -31,8 +31,8 @@ class GetDescriptionUseCase @Inject constructor(
         emitAll(
             userKeywordRepository
                 .getDescription(userKeywordIdVO)
-                .mapError { userKeywordErrorType ->
-                    KeywordDetailErrorType.UserKeywordError(userKeywordErrorType)
+                .mapError { commonError ->
+                    KeywordDetailErrorType.CommonError(commonError)
                 },
         )
     }

@@ -2,7 +2,6 @@ package com.peekr.domain.register.error
 
 import com.peekr.core.domain.common.BaseError
 import com.peekr.core.domain.common.CommonErrorType
-import com.peekr.core.domain.file.FileErrorType
 
 sealed interface RegisterErrorType : BaseError {
     /** 사용자 표시 ID를 사용할 수 없는 에러 */
@@ -17,8 +16,6 @@ sealed interface RegisterErrorType : BaseError {
     /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
     data class Unexpected(val cause: Throwable?) : RegisterErrorType
 
-    // ------------------------------ Other Error Type ------------------------------
-    data class FileError(val error: FileErrorType) : RegisterErrorType
-
+    // ------------------------------ Error Mapping ------------------------------
     data class CommonError(val error: CommonErrorType) : RegisterErrorType
 }

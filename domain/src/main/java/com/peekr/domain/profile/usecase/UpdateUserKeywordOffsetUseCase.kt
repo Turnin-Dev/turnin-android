@@ -31,7 +31,7 @@ class UpdateUserKeywordOffsetUseCase @Inject constructor(
     ): Flow<Result<PatchOffset, ProfileErrorType>> =
         userKeywordRepository
             .patchOffset(userKeywordId, PatchOffset(offsetX.toDouble(), offsetY.toDouble()))
-            .mapError { userKeywordErrorType ->
-                ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            .mapError { commonError ->
+                ProfileErrorType.CommonError(commonError)
             }
 }

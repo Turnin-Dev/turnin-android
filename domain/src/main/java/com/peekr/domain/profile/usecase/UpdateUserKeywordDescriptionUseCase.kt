@@ -30,8 +30,8 @@ class UpdateUserKeywordDescriptionUseCase @Inject constructor(
     ): Flow<Result<PatchDescription, ProfileErrorType>> =
         userKeywordRepository
             .patchDescription(userKeywordId, PatchDescription(KeywordDescription(description)))
-            .mapError { userKeywordError ->
-                ProfileErrorType.UserKeywordError(userKeywordError)
+            .mapError { commonError ->
+                ProfileErrorType.CommonError(commonError)
             }
     // 만약, KeywordDescription에서 유효성 검사가 추가 된다면 예외 처리를 추가 해야한다.
 }

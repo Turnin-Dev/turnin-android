@@ -3,8 +3,6 @@ package com.peekr.domain.profile.error
 import com.peekr.core.domain.common.BaseError
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.validation.ValidationErrorType
-import com.peekr.core.domain.user.error.UserErrorType
-import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 
 sealed interface ProfileErrorType : BaseError {
     data object UserNotFound : ProfileErrorType
@@ -16,10 +14,6 @@ sealed interface ProfileErrorType : BaseError {
 
     // ------------------------------ Other Error Type ------------------------------
     data class CommonError(val error: CommonErrorType) : ProfileErrorType
-
-    data class UserError(val error: UserErrorType) : ProfileErrorType
-
-    data class UserKeywordError(val error: UserKeywordErrorType) : ProfileErrorType
 
     data class ValidationError(val error: ValidationErrorType) : ProfileErrorType
 }

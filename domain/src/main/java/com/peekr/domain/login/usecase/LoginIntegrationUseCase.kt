@@ -4,7 +4,6 @@ import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
-import com.peekr.core.domain.common.coroutine.mapSuccess
 import com.peekr.core.domain.common.mapError
 import com.peekr.domain.login.error.LoginErrorType
 import javax.inject.Inject
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.flowOf
  * 로그인과 동시에 리프레쉬 토큰 저장을 수행한다.
  *
  * @see flatMapResult
- * @see mapSuccess
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginIntegrationUseCase @Inject constructor(

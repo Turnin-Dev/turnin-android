@@ -6,11 +6,11 @@ import com.peekr.core.data.source.network.dto.userKeyword.request.toDataModel
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
@@ -25,10 +25,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
-    override fun getUserKeywords(): Flow<Result<UserKeywords, UserKeywordErrorType>> =
-        safeResultFlow<UserKeywords, UserKeywordErrorType>(
+    override fun getUserKeywords(): Flow<Result<UserKeywords, CommonErrorType>> =
+        safeResultFlow<UserKeywords, CommonErrorType>(
             dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
@@ -38,7 +38,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
@@ -46,10 +46,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
     override fun getDescription(
         userKeywordId: UserKeywordId,
-    ): Flow<Result<KeywordDescription, UserKeywordErrorType>> =
-        safeResultFlow<KeywordDescription, UserKeywordErrorType>(
+    ): Flow<Result<KeywordDescription, CommonErrorType>> =
+        safeResultFlow<KeywordDescription, CommonErrorType>(
             dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
@@ -59,16 +59,16 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
 
-    override fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, UserKeywordErrorType>> =
-        safeResultFlow<UserKeyword, UserKeywordErrorType>(
+    override fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, CommonErrorType>> =
+        safeResultFlow<UserKeyword, CommonErrorType>(
             dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
@@ -78,7 +78,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
@@ -87,10 +87,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
     override fun patchOffset(
         userKeywordId: UserKeywordId,
         patchOffset: PatchOffset,
-    ): Flow<Result<PatchOffset, UserKeywordErrorType>> =
-        safeResultFlow<PatchOffset, UserKeywordErrorType>(
+    ): Flow<Result<PatchOffset, CommonErrorType>> =
+        safeResultFlow<PatchOffset, CommonErrorType>(
             dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
@@ -105,7 +105,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
@@ -114,10 +114,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
     override fun patchDescription(
         userKeywordId: UserKeywordId,
         patchDescription: PatchDescription,
-    ): Flow<Result<PatchDescription, UserKeywordErrorType>> =
-        safeResultFlow<PatchDescription, UserKeywordErrorType>(
+    ): Flow<Result<PatchDescription, CommonErrorType>> =
+        safeResultFlow<PatchDescription, CommonErrorType>(
             dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
@@ -132,7 +132,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
@@ -140,10 +140,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
     override fun deleteUserKeyword(
         userKeywordId: UserKeywordId,
-    ): Flow<Result<Unit, UserKeywordErrorType>> =
-        safeResultFlow<Unit, UserKeywordErrorType>(
+    ): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(
             dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { UserKeywordErrorType.Unexpected(it) },
+            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
@@ -153,7 +153,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserKeywordErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }

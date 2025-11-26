@@ -35,8 +35,8 @@ class UpdateDescriptionUseCase @Inject constructor(
         val patchDescription = PatchDescription(descriptionVO)
         emitAll(
             userKeywordRepository.patchDescription(userKeywordIdVO, patchDescription)
-                .mapError { userKeywordErrorType ->
-                    KeywordDetailErrorType.UserKeywordError(userKeywordErrorType)
+                .mapError { commonError ->
+                    KeywordDetailErrorType.CommonError(commonError)
                 },
         )
     }

@@ -9,7 +9,6 @@ import com.peekr.core.data.source.network.dto.auth.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.Register
@@ -70,7 +69,7 @@ class AuthRepositoryImplTest {
             // then
             Assert.assertTrue(result is Result.Error)
             Assert.assertEquals(
-                AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+                expectedError.toCommonErrorType(),
                 (result as Result.Error).error,
             )
             Assert.assertEquals(result.message, mockErrorMessage)
@@ -119,7 +118,7 @@ class AuthRepositoryImplTest {
             // then
             Assert.assertTrue(result is Result.Error)
             Assert.assertEquals(
-                AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+                expectedError.toCommonErrorType(),
                 (result as Result.Error).error,
             )
             Assert.assertEquals(result.message, mockErrorMessage)
@@ -168,7 +167,7 @@ class AuthRepositoryImplTest {
             // then
             Assert.assertTrue(result is Result.Error)
             Assert.assertEquals(
-                AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+                expectedError.toCommonErrorType(),
                 (result as Result.Error).error,
             )
             Assert.assertEquals(result.message, mockErrorMessage)
@@ -204,7 +203,7 @@ class AuthRepositoryImplTest {
         // then
         Assert.assertTrue(result is Result.Error)
         Assert.assertEquals(
-            AuthErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
         Assert.assertEquals(result.message, mockErrorMessage)

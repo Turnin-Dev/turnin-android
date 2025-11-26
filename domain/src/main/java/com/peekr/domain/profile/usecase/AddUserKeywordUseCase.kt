@@ -47,8 +47,8 @@ class AddUserKeywordUseCase @Inject constructor(
                 emitAll(
                     userKeywordRepository
                         .createUserKeyword(createUserKeyword)
-                        .mapError { userKeywordErrorType ->
-                            ProfileErrorType.UserKeywordError(userKeywordErrorType)
+                        .mapError { commonError ->
+                            ProfileErrorType.CommonError(commonError)
                         },
                 )
             } else {

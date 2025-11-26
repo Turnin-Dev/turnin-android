@@ -1,12 +1,11 @@
 package com.peekr.domain.profile.usecase
 
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.combineWithResult
 import com.peekr.core.domain.common.mapError
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.Profile
@@ -42,10 +41,9 @@ class GetUserProfileUseCase @Inject constructor(
                 keywords = userKeywords.data.keywords,
             )
             Result.Success(profile)
-        }.mapError { baseError ->
-            when (baseError) {
-                is UserErrorType -> ProfileErrorType.UserError(baseError)
-                is UserKeywordErrorType -> ProfileErrorType.UserKeywordError(baseError)
+        }.mapError { commonError ->
+            when (commonError) {
+                is CommonErrorType -> ProfileErrorType.CommonError(commonError)
                 else -> ProfileErrorType.Unexpected(null)
             }
         }

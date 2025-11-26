@@ -1,5 +1,6 @@
 package com.peekr.core.domain.file
 
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
@@ -16,7 +17,7 @@ interface FileRepository {
     fun getFileUploadPresignedUrl(
         fileName: String,
         mime: Mime,
-    ): Flow<Result<PresignedUrl, FileErrorType>>
+    ): Flow<Result<PresignedUrl, CommonErrorType>>
 
     /**
      * 파일 업로드
@@ -33,5 +34,5 @@ interface FileRepository {
         file: ByteArray,
         fileName: String,
         mime: Mime,
-    ): Flow<Result<String?, FileErrorType>>
+    ): Flow<Result<String?, CommonErrorType>>
 }

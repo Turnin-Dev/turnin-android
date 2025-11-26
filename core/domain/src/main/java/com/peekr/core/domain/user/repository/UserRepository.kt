@@ -1,9 +1,9 @@
 package com.peekr.core.domain.user.repository
 
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.MyProfile
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
@@ -22,33 +22,33 @@ interface UserRepository {
      *
      * @return [User]
      */
-    fun getUser(): Flow<Result<User, UserErrorType>>
+    fun getUser(): Flow<Result<User, CommonErrorType>>
 
     /**
      * 나의 프로필 조회
      *
      * @return [MyProfile]
      */
-    fun getMyProfile(): Flow<Result<MyProfile, UserErrorType>>
+    fun getMyProfile(): Flow<Result<MyProfile, CommonErrorType>>
 
     /**
      * 사용자 프로필 조회
      *
      * @return [UserProfile]
      */
-    fun getUserProfile(userId: UserId): Flow<Result<UserProfile, UserErrorType>>
+    fun getUserProfile(userId: UserId): Flow<Result<UserProfile, CommonErrorType>>
 
     /**
      * 사용자 수정
      *
      * @param patch 사용자 수정 요청
      */
-    fun updateUser(patch: UserPatch): Flow<Result<Unit, UserErrorType>>
+    fun updateUser(patch: UserPatch): Flow<Result<Unit, CommonErrorType>>
 
     /**
      * 사용자 소개글 수정
      *
      * @param introduce 소개글
      */
-    fun updateIntroduce(introduce: Introduce): Flow<Result<Unit, UserErrorType>>
+    fun updateIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>>
 }

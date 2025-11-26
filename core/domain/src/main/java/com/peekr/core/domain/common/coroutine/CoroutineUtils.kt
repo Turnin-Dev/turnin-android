@@ -4,12 +4,15 @@ import com.peekr.core.domain.common.BaseError
 import com.peekr.core.domain.common.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 /**
  * Coroutine의 [flatMapLatest]를 사용해서 두 개의 flow를 연속 호출하기 위해 사용한다.
+ *
+ * 간단한 로직에는 [flatMapConcat]을 사용해도 무방하다.
  *
  * @param transform 두 개의 flow를 호출하여 [T]타입을 수신 후 [R]타입으로 반환한다.
  * ([R]타입은 Flow 타입이고 Result로 래핑되어 있다.)

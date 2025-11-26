@@ -1,7 +1,7 @@
 package com.peekr.domain.register.usecase
 
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.file.FileErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
@@ -37,7 +37,7 @@ class GetFileUploadPresignedUrlUseCaseTest {
     @Test
     fun `사전 정의된 url 요청 시 에러가 발생하면 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = FileErrorType.Unexpected(null)
+        val expectedError = CommonErrorType.Unexpected(null)
         every {
             repository.getFileUploadPresignedUrl(any(), any())
         } returns flowOf(Result.Error(expectedError))

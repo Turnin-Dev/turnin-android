@@ -21,7 +21,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class GetLoginIfUserExistsUseCaseTest {
+class GetExistingLoginCredentialsUseCaseTest {
     private lateinit var getExistingLoginCredentialsUseCase: GetExistingLoginCredentialsUseCase
     private val socialLoginUseCase: SocialLoginUseCase = mockk()
     private val authRepository: AuthRepository = mockk()

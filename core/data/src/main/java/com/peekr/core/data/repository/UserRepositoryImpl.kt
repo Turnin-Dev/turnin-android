@@ -9,11 +9,11 @@ import com.peekr.core.data.source.network.dto.user.request.toDataModel
 import com.peekr.core.data.source.network.dto.user.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.user.error.UserErrorType
 import com.peekr.core.domain.user.model.MyProfile
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
@@ -35,8 +35,8 @@ class UserRepositoryImpl @Inject constructor(
         return UserId(userId)
     }
 
-    override fun getUser(): Flow<Result<User, UserErrorType>> =
-        safeResultFlow<User, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {
+    override fun getUser(): Flow<Result<User, CommonErrorType>> =
+        safeResultFlow<User, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = userNetworkDataSource.getUser()) {
                 is NetworkResult.Success -> {
@@ -44,14 +44,14 @@ class UserRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
 
-    override fun getMyProfile(): Flow<Result<MyProfile, UserErrorType>> =
-        safeResultFlow<MyProfile, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {
+    override fun getMyProfile(): Flow<Result<MyProfile, CommonErrorType>> =
+        safeResultFlow<MyProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = userNetworkDataSource.getMyProfile()) {
                 is NetworkResult.Success -> {
@@ -59,14 +59,14 @@ class UserRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
 
-    override fun getUserProfile(userId: UserId): Flow<Result<UserProfile, UserErrorType>> =
-        safeResultFlow<UserProfile, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {
+    override fun getUserProfile(userId: UserId): Flow<Result<UserProfile, CommonErrorType>> =
+        safeResultFlow<UserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = userNetworkDataSource.getUserProfile(userId)) {
                 is NetworkResult.Success -> {
@@ -74,14 +74,14 @@ class UserRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
 
-    override fun updateUser(patch: UserPatch): Flow<Result<Unit, UserErrorType>> =
-        safeResultFlow<Unit, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {
+    override fun updateUser(patch: UserPatch): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = userNetworkDataSource.updateUser(patch.toDataModel())) {
                 is NetworkResult.Success -> {
@@ -89,14 +89,14 @@ class UserRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
 
-    override fun updateIntroduce(introduce: Introduce): Flow<Result<Unit, UserErrorType>> =
-        safeResultFlow<Unit, UserErrorType>(ioDispatcher, { UserErrorType.Unexpected(it) }) {
+    override fun updateIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             val introducePatchRequest = IntroducePatchRequest(introduce.value)
             when (val result = userNetworkDataSource.updateIntroduce(introducePatchRequest)) {
@@ -105,7 +105,7 @@ class UserRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = UserErrorType.CommonError(result.error.toCommonErrorType())
+                    val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }
             }

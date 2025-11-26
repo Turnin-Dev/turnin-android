@@ -3,6 +3,7 @@ package com.peekr.presentation.profile.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
@@ -12,7 +13,6 @@ import com.peekr.core.presentation.ui.util.UiText.StringResource
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.ProfileUseCases
 import com.peekr.presentation.R
-import com.peekr.presentation.login.error.asUiText
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
