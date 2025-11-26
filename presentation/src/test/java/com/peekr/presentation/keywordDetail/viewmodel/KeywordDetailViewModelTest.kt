@@ -7,12 +7,12 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.user.usecase.GetUserIdUseCase
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
-import com.peekr.domain.keywordDetail.usecase.GetUserIdUseCase
 import com.peekr.domain.keywordDetail.usecase.UpdateDescriptionUseCase
 import com.peekr.presentation.keywordDetail.error.asUiText
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract

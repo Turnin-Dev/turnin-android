@@ -2,8 +2,9 @@ package com.peekr.domain.keywordDetail.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.domain.keywordDetail.repository.KeywordDetailRepository
+import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -13,21 +14,21 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class UpdateDescriptionUseCaseTest {
-    private val keywordDetailRepository: KeywordDetailRepository = mockk()
-    private val usecase = UpdateDescriptionUseCase(keywordDetailRepository)
+    private val userKeywordRepository: UserKeywordRepository = mockk()
+    private val usecase = UpdateDescriptionUseCase(userKeywordRepository)
 
     @Test
     fun `키워드 설명 수정 성공 테스트`() = runTest {
         // given
         every {
-            keywordDetailRepository.updateDescription(
-                userKeywordId = TEST_USER_KEYWORD_ID,
-                description = TestDescription.value,
+            userKeywordRepository.patchDescription(
+                userKeywordId = TestUserKeywordId,
+                patchDescription = TestPatchDescription,
             )
         } returns flowOf(Result.Success(TestPatchDescription))
 
         // when
-        val result = usecase(TEST_USER_KEYWORD_ID, TestDescription.value).last()
+        val result = usecase(TestUserKeywordId.value, TestDescription.value).last()
 
         // then
         val success = result as Result.Success
@@ -35,7 +36,7 @@ class UpdateDescriptionUseCaseTest {
     }
 
     companion object {
-        private const val TEST_USER_KEYWORD_ID = 1L
+        private val TestUserKeywordId = UserKeywordId(1L)
         private val TestDescription = KeywordDescription("sample")
         private val TestPatchDescription = PatchDescription(TestDescription)
     }
