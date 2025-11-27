@@ -20,10 +20,12 @@ sealed interface Result<out T, out E : BaseError> {
      * 실패 시
      *
      * @property error 에러 타입
+     * @property code 계약된 에러 코드
      * @property message 디버깅 & 로그용 메시지
      */
     data class Error<out E : BaseError>(
         val error: E,
+        val code: ContractErrorCode = ContractErrorCode.Unexpected,
         val message: String? = null,
     ) : Result<Nothing, E>
 
