@@ -62,8 +62,8 @@ import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
 import com.peekr.core.presentation.feature.keyword.graph.KeywordGraphView
 import com.peekr.core.presentation.ui.model.UiUserKeyword
-import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
 import com.peekr.presentation.profile.state.ProfileContract
@@ -79,13 +79,13 @@ internal fun ProfileScreen(
     modifier: Modifier = Modifier,
     profile: UiProfile?,
     loading: Boolean,
+    fullScreenLoading: Boolean,
+    error: UiText?,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
 ) {
-    LockScreenOrientation()
-
     Box(modifier) {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
@@ -153,7 +153,7 @@ internal fun ProfileScreen(
             )
         }
 
-        if (loading) {
+        if (fullScreenLoading && error != null) {
             PeekrLoadingScreen()
         }
     }
@@ -581,6 +581,8 @@ private fun ProfileScreenPreview() {
                 keywords = UiUserKeyword.samples,
             ),
             loading = false,
+            fullScreenLoading = false,
+            error = null,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _ -> },
@@ -597,6 +599,8 @@ private fun ProfileScreenShimmerPreview() {
             modifier = Modifier.fillMaxSize(),
             profile = null,
             loading = false,
+            fullScreenLoading = false,
+            error = null,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _ -> },

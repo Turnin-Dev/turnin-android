@@ -17,6 +17,7 @@ import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.feature.keyword.KeywordNameType
 import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
+import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.ProfileContract
 import com.peekr.presentation.profile.view.AddKeywordModal
@@ -31,6 +32,9 @@ import com.peekr.presentation.profile.viewmodel.ProfileViewModel
 internal fun ProfileRoute(
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
 ) {
+    // Lock Orientation
+    LockScreenOrientation()
+
     val viewModel: ProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -62,7 +66,7 @@ internal fun ProfileRoute(
     AddKeywordModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isAddKeywordModalOpen,
-        loading = uiState.loading,
+        loading = uiState.fullScreenLoading,
         keywordTextFieldState = uiState.keywordTextField,
         onKeywordTextChanged = {
             viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(it))
@@ -127,6 +131,8 @@ internal fun ProfileRoute(
             .background(PeekrTheme.colorScheme.backgroundNormal),
         profile = uiState.profile,
         loading = uiState.loading,
+        fullScreenLoading = uiState.fullScreenLoading,
+        error = uiState.error,
         onUiEvent = viewModel::processEvent,
         onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
         onOpenNodeOptionModal = { userKeywordId, keyword ->
