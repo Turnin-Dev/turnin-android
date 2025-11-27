@@ -11,8 +11,8 @@ import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
+import com.peekr.domain.keywordDetail.usecase.CheckMyKeywordUseCase
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
-import com.peekr.domain.keywordDetail.usecase.GetUserIdUseCase
 import com.peekr.domain.keywordDetail.usecase.UpdateDescriptionUseCase
 import com.peekr.presentation.keywordDetail.error.asUiText
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
@@ -29,7 +29,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
     KeywordDetailContract.UiEffect,
     KeywordDetailViewModel,
 >() {
-    private val getUserIdUseCase: GetUserIdUseCase = mockk()
+    private val checkMyKeywordUseCase: CheckMyKeywordUseCase = mockk()
     private val getDescriptionUseCase: GetDescriptionUseCase = mockk()
     private val updateDescriptionUseCase: UpdateDescriptionUseCase = mockk()
     private lateinit var savedStateHandle: SavedStateHandle
@@ -38,7 +38,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
     @Before
     fun setUp() {
         savedStateHandle = TestSavedStateHandle
-        every { getUserIdUseCase() } returns flow {
+        every { checkMyKeywordUseCase() } returns flow {
             emit(Result.Loading)
             emit(Result.Success(TestUserId))
         }
@@ -53,7 +53,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         } returns flowOf(Result.Success(TestPatchDescription))
 
         viewModel = KeywordDetailViewModel(
-            getUserIdUseCase = getUserIdUseCase,
+            checkMyKeywordUseCase = checkMyKeywordUseCase,
             getDescriptionUseCase = getDescriptionUseCase,
             updateDescriptionUseCase = updateDescriptionUseCase,
             savedStateHandle = savedStateHandle,
@@ -77,7 +77,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
     fun `초기 데이터 준비 실패 테스트 - NavArgs 값 중 존재하지 않는 값이 있을 때 에러를 발생시킨다`() {
         savedStateHandle = SavedStateHandle()
         viewModel = KeywordDetailViewModel(
-            getUserIdUseCase = getUserIdUseCase,
+            checkMyKeywordUseCase = checkMyKeywordUseCase,
             getDescriptionUseCase = getDescriptionUseCase,
             updateDescriptionUseCase = updateDescriptionUseCase,
             savedStateHandle = savedStateHandle,

@@ -1,9 +1,9 @@
 package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
-import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.RegisterResult
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
@@ -54,7 +54,7 @@ class RegisterIntegrationUseCaseTest {
     @Test
     fun `회원가입시 register 유스케이스에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = AuthErrorType.Unexpected(null)
+        val expectedError = CommonErrorType.Unexpected(null)
         every {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Success(TestRegisterResult))
@@ -75,7 +75,7 @@ class RegisterIntegrationUseCaseTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            RegisterErrorType.AuthError(expectedError),
+            RegisterErrorType.CommonError(expectedError),
             (result as Result.Error).error,
         )
     }

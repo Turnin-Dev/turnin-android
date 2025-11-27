@@ -1,9 +1,9 @@
 package com.peekr.core.domain.userKeyword.repository
 
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
@@ -16,21 +16,21 @@ interface UserKeywordRepository {
     /**
      * 사용자 키워드 리스트 조회
      */
-    fun getUserKeywords(): Flow<Result<UserKeywords, UserKeywordErrorType>>
+    fun getUserKeywords(): Flow<Result<UserKeywords, CommonErrorType>>
 
     /**
      * 사용자 키워드 설명 조회
      */
     fun getDescription(
         userKeywordId: UserKeywordId,
-    ): Flow<Result<KeywordDescription, UserKeywordErrorType>>
+    ): Flow<Result<KeywordDescription, CommonErrorType>>
 
     /**
      * 사용자 키워드 생성
      *
      * @param create 사용자 키워드 생성 요청 객체
      */
-    fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, UserKeywordErrorType>>
+    fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, CommonErrorType>>
 
     /**
      * 사용자 키워드 오프셋 수정
@@ -41,7 +41,7 @@ interface UserKeywordRepository {
     fun patchOffset(
         userKeywordId: UserKeywordId,
         patchOffset: PatchOffset,
-    ): Flow<Result<PatchOffset, UserKeywordErrorType>>
+    ): Flow<Result<PatchOffset, CommonErrorType>>
 
     /**
      * 사용자 키워드 설명 수정
@@ -52,7 +52,7 @@ interface UserKeywordRepository {
     fun patchDescription(
         userKeywordId: UserKeywordId,
         patchDescription: PatchDescription,
-    ): Flow<Result<PatchDescription, UserKeywordErrorType>>
+    ): Flow<Result<PatchDescription, CommonErrorType>>
 
     /**
      * 사용자 키워드 삭제
@@ -61,5 +61,5 @@ interface UserKeywordRepository {
      */
     fun deleteUserKeyword(
         userKeywordId: UserKeywordId,
-    ): Flow<Result<Unit, UserKeywordErrorType>>
+    ): Flow<Result<Unit, CommonErrorType>>
 }

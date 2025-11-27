@@ -4,16 +4,18 @@ import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.domain.keywordDetail.usecase.CheckMyKeywordUseCase
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
-import com.peekr.domain.keywordDetail.usecase.GetUserIdUseCase
 import com.peekr.domain.keywordDetail.usecase.UpdateDescriptionUseCase
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.error.asUiText
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
+import com.peekr.presentation.login.error.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
@@ -22,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class KeywordDetailViewModel @Inject constructor(
-    private val getUserIdUseCase: GetUserIdUseCase,
+    private val checkMyKeywordUseCase: CheckMyKeywordUseCase,
     private val getDescriptionUseCase: GetDescriptionUseCase,
     private val updateDescriptionUseCase: UpdateDescriptionUseCase,
     savedStateHandle: SavedStateHandle,
@@ -132,7 +134,7 @@ class KeywordDetailViewModel @Inject constructor(
     }
 
     private suspend fun checkMyKeyword() {
-        getUserIdUseCase().collect { result ->
+        checkMyKeywordUseCase().collect { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {

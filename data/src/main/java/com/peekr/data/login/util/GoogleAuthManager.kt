@@ -16,10 +16,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.domain.auth.error.AuthErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.data.BuildConfig
+import com.peekr.domain.login.error.LoginErrorType
 import com.peekr.domain.login.util.AuthManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,7 +30,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.Companion.create(context)
 
-    override fun signIn(): Flow<Result<ProviderId, AuthErrorType>> = flow {
+    override fun signIn(): Flow<Result<ProviderId, LoginErrorType>> = flow {
         try {
             val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
                 .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
@@ -49,16 +49,16 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             emit(signInWithCredentialResponse(credentialResponse))
         } catch (e: GoogleIdTokenParsingException) {
             AppLogger.e(tag, "Failed to parse Google ID token.")
-            emit(Result.Error(AuthErrorType.IdTokenParsing, e.message))
+            emit(Result.Error(LoginErrorType.IdTokenParsing, e.message))
         } catch (e: GetCredentialCancellationException) {
-            emit(Result.Error(AuthErrorType.Cancellation, e.message))
+            emit(Result.Error(LoginErrorType.Cancellation, e.message))
         } catch (e: Exception) {
             AppLogger.e(tag, "Unexpected error during Google sign-in.")
-            emit(Result.Error(AuthErrorType.Unexpected(e), e.message))
+            emit(Result.Error(LoginErrorType.Unexpected(e), e.message))
         }
     }
 
-    override fun signOut(): Flow<Result<Unit, AuthErrorType>> = flow {
+    override fun signOut(): Flow<Result<Unit, LoginErrorType>> = flow {
         try {
             auth.signOut()
             credentialManager.clearCredentialState(
@@ -68,15 +68,15 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             emit(Result.Success(Unit))
         } catch (e: Exception) {
             AppLogger.e(tag, e, "Failed to Google sign-out")
-            emit(Result.Error(AuthErrorType.Unexpected(e), e.message))
+            emit(Result.Error(LoginErrorType.Unexpected(e), e.message))
         }
     }
 
-    override fun deleteAccount(): Flow<Result<Unit, AuthErrorType>> = flow {
+    override fun deleteAccount(): Flow<Result<Unit, LoginErrorType>> = flow {
         val currentUser = auth.currentUser
 
         if (currentUser == null) {
-            emit(Result.Error(AuthErrorType.UserNotFound))
+            emit(Result.Error(LoginErrorType.UserNotFound))
         } else {
             try {
                 val task = currentUser.delete()
@@ -88,11 +88,11 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                     AppLogger.i(tag, "Google account deleted.")
                     emit(Result.Success(Unit))
                 } else {
-                    emit(Result.Error(AuthErrorType.DeleteAccountFailed))
+                    emit(Result.Error(LoginErrorType.DeleteAccountFailed))
                 }
             } catch (e: Exception) {
                 AppLogger.e(tag, e, "Failed to delete Google account.")
-                emit(Result.Error(AuthErrorType.DeleteAccountFailed, e.message))
+                emit(Result.Error(LoginErrorType.DeleteAccountFailed, e.message))
             }
         }
     }
@@ -100,7 +100,7 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
     // CredentialResponse를 통해 로그인을 진행하고 결과 값(사용자 uid)을 반환한다.
     private suspend fun signInWithCredentialResponse(
         credentialResponse: GetCredentialResponse,
-    ): Result<ProviderId, AuthErrorType> =
+    ): Result<ProviderId, LoginErrorType> =
         when (val credential = credentialResponse.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -109,18 +109,18 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                         AppLogger.i(tag, "Firebase user fetched successfully.")
                         val providerId = ProviderId(firebaseUser.uid)
                         Result.Success(providerId)
-                    } ?: Result.Error(AuthErrorType.UserNotFound)
+                    } ?: Result.Error(LoginErrorType.UserNotFound)
                 } else {
                     // 올바르지 않은 형태의 토큰
                     AppLogger.w(tag, "Google token type invalid.")
-                    Result.Error(AuthErrorType.TokenTypeInvalid)
+                    Result.Error(LoginErrorType.TokenTypeInvalid)
                 }
             }
 
             else -> {
                 // 올바르지 않은 형태의 토큰
                 AppLogger.w(tag, "Google token type invalid.")
-                Result.Error(AuthErrorType.TokenTypeInvalid)
+                Result.Error(LoginErrorType.TokenTypeInvalid)
             }
         }
 

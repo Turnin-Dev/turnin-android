@@ -8,6 +8,6 @@ import com.peekr.presentation.R
 
 internal fun KeywordDetailErrorType.asUiText(): UiText = when (this) {
     is KeywordDetailErrorType.Unexpected -> StringResource(R.string.keyword_detail_modal_error_unexpected)
-    is KeywordDetailErrorType.UserError -> this.error.asUiText()
-    is KeywordDetailErrorType.UserKeywordError -> this.error.asUiText()
+    is KeywordDetailErrorType.CommonError -> this.error.asUiText()
+    KeywordDetailErrorType.UserIdNotFound -> StringResource(R.string.keyword_detail_modal_error_user_id_not_found)
 }

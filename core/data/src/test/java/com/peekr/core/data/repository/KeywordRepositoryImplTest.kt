@@ -7,8 +7,8 @@ import com.peekr.core.data.source.network.dto.keyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.keyword.error.KeywordErrorType
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import com.peekr.core.domain.model.KeywordId
 import io.mockk.coEvery
@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,9 +55,9 @@ class KeywordRepositoryImplTest {
         val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        Assert.assertEquals(
-            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+        assertTrue(result is Result.Error)
+        assertEquals(
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -72,11 +74,11 @@ class KeywordRepositoryImplTest {
         val result = repository.getKeywordById(TestKeywordId).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is KeywordErrorType.Unexpected) {
-            Assert.assertEquals(
-                KeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as KeywordErrorType.Unexpected).cause?.message,
+        assertTrue(result is Result.Error)
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
+            assertEquals(
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -92,8 +94,8 @@ class KeywordRepositoryImplTest {
         val result = repository.getKeywordByName(TEST_KEYWORD).last()
 
         // then
-        Assert.assertTrue(result is Result.Success)
-        Assert.assertEquals(TestKeywordResponse.toDomainModel(), (result as Result.Success).data)
+        assertTrue(result is Result.Success)
+        assertEquals(TestKeywordResponse.toDomainModel(), (result as Result.Success).data)
     }
 
     @Test
@@ -108,9 +110,9 @@ class KeywordRepositoryImplTest {
         val result = repository.getKeywordByName(TEST_KEYWORD).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        Assert.assertEquals(
-            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+        assertTrue(result is Result.Error)
+        assertEquals(
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -125,11 +127,11 @@ class KeywordRepositoryImplTest {
         val result = repository.getKeywordByName(TEST_KEYWORD).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is KeywordErrorType.Unexpected) {
-            Assert.assertEquals(
-                KeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as KeywordErrorType.Unexpected).cause?.message,
+        assertTrue(result is Result.Error)
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
+            assertEquals(
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -145,8 +147,8 @@ class KeywordRepositoryImplTest {
         val result = repository.createKeyword(TEST_KEYWORD).last()
 
         // then
-        Assert.assertTrue(result is Result.Success)
-        Assert.assertEquals(TestKeywordResponse.toDomainModel(), (result as Result.Success).data)
+        assertTrue(result is Result.Success)
+        assertEquals(TestKeywordResponse.toDomainModel(), (result as Result.Success).data)
     }
 
     @Test
@@ -161,9 +163,9 @@ class KeywordRepositoryImplTest {
         val result = repository.createKeyword(TEST_KEYWORD).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        Assert.assertEquals(
-            KeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+        assertTrue(result is Result.Error)
+        assertEquals(
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -180,11 +182,11 @@ class KeywordRepositoryImplTest {
         val result = repository.createKeyword(TEST_KEYWORD).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is KeywordErrorType.Unexpected) {
-            Assert.assertEquals(
-                KeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as KeywordErrorType.Unexpected).cause?.message,
+        assertTrue(result is Result.Error)
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
+            assertEquals(
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }

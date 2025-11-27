@@ -2,7 +2,8 @@ package com.peekr.domain.keywordDetail.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
-import com.peekr.domain.keywordDetail.repository.KeywordDetailRepository
+import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -12,18 +13,18 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class GetDescriptionUseCaseTest {
-    private val keywordDetailRepository: KeywordDetailRepository = mockk()
-    private val usecase = GetDescriptionUseCase(keywordDetailRepository)
+    private val userKeywordRepository: UserKeywordRepository = mockk()
+    private val usecase = GetDescriptionUseCase(userKeywordRepository)
 
     @Test
     fun `키워드 설명 조회 성공 테스트`() = runTest {
         // given
         every {
-            keywordDetailRepository.getDescription(TEST_USER_KEYWORD_ID)
+            userKeywordRepository.getDescription(TestUserKeywordId)
         } returns flowOf(Result.Success(TestKeywordDescription))
 
         // when
-        val result = usecase(TEST_USER_KEYWORD_ID).last()
+        val result = usecase(TestUserKeywordId.value).last()
 
         // then
         val success = result as Result.Success
@@ -31,7 +32,7 @@ class GetDescriptionUseCaseTest {
     }
 
     companion object {
-        private const val TEST_USER_KEYWORD_ID = 1L
+        private val TestUserKeywordId = UserKeywordId(1L)
         private val TestKeywordDescription = KeywordDescription("")
     }
 }

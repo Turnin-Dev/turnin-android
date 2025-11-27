@@ -27,5 +27,5 @@ class CheckDisplayIdExistsUseCase @Inject constructor(
                     is Result.Error -> result
                     is Result.Success -> Result.Success(ExistsResult(result.data))
                 }
-            }.mapError { RegisterErrorType.AuthError(it) }
+            }.mapError { RegisterErrorType.CommonError(it) }
 }

@@ -22,7 +22,7 @@ class DeleteUserKeywordUseCase @Inject constructor(
     operator fun invoke(userKeywordId: UserKeywordId): Flow<Result<Unit, ProfileErrorType>> =
         userKeywordRepository
             .deleteUserKeyword(userKeywordId)
-            .mapError { userKeywordErrorType ->
-                ProfileErrorType.UserKeywordError(userKeywordErrorType)
+            .mapError { commonError ->
+                ProfileErrorType.CommonError(commonError)
             }
 }

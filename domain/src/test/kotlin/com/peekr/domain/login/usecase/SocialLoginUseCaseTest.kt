@@ -1,6 +1,6 @@
 package com.peekr.domain.login.usecase
 
-import com.peekr.core.domain.auth.model.Login
+import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
@@ -33,7 +33,7 @@ class SocialLoginUseCaseTest {
     fun `invoke returns Success when authManager returns Success`() = runTest {
         // Given
         val providerId = ProviderId("google-uid-123")
-        val expectedLogin = Login(SocialLoginProvider.GOOGLE, providerId)
+        val expectedLoginCredentials = LoginCredentials(SocialLoginProvider.GOOGLE, providerId)
         val flow = flowOf(Result.Success(providerId))
         every { authManager.signIn() } returns flow
 
@@ -42,7 +42,7 @@ class SocialLoginUseCaseTest {
 
         // Then
         assertTrue(result is Result.Success)
-        assertTrue((result as Result.Success).data == expectedLogin)
+        assertTrue((result as Result.Success).data == expectedLoginCredentials)
     }
 
     @Test

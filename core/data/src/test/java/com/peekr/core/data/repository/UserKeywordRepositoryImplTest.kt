@@ -13,13 +13,13 @@ import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.userKeyword.error.UserKeywordErrorType
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.PatchOffset
@@ -71,7 +71,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -89,10 +89,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
             assertEquals(
-                UserKeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -129,7 +129,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -147,10 +147,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
             assertEquals(
-                UserKeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -187,7 +187,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -205,10 +205,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
             assertEquals(
-                UserKeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -259,7 +259,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -284,10 +284,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
             assertEquals(
-                UserKeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -338,7 +338,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -363,10 +363,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
             assertEquals(
-                UserKeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }
@@ -399,7 +399,7 @@ class UserKeywordRepositoryImplTest {
         // then
         assertTrue(result is Result.Error)
         assertEquals(
-            UserKeywordErrorType.CommonError(expectedError.toCommonErrorType()),
+            expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
     }
@@ -417,10 +417,10 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is UserKeywordErrorType.Unexpected) {
+        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
             assertEquals(
-                UserKeywordErrorType.Unexpected(exception).cause?.message,
-                (result.error as UserKeywordErrorType.Unexpected).cause?.message,
+                CommonErrorType.Unexpected(exception).cause?.message,
+                (result.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
     }

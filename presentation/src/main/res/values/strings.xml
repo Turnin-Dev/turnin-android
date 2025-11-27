@@ -79,6 +79,7 @@
     <!-- KeywordDetailModal Error -->
     <string name="keyword_detail_modal_error_nav_arg_null">초기 데이터 로드에 실패했습니다. 다시 시도해주세요.</string>
     <string name="keyword_detail_modal_error_unexpected">키워드 조회에 문제가 발생했습니다. 다시 시도해주세요.</string>
+    <string name="keyword_detail_modal_error_user_id_not_found">사용자를 찾지 못했습니다.</string>
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->

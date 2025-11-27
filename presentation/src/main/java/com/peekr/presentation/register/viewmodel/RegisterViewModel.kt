@@ -15,6 +15,7 @@ import com.peekr.domain.register.usecase.RegisterIntegrationUseCase
 import com.peekr.domain.register.usecase.ValidateDisplayIdUseCase
 import com.peekr.domain.register.usecase.ValidateIntroduceUseCase
 import com.peekr.domain.register.usecase.ValidateNameUseCase
+import com.peekr.presentation.login.error.asUiText
 import com.peekr.presentation.login.mapper.toDomainModel
 import com.peekr.presentation.register.error.asUiText
 import com.peekr.presentation.register.model.UiImageFileDetail

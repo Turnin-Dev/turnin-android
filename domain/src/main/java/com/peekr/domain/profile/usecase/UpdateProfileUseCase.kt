@@ -21,5 +21,7 @@ class UpdateProfileUseCase @Inject constructor(
     operator fun invoke(patch: ProfilePatch): Flow<Result<Unit, ProfileErrorType>> =
         userRepository
             .updateUser(patch.toUserPatch())
-            .mapError { userErrorType -> ProfileErrorType.UserError(userErrorType) }
+            .mapError { commonError ->
+                ProfileErrorType.CommonError(commonError)
+            }
 }
