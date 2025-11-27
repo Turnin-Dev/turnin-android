@@ -9,6 +9,7 @@ import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Role
 import com.peekr.core.domain.model.SocialLoginProvider
@@ -201,7 +202,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestUserId)
+        val response = dataSource.getUserProfile(TestDisplayId)
 
         // then
         val successResponse = response as NetworkResult.Success
@@ -220,7 +221,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestUserId)
+        val response = dataSource.getUserProfile(TestDisplayId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -233,10 +234,10 @@ class UserNetworkDataSourceTest {
         val mockApi: UserApi = mockk()
         val exception = Exception()
         dataSource = UserNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getUserProfile(TestUserId.value) } throws exception
+        coEvery { mockApi.getUserProfile(TestDisplayId.value) } throws exception
 
         // when
-        val response = dataSource.getUserProfile(TestUserId)
+        val response = dataSource.getUserProfile(TestDisplayId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -253,7 +254,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestUserId)
+        val response = dataSource.getUserProfile(TestDisplayId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -359,14 +360,15 @@ class UserNetworkDataSourceTest {
     }
 
     companion object {
-        private val TestUserId = UserId.Companion(1L)
+        private val TestUserId = UserId(1L)
+        private val TestDisplayId = DisplayId("did")
         private val TestUserResponse =
             UserResponse(
                 id = 1L,
                 role = Role.USER,
                 provider = SocialLoginProvider.GOOGLE,
                 providerId = "pid",
-                displayId = "did",
+                displayId = TestDisplayId.value,
                 name = "name",
                 profileImageUrl = "asd",
                 introduce = "hello",
@@ -398,7 +400,7 @@ class UserNetworkDataSourceTest {
             )
         private val TestUserProfileResponse =
             UserProfileResponse(
-                displayId = "did",
+                displayId = TestDisplayId.value,
                 name = "name",
                 profileImageUrl = null,
                 introduce = "hello",

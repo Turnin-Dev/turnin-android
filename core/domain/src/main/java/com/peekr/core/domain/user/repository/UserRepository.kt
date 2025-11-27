@@ -2,6 +2,7 @@ package com.peekr.core.domain.user.repository
 
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.MyProfile
@@ -34,9 +35,11 @@ interface UserRepository {
     /**
      * 사용자 프로필 조회
      *
+     * @param displayId 사용자 표시 ID
+     *
      * @return [UserProfile]
      */
-    fun getUserProfile(userId: UserId): Flow<Result<UserProfile, CommonErrorType>>
+    fun getUserProfile(displayId: DisplayId): Flow<Result<UserProfile, CommonErrorType>>
 
     /**
      * 사용자 수정
