@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile.view
+package com.peekr.presentation.profile.view.modal
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
