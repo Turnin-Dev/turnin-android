@@ -18,6 +18,7 @@ class ProfileContract {
      * @param updatedKeywordNodesOffset 업데이트된 키워드 노드 오프셋 (내 프로필 한정)
      * @param selectedKeyword 선택된 키워드
      * @param loading 로딩 여부
+     * @param fullScreenLoading 전체 화면 로딩 여부
      * @param error 에러 메시지
      */
     data class UiState(
@@ -28,6 +29,7 @@ class ProfileContract {
         val updatedKeywordNodesOffset: Map<UserKeywordId, ChangedKeywordNodeOffset> = emptyMap<UserKeywordId, ChangedKeywordNodeOffset>(),
         val selectedKeyword: SelectedKeywordState = SelectedKeywordState(),
         val loading: Boolean = false,
+        val fullScreenLoading: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
 

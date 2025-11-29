@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile.view
+package com.peekr.presentation.profile.view.modal
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box

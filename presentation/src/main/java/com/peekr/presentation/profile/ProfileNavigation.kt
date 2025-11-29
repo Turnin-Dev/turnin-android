@@ -4,27 +4,30 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
 import com.peekr.core.presentation.common.navigation.ProfileGraph
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
-import com.peekr.presentation.keywordDetail.KeywordDetailRoute
 
-fun NavGraphBuilder.profileNavigation(navController: NavHostController) {
-    navigation<SubGraph.Profile>(startDestination = ProfileGraph.Main) {
-        composable<ProfileGraph.Main> {
-            ProfileRoute(
+fun NavGraphBuilder.profileNavigation(
+    appNavController: NavHostController,
+    bottomNavController: NavHostController,
+    test: () -> Unit,
+) {
+    navigation<SubGraph.Profile>(startDestination = ProfileGraph.Me) {
+        composable<ProfileGraph.Me> {
+            MyProfileRoute(
                 onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
-                    navController.navigateKeywordDetail(userKeywordId.value, userId.value, keyword)
+                    appNavController.navigateKeywordDetail(userKeywordId.value, userId.value, keyword)
+                },
+                onSettingClick = {
+                    test()
                 },
             )
         }
 
-        dialog<Screens.KeywordDetail> { navBackStackEntry ->
-            KeywordDetailRoute(
-                onCancel = { navController.popBackStack() },
-            )
+        composable<ProfileGraph.User> {
+            // UserProfileRoute
         }
     }
 }

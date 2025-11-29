@@ -157,11 +157,11 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getUserProfile(TestUserId)
+            dataSource.getUserProfile(TestDisplayId)
         } returns NetworkResult.Success(TestUserProfileResponse)
 
         // when
-        val result = repository.getUserProfile(TestUserId).last()
+        val result = repository.getUserProfile(TestDisplayId).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -176,11 +176,11 @@ class UserRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.Forbidden
         coEvery {
-            dataSource.getUserProfile(TestUserId)
+            dataSource.getUserProfile(TestDisplayId)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getUserProfile(TestUserId).last()
+        val result = repository.getUserProfile(TestDisplayId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -194,10 +194,10 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
-        coEvery { dataSource.getUserProfile(TestUserId) } throws exception
+        coEvery { dataSource.getUserProfile(TestDisplayId) } throws exception
 
         // when
-        val result = repository.getUserProfile(TestUserId).last()
+        val result = repository.getUserProfile(TestDisplayId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -322,12 +322,13 @@ class UserRepositoryImplTest {
 
     companion object {
         private val TestUserId = UserId(1L)
+        private val TestDisplayId = DisplayId("did")
         private val TestUserResponse = UserResponse(
             id = TestUserId.value,
             role = Role.USER,
             provider = SocialLoginProvider.GOOGLE,
             providerId = "id",
-            displayId = "id",
+            displayId = TestDisplayId.value,
             name = "name",
             profileImageUrl = "",
             introduce = "hello",
@@ -348,7 +349,7 @@ class UserRepositoryImplTest {
         )
         private val TestIntroducePatchRequest = IntroducePatchRequest("hello")
         private val TestUserProfileResponse = UserProfileResponse(
-            displayId = "id",
+            displayId = TestDisplayId.value,
             name = "name",
             profileImageUrl = "",
             introduce = "hello",

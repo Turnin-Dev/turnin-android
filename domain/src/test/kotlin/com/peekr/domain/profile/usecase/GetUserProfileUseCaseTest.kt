@@ -32,7 +32,7 @@ class GetUserProfileUseCaseTest {
     @Before
     fun setUp() {
         every {
-            userRepository.getUserProfile(TestUserId)
+            userRepository.getUserProfile(TestDisplayId)
         } returns flowOf(Result.Success(TestUserProfile))
         every {
             userKeywordRepository.getUserKeywords()
@@ -42,7 +42,7 @@ class GetUserProfileUseCaseTest {
     @Test
     fun `사용자 프로필 조회 성공 테스트`() = runTest {
         // when
-        val result = usecase(TestUserId).last()
+        val result = usecase(TestDisplayId).last()
 
         // then
         val success = result as Result.Success
@@ -52,6 +52,7 @@ class GetUserProfileUseCaseTest {
 
     companion object {
         private val TestUserId = UserId(1L)
+        private val TestDisplayId = DisplayId("did")
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
@@ -65,7 +66,7 @@ class GetUserProfileUseCaseTest {
         )
         private val TestUserKeywords = UserKeywords(listOf(TestUserKeyword))
         private val TestUserProfile = UserProfile(
-            displayId = DisplayId("did"),
+            displayId = TestDisplayId,
             name = Name("name"),
             profileImageUrl = null,
             introduce = Introduce("hello"),

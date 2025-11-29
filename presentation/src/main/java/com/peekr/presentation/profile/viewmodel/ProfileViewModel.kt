@@ -45,20 +45,27 @@ class ProfileViewModel @Inject constructor(
         // 삭제, 수정 후 해당 함수를 호출 시 변경 전 캐시 데이터를 조회할 가능성이 있을 수 있다.
         usecases.getMyProfile().collect { result ->
             when (result) {
-                Result.Loading -> updateState {
-                    this.copy(loading = true, error = null)
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true, error = null)
+                    }
                 }
 
-                is Result.Error<ProfileErrorType> -> updateState {
-                    this.copy(loading = false, error = result.error.asUiText())
+                is Result.Error<ProfileErrorType> -> {
+                    updateState {
+                        this.copy(loading = false, error = result.error.asUiText())
+                    }
+                    showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
                 }
 
-                is Result.Success -> updateState {
-                    this.copy(
-                        loading = false,
-                        error = null,
-                        profile = result.data.toUiModel(),
-                    )
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                            profile = result.data.toUiModel(),
+                        )
+                    }
                 }
             }
         }
@@ -192,14 +199,14 @@ class ProfileViewModel @Inject constructor(
         } else {
             usecases.deleteUserKeyword(userKeywordId).onEach { result ->
                 when (result) {
-                    Result.Loading -> updateState { this.copy(loading = true) }
+                    Result.Loading -> updateState { this.copy(fullScreenLoading = true) }
                     is Result.Error -> updateState {
-                        this.copy(loading = false, error = result.error.asUiText())
+                        this.copy(fullScreenLoading = false, error = result.error.asUiText())
                     }
 
                     is Result.Success -> {
                         updateState {
-                            this.copy(loading = false, error = null)
+                            this.copy(fullScreenLoading = false, error = null)
                         }
                         sendEffect { ProfileContract.UiEffect.CloseAllModals }
                         resetSelectedKeyword()
@@ -222,17 +229,17 @@ class ProfileViewModel @Inject constructor(
                 .onEach { result ->
                     when (result) {
                         is Result.Error -> updateState {
-                            this.copy(loading = false, error = result.error.asUiText())
+                            this.copy(fullScreenLoading = false, error = result.error.asUiText())
                         }
 
                         Result.Loading -> updateState {
-                            this.copy(loading = true, error = null)
+                            this.copy(fullScreenLoading = true, error = null)
                         }
 
                         is Result.Success -> {
                             updateState {
                                 this.copy(
-                                    loading = false,
+                                    fullScreenLoading = false,
                                     error = null,
                                     keywordTextField = KeywordTextFieldState(),
                                     keywordDescTextField = KeywordTextFieldState(),
@@ -278,14 +285,14 @@ class ProfileViewModel @Inject constructor(
                             .updateUserKeywordOffset(userKeywordId, offset.offsetX, offset.offsetY)
                             .collect { result ->
                                 when (result) {
-                                    Result.Loading -> updateState { this.copy(loading = true) }
+                                    Result.Loading -> updateState { this.copy(fullScreenLoading = true) }
                                     is Result.Error -> updateState {
-                                        this.copy(loading = false, error = result.error.asUiText())
+                                        this.copy(fullScreenLoading = false, error = result.error.asUiText())
                                     }
 
                                     is Result.Success -> {
                                         updateState {
-                                            this.copy(loading = false, error = null)
+                                            this.copy(fullScreenLoading = false, error = null)
                                         }
                                         successCount.incrementAndGet()
                                     }

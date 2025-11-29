@@ -34,6 +34,8 @@
     <string name="profile_screen_friends_total">친구</string>
     <string name="profile_screen_avatar_content_desc">프로필 사진</string>
     <string name="profile_screen_fab_content_desc">키워드 추가</string>
+    <string name="profile_screen_introduce_expand">더보기</string>
+    <string name="profile_screen_introduce_collapse">접기</string>
     <!-- Profile Screen (Keyword Modal (Add & Edit)) -->
     <string name="profile_screen_keyword_modal_input_keyword">키워드</string>
     <string name="profile_screen_keyword_modal_input_keyword_ph">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
@@ -68,6 +70,7 @@
         키워드 위치를 저장하는 도중 오류가 발생했습니다. 취소 후 다시 위치를 저장해주세요.
     </string>
     <string name="profile_error_not_selected_user_keyword_id">키워드가 선택되지 않았어요. 다시 선택해주세요.</string>
+    <string name="profile_error_profile_load_failed">프로필을 불러오지 못했어요. 다시 시도해주세요.</string>
 
     <!-- KeywordDetailModal -->
     <string name="keyword_detail_modal_tab_bar_title_1">내용</string>

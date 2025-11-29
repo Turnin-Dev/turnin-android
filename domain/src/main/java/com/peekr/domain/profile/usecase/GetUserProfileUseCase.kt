@@ -4,7 +4,7 @@ import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.combineWithResult
 import com.peekr.core.domain.common.mapError
-import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -22,11 +22,11 @@ class GetUserProfileUseCase @Inject constructor(
     /**
      * 사용자 프로필을 조회한다.
      *
-     * @param userId 조회할 사용자 ID
+     * @param displayId 조회할 사용자 표시 ID
      */
-    operator fun invoke(userId: UserId): Flow<Result<Profile, ProfileErrorType>> =
+    operator fun invoke(displayId: DisplayId): Flow<Result<Profile, ProfileErrorType>> =
         combineWithResult(
-            userRepository.getUserProfile(userId),
+            userRepository.getUserProfile(displayId),
             userKeywordRepository.getUserKeywords(),
         ) { userProfile, userKeywords ->
             val profile = Profile(
