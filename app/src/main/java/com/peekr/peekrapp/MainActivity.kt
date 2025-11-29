@@ -140,6 +140,12 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
+// ------------------------------ 전체 네비게이션 테스트용 ------------------------------
+//                    val testDataViewModel: TestDataViewModel = hiltViewModel()
+//                    AppNavigation(
+//                        modifier = Modifier.fillMaxSize(),
+//                        appNavController = appNavController,
+//                    )
 // ------------------------------ 키워드 그래프 테스트용 ------------------------------
 //                    Box(Modifier.padding(innerPadding)) {
 //                        KeywordGraphView(

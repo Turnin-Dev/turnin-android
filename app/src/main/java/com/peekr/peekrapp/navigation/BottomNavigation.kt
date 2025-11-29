@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
@@ -45,7 +46,11 @@ fun BottomNavigation(
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
             }
 
-            profileNavigation(bottomNavController)
+            profileNavigation(
+                appNavController = appNavController,
+                bottomNavController = bottomNavController,
+                test = { appNavController.navigate(Screens.TempMain) },
+            )
         }
     }
 }

@@ -81,7 +81,12 @@ sealed interface DiscoverGraph {
 /** 바텀 네비게이션(프로필) */
 sealed interface ProfileGraph {
     @Serializable
-    data object Main : ProfileGraph
+    data object Me : ProfileGraph
+
+    @Serializable
+    data class User(
+        val displayId: Long,
+    ) : ProfileGraph
 }
 
 // ------------------------------ Screens (별도 화면) ------------------------------

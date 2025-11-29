@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -22,13 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
@@ -64,20 +62,14 @@ import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
 import com.peekr.presentation.profile.state.ProfileContract
 
-/**
- * 프로필 화면
- *
- * @param modifier [Modifier]
- * @param profile 사용자 프로필
- */
 @Composable
-internal fun ProfileScreen(
+fun MyProfileScreen(
     modifier: Modifier = Modifier,
     profile: UiProfile?,
-    loading: Boolean,
     fullScreenLoading: Boolean,
     error: UiText?,
     onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onSettingClick: () -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
@@ -90,9 +82,12 @@ internal fun ProfileScreen(
                     TopBar(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(PeekrTheme.colorScheme.backgroundNormal)
-                            .padding(horizontal = 10.dp),
+                            .padding(
+                                start = ScreenTokens.HorizontalPadding,
+                                end = ScreenTokens.HorizontalPaddingWithTouchTarget,
+                            ),
                         title = profile.displayId,
+                        onSettingClick = onSettingClick,
                     )
                 } ?: TopBarSkeleton()
             },
@@ -102,10 +97,10 @@ internal fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(),
                         profileImageUrl = profile.profileImageUrl,
                         name = profile.name,
-                        friendsTotal = profile.friendsCount,
+                        friendsCount = profile.friendsCount,
                         introduce = profile.introduce,
-                        onProfileImageClick = { TODO() },
-                        onFriendsTotalClick = { TODO() },
+                        onProfileImageClick = {},
+                        onFriendsTotalClick = {},
                     )
                 } ?: ProfileSkeleton()
             },
@@ -158,35 +153,25 @@ internal fun ProfileScreen(
  *
  * @param modifier [Modifier]
  * @param title 탑바 타이틀
+ * @param onSettingClick 설정 클릭 시
  */
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
+    onSettingClick: () -> Unit,
 ) {
     PeekrTopBar(
-        modifier = modifier.padding(
-            start = ScreenTokens.HorizontalPadding,
-            end = ScreenTokens.HorizontalPaddingWithTouchTarget,
-        ),
+        modifier = modifier,
         title = title,
         optionSlot = {
             PeekrIconButton(
                 icon = PeekrIcons.Outlined.Bold.Settings,
-                iconSize = PeekrIconSize.Small,
+                iconSize = TopBarIconSize,
                 contentDescription = stringResource(R.string.profile_screen_top_bar_settings),
-                onClick = {},
+                onClick = onSettingClick,
             )
         },
-    )
-}
-
-@Composable
-private fun TopBarSkeleton() {
-    PeekrTopBar(
-        modifier = Modifier.fillMaxWidth(),
-        title = "",
-        optionSlot = { Spacer(Modifier.size(1.dp)) },
     )
 }
 
@@ -196,7 +181,7 @@ private fun TopBarSkeleton() {
  * @param modifier [Modifier]
  * @param profileImageUrl 프로필 사진 url
  * @param name 이름
- * @param friendsTotal 친구 수
+ * @param friendsCount 친구 수
  * @param introduce 소개 글
  * @param onProfileImageClick 프로필 사진 클릭 시
  * @param onFriendsTotalClick 친구 수 클릭 시
@@ -206,7 +191,7 @@ private fun Profile(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     name: String,
-    friendsTotal: Long,
+    friendsCount: Long,
     introduce: String,
     onProfileImageClick: () -> Unit,
     onFriendsTotalClick: () -> Unit,
@@ -214,7 +199,7 @@ private fun Profile(
     var expandedIntroduce by rememberSaveable {
         mutableStateOf(false)
     }
-    var exceedIntroduceLength by rememberSaveable {
+    var isIntroduceTextOverFlowing by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -259,7 +244,7 @@ private fun Profile(
                         color = PeekrTheme.colorScheme.textNormal,
                     )
                     Text(
-                        text = "$friendsTotal",
+                        text = "$friendsCount",
                         style = PeekrTheme.typography.body3Normal,
                         fontWeight = FontWeight.Normal,
                         color = PeekrTheme.colorScheme.textNormal,
@@ -279,11 +264,11 @@ private fun Profile(
                 maxLines = if (expandedIntroduce) 10 else INTRODUCE_MAX_LINE_COUNT,
                 overflow = if (expandedIntroduce) TextOverflow.Visible else TextOverflow.Ellipsis,
                 onTextLayout = { textLayoutResult ->
-                    exceedIntroduceLength = textLayoutResult.hasVisualOverflow ||
+                    isIntroduceTextOverFlowing = textLayoutResult.hasVisualOverflow ||
                         textLayoutResult.lineCount > INTRODUCE_MAX_LINE_COUNT
                 },
             )
-            if (exceedIntroduceLength) {
+            if (isIntroduceTextOverFlowing) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.Start)
@@ -297,40 +282,6 @@ private fun Profile(
                     textAlign = TextAlign.End,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun ProfileSkeleton(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            SkeletonBox(Modifier.size(AvatarSize, AvatarSize), CircleShape)
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                SkeletonBox(Modifier.size(59.dp, 24.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SkeletonBox(Modifier.size(94.dp, 20.dp))
-                }
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            SkeletonBox(Modifier.size(218.dp, 18.dp))
         }
     }
 }
@@ -464,6 +415,63 @@ private fun NodeChangedButton(
     }
 }
 
+private val FabSize = 50.dp
+private val AvatarSize = 70.dp
+private val FabPaddingDp = 20.dp
+private const val INTRODUCE_MAX_LINE_COUNT = 2
+private val TopBarIconSize = PeekrIconSize.Small
+
+// ------------------------------ Skeletons ------------------------------
+@Composable
+private fun TopBarSkeleton() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .padding(horizontal = ScreenTokens.HorizontalPadding),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        SkeletonBox(
+            Modifier
+                .width(130.dp)
+                .height(26.dp),
+        )
+    }
+}
+
+@Composable
+private fun ProfileSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SkeletonBox(Modifier.size(AvatarSize, AvatarSize), CircleShape)
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                SkeletonBox(Modifier.size(59.dp, 24.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SkeletonBox(Modifier.size(94.dp, 20.dp))
+                }
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            SkeletonBox(Modifier.size(218.dp, 18.dp))
+            SkeletonBox(Modifier.size(163.dp, 18.dp))
+        }
+    }
+}
+
 @Composable
 private fun KeywordGraphSkeleton() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
@@ -471,37 +479,28 @@ private fun KeywordGraphSkeleton() {
     }
 }
 
-private val FabSize = 50.dp
-private val AvatarSize = 70.dp
-private val FabPaddingDp = 20.dp
-private const val INTRODUCE_MAX_LINE_COUNT = 2
-
 // ------------------------------ Previews ------------------------------
-@PreviewLightDark
+@PreviewLightDarkWithBackground
 @Composable
 private fun TopBarPreview() {
     PeekrAppTheme {
         TopBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
-            title = "Title",
+            modifier = Modifier.fillMaxWidth(),
+            title = "TopBar",
+            onSettingClick = {},
         )
     }
 }
 
-@PreviewLightDark
+@PreviewLightDarkWithBackground
 @Composable
 private fun ProfilePreview() {
     PeekrAppTheme {
         Profile(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+            name = "Hong",
             profileImageUrl = null,
-            name = "홍길동",
-            friendsTotal = 86,
-            introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" + "1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+            introduce = "hello world!",
+            friendsCount = 28,
             onProfileImageClick = {},
             onFriendsTotalClick = {},
         )
@@ -510,24 +509,10 @@ private fun ProfilePreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
-private fun NodeChangedButtonsPreview() {
+private fun MyProfileScreenPreview() {
     PeekrAppTheme {
-        NodeChangedButtons(
-            onChange = {},
-            onCancel = {},
-        )
-    }
-}
-
-@PreviewLightDark
-@Preview
-@Composable
-private fun ProfileScreenPreview() {
-    PeekrAppTheme {
-        ProfileScreen(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray),
+        MyProfileScreen(
+            modifier = Modifier.fillMaxSize(),
             profile = UiProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
@@ -542,31 +527,31 @@ private fun ProfileScreenPreview() {
                 friendshipStatus = FriendshipStatus.NOTHING,
                 keywords = UiUserKeyword.samples,
             ),
-            loading = false,
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _ -> },
             onOpenKeywordDetailModal = { _, _, _ -> },
+            onSettingClick = {},
         )
     }
 }
 
-@PreviewLightDark
+@PreviewLightDarkWithBackground
 @Composable
-private fun ProfileScreenShimmerPreview() {
+private fun SkeletonPreview() {
     PeekrAppTheme {
-        ProfileScreen(
+        MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             profile = null,
-            loading = false,
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
             onOpenAddKeywordModal = {},
             onOpenNodeOptionModal = { _, _ -> },
             onOpenKeywordDetailModal = { _, _, _ -> },
+            onSettingClick = {},
         )
     }
 }

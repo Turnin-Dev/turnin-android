@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.BottomNav
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
 
@@ -44,6 +45,8 @@ fun AppNavigation(
                 appNavController = appNavController,
             )
         }
+
+        keywordDetailNavigation(appNavController)
 
         composable<Screens.TempMain> {
             Box(

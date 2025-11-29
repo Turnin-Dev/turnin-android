@@ -20,17 +20,18 @@ import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
 import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.ProfileContract
-import com.peekr.presentation.profile.view.AddKeywordModal
-import com.peekr.presentation.profile.view.NodeOptionModal
-import com.peekr.presentation.profile.view.ProfileScreen
-import com.peekr.presentation.profile.view.SafeCancelModal
-import com.peekr.presentation.profile.view.SafeDeleteModal
+import com.peekr.presentation.profile.view.MyProfileScreen
+import com.peekr.presentation.profile.view.modal.AddKeywordModal
+import com.peekr.presentation.profile.view.modal.NodeOptionModal
+import com.peekr.presentation.profile.view.modal.SafeCancelModal
+import com.peekr.presentation.profile.view.modal.SafeDeleteModal
 import com.peekr.presentation.profile.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ProfileRoute(
+internal fun MyProfileRoute(
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
+    onSettingClick: () -> Unit,
 ) {
     // Lock Orientation
     LockScreenOrientation()
@@ -125,12 +126,11 @@ internal fun ProfileRoute(
     }
 
     // ------------------------------ Screen ------------------------------
-    ProfileScreen(
+    MyProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
         profile = uiState.profile,
-        loading = uiState.loading,
         fullScreenLoading = uiState.fullScreenLoading,
         error = uiState.error,
         onUiEvent = viewModel::processEvent,
@@ -144,5 +144,6 @@ internal fun ProfileRoute(
         onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
             onOpenKeywordDetailModal(userKeywordId, userId, keyword)
         },
+        onSettingClick = onSettingClick,
     )
 }
