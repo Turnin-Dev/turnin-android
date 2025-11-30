@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -42,10 +43,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authEventBus: AuthEventBus
 
+    private val mainViewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // ------------------------------ SplashScreen ------------------------------
-        val mainViewModel by viewModels<MainViewModel>()
-
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 mainViewModel.isLoading.value
@@ -109,6 +110,8 @@ class MainActivity : ComponentActivity() {
             )
 
             // ------------------------------ Main ------------------------------
+            val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
+
             PeekrAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -128,7 +131,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding),
                         appNavController = appNavController,
-                        loggedIn = true,
+                        loggedIn = loggedIn,
                     )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
