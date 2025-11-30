@@ -1,6 +1,8 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.local.error.WritingDataException
 import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
 import com.peekr.core.data.source.network.dto.auth.response.LoginResponse
@@ -13,6 +15,7 @@ import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.repository.AuthRepository
+import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
@@ -28,6 +31,8 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AuthRepositoryImplTest {
@@ -207,6 +212,54 @@ class AuthRepositoryImplTest {
             (result as Result.Error).error,
         )
         Assert.assertEquals(result.message, mockErrorMessage)
+    }
+
+    @Test
+    fun `토큰 저장 성공 테스트`() = runTest {
+        // given
+        val expectedAccessToken = "aaa.bbb.ccc"
+        val expectedRefreshToken = "ddd.eee.fff"
+        coEvery {
+            dataStoreManager.saveEncryptedStringData(
+                key = DataStoreKey.Auth.AccessToken,
+                value = expectedAccessToken,
+            )
+        } just Runs
+        coEvery {
+            dataStoreManager.saveEncryptedStringData(
+                key = DataStoreKey.Auth.RefreshToken,
+                value = expectedRefreshToken,
+            )
+        } just Runs
+
+        // when
+        val result = repository.saveTokens(expectedAccessToken, expectedRefreshToken).last()
+
+        // then
+        assertTrue(result is Result.Success)
+    }
+
+    @Test
+    fun `토큰 저장 실패 테스트 - WritingDataException 예외 발생 시 정의된 에러를 반환한다`() = runTest {
+        // given
+        val expectedAccessToken = "aaa.bbb.ccc"
+        val expectedRefreshToken = "ddd.eee.fff"
+        coEvery {
+            dataStoreManager.saveEncryptedStringData(
+                key = DataStoreKey.Auth.AccessToken,
+                value = expectedAccessToken,
+            )
+        } throws WritingDataException("", null)
+
+        // when
+        val result = repository.saveTokens(expectedAccessToken, expectedRefreshToken).last()
+
+        // then
+        val errorResult = result as Result.Error
+        assertEquals(
+            errorResult.error,
+            CommonErrorType.Local.WritingDataFailed,
+        )
     }
 
     companion object {

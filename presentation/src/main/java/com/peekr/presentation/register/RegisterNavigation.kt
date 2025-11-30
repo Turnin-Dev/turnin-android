@@ -1,6 +1,5 @@
 package com.peekr.presentation.register
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.SizeTransform
@@ -37,7 +36,10 @@ import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import kotlin.reflect.KType
 
-fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
+fun NavGraphBuilder.registerNavigation(
+    navController: NavHostController,
+    navigateToMain: () -> Unit,
+) {
     navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayId) {
         animatedComposable<RegisterGraph.DisplayId> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
@@ -125,8 +127,7 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 onEffect = { event ->
                     when {
                         event.navigateToNextScreen -> {
-                            // 메인 페이지로 이동
-                            Toast.makeText(context, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                            navigateToMain()
                         }
 
                         event.navigateToCropImageScreen -> {

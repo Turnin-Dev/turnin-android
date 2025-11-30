@@ -1,7 +1,7 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.LoginCredentials
-import com.peekr.core.domain.auth.usecase.SaveRefreshTokenUseCase
+import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.common.mapError
@@ -21,9 +21,9 @@ import kotlinx.coroutines.flow.flowOf
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginIntegrationUseCase @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase,
+    private val authRepository: AuthRepository,
 ) {
-    operator fun invoke(loginCredentials: LoginCredentials): Flow<Result<Boolean, LoginErrorType>> =
+    operator fun invoke(loginCredentials: LoginCredentials): Flow<Result<Unit, LoginErrorType>> =
         // 1. 로그인
         loginUseCase(loginCredentials)
             .flatMapConcat { loginResult ->
@@ -31,9 +31,10 @@ class LoginIntegrationUseCase @Inject constructor(
                     Result.Loading -> flowOf(Result.Loading)
                     is Result.Error -> flowOf(Result.Error(loginResult.error))
                     is Result.Success -> {
-                        // 2. 리프레쉬 토큰 저장
+                        // 2. 액세스 토큰 & 리프레쉬 토큰 저장
+                        val accessToken = loginResult.data.accessToken
                         val refreshToken = loginResult.data.refreshToken
-                        saveRefreshTokenUseCase(refreshToken)
+                        authRepository.saveTokens(accessToken, refreshToken)
                             .mapError { commonError ->
                                 LoginErrorType.CommonError(commonError)
                             }

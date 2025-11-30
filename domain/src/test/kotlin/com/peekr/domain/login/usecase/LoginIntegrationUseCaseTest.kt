@@ -3,7 +3,7 @@ package com.peekr.domain.login.usecase
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.LoginResult
-import com.peekr.core.domain.auth.usecase.SaveRefreshTokenUseCase
+import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
@@ -27,31 +27,29 @@ import org.junit.Test
 class LoginIntegrationUseCaseTest {
     private lateinit var loginIntegrationUseCase: LoginIntegrationUseCase
     private val loginUseCase: LoginUseCase = mockk()
-    private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase = mockk()
+    private val authRepository: AuthRepository = mockk()
 
     @Before
     fun setUp() {
         loginIntegrationUseCase = LoginIntegrationUseCase(
             loginUseCase,
-            saveRefreshTokenUseCase,
+            authRepository,
         )
     }
 
     @Test
-    fun `로그인, 토큰 저장 UseCase가 전부 정상적으로 동작 시 true를 반환한다`() = runTest {
+    fun `로그인 토큰 저장 UseCase가 전부 정상적으로 동작 시 true를 반환한다`() = runTest {
         // given
         every { loginUseCase(any()) } returns flowOf(Result.Success(MockLoginResult))
-        every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
+        every { authRepository.saveTokens(any(), any()) } returns flowOf(Result.Success(Unit))
 
         // when
         val result = loginIntegrationUseCase(MockLoginCredentials).last()
 
         // then
         assertTrue(result is Result.Success)
-        assertTrue((result as Result.Success).data)
-
         verify { loginUseCase(MockLoginCredentials) }
-        verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
+        verify { authRepository.saveTokens(any(), any()) }
     }
 
     @Test
@@ -67,7 +65,7 @@ class LoginIntegrationUseCaseTest {
         assertTrue(result is Result.Error)
         assertEquals(expectedError, (result as Result.Error).error)
 
-        verify(exactly = 0) { saveRefreshTokenUseCase(any()) }
+        verify(exactly = 0) { authRepository.saveTokens(any(), any()) }
     }
 
     @Test
@@ -84,7 +82,7 @@ class LoginIntegrationUseCaseTest {
         assertEquals(expectedError, (result as Result.Error).error)
 
         verify { loginUseCase(MockLoginCredentials) }
-        verify(exactly = 0) { saveRefreshTokenUseCase(any()) }
+        verify(exactly = 0) { authRepository.saveTokens(any(), any()) }
     }
 
     @Test
@@ -92,7 +90,7 @@ class LoginIntegrationUseCaseTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
         every { loginUseCase(any()) } returns flowOf(Result.Success(MockLoginResult))
-        every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Error(error = expectedError))
+        every { authRepository.saveTokens(any(), any()) } returns flowOf(Result.Error(error = expectedError))
 
         // when
         val result = loginIntegrationUseCase(MockLoginCredentials).last()
@@ -105,7 +103,7 @@ class LoginIntegrationUseCaseTest {
         )
 
         verify { loginUseCase(MockLoginCredentials) }
-        verify { saveRefreshTokenUseCase(MockJwtToken.refreshToken) }
+        verify { authRepository.saveTokens(any(), any()) }
     }
 
     @Test
@@ -133,7 +131,7 @@ class LoginIntegrationUseCaseTest {
             delay(10)
             emit(Result.Success(MockLoginResult))
         }
-        every { saveRefreshTokenUseCase(any()) } returns flowOf(Result.Success(true))
+        every { authRepository.saveTokens(any(), any()) } returns flowOf(Result.Success(Unit))
 
         // when
         val results = loginIntegrationUseCase(MockLoginCredentials).toList()
@@ -141,7 +139,6 @@ class LoginIntegrationUseCaseTest {
         // then
         assertTrue(results.first() is Result.Loading)
         assertTrue(results.last() is Result.Success)
-        assertTrue((results.last() as Result.Success).data)
     }
 
     companion object {

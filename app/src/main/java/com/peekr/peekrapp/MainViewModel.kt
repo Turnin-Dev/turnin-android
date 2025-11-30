@@ -9,6 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -19,31 +20,25 @@ class MainViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _loggedIn = MutableStateFlow(false)
+    private val _loggedIn: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val loggedIn = _loggedIn.asStateFlow()
 
     init {
-        checkLoggedIn()
+        viewModelScope.launch {
+            val result = checkLoggedIn()
+            _loggedIn.update { result }
+            _isLoading.update { false }
+        }
     }
 
-    private fun checkLoggedIn() {
-        viewModelScope.launch {
-            combine(
-                dataStoreManager.getLongData(DataStoreKey.User.UserId),
-                dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken),
-                dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken),
-            ) { userId, accessToken, refreshToken ->
-                if (userId != null &&
-                    accessToken != null &&
-                    refreshToken != null
-                ) {
-                    _loggedIn.update { true }
-                } else {
-                    _loggedIn.update { false }
-                }
-            }
-        }
-
-        _isLoading.update { false }
+    private suspend fun checkLoggedIn(): Boolean {
+        // 로그인 여부 판단 로직, 추후 캡슐화 예정
+        return combine(
+            dataStoreManager.getLongData(DataStoreKey.User.UserId),
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken),
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken),
+        ) { userId, accessToken, refreshToken ->
+            userId != null && accessToken != null && refreshToken != null
+        }.first()
     }
 }

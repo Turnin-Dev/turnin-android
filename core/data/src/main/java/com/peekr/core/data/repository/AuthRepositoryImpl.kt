@@ -3,6 +3,7 @@ package com.peekr.core.data.repository
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.local.error.WritingDataException
 import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.request.toDataModel
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
@@ -86,12 +87,22 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun saveRefreshToken(token: String): Flow<Result<Unit, CommonErrorType>> =
+    override fun saveTokens(accessToken: String, refreshToken: String): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            dataStoreManager.saveEncryptedStringData(
-                key = DataStoreKey.Auth.RefreshToken,
-                value = token,
-            )
+            emit(Result.Loading)
+            try {
+                dataStoreManager.saveEncryptedStringData(
+                    key = DataStoreKey.Auth.AccessToken,
+                    value = accessToken,
+                )
+                dataStoreManager.saveEncryptedStringData(
+                    key = DataStoreKey.Auth.RefreshToken,
+                    value = refreshToken,
+                )
+                emit(Result.Success(Unit))
+            } catch (_: WritingDataException) {
+                emit(Result.Error(CommonErrorType.Local.WritingDataFailed))
+            }
         }
 
     private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, CommonErrorType> =

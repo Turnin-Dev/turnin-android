@@ -5,7 +5,7 @@ sequenceDiagram
     participant UseCase as LoginIntegrationUseCase
     participant Social as SocialLoginUseCase
     participant Login as LoginUseCase
-    participant Token as SaveRefreshTokenUseCase
+    participant Token as AuthRepository(saveTokens)
     CL ->> UseCase: invoke(SocialLoginProvider)
     UseCase ->> Social: invoke(SocialLoginProvider)
     Social -->> UseCase: Result<Login, ErrorType>

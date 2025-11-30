@@ -2,7 +2,7 @@ package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.RegisterResult
-import com.peekr.core.domain.auth.usecase.SaveRefreshTokenUseCase
+import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
@@ -23,8 +23,8 @@ import org.junit.Test
 
 class RegisterIntegrationUseCaseTest {
     private val registerUseCase: RegisterUseCase = mockk()
-    private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase = mockk()
-    private val usecase = RegisterIntegrationUseCase(registerUseCase, saveRefreshTokenUseCase)
+    private val authRepository: AuthRepository = mockk()
+    private val usecase = RegisterIntegrationUseCase(registerUseCase, authRepository)
 
     @Test
     fun `회원가입 성공 테스트`() = runTest {
@@ -33,8 +33,8 @@ class RegisterIntegrationUseCaseTest {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Success(TestRegisterResult))
         every {
-            saveRefreshTokenUseCase(any())
-        } returns flowOf(Result.Success(true))
+            authRepository.saveTokens(any(), any())
+        } returns flowOf(Result.Success(Unit))
 
         // when
         val result = usecase(
@@ -48,7 +48,6 @@ class RegisterIntegrationUseCaseTest {
 
         // then
         assertTrue(result is Result.Success)
-        assertTrue((result as Result.Success).data)
     }
 
     @Test
@@ -59,7 +58,7 @@ class RegisterIntegrationUseCaseTest {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Success(TestRegisterResult))
         every {
-            saveRefreshTokenUseCase(any())
+            authRepository.saveTokens(any(), any())
         } returns flowOf(Result.Error(expectedError))
 
         // when
@@ -88,8 +87,8 @@ class RegisterIntegrationUseCaseTest {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Error(expectedError))
         every {
-            saveRefreshTokenUseCase(any())
-        } returns flowOf(Result.Success(true))
+            authRepository.saveTokens(any(), any())
+        } returns flowOf(Result.Success(Unit))
 
         // when
         val result = usecase(
@@ -113,8 +112,8 @@ class RegisterIntegrationUseCaseTest {
             registerUseCase(TestProvider, TestProviderId, TestDisplayId, TestName, null, TestIntroduce)
         } returns flowOf(Result.Success(TestRegisterResult))
         every {
-            saveRefreshTokenUseCase(any())
-        } returns flowOf(Result.Success(true))
+            authRepository.saveTokens(any(), any())
+        } returns flowOf(Result.Success(Unit))
 
         // when
         val result = usecase(

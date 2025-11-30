@@ -49,12 +49,11 @@ class MainActivity : ComponentActivity() {
         // ------------------------------ SplashScreen ------------------------------
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                mainViewModel.isLoading.value
+                mainViewModel.isLoading.value || mainViewModel.loggedIn.value == null
             }
         }
 
         enableEdgeToEdge()
-
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -110,8 +109,6 @@ class MainActivity : ComponentActivity() {
             )
 
             // ------------------------------ Main ------------------------------
-            val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
-
             PeekrAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -126,6 +123,8 @@ class MainActivity : ComponentActivity() {
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
 // ------------------------------ 메인(프로덕션 용) ------------------------------
+                    val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
+
                     AppNavigation(
                         modifier = Modifier
                             .fillMaxSize()
@@ -160,7 +159,6 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
-//                    val testDataViewModel: TestDataViewModel = hiltViewModel()
 //                    NavHost(
 //                        modifier = Modifier
 //                            .fillMaxSize()

@@ -1,7 +1,7 @@
 package com.peekr.domain.register.usecase
 
 import com.peekr.core.domain.auth.model.RegisterResult
-import com.peekr.core.domain.auth.usecase.SaveRefreshTokenUseCase
+import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.common.mapError
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.flowOf
  */
 class RegisterIntegrationUseCase @Inject internal constructor(
     private val registerUseCase: RegisterUseCase,
-    private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase,
+    private val authRepository: AuthRepository,
 ) {
     operator fun invoke(
         provider: SocialLoginProvider,
@@ -33,7 +33,7 @@ class RegisterIntegrationUseCase @Inject internal constructor(
         name: String,
         imageFileDetail: ImageFileDetail?,
         introduce: String?,
-    ): Flow<Result<Boolean, RegisterErrorType>> = runCatching {
+    ): Flow<Result<Unit, RegisterErrorType>> = runCatching {
         registerUseCase(
             provider = provider,
             providerId = ProviderId(providerId),
@@ -41,10 +41,14 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             name = Name(name),
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
-        ).flatMapResult { token: RegisterResult ->
-            saveRefreshTokenUseCase(token.refreshToken).mapError { authErrorType ->
-                RegisterErrorType.CommonError(authErrorType)
-            }
+        ).flatMapResult { registerResult: RegisterResult ->
+            val accessToken = registerResult.accessToken
+            val refreshToken = registerResult.refreshToken
+            authRepository
+                .saveTokens(accessToken, refreshToken)
+                .mapError { authErrorType ->
+                    RegisterErrorType.CommonError(authErrorType)
+                }
         }
     }.getOrElse { e -> flowOf(Result.Error(RegisterErrorType.Unexpected(e))) }
 }

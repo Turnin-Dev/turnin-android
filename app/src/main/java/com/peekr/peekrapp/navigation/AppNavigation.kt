@@ -24,37 +24,53 @@ import com.peekr.presentation.register.registerNavigation
 fun AppNavigation(
     modifier: Modifier = Modifier,
     appNavController: NavHostController,
-    loggedIn: Boolean,
+    loggedIn: Boolean?,
 ) {
-    // TODO login/Register Navigation 에서 bottomNavigation 으로 이동시 아래 코드와 같이 백스택을 확실히 클리어 해야 한다.
-    // navController.navigate(SubGraph.Home) {
-    //    popUpTo(0) { inclusive = true }
-    //    launchSingleTop = true
-    // }
-    NavHost(
-        modifier = modifier,
-        navController = appNavController,
-        startDestination = if (!loggedIn) SubGraph.Login else BottomNav,
-    ) {
-        loginNavigation(navController = appNavController)
-
-        registerNavigation(navController = appNavController)
-
-        composable<BottomNav> {
-            BottomNavigation(
-                modifier = Modifier.fillMaxSize(),
-                appNavController = appNavController,
+    if (loggedIn != null) {
+        // TODO login/Register Navigation 에서 bottomNavigation 으로 이동시 아래 코드와 같이 백스택을 확실히 클리어 해야 한다.
+        // navController.navigate(SubGraph.Home) {
+        //    popUpTo(0) { inclusive = true }
+        //    launchSingleTop = true
+        // }
+        NavHost(
+            modifier = modifier,
+            navController = appNavController,
+            startDestination = if (!loggedIn) SubGraph.Login else BottomNav,
+        ) {
+            loginNavigation(
+                navController = appNavController,
+                navigateToMain = {
+                    appNavController.navigate(BottomNav) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
             )
-        }
 
-        keywordDetailNavigation(appNavController)
+            registerNavigation(
+                navController = appNavController,
+                navigateToMain = {
+                    appNavController.navigate(BottomNav) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+            )
 
-        composable<Screens.TempMain> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text("Main Screen", fontSize = 50.sp)
+            composable<BottomNav> {
+                BottomNavigation(
+                    modifier = Modifier.fillMaxSize(),
+                    appNavController = appNavController,
+                )
+            }
+
+            keywordDetailNavigation(appNavController)
+
+            composable<Screens.TempMain> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("Main Screen", fontSize = 50.sp)
+                }
             }
         }
     }
