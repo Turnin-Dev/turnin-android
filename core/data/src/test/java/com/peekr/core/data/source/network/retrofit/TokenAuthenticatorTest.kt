@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.retrofit
 
+import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
@@ -31,6 +32,7 @@ import org.junit.Test
 class TokenAuthenticatorTest {
     private val dataStoreManager: DataStoreManager = mockk()
     private val refreshTokenApi: RefreshTokenApi = mockk()
+    private val authEventBus: AuthEventBus = mockk()
     private lateinit var mockWebServer: MockWebServer
     private lateinit var tokenAuthenticator: TokenAuthenticator
     private lateinit var unauthorizedResponse: Response
@@ -44,7 +46,7 @@ class TokenAuthenticatorTest {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        tokenAuthenticator = TokenAuthenticator(dataStoreManager, refreshTokenApi)
+        tokenAuthenticator = TokenAuthenticator(dataStoreManager, refreshTokenApi, authEventBus)
 
         // 테스트용 Request 생성
         testRequest = Request
@@ -65,6 +67,11 @@ class TokenAuthenticatorTest {
         coEvery { dataStoreManager.getEncryptedStringData(any()) } returns flowOf("original.token")
         coEvery { dataStoreManager.deleteStringData(any()) } just Runs
         coEvery { dataStoreManager.saveEncryptedStringData(any(), any()) } just Runs
+        coEvery { dataStoreManager.deleteLongData(any()) } just Runs
+        coEvery { dataStoreManager.deleteStringData(any()) } just Runs
+
+        // AuthEventBus mock 생성
+        coEvery { authEventBus.emitLogout() } just Runs
     }
 
     @After
