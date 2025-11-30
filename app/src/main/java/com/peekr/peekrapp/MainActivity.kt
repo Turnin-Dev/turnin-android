@@ -13,11 +13,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
@@ -56,12 +60,27 @@ class MainActivity : ComponentActivity() {
             val appNavController = rememberNavController()
 
             // ------------------------------ Auth Logout ------------------------------
-            ObserveAsEvents(
-                flow = authEventBus.logoutEvent,
-                onEvent = {
-                    appNavController.navigate(SubGraph.Login)
-                },
-            )
+            val navBackStackEntry by appNavController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            val isAuthScreen by remember(currentDestination?.route) {
+                derivedStateOf {
+                    currentDestination?.hierarchy?.any {
+                        it.route == SubGraph.Login::class.qualifiedName ||
+                            it.route == SubGraph.Register::class.qualifiedName
+                    } == true
+                }
+            }
+            if (!isAuthScreen) {
+                ObserveAsEvents(
+                    flow = authEventBus.logoutEvent,
+                    onEvent = {
+                        appNavController.navigate(SubGraph.Login) {
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    },
+                )
+            }
 
             // ------------------------------ Snackbar ------------------------------
             val context = LocalContext.current

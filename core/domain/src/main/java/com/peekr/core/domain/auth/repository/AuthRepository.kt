@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.Flow
 
 /** Auth 리포지토리 */
 interface AuthRepository {
-    /** 로그인 여부 체크 */
-    fun checkLoggedIn(): Flow<Result<Boolean, CommonErrorType>>
-
     /** 로그인 */
     fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>>
 

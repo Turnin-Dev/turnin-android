@@ -28,9 +28,6 @@ class AuthRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
-    override fun checkLoggedIn(): Flow<Result<Boolean, CommonErrorType>> = safeResultFlow {
-    }
-
     override fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>> =
         safeResultFlow<LoginResult, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
