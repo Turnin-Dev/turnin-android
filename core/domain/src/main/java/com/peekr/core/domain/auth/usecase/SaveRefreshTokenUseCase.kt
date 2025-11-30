@@ -1,4 +1,4 @@
-package com.peekr.core.domain.auth
+package com.peekr.core.domain.auth.usecase
 
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.CommonErrorType

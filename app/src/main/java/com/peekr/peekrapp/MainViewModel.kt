@@ -2,8 +2,6 @@ package com.peekr.peekrapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,8 +13,10 @@ class MainViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            delay(4.seconds)
             _isLoading.update { false }
         }
+    }
+
+    private fun checkLogin() {
     }
 }

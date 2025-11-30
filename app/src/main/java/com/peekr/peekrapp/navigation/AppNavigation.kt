@@ -24,6 +24,7 @@ import com.peekr.presentation.register.registerNavigation
 fun AppNavigation(
     modifier: Modifier = Modifier,
     appNavController: NavHostController,
+    loggedIn: Boolean,
 ) {
     // TODO login/Register Navigation 에서 bottomNavigation 으로 이동시 아래 코드와 같이 백스택을 확실히 클리어 해야 한다.
     // navController.navigate(SubGraph.Home) {
@@ -33,7 +34,7 @@ fun AppNavigation(
     NavHost(
         modifier = modifier,
         navController = appNavController,
-        startDestination = SubGraph.Login,
+        startDestination = if (!loggedIn) SubGraph.Login else BottomNav,
     ) {
         loginNavigation(navController = appNavController)
 

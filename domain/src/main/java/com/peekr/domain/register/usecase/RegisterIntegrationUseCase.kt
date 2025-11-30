@@ -1,7 +1,7 @@
 package com.peekr.domain.register.usecase
 
-import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.RegisterResult
+import com.peekr.core.domain.auth.usecase.SaveRefreshTokenUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.common.mapError

@@ -1,9 +1,9 @@
 package com.peekr.domain.login.usecase
 
-import com.peekr.core.domain.auth.SaveRefreshTokenUseCase
 import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.LoginResult
+import com.peekr.core.domain.auth.usecase.SaveRefreshTokenUseCase
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId

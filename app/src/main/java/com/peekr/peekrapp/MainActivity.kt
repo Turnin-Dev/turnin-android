@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,35 +13,35 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.common.navigation.BottomNav
+import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.peekrapp.navigation.BottomNavigation
+import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.getValue
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var authEventBus: AuthEventBus
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // ------------------------------ SplashScreen ------------------------------
         val mainViewModel by viewModels<MainViewModel>()
+
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 mainViewModel.isLoading.value
@@ -55,6 +54,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val appNavController = rememberNavController()
+
+            // ------------------------------ Auth Logout ------------------------------
+            ObserveAsEvents(
+                flow = authEventBus.logoutEvent,
+                onEvent = {
+                    appNavController.navigate(SubGraph.Login)
+                },
+            )
 
             // ------------------------------ Snackbar ------------------------------
             val context = LocalContext.current
@@ -97,12 +104,13 @@ class MainActivity : ComponentActivity() {
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
 // ------------------------------ 메인(프로덕션 용) ------------------------------
-//                    MainNavigation(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        appNavController = appNavController
-//                    )
+                    AppNavigation(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        appNavController = appNavController,
+                        loggedIn = true,
+                    )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
 //                    NavHost(
@@ -130,30 +138,30 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
-                    val testDataViewModel: TestDataViewModel = hiltViewModel()
-                    NavHost(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        navController = appNavController,
-                        startDestination = BottomNav,
-                    ) {
-                        composable<BottomNav> {
-                            BottomNavigation(
-                                modifier = Modifier.fillMaxSize(),
-                                appNavController = appNavController,
-                            )
-                        }
-
-                        composable(route = "HomeSecond") {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text("HomeSecond", fontSize = 50.sp)
-                            }
-                        }
-                    }
+//                    val testDataViewModel: TestDataViewModel = hiltViewModel()
+//                    NavHost(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding),
+//                        navController = appNavController,
+//                        startDestination = BottomNav,
+//                    ) {
+//                        composable<BottomNav> {
+//                            BottomNavigation(
+//                                modifier = Modifier.fillMaxSize(),
+//                                appNavController = appNavController,
+//                            )
+//                        }
+//
+//                        composable(route = "HomeSecond") {
+//                            Box(
+//                                modifier = Modifier.fillMaxSize(),
+//                                contentAlignment = Alignment.Center,
+//                            ) {
+//                                Text("HomeSecond", fontSize = 50.sp)
+//                            }
+//                        }
+//                    }
 // ------------------------------ 전체 네비게이션 테스트용 ------------------------------
 //                    val testDataViewModel: TestDataViewModel = hiltViewModel()
 //                    AppNavigation(
