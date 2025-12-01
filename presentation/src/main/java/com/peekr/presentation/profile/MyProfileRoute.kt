@@ -19,13 +19,13 @@ import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
 import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.state.ProfileContract
+import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.MyProfileScreen
 import com.peekr.presentation.profile.view.modal.AddKeywordModal
 import com.peekr.presentation.profile.view.modal.NodeOptionModal
 import com.peekr.presentation.profile.view.modal.SafeCancelModal
 import com.peekr.presentation.profile.view.modal.SafeDeleteModal
-import com.peekr.presentation.profile.viewmodel.ProfileViewModel
+import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +36,7 @@ internal fun MyProfileRoute(
     // Lock Orientation
     LockScreenOrientation()
 
-    val viewModel: ProfileViewModel = hiltViewModel()
+    val viewModel: MyProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -49,11 +49,11 @@ internal fun MyProfileRoute(
     // ------------------------------ UiEffect ------------------------------
     ObserveAsEvents(viewModel.effect) {
         when (it) {
-            ProfileContract.UiEffect.OpenSafeCancelModal -> {
+            MyProfileContract.UiEffect.OpenSafeCancelModal -> {
                 isSafeCancelModalOpen = true
             }
 
-            ProfileContract.UiEffect.CloseAllModals -> {
+            MyProfileContract.UiEffect.CloseAllModals -> {
                 isSafeDeleteModalOpen = false
                 isSafeCancelModalOpen = false
                 isNodeOptionModelOpen = false
@@ -70,15 +70,15 @@ internal fun MyProfileRoute(
         loading = uiState.fullScreenLoading,
         keywordTextFieldState = uiState.keywordTextField,
         onKeywordTextChanged = {
-            viewModel.processEvent(ProfileContract.UiEvent.OnKeywordTextChanged(it))
+            viewModel.processEvent(MyProfileContract.UiEvent.OnKeywordTextChanged(it))
         },
         keywordDescTextFieldState = uiState.keywordDescTextField,
         onKeywordDescTextChanged = {
-            viewModel.processEvent(ProfileContract.UiEvent.OnKeywordDescTextChanged(it))
+            viewModel.processEvent(MyProfileContract.UiEvent.OnKeywordDescTextChanged(it))
         },
         onAddClick = {
             viewModel.processEvent(
-                ProfileContract.UiEvent.AddKeyword(
+                MyProfileContract.UiEvent.AddKeyword(
                     uiState.keywordTextField.value,
                     uiState.keywordDescTextField.value,
                 ),
@@ -86,7 +86,7 @@ internal fun MyProfileRoute(
         },
         onCancelClick = {
             viewModel.processEvent(
-                ProfileContract.UiEvent.CheckSafeCancel(
+                MyProfileContract.UiEvent.CheckSafeCancel(
                     keyword = uiState.keywordTextField.value,
                     description = uiState.keywordDescTextField.value,
                 ),
@@ -99,7 +99,7 @@ internal fun MyProfileRoute(
         isOpen = isSafeCancelModalOpen,
         title = R.string.my_profile_screen_safe_modal_cancel,
         onAcceptClick = {
-            viewModel.processEvent(ProfileContract.UiEvent.CloseAllModals)
+            viewModel.processEvent(MyProfileContract.UiEvent.CloseAllModals)
         },
         onCancelClick = { isSafeCancelModalOpen = false },
     )
@@ -110,7 +110,7 @@ internal fun MyProfileRoute(
         title = R.string.my_profile_screen_safe_modal_delete,
         onAcceptClick = {
             viewModel.processEvent(
-                ProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeyword.userKeywordId),
+                MyProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeyword.userKeywordId),
             )
         },
         onCancelClick = { isSafeDeleteModalOpen = false },
@@ -130,14 +130,14 @@ internal fun MyProfileRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        profile = uiState.profile,
+        profile = uiState.myProfile,
         fullScreenLoading = uiState.fullScreenLoading,
         error = uiState.error,
         onUiEvent = viewModel::processEvent,
         onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
         onOpenNodeOptionModal = { userKeywordId, keyword ->
             viewModel.processEvent(
-                ProfileContract.UiEvent.OnSelectedKeywordChanged(userKeywordId, keyword),
+                MyProfileContract.UiEvent.OnSelectedKeywordChanged(userKeywordId, keyword),
             )
             isNodeOptionModelOpen = true
         },

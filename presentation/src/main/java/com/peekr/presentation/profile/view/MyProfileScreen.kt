@@ -48,7 +48,6 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.presentation.feature.keyword.KeywordNameType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
@@ -59,14 +58,14 @@ import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.model.UiProfile
-import com.peekr.presentation.profile.state.ProfileContract
+import com.peekr.presentation.profile.model.UiMyProfile
+import com.peekr.presentation.profile.state.MyProfileContract
 
 /**
  * 나의 프로필 화면
  *
  * @param modifier [Modifier]
- * @param profile 프로필 - [UiProfile]
+ * @param profile 프로필 - [UiMyProfile]
  * @param fullScreenLoading 전체 화면 로딩 여부
  * @param error 에러
  * @param onUiEvent UI 이벤트
@@ -78,10 +77,10 @@ import com.peekr.presentation.profile.state.ProfileContract
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
-    profile: UiProfile?,
+    profile: UiMyProfile?,
     fullScreenLoading: Boolean,
     error: UiText?,
-    onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onSettingClick: () -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
@@ -132,7 +131,7 @@ fun MyProfileScreen(
                         },
                         onNodeChanged = { userKeywordId, offsetX, offsetY ->
                             onUiEvent(
-                                ProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
+                                MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
                                     userKeywordId = userKeywordId,
                                     offsetX = offsetX,
                                     offsetY = offsetY,
@@ -315,7 +314,7 @@ private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
-    onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
     onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
@@ -347,11 +346,11 @@ private fun KeywordGraph(
                     .align(Alignment.TopEnd)
                     .padding(FabPaddingDp),
                 onChange = {
-                    onUiEvent(ProfileContract.UiEvent.UpdateKeywordNodeOffset)
+                    onUiEvent(MyProfileContract.UiEvent.UpdateKeywordNodeOffset)
                     nodeChanged = false
                 },
                 onCancel = {
-                    onUiEvent(ProfileContract.UiEvent.ResetKeywordNodeOffset)
+                    onUiEvent(MyProfileContract.UiEvent.ResetKeywordNodeOffset)
                     nodeReset = true
                     nodeChanged = false
                 },
@@ -526,7 +525,7 @@ private fun MyProfileScreenPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            profile = UiProfile(
+            profile = UiMyProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
                 profileImageUrl = null,
@@ -537,7 +536,6 @@ private fun MyProfileScreenPreview() {
                 friendsCount = 86,
                 lastLoginAt = 1000L,
                 active = true,
-                friendshipStatus = FriendshipStatus.NOTHING,
                 keywords = UiUserKeyword.samples,
             ),
             fullScreenLoading = false,

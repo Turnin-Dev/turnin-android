@@ -1,14 +1,13 @@
 package com.peekr.presentation.profile.model
 
-import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.model.Profile
 
 /**
- * UI용 사용자 프로필
+ * UI용 나의 프로필
  */
-data class UiProfile(
+data class UiMyProfile(
     val displayId: String,
     val name: String,
     val profileImageUrl: String?,
@@ -16,12 +15,11 @@ data class UiProfile(
     val friendsCount: Long,
     val lastLoginAt: Long,
     val active: Boolean,
-    val friendshipStatus: FriendshipStatus?,
     val keywords: List<UiUserKeyword>,
 )
 
-fun Profile.toUiModel(): UiProfile =
-    UiProfile(
+fun Profile.toUiModel(): UiMyProfile =
+    UiMyProfile(
         displayId = displayId.value,
         name = name.value,
         profileImageUrl = profileImageUrl,
@@ -29,6 +27,5 @@ fun Profile.toUiModel(): UiProfile =
         friendsCount = friendsCount,
         lastLoginAt = lastLoginAt,
         active = active,
-        friendshipStatus = friendshipStatus,
         keywords = keywords.toUiModel(),
     )

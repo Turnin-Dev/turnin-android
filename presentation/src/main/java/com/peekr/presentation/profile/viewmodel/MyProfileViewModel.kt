@@ -17,7 +17,7 @@ import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
 import com.peekr.presentation.profile.state.KeywordTextFieldState
-import com.peekr.presentation.profile.state.ProfileContract
+import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.state.SelectedKeywordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.concurrent.atomic.AtomicInteger
@@ -29,11 +29,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class MyProfileViewModel @Inject constructor(
     private val usecases: ProfileUseCases,
-) : MVIBaseViewModel<ProfileContract.UiState, ProfileContract.UiEvent, ProfileContract.UiEffect>() {
-    override fun createInitialState(): ProfileContract.UiState =
-        ProfileContract.UiState()
+) : MVIBaseViewModel<MyProfileContract.UiState, MyProfileContract.UiEvent, MyProfileContract.UiEffect>() {
+    override fun createInitialState(): MyProfileContract.UiState =
+        MyProfileContract.UiState()
 
     init {
         setKeywordValidation()
@@ -63,7 +63,7 @@ class ProfileViewModel @Inject constructor(
                         this.copy(
                             loading = false,
                             error = null,
-                            profile = result.data.toUiModel(),
+                            myProfile = result.data.toUiModel(),
                         )
                     }
                 }
@@ -71,24 +71,24 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    override suspend fun handleEvent(event: ProfileContract.UiEvent) {
+    override suspend fun handleEvent(event: MyProfileContract.UiEvent) {
         when (event) {
-            is ProfileContract.UiEvent.OnKeywordTextChanged -> {
+            is MyProfileContract.UiEvent.OnKeywordTextChanged -> {
                 onKeywordTextChanged(event.value)
             }
 
-            is ProfileContract.UiEvent.OnKeywordDescTextChanged -> {
+            is MyProfileContract.UiEvent.OnKeywordDescTextChanged -> {
                 onKeywordDescTextChanged(event.value)
             }
 
-            is ProfileContract.UiEvent.AddKeyword -> {
+            is MyProfileContract.UiEvent.AddKeyword -> {
                 addKeyword(
                     keyword = event.keyword,
                     description = event.description,
                 )
             }
 
-            is ProfileContract.UiEvent.OnKeywordNodeOffsetChanged -> {
+            is MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged -> {
                 changeKeywordNodeOffset(
                     userKeywordId = event.userKeywordId,
                     offsetX = event.offsetX,
@@ -96,39 +96,35 @@ class ProfileViewModel @Inject constructor(
                 )
             }
 
-            ProfileContract.UiEvent.UpdateKeywordNodeOffset -> {
+            MyProfileContract.UiEvent.UpdateKeywordNodeOffset -> {
                 updateKeywordNodeOffset(currentUiState.updatedKeywordNodesOffset)
             }
 
-            ProfileContract.UiEvent.ResetKeywordNodeOffset -> {
+            MyProfileContract.UiEvent.ResetKeywordNodeOffset -> {
                 resetKeywordNodeOffset()
             }
 
-            is ProfileContract.UiEvent.DeleteKeyword -> {
+            is MyProfileContract.UiEvent.DeleteKeyword -> {
                 deleteKeyword(event.userKeywordId)
             }
 
-            is ProfileContract.UiEvent.CheckSafeCancel -> {
+            is MyProfileContract.UiEvent.CheckSafeCancel -> {
                 safeCancel(event.keyword, event.description)
             }
 
-            ProfileContract.UiEvent.CloseAllModals -> {
+            MyProfileContract.UiEvent.CloseAllModals -> {
                 closeAllModalsAndResetTextFields()
             }
 
-            is ProfileContract.UiEvent.OnSelectedKeywordChanged -> {
+            is MyProfileContract.UiEvent.OnSelectedKeywordChanged -> {
                 onSelectedKeywordChanged(
                     userKeywordId = event.userKeywordId,
                     keyword = event.keyword,
                 )
             }
 
-            is ProfileContract.UiEvent.ReportProfile -> {
-                reportProfile()
-            }
-
-            is ProfileContract.UiEvent.UpdateIntroduce -> {
-                updateIntroduce()
+            is MyProfileContract.UiEvent.UpdateIntroduce -> {
+                // TODO: 소개글 수정 시
             }
         }
     }
@@ -156,7 +152,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun closeAllModalsAndResetTextFields() {
-        sendEffect { ProfileContract.UiEffect.CloseAllModals }
+        sendEffect { MyProfileContract.UiEffect.CloseAllModals }
         updateState {
             this.copy(
                 keywordTextField = KeywordTextFieldState(),
@@ -186,9 +182,9 @@ class ProfileViewModel @Inject constructor(
         if ((keyword != null && keyword.isNotEmpty()) ||
             (description != null && description.isNotEmpty())
         ) {
-            sendEffect { ProfileContract.UiEffect.OpenSafeCancelModal }
+            sendEffect { MyProfileContract.UiEffect.OpenSafeCancelModal }
         } else {
-            sendEffect { ProfileContract.UiEffect.CloseAllModals }
+            sendEffect { MyProfileContract.UiEffect.CloseAllModals }
         }
     }
 
@@ -208,7 +204,7 @@ class ProfileViewModel @Inject constructor(
                         updateState {
                             this.copy(fullScreenLoading = false, error = null)
                         }
-                        sendEffect { ProfileContract.UiEffect.CloseAllModals }
+                        sendEffect { MyProfileContract.UiEffect.CloseAllModals }
                         resetSelectedKeyword()
                         showSnackBar(StringResource(R.string.profile_success_delete_user_keyword))
                         // 성공 시, 초기 데이터 다시 로드 (새로 고침)
@@ -245,7 +241,7 @@ class ProfileViewModel @Inject constructor(
                                     keywordDescTextField = KeywordTextFieldState(),
                                 )
                             }
-                            sendEffect { ProfileContract.UiEffect.CloseAllModals }
+                            sendEffect { MyProfileContract.UiEffect.CloseAllModals }
                             resetSelectedKeyword()
                             showSnackBar(
                                 StringResource(
@@ -315,12 +311,6 @@ class ProfileViewModel @Inject constructor(
         updateState {
             this.copy(selectedKeyword = SelectedKeywordState())
         }
-    }
-
-    private fun reportProfile() {
-    }
-
-    private fun updateIntroduce() {
     }
 
     private suspend fun showSnackBar(message: UiText) {
