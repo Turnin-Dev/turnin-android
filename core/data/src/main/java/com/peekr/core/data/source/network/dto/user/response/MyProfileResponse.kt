@@ -4,6 +4,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.user.model.MyProfile
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -25,6 +26,7 @@ data class MyProfileResponse(
     val introduce: String,
     val lastLoginAt: Long,
     val friendsCount: Long,
+    @Json(name = "isActive")
     val active: Boolean,
 )
 

@@ -29,9 +29,13 @@ interface AuthRepository {
     fun register(register: Register): Flow<Result<RegisterResult, CommonErrorType>>
 
     /**
-     * 리프레쉬 토큰 저장
+     * 토큰 저장
      *
-     * @param token 리프레쉬 토큰
+     * @param accessToken 액세스 토큰
+     * @param refreshToken 리프레쉬 토큰
      */
-    fun saveRefreshToken(token: String): Flow<Result<Unit, CommonErrorType>>
+    fun saveTokens(
+        accessToken: String,
+        refreshToken: String,
+    ): Flow<Result<Unit, CommonErrorType>>
 }

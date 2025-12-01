@@ -142,7 +142,7 @@ fun MyProfileScreen(
             )
         }
 
-        if (fullScreenLoading && error != null) {
+        if (fullScreenLoading) {
             PeekrLoadingScreen()
         }
     }

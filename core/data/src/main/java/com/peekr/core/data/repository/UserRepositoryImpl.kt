@@ -1,6 +1,7 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
@@ -30,6 +31,8 @@ class UserRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserRepository {
+    private val tag = this::class.java.simpleName
+
     override suspend fun getUserId(): UserId? {
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
         if (userId == null) return null
@@ -56,10 +59,12 @@ class UserRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = userNetworkDataSource.getMyProfile()) {
                 is NetworkResult.Success -> {
+                    AppLogger.d(tag, "My profile loaded successful")
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
                 is NetworkResult.Error -> {
+                    AppLogger.d(tag, "My profile loaded failure")
                     val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }

@@ -17,6 +17,7 @@
     <string name="common_error_network_connection_failed">서버에 연결할 수 없습니다.</string>
     <string name="common_error_network_invalid_file_type">지원하지 않는 파일 형식입니다.</string>
     <string name="common_error_network_upload_file_failed">파일 업로드에 실패했습니다.</string>
+    <string name="common_error_local_writing_data_failed">데이터를 쓰는 과정에서 오류가 발생했습니다.</string>
     <string name="common_error_unexpected">알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</string>
 
     <!-- AuthErrorType -->

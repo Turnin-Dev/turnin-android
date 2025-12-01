@@ -3,6 +3,7 @@ package com.peekr.core.data.crypto
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.BuildConfig
 import java.security.KeyStore
 import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
@@ -32,8 +33,24 @@ object Crypto {
             load(null)
         }
 
+    // TODO: 개발 환경에서만 사용, 프로덕션 환경에서 반드시 제거할 것.
+    private var inMemoryKey: SecretKey? = null
+
+    // TODO: 개발 환경에서만 사용, 프로덕션 환경에서 반드시 제거할 것.
+    private fun generateEphemeralKey(): SecretKey = KeyGenerator
+        .getInstance(ALGORITHM)
+        .apply {
+            init(KEY_SIZE)
+        }.generateKey()
+
     private fun getKey(): SecretKey {
         val existingKey = keyStore.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry
+
+        // TODO: 개발 환경에서만 사용, 프로덕션 환경에서 반드시 제거할 것.
+        if (existingKey == null && BuildConfig.DEBUG) {
+            return inMemoryKey ?: generateEphemeralKey().also { inMemoryKey = it }
+        }
+
         return existingKey?.secretKey ?: createKey()
     }
 

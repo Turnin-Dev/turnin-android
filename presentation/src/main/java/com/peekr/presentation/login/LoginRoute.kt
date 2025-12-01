@@ -18,8 +18,8 @@ import com.peekr.presentation.login.viewmodel.LoginViewModel
 @Composable
 fun LoginRoute(
     modifier: Modifier = Modifier,
-    onNavigateMain: () -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
+    onNavigateMain: () -> Unit,
     onNavigateRegister: (UiSocialLoginProvider, String) -> Unit,
 ) {
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()

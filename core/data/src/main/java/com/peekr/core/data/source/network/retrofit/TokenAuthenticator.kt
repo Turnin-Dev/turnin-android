@@ -1,6 +1,7 @@
 package com.peekr.core.data.source.network.retrofit
 
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
@@ -17,6 +18,7 @@ import okhttp3.Route
 class TokenAuthenticator(
     private val dataStoreManager: DataStoreManager,
     private val refreshTokenApi: RefreshTokenApi,
+    private val authEventBus: AuthEventBus,
 ) : Authenticator {
     private val tag = this::class.java.simpleName
 
@@ -26,7 +28,10 @@ class TokenAuthenticator(
         // refresh token check
         val originalRefreshToken =
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken).first()
-        if (originalRefreshToken == null) return@runBlocking null
+        if (originalRefreshToken == null) {
+            handleAuthenticationFailure()
+            return@runBlocking null
+        }
         val newTokenResponse = refreshToken(originalRefreshToken)
 
         // logging
@@ -38,14 +43,12 @@ class TokenAuthenticator(
 
         // couldn't refresh the token, so restart the login process
         if (!newTokenResponse.isSuccessful) {
-            dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
-            dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
+            handleAuthenticationFailure()
             return@runBlocking null
         }
 
         val body = newTokenResponse.body() ?: run {
-            dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
-            dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
+            handleAuthenticationFailure()
             return@runBlocking null
         }
 
@@ -66,5 +69,13 @@ class TokenAuthenticator(
             token
         }
         return refreshTokenApi.refresh(bearerToken)
+    }
+
+    private suspend fun handleAuthenticationFailure() {
+        dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
+        dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
+        dataStoreManager.deleteLongData(DataStoreKey.User.UserId)
+
+        authEventBus.emitLogout()
     }
 }

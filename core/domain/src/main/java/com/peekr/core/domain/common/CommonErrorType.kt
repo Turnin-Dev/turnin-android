@@ -1,6 +1,12 @@
 package com.peekr.core.domain.common
 
 sealed interface CommonErrorType : BaseError {
+    /** 로컬에서 발생한 에러 타입 */
+    enum class Local : CommonErrorType {
+        /** 데이터를 쓰는 과정에서 발생한 에러 */
+        WritingDataFailed,
+    }
+
     /** 네트워크에서 발생한 에러 타입 */
     enum class Network : CommonErrorType {
         /** 허가되지 않은 인증 */

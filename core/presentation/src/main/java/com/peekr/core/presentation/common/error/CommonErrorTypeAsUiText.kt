@@ -15,5 +15,6 @@ fun CommonErrorType.asUiText(): UiText = when (this) {
     CommonErrorType.Network.ConnectionFailed -> StringResource(R.string.common_error_network_connection_failed)
     CommonErrorType.Network.InvalidFileType -> StringResource(R.string.common_error_network_invalid_file_type)
     CommonErrorType.Network.UploadFileFailed -> StringResource(R.string.common_error_network_upload_file_failed)
+    CommonErrorType.Local.WritingDataFailed -> StringResource(R.string.common_error_local_writing_data_failed)
     is CommonErrorType.Unexpected -> StringResource(R.string.common_error_unexpected)
 }
