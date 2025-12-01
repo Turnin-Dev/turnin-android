@@ -31,6 +31,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 로그인 성공 조건:
+     * - 3개의 데이터가 모두 존재하며 암호화된 데이터도 정상적으로 복호화에 성공한 경우
+     *
+     * 로그인 실패 조건:
+     * - 3개의 데이터 중 하나라도 없는 경우
+     * - 암호화된 데이터를 복호화하는 과정에서 오류가 발생한 경우
+     */
     private suspend fun checkLoggedIn(): Boolean {
         // 로그인 여부 판단 로직, 추후 캡슐화 예정
         return combine(
