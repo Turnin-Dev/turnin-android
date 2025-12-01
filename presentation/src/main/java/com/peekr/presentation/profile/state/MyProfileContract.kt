@@ -7,9 +7,12 @@ import com.peekr.core.presentation.common.viewmodel.BaseUiState
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.profile.model.UiMyProfile
 
+/**
+ * 나의 프로필 계약
+ */
 class MyProfileContract {
     /**
-     * 프로필 상태 클래스
+     * 나의 프로필 상태 클래스
      *
      * @param isMyProfile 내 프로필 여부
      * @param myProfile UI용 프로필
