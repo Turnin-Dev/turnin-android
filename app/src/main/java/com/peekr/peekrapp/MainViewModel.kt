@@ -31,9 +31,9 @@ class MainViewModel @Inject constructor(
                 _isLoading.update { false }
             } else {
                 // TODO: In production mode
-//            val result = checkLoggedIn()
-//            _loggedIn.update { result }
-//            _isLoading.update { false }
+                val result = checkLoggedIn()
+                _loggedIn.update { result }
+                _isLoading.update { false }
             }
         }
     }
