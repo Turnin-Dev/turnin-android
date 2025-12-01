@@ -97,7 +97,7 @@ internal fun MyProfileRoute(
     SafeCancelModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeCancelModalOpen,
-        title = R.string.profile_screen_safe_modal_cancel,
+        title = R.string.my_profile_screen_safe_modal_cancel,
         onAcceptClick = {
             viewModel.processEvent(ProfileContract.UiEvent.CloseAllModals)
         },
@@ -107,7 +107,7 @@ internal fun MyProfileRoute(
     SafeDeleteModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeDeleteModalOpen,
-        title = R.string.profile_screen_safe_modal_delete,
+        title = R.string.my_profile_screen_safe_modal_delete,
         onAcceptClick = {
             viewModel.processEvent(
                 ProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeyword.userKeywordId),

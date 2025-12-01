@@ -62,6 +62,19 @@ import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiProfile
 import com.peekr.presentation.profile.state.ProfileContract
 
+/**
+ * 나의 프로필 화면
+ *
+ * @param modifier [Modifier]
+ * @param profile 프로필 - [UiProfile]
+ * @param fullScreenLoading 전체 화면 로딩 여부
+ * @param error 에러
+ * @param onUiEvent UI 이벤트
+ * @param onSettingClick 설정 클릭 시
+ * @param onOpenAddKeywordModal 키워드 추가 모달 열기 콜백
+ * @param onOpenNodeOptionModal 키워드 노드 옵션 모달 열기 콜백
+ * @param onOpenKeywordDetailModal 키워드 설명 모달 열기 콜백
+ */
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
@@ -137,7 +150,7 @@ fun MyProfileScreen(
                     .align(Alignment.BottomEnd)
                     .padding(FabPaddingDp)
                     .size(FabSize),
-                contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
+                contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
                 onClick = onOpenAddKeywordModal,
             )
         }
@@ -167,8 +180,8 @@ private fun TopBar(
         optionSlot = {
             PeekrIconButton(
                 icon = PeekrIcons.Outlined.Bold.Settings,
-                iconSize = TopBarIconSize,
-                contentDescription = stringResource(R.string.profile_screen_top_bar_settings),
+                iconSize = TopBarOptionIconSize,
+                contentDescription = stringResource(R.string.my_profile_screen_top_bar_settings),
                 onClick = onSettingClick,
             )
         },
@@ -217,7 +230,7 @@ private fun Profile(
             PeekrAvatar(
                 modifier = Modifier.size(AvatarSize),
                 model = profileImageUrl,
-                contentDescription = stringResource(R.string.profile_screen_avatar_content_desc),
+                contentDescription = stringResource(R.string.my_profile_screen_avatar_content_desc),
                 onClick = onProfileImageClick,
             )
             Column(
@@ -238,7 +251,7 @@ private fun Profile(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     Text(
-                        text = stringResource(R.string.profile_screen_friends_total),
+                        text = stringResource(R.string.my_profile_screen_friends_total),
                         style = PeekrTheme.typography.body3Normal,
                         fontWeight = FontWeight.Bold,
                         color = PeekrTheme.colorScheme.textNormal,
@@ -367,13 +380,13 @@ private fun NodeChangedButtons(
         NodeChangedButton(
             modifier = Modifier,
             icon = PeekrIcons.Default.Bold.Check,
-            contentDescription = stringResource(R.string.profile_screen_node_changed_btn_desc_ok),
+            contentDescription = stringResource(R.string.my_profile_screen_node_changed_btn_desc_ok),
             onClick = onChange,
         )
         NodeChangedButton(
             modifier = Modifier,
             icon = PeekrIcons.Default.Bold.Cancel,
-            contentDescription = stringResource(R.string.profile_screen_node_changed_btn_desc_cancel),
+            contentDescription = stringResource(R.string.my_profile_screen_node_changed_btn_desc_cancel),
             onClick = onCancel,
         )
     }
@@ -419,7 +432,7 @@ private val FabSize = 50.dp
 private val AvatarSize = 70.dp
 private val FabPaddingDp = 20.dp
 private const val INTRODUCE_MAX_LINE_COUNT = 2
-private val TopBarIconSize = PeekrIconSize.Small
+private val TopBarOptionIconSize = PeekrIconSize.Small
 
 // ------------------------------ Skeletons ------------------------------
 @Composable

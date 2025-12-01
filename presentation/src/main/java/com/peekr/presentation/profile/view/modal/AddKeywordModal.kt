@@ -35,8 +35,8 @@ internal fun AddKeywordModal(
 ) {
     KeywordModal(
         modifier = modifier,
-        title = stringResource(R.string.profile_screen_add_keyword_modal_title),
-        acceptLabel = stringResource(R.string.profile_screen_add_keyword_modal_btn),
+        title = stringResource(R.string.my_profile_screen_add_keyword_modal_title),
+        acceptLabel = stringResource(R.string.my_profile_screen_add_keyword_modal_btn),
         isOpen = isOpen,
         loading = loading,
         keywordTextFieldState = keywordTextFieldState,
