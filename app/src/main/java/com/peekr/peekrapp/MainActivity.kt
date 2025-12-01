@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.peekr.core.data.eventBus.AuthEventBus
@@ -64,8 +65,10 @@ class MainActivity : ComponentActivity() {
             val currentDestination = navBackStackEntry?.destination
             val isAuthScreen by remember(currentDestination?.route) {
                 derivedStateOf {
-                    currentDestination?.hasRoute(SubGraph.Login.Root::class) == true ||
-                        currentDestination?.hasRoute(SubGraph.Register.Root::class) == true
+                    currentDestination?.hierarchy?.any {
+                        currentDestination.hasRoute(SubGraph.Login.Root::class) ||
+                            currentDestination.hasRoute(SubGraph.Register.Root::class)
+                    } == true
                 }
             }
             if (!isAuthScreen) {
