@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -87,9 +87,13 @@ fun BottomNavigationBar(
                 bottomNavItems.forEach { item ->
                     val checked by remember(currentDestination?.route) {
                         derivedStateOf {
-                            currentDestination?.hierarchy?.any {
-                                it.route == item.route::class.qualifiedName
-                            } == true
+                            // 1) old mechanism
+//                            currentDestination?.hierarchy?.any {
+//                                it.route == item.route::class.qualifiedName
+//                            } == true
+
+                            // 2) new mechanism
+                            currentDestination?.hasRoute(item.route::class) == true
                         }
                     }
 
@@ -98,7 +102,8 @@ fun BottomNavigationBar(
                             .weight(1f)
                             .clickableSingle {
                                 onItemClickWithOptions(navController, item.route)
-                            }.padding(vertical = ItemVerticalSpacingDp),
+                            }
+                            .padding(vertical = ItemVerticalSpacingDp),
                         icon = item.icon,
                         title = item.title,
                         checked = checked,
@@ -182,7 +187,9 @@ private fun IconPreview() {
     PeekrAppTheme {
         Row(Modifier.width(150.dp)) {
             Item(
-                modifier = Modifier.weight(1f).clickable {},
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {},
                 icon = PeekrIcons.Filled.Normal.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = false,
@@ -206,7 +213,11 @@ private fun BottomNavigationBarPreview() {
             modifier = Modifier.fillMaxSize(),
             bottomBar = { BottomNavigationBar(Modifier.fillMaxWidth(), navController) },
         ) { innerPadding ->
-            Box(Modifier.fillMaxSize().padding(innerPadding))
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            )
         }
     }
 }

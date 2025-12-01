@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.peekr.core.presentation.common.navigation.BottomNav
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.keywordDetail.keywordDetailNavigation
@@ -35,12 +34,16 @@ fun AppNavigation(
         NavHost(
             modifier = modifier,
             navController = appNavController,
-            startDestination = if (!loggedIn) SubGraph.Login else BottomNav,
+            startDestination = if (!loggedIn) {
+                SubGraph.Login.Root
+            } else {
+                SubGraph.BottomNav.Root
+            },
         ) {
             loginNavigation(
                 navController = appNavController,
                 navigateToMain = {
-                    appNavController.navigate(BottomNav) {
+                    appNavController.navigate(SubGraph.BottomNav.Root) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
@@ -49,13 +52,13 @@ fun AppNavigation(
             registerNavigation(
                 navController = appNavController,
                 navigateToMain = {
-                    appNavController.navigate(BottomNav) {
+                    appNavController.navigate(SubGraph.BottomNav.Root) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
             )
 
-            composable<BottomNav> {
+            composable<SubGraph.BottomNav.Root> {
                 BottomNavigation(
                     modifier = Modifier.fillMaxSize(),
                     appNavController = appNavController,

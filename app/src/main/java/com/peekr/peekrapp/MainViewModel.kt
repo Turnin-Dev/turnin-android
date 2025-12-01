@@ -25,9 +25,16 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val result = checkLoggedIn()
-            _loggedIn.update { result }
-            _isLoading.update { false }
+            if (BuildConfig.DEBUG) {
+                // TODO: In debug mode
+                _loggedIn.update { true }
+                _isLoading.update { false }
+            } else {
+                // TODO: In production mode
+//            val result = checkLoggedIn()
+//            _loggedIn.update { result }
+//            _isLoading.update { false }
+            }
         }
     }
 

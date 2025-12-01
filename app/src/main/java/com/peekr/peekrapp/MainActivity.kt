@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
                 ObserveAsEvents(
                     flow = authEventBus.logoutEvent,
                     onEvent = {
-                        appNavController.navigate(SubGraph.Login) {
+                        appNavController.navigate(SubGraph.Login.Root) {
                             popUpTo(0) { inclusive = true }
                             launchSingleTop = true
                         }

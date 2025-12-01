@@ -22,19 +22,19 @@ sealed class BottomNavItem(
     val icon: PeekrIconType,
 ) {
     data object Home : BottomNavItem(
-        route = SubGraph.Home,
+        route = SubGraph.BottomNav.Home,
         title = R.string.bottom_nav_item_home,
         icon = PeekrIcons.Filled.Normal.Home,
     )
 
     data object Discover : BottomNavItem(
-        route = SubGraph.Discover,
+        route = SubGraph.BottomNav.Discover,
         title = R.string.bottom_nav_item_discover,
         icon = PeekrIcons.Filled.Normal.Discover,
     )
 
     data object Profile : BottomNavItem(
-        route = SubGraph.Profile,
+        route = SubGraph.BottomNav.Profile.Root,
         title = R.string.bottom_nav_item_profile,
         icon = PeekrIcons.Filled.Normal.Profile,
     )
