@@ -8,6 +8,7 @@ import com.peekr.core.domain.model.Role
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.User
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -35,6 +36,7 @@ data class UserResponse(
     val profileImageUrl: String,
     val introduce: String,
     val lastLoginAt: Long,
+    @Json(name = "isActive")
     val active: Boolean,
 )
 
