@@ -25,7 +25,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.common.navigation.RegisterGraph
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.util.LaunchedUiEffectHandler
 import com.peekr.core.presentation.common.viewmodel.sharedViewModel
@@ -40,8 +39,8 @@ fun NavGraphBuilder.registerNavigation(
     navController: NavHostController,
     navigateToMain: () -> Unit,
 ) {
-    navigation<SubGraph.Register>(startDestination = RegisterGraph.DisplayId) {
-        animatedComposable<RegisterGraph.DisplayId> { backStackEntry ->
+    navigation<SubGraph.Register.Root>(startDestination = SubGraph.Register.DisplayId) {
+        animatedComposable<SubGraph.Register.DisplayId> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
@@ -51,7 +50,7 @@ fun NavGraphBuilder.registerNavigation(
                 onConsumeEffect = { registerViewModel.onConsumeEventState() },
                 onEffect = { effect ->
                     if (effect.navigateToNextScreen) {
-                        navController.navigate(RegisterGraph.Name)
+                        navController.navigate(SubGraph.Register.Name)
                     }
                 },
             )
@@ -74,7 +73,7 @@ fun NavGraphBuilder.registerNavigation(
             )
         }
 
-        animatedComposable<RegisterGraph.Name> { backStackEntry ->
+        animatedComposable<SubGraph.Register.Name> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val nameState by registerViewModel.nameState.collectAsStateWithLifecycle()
@@ -93,16 +92,16 @@ fun NavGraphBuilder.registerNavigation(
                 enabledNext = nameState.canNext,
                 onBackPressed = { navController.popBackStack() },
                 onNextWithValue = { _ ->
-                    navController.navigate(RegisterGraph.Profile)
+                    navController.navigate(SubGraph.Register.Profile)
                 },
             )
         }
 
-        animatedComposable<RegisterGraph.Profile> { backStackEntry ->
+        animatedComposable<SubGraph.Register.Profile> { backStackEntry ->
             val registerEntry = remember(backStackEntry) {
-                navController.getBackStackEntry<SubGraph.Register>()
+                navController.getBackStackEntry<SubGraph.Register.Root>()
             }
-            val registerArgs = registerEntry.toRoute<SubGraph.Register>()
+            val registerArgs = registerEntry.toRoute<SubGraph.Register.Root>()
             val argProvider = registerArgs.provider
             val argProviderId = registerArgs.providerId
             val registerViewModel: RegisterViewModel =
@@ -131,7 +130,9 @@ fun NavGraphBuilder.registerNavigation(
                         }
 
                         event.navigateToCropImageScreen -> {
-                            navController.navigate(RegisterGraph.CropProfileImage)
+                            navController.navigate(
+                                SubGraph.Register.CropProfileImage,
+                            )
                         }
                     }
                 },
@@ -164,7 +165,7 @@ fun NavGraphBuilder.registerNavigation(
             )
         }
 
-        animatedComposable<RegisterGraph.CropProfileImage> { backStackEntry ->
+        animatedComposable<SubGraph.Register.CropProfileImage> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()

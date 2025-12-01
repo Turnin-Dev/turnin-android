@@ -76,7 +76,7 @@ class NetworkModule {
     ): Retrofit.Builder = Retrofit
         .Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl(BuildConfig.PEEKR_LOCAL_SERVER_URL)
+        .baseUrl(BuildConfig.PEEKR_MOCK_SERVER_URL)
 
     @Singleton
     @Provides

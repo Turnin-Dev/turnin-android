@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.peekr.core.presentation.common.navigation.ProfileGraph
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 
@@ -14,8 +13,10 @@ fun NavGraphBuilder.profileNavigation(
     bottomNavController: NavHostController,
     test: () -> Unit,
 ) {
-    navigation<SubGraph.Profile>(startDestination = ProfileGraph.Me) {
-        composable<ProfileGraph.Me> {
+    navigation<SubGraph.BottomNav.Profile.Root>(
+        startDestination = SubGraph.BottomNav.Profile.Me,
+    ) {
+        composable<SubGraph.BottomNav.Profile.Me> {
             MyProfileRoute(
                 onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
                     appNavController.navigateKeywordDetail(userKeywordId.value, userId.value, keyword)
@@ -26,7 +27,7 @@ fun NavGraphBuilder.profileNavigation(
             )
         }
 
-        composable<ProfileGraph.User> {
+        composable<SubGraph.BottomNav.Profile.User> {
             // UserProfileRoute
         }
     }

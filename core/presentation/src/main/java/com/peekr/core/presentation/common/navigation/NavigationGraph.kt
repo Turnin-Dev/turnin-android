@@ -3,93 +3,72 @@ package com.peekr.core.presentation.common.navigation
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
 import kotlinx.serialization.Serializable
 
-/** 바텀 네비게이션 진입점 라우트 */
-@Serializable
-data object BottomNav : SubGraph
-
-// ------------------------------ Sub Graph (중첩 네비게이션 라우트) ------------------------------
-
-/**
- * 중첩 네비게이션을 필요로 할 때 여기서 선언해 사용한다.
- *
- * 여기에 선언된 라우트는 `라우트명+Graph`이름으로 된 별도의 그래프가 존재한다.
- *
- * Ex) `SubGraph.Home`: HomeGraph(`Home+Graph`) 그래프 존재
- */
+/** 모든 중첩 그래프 */
 sealed interface SubGraph {
-    /** 로그인 네비게이션 라우트 ([LoginGraph]) */
-    @Serializable
-    data object Login : SubGraph
+    /** 바텀 네비게이션 */
+    sealed interface BottomNav : SubGraph {
+        /** 진입점 */
+        @Serializable
+        data object Root : BottomNav
 
-    /** 회원가입 네비게이션 라우트 ([RegisterGraph]) */
-    @Serializable
-    data class Register(
-        val provider: UiSocialLoginProvider,
-        val providerId: String,
-    ) : SubGraph
+        /** 홈 탭 */
+        @Serializable
+        data object Home : BottomNav
 
-    /** 바텀 네비게이션(홈) 라우트 ([HomeGraph]) */
-    @Serializable
-    data object Home : SubGraph
+        /** 탐색 탭 */
+        @Serializable
+        data object Discover : BottomNav
 
-    /** 바텀 네비게이션(탐색) 라우트 ([DiscoverGraph]) */
-    @Serializable
-    data object Discover : SubGraph
+        /** 프로필 탭 */
+        sealed interface Profile : BottomNav {
+            /** 진입점 */
+            @Serializable
+            data object Root : Profile
 
-    /** 바텀 네비게이션(프로필) 라우트 ([ProfileGraph]) */
-    @Serializable
-    data object Profile : SubGraph
+            /** 나의 프로필 */
+            @Serializable
+            data object Me : Profile
+
+            /** 사용자 프로필 */
+            @Serializable
+            data class User(
+                val displayId: Long,
+            ) : Profile
+        }
+    }
+
+    /** 로그인 중첩 그래프 */
+    sealed interface Login : SubGraph {
+        @Serializable
+        data object Root : Login
+
+        @Serializable
+        data object Main : Login
+    }
+
+    /** 회원가입 그래프 */
+    sealed interface Register : SubGraph {
+        @Serializable
+        data class Root(
+            val provider: UiSocialLoginProvider,
+            val providerId: String,
+        ) : SubGraph
+
+        @Serializable
+        data object DisplayId : Register
+
+        @Serializable
+        data object Name : Register
+
+        @Serializable
+        data object Profile : Register
+
+        @Serializable
+        data object CropProfileImage : Register
+    }
 }
 
-// ------------------------------ Graph (중첩 네비게이션 내부) ------------------------------
-
-/** 로그인 네비게이션 */
-sealed interface LoginGraph {
-    @Serializable
-    data object Main : LoginGraph
-}
-
-/** 회원가입 네비게이션 */
-sealed interface RegisterGraph {
-    @Serializable
-    data object DisplayId : RegisterGraph
-
-    @Serializable
-    data object Name : RegisterGraph
-
-    @Serializable
-    data object Profile : RegisterGraph
-
-    @Serializable
-    data object CropProfileImage : RegisterGraph
-}
-
-// ------------------------------ Graph (중첩 네비게이션 내부, 바텀 네비게이션) ------------------------------
-
-/** 바텀 네비게이션(홈) */
-sealed interface HomeGraph {
-    @Serializable
-    data object Main : HomeGraph
-}
-
-/** 바텀 네비게이션(탐색) */
-sealed interface DiscoverGraph {
-    @Serializable
-    data object Main : DiscoverGraph
-}
-
-/** 바텀 네비게이션(프로필) */
-sealed interface ProfileGraph {
-    @Serializable
-    data object Me : ProfileGraph
-
-    @Serializable
-    data class User(
-        val displayId: Long,
-    ) : ProfileGraph
-}
-
-// ------------------------------ Screens (별도 화면) ------------------------------
+// ------------------------------ Screens (별도 화면 or 딥링크 지원 화면) ------------------------------
 
 /** 별도의 화면을 정의할 때 여기서 선언해 사용한다. */
 sealed interface Screens {

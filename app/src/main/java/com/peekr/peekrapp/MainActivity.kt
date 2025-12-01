@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -65,8 +66,8 @@ class MainActivity : ComponentActivity() {
             val isAuthScreen by remember(currentDestination?.route) {
                 derivedStateOf {
                     currentDestination?.hierarchy?.any {
-                        it.route == SubGraph.Login::class.qualifiedName ||
-                            it.route == SubGraph.Register::class.qualifiedName
+                        currentDestination.hasRoute(SubGraph.Login.Root::class) ||
+                            currentDestination.hasRoute(SubGraph.Register.Root::class)
                     } == true
                 }
             }
@@ -74,7 +75,7 @@ class MainActivity : ComponentActivity() {
                 ObserveAsEvents(
                     flow = authEventBus.logoutEvent,
                     onEvent = {
-                        appNavController.navigate(SubGraph.Login) {
+                        appNavController.navigate(SubGraph.Login.Root) {
                             popUpTo(0) { inclusive = true }
                             launchSingleTop = true
                         }

@@ -31,18 +31,18 @@ fun BottomNavigation(
                 .fillMaxSize()
                 .padding(innerPadding),
             navController = bottomNavController,
-            startDestination = SubGraph.Home,
+            startDestination = SubGraph.BottomNav.Home,
         ) {
-            composable<SubGraph.Home> {
+            composable<SubGraph.BottomNav.Home> {
                 HomeMainScreen(
                     modifier = Modifier.fillMaxSize(),
                     onNavigateToSecond = {
-                        appNavController.navigate("HomeSecond")
+                        appNavController.navigate(Screens.TempMain)
                     },
                 )
             }
 
-            composable<SubGraph.Discover> {
+            composable<SubGraph.BottomNav.Discover> {
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
             }
 
