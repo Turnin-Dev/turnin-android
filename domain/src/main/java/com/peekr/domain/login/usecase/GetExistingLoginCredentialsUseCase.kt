@@ -41,14 +41,14 @@ class GetExistingLoginCredentialsUseCase @Inject constructor(
                         provider = socialLoginResult.data.provider,
                         providerId = socialLoginResult.data.providerId,
                     )
-                    authRepository.existsUser(existsUser).map { userResult ->
-                        when (userResult) {
+                    authRepository.existsUser(existsUser).map { isExistsUserResult ->
+                        when (isExistsUserResult) {
                             Result.Loading -> Result.Loading
-                            is Result.Error -> Result.Error(LoginErrorType.CommonError(userResult.error))
+                            is Result.Error -> Result.Error(LoginErrorType.CommonError(isExistsUserResult.error))
                             is Result.Success -> {
                                 val loginWithExistsUser = LoginWithExistsUser(
                                     loginCredentials = socialLoginResult.data,
-                                    isExistsUser = userResult.data,
+                                    isExistsUser = isExistsUserResult.data,
                                 )
                                 Result.Success(loginWithExistsUser)
                             }

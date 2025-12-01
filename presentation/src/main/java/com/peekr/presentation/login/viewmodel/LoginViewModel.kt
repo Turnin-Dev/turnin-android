@@ -47,15 +47,18 @@ class LoginViewModel @Inject constructor(
         // 사용자 존재 여부 파악
         getExistingLoginCredentialsUseCase(socialLoginProvider)
             .onEach { result ->
-                updateLoginState(result) { loginWithExistsUser ->
-                    if (loginWithExistsUser.isExistsUser) {
-                        // 로그인 계속 진행
-                        proceedWithLoginAndNavigateToMain(loginWithExistsUser.loginCredentials)
-                    } else {
-                        // 회원가입 진행
-                        navigateToRegister(loginWithExistsUser.loginCredentials)
-                    }
-                }
+                updateLoginState(
+                    result = result,
+                    onSuccess = { loginWithExistsUser ->
+                        if (loginWithExistsUser.isExistsUser) {
+                            // 로그인 계속 진행
+                            proceedWithLoginAndNavigateToMain(loginWithExistsUser.loginCredentials)
+                        } else {
+                            // 회원가입 진행
+                            navigateToRegister(loginWithExistsUser.loginCredentials)
+                        }
+                    },
+                )
             }.launchIn(viewModelScope)
     }
 
