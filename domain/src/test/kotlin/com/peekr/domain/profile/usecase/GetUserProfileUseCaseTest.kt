@@ -10,7 +10,7 @@ import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.user.model.UserProfile
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
@@ -33,7 +33,7 @@ class GetUserProfileUseCaseTest {
     fun setUp() {
         every {
             userRepository.getUserProfile(TestDisplayId)
-        } returns flowOf(Result.Success(TestUserProfile))
+        } returns flowOf(Result.Success(TestCoreUserProfile))
         every {
             userKeywordRepository.getUserKeywords()
         } returns flowOf(Result.Success(TestUserKeywords))
@@ -47,7 +47,7 @@ class GetUserProfileUseCaseTest {
         // then
         val success = result as Result.Success
         assertEquals(TestUserKeywords.keywords, success.data.keywords)
-        assertEquals(TestUserProfile.friendshipStatus, success.data.friendshipStatus)
+        assertEquals(TestCoreUserProfile.friendshipStatus, success.data.friendshipStatus)
     }
 
     companion object {
@@ -65,7 +65,7 @@ class GetUserProfileUseCaseTest {
             updatedAt = 1000,
         )
         private val TestUserKeywords = UserKeywords(listOf(TestUserKeyword))
-        private val TestUserProfile = UserProfile(
+        private val TestCoreUserProfile = CoreUserProfile(
             displayId = TestDisplayId,
             name = Name("name"),
             profileImageUrl = null,

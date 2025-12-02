@@ -4,7 +4,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.user.model.UserProfile
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -33,8 +33,8 @@ data class UserProfileResponse(
     val active: Boolean,
 )
 
-fun UserProfileResponse.toDomainModel(): UserProfile =
-    UserProfile(
+fun UserProfileResponse.toDomainModel(): CoreUserProfile =
+    CoreUserProfile(
         displayId = DisplayId(displayId),
         name = Name(name),
         profileImageUrl = profileImageUrl,

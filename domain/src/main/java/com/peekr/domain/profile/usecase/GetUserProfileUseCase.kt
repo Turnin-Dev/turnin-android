@@ -8,7 +8,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
-import com.peekr.domain.profile.model.Profile
+import com.peekr.domain.profile.model.UserProfile
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -24,12 +24,12 @@ class GetUserProfileUseCase @Inject constructor(
      *
      * @param displayId 조회할 사용자 표시 ID
      */
-    operator fun invoke(displayId: DisplayId): Flow<Result<Profile, ProfileErrorType>> =
+    operator fun invoke(displayId: DisplayId): Flow<Result<UserProfile, ProfileErrorType>> =
         combineWithResult(
             userRepository.getUserProfile(displayId),
             userKeywordRepository.getUserKeywords(),
         ) { userProfile, userKeywords ->
-            val profile = Profile(
+            val myProfile = UserProfile(
                 displayId = userProfile.data.displayId,
                 name = userProfile.data.name,
                 profileImageUrl = userProfile.data.profileImageUrl,
@@ -40,7 +40,7 @@ class GetUserProfileUseCase @Inject constructor(
                 friendshipStatus = userProfile.data.friendshipStatus,
                 keywords = userKeywords.data.keywords,
             )
-            Result.Success(profile)
+            Result.Success(myProfile)
         }.mapError { commonError ->
             when (commonError) {
                 is CommonErrorType -> ProfileErrorType.CommonError(commonError)

@@ -5,7 +5,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.domain.profile.model.ProfilePatch
+import com.peekr.domain.profile.model.MyProfilePatch
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -26,14 +26,14 @@ class UpdateProfileUseCaseTest {
         } returns flowOf(Result.Success(Unit))
 
         // when
-        val result = usecase(TestProfilePatch).last()
+        val result = usecase(TestMyProfilePatch).last()
 
         // then
         assertTrue(result is Result.Success)
     }
 
     companion object {
-        private val TestProfilePatch = ProfilePatch(
+        private val TestMyProfilePatch = MyProfilePatch(
             displayId = DisplayId("id"),
             name = Name("name"),
             profileImageUrl = null,

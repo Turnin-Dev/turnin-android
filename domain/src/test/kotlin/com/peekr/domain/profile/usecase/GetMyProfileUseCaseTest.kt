@@ -9,7 +9,7 @@ import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.user.model.MyProfile
+import com.peekr.core.domain.user.model.CoreMyProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
@@ -32,7 +32,7 @@ class GetMyProfileUseCaseTest {
     fun setUp() {
         every {
             userRepository.getMyProfile()
-        } returns flowOf(Result.Success(TestMyProfile))
+        } returns flowOf(Result.Success(TestCoreMyProfile))
         every {
             userKeywordRepository.getUserKeywords()
         } returns flowOf(Result.Success(TestUserKeywords))
@@ -46,7 +46,7 @@ class GetMyProfileUseCaseTest {
         // then
         val success = result as Result.Success
         assertEquals(TestUserKeywords.keywords, success.data.keywords)
-        assertEquals(TestMyProfile.displayId, success.data.displayId)
+        assertEquals(TestCoreMyProfile.displayId, success.data.displayId)
     }
 
     companion object {
@@ -62,7 +62,7 @@ class GetMyProfileUseCaseTest {
             updatedAt = 1000,
         )
         private val TestUserKeywords = UserKeywords(listOf(TestUserKeyword))
-        private val TestMyProfile = MyProfile(
+        private val TestCoreMyProfile = CoreMyProfile(
             displayId = DisplayId("did"),
             name = Name("name"),
             profileImageUrl = null,

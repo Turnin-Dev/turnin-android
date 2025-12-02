@@ -3,7 +3,7 @@ package com.peekr.core.data.source.network.dto.user.response
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.user.model.MyProfile
+import com.peekr.core.domain.user.model.CoreMyProfile
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -30,8 +30,8 @@ data class MyProfileResponse(
     val active: Boolean,
 )
 
-fun MyProfileResponse.toDomainModel(): MyProfile =
-    MyProfile(
+fun MyProfileResponse.toDomainModel(): CoreMyProfile =
+    CoreMyProfile(
         displayId = DisplayId(displayId),
         name = Name(name),
         profileImageUrl = profileImageUrl,

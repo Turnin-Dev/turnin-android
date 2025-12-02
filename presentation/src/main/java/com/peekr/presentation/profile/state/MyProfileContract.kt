@@ -8,13 +8,12 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.profile.model.UiMyProfile
 
 /**
- * 나의 프로필 계약
+ * 나의 프로필 UI 계약
  */
 class MyProfileContract {
     /**
      * 나의 프로필 상태 클래스
      *
-     * @param isMyProfile 내 프로필 여부
      * @param myProfile UI용 프로필
      * @param keywordTextField 키워드 텍스트 필드 상태 (내 프로필 한정)
      * @param keywordDescTextField 키워드 내용 텍스트 필드 상태 (내 프로필 한정)
@@ -25,7 +24,6 @@ class MyProfileContract {
      * @param error 에러 메시지
      */
     data class UiState(
-        val isMyProfile: Boolean = false,
         val myProfile: UiMyProfile? = null,
         val keywordTextField: KeywordTextFieldState = KeywordTextFieldState(),
         val keywordDescTextField: KeywordTextFieldState = KeywordTextFieldState(),

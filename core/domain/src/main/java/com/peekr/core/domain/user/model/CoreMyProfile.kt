@@ -1,29 +1,26 @@
-package com.peekr.domain.profile.model
+package com.peekr.core.domain.user.model
 
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.user.model.UserPatch
 
 /**
- * 사용자 프로필 수정 요청
+ * 나의 프로필
  *
  * @property displayId 사용자 표시 ID
  * @property name 사용자 이름
  * @property profileImageUrl 사용자 프로필 사진 url
  * @property introduce 사용자 소개 글
+ * @property lastLoginAt 사용자 마지막 로그인 일자
+ * @property friendsCount 친구 수
+ * @property active 사용자 활성화 여부
  */
-data class ProfilePatch(
+data class CoreMyProfile(
     val displayId: DisplayId,
     val name: Name,
     val profileImageUrl: String?,
     val introduce: Introduce,
+    val lastLoginAt: Long,
+    val friendsCount: Long,
+    val active: Boolean,
 )
-
-fun ProfilePatch.toUserPatch(): UserPatch =
-    UserPatch(
-        displayId = displayId,
-        name = name,
-        profileImageUrl = profileImageUrl,
-        introduce = introduce,
-    )
