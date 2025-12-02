@@ -37,30 +37,34 @@
     <string name="my_profile_screen_introduce_expand">더보기</string>
     <string name="my_profile_screen_introduce_collapse">접기</string>
     <!-- My Profile Screen (Keyword Modal (Add & Edit)) -->
-    <string name="my_profile_screen_keyword_modal_input_keyword">키워드</string>
-    <string name="my_profile_screen_keyword_modal_input_keyword_ph">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
-    <string name="my_profile_screen_keyword_modal_input_keyword_desc">내용 (선택사항)</string>
-    <string name="my_profile_screen_keyword_modal_input_keyword_desc_ph">
+    <string name="my_profile_modal_input_keyword_title">키워드</string>
+    <string name="my_profile_modal_input_keyword_title_placeholder">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
+    <string name="my_profile_modal_input_keyword_desc">내용 (선택사항)</string>
+    <string name="my_profile_modal_input_keyword_desc_placeholder">
         키워드에 관한 내용을 자유롭게 입력해주세요
     </string>
-    <string name="my_profile_screen_keyword_modal_btn_cancel">취소</string>
-    <string name="my_profile_screen_add_keyword_modal_title">키워드 추가</string>
-    <string name="my_profile_screen_edit_keyword_modal_title">키워드 수정</string>
-    <string name="my_profile_screen_add_keyword_modal_btn">추가</string>
-    <string name="my_profile_screen_edit_keyword_modal_btn">수정</string>
+    <string name="my_profile_modal_add_keyword_btn_cancel">취소</string>
+    <string name="my_profile_modal_add_keyword_btn_accept">키워드 추가</string>
+    <string name="my_profile_modal_add_keyword_btn_add">추가</string>
+    <string name="my_profile_modal_edit_keyword_btn_edit">키워드 수정</string>
+    <string name="my_profile_screen_edit_keyword_modal_accept">수정</string>
     <!-- My Profile Screen (Safe Modal) -->
-    <string name="my_profile_screen_safe_modal_cancel">변경사항을 버리시겠습니까?</string>
-    <string name="my_profile_screen_safe_modal_delete">정말 삭제하시겠습니까?</string>
+    <string name="my_profile_modal_safe_cancel">변경사항을 버리시겠습니까?</string>
+    <string name="my_profile_modal_safe_delete">정말 삭제하시겠습니까?</string>
     <!-- My Profile Screen (Node Option Bottom Modal) -->
-    <string name="my_profile_screen_node_option_modal_btn_edit">수정</string>
-    <string name="my_profile_screen_node_option_modal_btn_delete">삭제</string>
+    <string name="my_profile_bottom_modal_node_option_edit">수정</string>
+    <string name="my_profile_bottom_modal_node_option_delete">삭제</string>
     <!-- My Profile Screen (Content Desc) -->
     <string name="my_profile_screen_add_keyword_modal_content_desc_more">취소</string>
     <string name="my_profile_screen_node_changed_btn_desc_ok">변경 완료</string>
     <string name="my_profile_screen_node_changed_btn_desc_cancel">변경 취소</string>
 
     <!-- User Profile Screen -->
-    <string name="user_profile_top_bar_report">신고</string>
+    <string name="user_profile_screen_top_bar_report">신고</string>
+    <string name="user_profile_screen_friendship_status_btn_nothing">친구 추가</string>
+    <string name="user_profile_screen_friendship_status_btn_friends">친구</string>
+    <string name="user_profile_screen_friendship_status_btn_requested">요청 취소</string>
+    <string name="user_profile_screen_friendship_status_btn_received">요청 수락</string>
 
     <!-- Profile Common Success -->
     <string name="profile_success_update_user_keyword_offset">키워드 위치가 수정됐습니다.</string>

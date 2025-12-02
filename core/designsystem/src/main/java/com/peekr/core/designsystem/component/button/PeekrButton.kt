@@ -44,7 +44,7 @@ enum class PeekrButtonStyle(
         paddingValues = PaddingValues(horizontal = 14.dp, vertical = 7.dp),
         innerPadding = 8.dp,
     ),
-    ExtraSmall(
+    Tiny(
         height = 25.dp,
         cornerRadius = 4.dp,
         iconSize = 13.dp,

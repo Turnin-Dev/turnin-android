@@ -106,7 +106,7 @@ private fun PeekrButtonStyle.textStyle(): TextStyle = when (this) {
     PeekrButtonStyle.Large -> PeekrTheme.typography.body1.copy(fontWeight = FontWeight.SemiBold)
     PeekrButtonStyle.Medium -> PeekrTheme.typography.body2.copy(fontWeight = FontWeight.SemiBold)
     PeekrButtonStyle.Small -> PeekrTheme.typography.label1.copy(fontWeight = FontWeight.Medium)
-    PeekrButtonStyle.ExtraSmall -> PeekrTheme.typography.label2.copy(fontWeight = FontWeight.Medium)
+    PeekrButtonStyle.Tiny -> PeekrTheme.typography.label2.copy(fontWeight = FontWeight.Medium)
 }
 
 @Composable

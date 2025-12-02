@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,11 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
 import com.peekr.core.designsystem.component.icon.PeekrIcon
@@ -40,7 +35,6 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingle
-import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Cancel
 import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.PeekrIconType
@@ -60,12 +54,15 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
+import com.peekr.presentation.profile.view.frame.ProfileFrame
+import com.peekr.presentation.profile.view.frame.ProfileScreenFrame
+import com.peekr.presentation.profile.view.frame.ProfileScreenTokens
 
 /**
  * 나의 프로필 화면
  *
  * @param modifier [Modifier]
- * @param profile 프로필 - [UiMyProfile]
+ * @param myProfile 프로필 - [UiMyProfile]
  * @param fullScreenLoading 전체 화면 로딩 여부
  * @param error 에러
  * @param onUiEvent UI 이벤트
@@ -77,7 +74,7 @@ import com.peekr.presentation.profile.state.MyProfileContract
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
-    profile: UiMyProfile?,
+    myProfile: UiMyProfile?,
     fullScreenLoading: Boolean,
     error: UiText?,
     onUiEvent: (MyProfileContract.UiEvent) -> Unit,
@@ -90,7 +87,7 @@ fun MyProfileScreen(
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                profile?.let {
+                myProfile?.let {
                     TopBar(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -98,30 +95,30 @@ fun MyProfileScreen(
                                 start = ScreenTokens.HorizontalPadding,
                                 end = ScreenTokens.HorizontalPaddingWithTouchTarget,
                             ),
-                        title = profile.displayId,
+                        title = myProfile.displayId,
                         onSettingClick = onSettingClick,
                     )
                 } ?: TopBarSkeleton()
             },
             profile = {
-                profile?.let {
+                myProfile?.let {
                     Profile(
                         modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = profile.profileImageUrl,
-                        name = profile.name,
-                        friendsCount = profile.friendsCount,
-                        introduce = profile.introduce,
+                        profileImageUrl = myProfile.profileImageUrl,
+                        name = myProfile.name,
+                        friendsCount = myProfile.friendsCount,
+                        introduce = myProfile.introduce,
                         onProfileImageClick = {},
-                        onFriendsTotalClick = {},
+                        onFriendsCountClick = {},
                     )
                 } ?: ProfileSkeleton()
             },
             keywordGraph = {
-                profile?.let {
+                myProfile?.let {
                     KeywordGraph(
                         modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = profile.profileImageUrl,
-                        keywords = profile.keywords,
+                        profileImageUrl = myProfile.profileImageUrl,
+                        keywords = myProfile.keywords,
                         onUiEvent = onUiEvent,
                         onNodeClick = { userKeywordId, userId, keyword ->
                             onOpenKeywordDetailModal(userKeywordId, userId, keyword)
@@ -143,7 +140,7 @@ fun MyProfileScreen(
             },
         )
 
-        profile?.let {
+        myProfile?.let {
             PeekrFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -196,7 +193,7 @@ private fun TopBar(
  * @param friendsCount 친구 수
  * @param introduce 소개 글
  * @param onProfileImageClick 프로필 사진 클릭 시
- * @param onFriendsTotalClick 친구 수 클릭 시
+ * @param onFriendsCountClick 친구 수 클릭 시
  */
 @Composable
 private fun Profile(
@@ -206,96 +203,17 @@ private fun Profile(
     friendsCount: Long,
     introduce: String,
     onProfileImageClick: () -> Unit,
-    onFriendsTotalClick: () -> Unit,
+    onFriendsCountClick: () -> Unit,
 ) {
-    var expandedIntroduce by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isIntroduceTextOverFlowing by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    Column(
+    ProfileFrame(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-        // 프로필 사진 & 이름 & 친구 수
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // 프로필 사진
-            PeekrAvatar(
-                modifier = Modifier.size(AvatarSize),
-                model = profileImageUrl,
-                contentDescription = stringResource(R.string.my_profile_screen_avatar_content_desc),
-                onClick = onProfileImageClick,
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                // 이름
-                Text(
-                    text = name,
-                    style = PeekrTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = PeekrTheme.colorScheme.textNormal,
-                )
-                // 친구 수
-                Row(
-                    modifier = Modifier.clickableSingleWithoutRipple(onClick = onFriendsTotalClick),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.my_profile_screen_friends_total),
-                        style = PeekrTheme.typography.body3Normal,
-                        fontWeight = FontWeight.Bold,
-                        color = PeekrTheme.colorScheme.textNormal,
-                    )
-                    Text(
-                        text = "$friendsCount",
-                        style = PeekrTheme.typography.body3Normal,
-                        fontWeight = FontWeight.Normal,
-                        color = PeekrTheme.colorScheme.textNormal,
-                    )
-                }
-            }
-        }
-
-        // 소개 글
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = introduce,
-                style = PeekrTheme.typography.body4,
-                fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textNormal,
-                textAlign = TextAlign.Start,
-                maxLines = if (expandedIntroduce) 10 else INTRODUCE_MAX_LINE_COUNT,
-                overflow = if (expandedIntroduce) TextOverflow.Visible else TextOverflow.Ellipsis,
-                onTextLayout = { textLayoutResult ->
-                    isIntroduceTextOverFlowing = textLayoutResult.hasVisualOverflow ||
-                        textLayoutResult.lineCount > INTRODUCE_MAX_LINE_COUNT
-                },
-            )
-            if (isIntroduceTextOverFlowing) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .clickableSingle {
-                            expandedIntroduce = !expandedIntroduce
-                        },
-                    text = if (expandedIntroduce) "접기" else "...더보기",
-                    style = PeekrTheme.typography.caption1,
-                    fontWeight = FontWeight.Normal,
-                    color = PeekrTheme.colorScheme.textAssist2,
-                    textAlign = TextAlign.End,
-                )
-            }
-        }
-    }
+        profileImageUrl = profileImageUrl,
+        name = name,
+        friendsCount = friendsCount,
+        introduce = introduce,
+        onProfileImageClick = onProfileImageClick,
+        onFriendsCountClick = onFriendsCountClick,
+    )
 }
 
 /**
@@ -428,9 +346,7 @@ private fun NodeChangedButton(
 }
 
 private val FabSize = 50.dp
-private val AvatarSize = 70.dp
 private val FabPaddingDp = 20.dp
-private const val INTRODUCE_MAX_LINE_COUNT = 2
 private val TopBarOptionIconSize = PeekrIconSize.Small
 
 // ------------------------------ Skeletons ------------------------------
@@ -462,7 +378,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SkeletonBox(Modifier.size(AvatarSize, AvatarSize), CircleShape)
+            SkeletonBox(Modifier.size(ProfileScreenTokens.AvatarSize), CircleShape)
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.Start,
@@ -514,7 +430,7 @@ private fun ProfilePreview() {
             introduce = "hello world!",
             friendsCount = 28,
             onProfileImageClick = {},
-            onFriendsTotalClick = {},
+            onFriendsCountClick = {},
         )
     }
 }
@@ -525,7 +441,7 @@ private fun MyProfileScreenPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            profile = UiMyProfile(
+            myProfile = UiMyProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
                 profileImageUrl = null,
@@ -555,7 +471,7 @@ private fun SkeletonPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            profile = null,
+            myProfile = null,
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},

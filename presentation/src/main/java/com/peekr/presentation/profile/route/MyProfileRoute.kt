@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile
+package com.peekr.presentation.profile.route
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,7 +97,7 @@ internal fun MyProfileRoute(
     SafeCancelModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeCancelModalOpen,
-        title = R.string.my_profile_screen_safe_modal_cancel,
+        title = R.string.my_profile_modal_safe_cancel,
         onAcceptClick = {
             viewModel.processEvent(MyProfileContract.UiEvent.CloseAllModals)
         },
@@ -107,7 +107,7 @@ internal fun MyProfileRoute(
     SafeDeleteModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeDeleteModalOpen,
-        title = R.string.my_profile_screen_safe_modal_delete,
+        title = R.string.my_profile_modal_safe_delete,
         onAcceptClick = {
             viewModel.processEvent(
                 MyProfileContract.UiEvent.DeleteKeyword(uiState.selectedKeyword.userKeywordId),
@@ -130,7 +130,7 @@ internal fun MyProfileRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        profile = uiState.myProfile,
+        myProfile = uiState.myProfile,
         fullScreenLoading = uiState.fullScreenLoading,
         error = uiState.error,
         onUiEvent = viewModel::processEvent,

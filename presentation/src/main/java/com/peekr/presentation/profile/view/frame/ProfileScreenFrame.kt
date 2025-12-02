@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile.view
+package com.peekr.presentation.profile.view.frame
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.presentation.profile.route.MyProfileRoute
 
 fun NavGraphBuilder.profileNavigation(
     appNavController: NavHostController,
