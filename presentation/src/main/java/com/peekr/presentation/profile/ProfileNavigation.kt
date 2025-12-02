@@ -13,7 +13,6 @@ import com.peekr.presentation.profile.route.UserProfileRoute
 fun NavGraphBuilder.profileNavigation(
     appNavController: NavHostController,
     bottomNavController: NavHostController,
-    test: () -> Unit,
 ) {
     navigation<SubGraph.BottomNav.Profile.Root>(
         startDestination = SubGraph.BottomNav.Profile.Me,

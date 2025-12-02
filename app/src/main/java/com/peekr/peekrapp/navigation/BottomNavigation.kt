@@ -49,7 +49,6 @@ fun BottomNavigation(
             profileNavigation(
                 appNavController = appNavController,
                 bottomNavController = bottomNavController,
-                test = { appNavController.navigate(Screens.TempMain) },
             )
         }
     }

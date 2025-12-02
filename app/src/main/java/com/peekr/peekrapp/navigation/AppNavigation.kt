@@ -26,11 +26,6 @@ fun AppNavigation(
     loggedIn: Boolean?,
 ) {
     if (loggedIn != null) {
-        // TODO login/Register Navigation 에서 bottomNavigation 으로 이동시 아래 코드와 같이 백스택을 확실히 클리어 해야 한다.
-        // navController.navigate(SubGraph.Home) {
-        //    popUpTo(0) { inclusive = true }
-        //    launchSingleTop = true
-        // }
         NavHost(
             modifier = modifier,
             navController = appNavController,
