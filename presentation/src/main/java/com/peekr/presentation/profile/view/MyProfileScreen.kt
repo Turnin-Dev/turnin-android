@@ -47,7 +47,7 @@ import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
 import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
-import com.peekr.core.presentation.feature.keyword.graph.KeywordGraphView
+import com.peekr.core.presentation.feature.keyword.view.KeywordGraphView
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.core.presentation.ui.util.UiText
@@ -247,6 +247,7 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
+            freeGesture = true,
             onNodeClick = { userKeywordId, userId, keyword ->
                 onNodeClick(userKeywordId, userId, keyword)
             },

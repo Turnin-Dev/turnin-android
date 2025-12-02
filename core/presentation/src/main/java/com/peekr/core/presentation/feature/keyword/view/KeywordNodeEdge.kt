@@ -39,6 +39,7 @@ fun KeywordNodeEdge(
     initialOffsetY: Float,
     label: String,
     nodeReset: Boolean,
+    freeGesture: Boolean,
     onNodeClick: () -> Unit,
     onNodeLongClick: () -> Unit,
     onNodeChanged: (NodeOffsetXType, NodeOffsetYType) -> Unit,
@@ -99,29 +100,35 @@ fun KeywordNodeEdge(
                     translationX = animatedNodeOffsetX
                     translationY = animatedNodeOffsetY
                 }
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = { nodeDragging = true },
-                        onDragEnd = { nodeDragging = false },
-                        onDragCancel = { nodeDragging = false },
-                        onDrag = { change, dragAmount ->
-                            change.consume()
-                            val sensitivity = 1.0f
-                            val draggedNodeOffsetX =
-                                nodeState.offsetX + (dragAmount.x * sensitivity).roundToInt()
-                            val draggedNodeOffsetY =
-                                nodeState.offsetY + (dragAmount.y * sensitivity).roundToInt()
-                            val newOffsetX =
-                                draggedNodeOffsetX.coerceIn(0f, containerWidthPx - nodeState.widthPx)
-                            val newOffsetY =
-                                draggedNodeOffsetY.coerceIn(0f, containerHeightPx - nodeState.heightPx)
-                            nodeState.updatePosition(
-                                newOffsetX = newOffsetX,
-                                newOffsetY = newOffsetY,
+                .then(
+                    if (freeGesture) {
+                        Modifier.pointerInput(Unit) {
+                            detectDragGestures(
+                                onDragStart = { nodeDragging = true },
+                                onDragEnd = { nodeDragging = false },
+                                onDragCancel = { nodeDragging = false },
+                                onDrag = { change, dragAmount ->
+                                    change.consume()
+                                    val sensitivity = 1.0f
+                                    val draggedNodeOffsetX =
+                                        nodeState.offsetX + (dragAmount.x * sensitivity).roundToInt()
+                                    val draggedNodeOffsetY =
+                                        nodeState.offsetY + (dragAmount.y * sensitivity).roundToInt()
+                                    val newOffsetX =
+                                        draggedNodeOffsetX.coerceIn(0f, containerWidthPx - nodeState.widthPx)
+                                    val newOffsetY =
+                                        draggedNodeOffsetY.coerceIn(0f, containerHeightPx - nodeState.heightPx)
+                                    nodeState.updatePosition(
+                                        newOffsetX = newOffsetX,
+                                        newOffsetY = newOffsetY,
+                                    )
+                                },
                             )
-                        },
-                    )
-                },
+                        }
+                    } else {
+                        Modifier
+                    },
+                ),
             label = label,
             onClick = onNodeClick,
             onLongClick = onNodeLongClick,

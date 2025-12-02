@@ -15,7 +15,9 @@ class UserProfileViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: UserProfileContract.UiEvent) {
         when (event) {
-            else -> {}
+            is UserProfileContract.UiEvent.OnReport -> {
+                // TODO: 신고 로직 작성
+            }
         }
     }
 }

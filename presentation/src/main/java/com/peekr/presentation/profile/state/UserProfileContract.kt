@@ -1,5 +1,6 @@
 package com.peekr.presentation.profile.state
 
+import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
@@ -16,7 +17,11 @@ class UserProfileContract {
         val error: UiText? = null,
     ) : BaseUiState
 
-    sealed interface UiEvent : BaseUiEvent
+    sealed interface UiEvent : BaseUiEvent {
+        data class OnReport(
+            val displayId: DisplayId,
+        ) : UiEvent
+    }
 
     sealed interface UiEffect : BaseUiEffect
 }
