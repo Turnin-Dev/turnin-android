@@ -1,20 +1,30 @@
 package com.peekr.presentation.profile.view
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.button.PeekrButtonStyle
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.button.PeekrOutlinedButton
 import com.peekr.core.designsystem.component.button.PeekrSolidButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.icon.Arrow2Right
@@ -36,6 +46,7 @@ import com.peekr.presentation.profile.model.UiUserProfile
 import com.peekr.presentation.profile.state.UserProfileContract
 import com.peekr.presentation.profile.view.frame.ProfileFrame
 import com.peekr.presentation.profile.view.frame.ProfileScreenFrame
+import com.peekr.presentation.profile.view.frame.ProfileScreenTokens
 
 @Composable
 fun UserProfileScreen(
@@ -57,7 +68,7 @@ fun UserProfileScreen(
                         onReportClick = {},
                         onBackPressed = {},
                     )
-                } // TODO: 스켈레톤 화면 추가
+                } ?: TopBarSkeleton()
             },
             profile = {
                 userProfile?.let {
@@ -73,7 +84,7 @@ fun UserProfileScreen(
                         onFriendsButtonClick = { currentFriendshipStatus ->
                         },
                     )
-                } // TODO: 스켈레톤 화면 추가
+                } ?: ProfileSkeleton()
             },
             keywordGraph = {
                 userProfile?.let {
@@ -83,7 +94,7 @@ fun UserProfileScreen(
                         keywords = userProfile.keywords,
                         onNodeClick = { _, _, _ -> },
                     )
-                } // TODO: 스켈레톤 화면 추가
+                } ?: KeywordGraphSkeleton()
             },
         )
     }
@@ -222,6 +233,80 @@ private fun KeywordGraph(
 }
 
 private val TopBarOptionIconSize = PeekrIconSize.Small
+
+// ------------------------------ Skeleton ------------------------------
+@Composable
+private fun TopBarSkeleton() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .padding(
+                start = ScreenTokens.HorizontalPadding,
+                end = ScreenTokens.HorizontalPaddingWithTouchTarget,
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SkeletonBox(
+            Modifier
+                .width(130.dp)
+                .height(26.dp),
+        )
+        SkeletonBox(
+            modifier = Modifier.size(40.dp),
+            shape = CircleShape,
+        )
+    }
+}
+
+@Composable
+private fun ProfileSkeleton(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SkeletonBox(Modifier.size(ProfileScreenTokens.AvatarSize), CircleShape)
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                SkeletonBox(Modifier.size(59.dp, 24.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SkeletonBox(Modifier.size(94.dp, 20.dp))
+                }
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            SkeletonBox(Modifier.size(218.dp, 18.dp))
+            SkeletonBox(Modifier.size(163.dp, 18.dp))
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentSize(Alignment.CenterEnd),
+        ) {
+            SkeletonBox(Modifier.size(81.dp, 25.dp))
+        }
+    }
+}
+
+@Composable
+private fun KeywordGraphSkeleton() {
+    Box(Modifier.fillMaxSize(), Alignment.Center) {
+        SkeletonBox(Modifier.size(49.dp, 49.dp), CircleShape)
+    }
+}
 
 // ------------------------------ Preview ------------------------------
 @PreviewLightDarkWithBackground
