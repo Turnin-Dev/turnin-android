@@ -14,6 +14,7 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.profile.usecase.my.GetMyProfileUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf

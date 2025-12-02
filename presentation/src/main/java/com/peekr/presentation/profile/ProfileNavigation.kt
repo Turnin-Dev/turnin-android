@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.profile.route.MyProfileRoute
+import com.peekr.presentation.profile.route.UserProfileRoute
 
 fun NavGraphBuilder.profileNavigation(
     appNavController: NavHostController,
@@ -23,13 +24,16 @@ fun NavGraphBuilder.profileNavigation(
                     appNavController.navigateKeywordDetail(userKeywordId.value, userId.value, keyword)
                 },
                 onSettingClick = {
-                    test()
+                    // TODO: 임시 테스트 코드
+                    bottomNavController.navigate(
+                        SubGraph.BottomNav.Profile.User("hong_gd_123"),
+                    )
                 },
             )
         }
 
         composable<SubGraph.BottomNav.Profile.User> {
-            // UserProfileRoute
+            UserProfileRoute()
         }
     }
 }

@@ -32,7 +32,7 @@ sealed interface SubGraph {
             /** 사용자 프로필 */
             @Serializable
             data class User(
-                val displayId: Long,
+                val displayId: String,
             ) : Profile
         }
     }

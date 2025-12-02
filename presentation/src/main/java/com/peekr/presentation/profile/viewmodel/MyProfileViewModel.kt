@@ -11,7 +11,7 @@ import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.core.presentation.ui.util.UiText.StringResource
 import com.peekr.domain.profile.error.ProfileErrorType
-import com.peekr.domain.profile.usecase.ProfileUseCases
+import com.peekr.domain.profile.usecase.MyProfileUseCases
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
-    private val usecases: ProfileUseCases,
+    private val usecases: MyProfileUseCases,
 ) : MVIBaseViewModel<MyProfileContract.UiState, MyProfileContract.UiEvent, MyProfileContract.UiEffect>() {
     override fun createInitialState(): MyProfileContract.UiState =
         MyProfileContract.UiState()

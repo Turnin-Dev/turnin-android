@@ -15,6 +15,7 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.profile.usecase.user.GetUserProfileUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -42,7 +43,7 @@ class GetUserProfileUseCaseTest {
     @Test
     fun `사용자 프로필 조회 성공 테스트`() = runTest {
         // when
-        val result = usecase(TestDisplayId).last()
+        val result = usecase(TestDisplayId.value).last()
 
         // then
         val success = result as Result.Success

@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase
+package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result

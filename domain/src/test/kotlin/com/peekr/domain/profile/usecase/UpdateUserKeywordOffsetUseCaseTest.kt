@@ -4,6 +4,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.profile.usecase.my.UpdateUserKeywordOffsetUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf

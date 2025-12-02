@@ -3,6 +3,7 @@ package com.peekr.domain.profile.usecase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.profile.usecase.my.DeleteUserKeywordUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf

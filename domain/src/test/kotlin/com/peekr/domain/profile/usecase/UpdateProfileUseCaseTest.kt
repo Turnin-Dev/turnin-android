@@ -6,6 +6,7 @@ import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.profile.model.MyProfilePatch
+import com.peekr.domain.profile.usecase.my.UpdateProfileUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
