@@ -22,9 +22,9 @@ interface UserApi {
     suspend fun getMyProfile(): Response<MyProfileResponse>
 
     /** 사용자 프로필 조회 */
-    @GET("${NetworkApiPath.User.Profile.ROUTE}/{displayId}")
+    @GET("${NetworkApiPath.User.Profile.ROUTE}/{userId}")
     suspend fun getUserProfile(
-        @Path("displayId") displayId: String,
+        @Path("userId") userId: Long,
     ): Response<UserProfileResponse>
 
     /** 사용자 수정 */

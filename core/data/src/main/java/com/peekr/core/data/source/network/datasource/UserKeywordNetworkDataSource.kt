@@ -9,6 +9,7 @@ import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetRe
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 
 /** UserKeyword 네트워크 데이터 소스 */
@@ -16,7 +17,9 @@ interface UserKeywordNetworkDataSource {
     /**
      * 사용자 키워드 리스트 조회
      */
-    suspend fun getUserKeywords(): NetworkResult<UserKeywordsResponse>
+    suspend fun getUserKeywords(
+        userId: UserId,
+    ): NetworkResult<UserKeywordsResponse>
 
     /**
      * 사용자 키워드 설명 조회

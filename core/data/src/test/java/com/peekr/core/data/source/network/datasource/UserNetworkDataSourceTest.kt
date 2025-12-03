@@ -202,7 +202,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestDisplayId)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val successResponse = response as NetworkResult.Success
@@ -221,7 +221,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestDisplayId)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -234,10 +234,10 @@ class UserNetworkDataSourceTest {
         val mockApi: UserApi = mockk()
         val exception = Exception()
         dataSource = UserNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getUserProfile(TestDisplayId.value) } throws exception
+        coEvery { mockApi.getUserProfile(TestUserId.value) } throws exception
 
         // when
-        val response = dataSource.getUserProfile(TestDisplayId)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -254,7 +254,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestDisplayId)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -360,11 +360,12 @@ class UserNetworkDataSourceTest {
     }
 
     companion object {
-        private val TestUserId = UserId(1L)
+        private val TestMyUserId = UserId(1L)
+        private val TestUserId = UserId(2L)
         private val TestDisplayId = DisplayId("did")
         private val TestUserResponse =
             UserResponse(
-                id = 1L,
+                id = TestMyUserId.value,
                 role = Role.USER,
                 provider = SocialLoginProvider.GOOGLE,
                 providerId = "pid",
@@ -390,6 +391,7 @@ class UserNetworkDataSourceTest {
         private val TestIntroducePatchRequest = IntroducePatchRequest("hello")
         private val TestMyProfileResponse =
             MyProfileResponse(
+                userId = TestMyUserId.value,
                 displayId = "did",
                 name = "name",
                 profileImageUrl = null,
@@ -400,6 +402,7 @@ class UserNetworkDataSourceTest {
             )
         private val TestUserProfileResponse =
             UserProfileResponse(
+                userId = TestUserId.value,
                 displayId = TestDisplayId.value,
                 name = "name",
                 profileImageUrl = null,

@@ -4,10 +4,12 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.model.UserId
 
 /**
  * 사용자 프로필
  *
+ * @property userId 사용자 ID
  * @property displayId 사용자 표시 ID
  * @property name 사용자 이름
  * @property profileImageUrl 사용자 프로필 사진 url
@@ -18,6 +20,7 @@ import com.peekr.core.domain.model.Name
  * @property active 사용자 활성화 여부
  */
 data class CoreUserProfile(
+    val userId: UserId,
     val displayId: DisplayId,
     val name: Name,
     val profileImageUrl: String?,

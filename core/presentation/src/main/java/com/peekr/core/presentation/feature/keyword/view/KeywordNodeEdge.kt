@@ -18,6 +18,7 @@ import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
 import com.peekr.core.presentation.feature.keyword.state.NodeTokens
 import com.peekr.core.presentation.feature.keyword.state.rememberNodeState
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -114,10 +115,10 @@ fun KeywordNodeEdge(
                                         nodeState.offsetX + (dragAmount.x * sensitivity).roundToInt()
                                     val draggedNodeOffsetY =
                                         nodeState.offsetY + (dragAmount.y * sensitivity).roundToInt()
-                                    val newOffsetX =
-                                        draggedNodeOffsetX.coerceIn(0f, containerWidthPx - nodeState.widthPx)
-                                    val newOffsetY =
-                                        draggedNodeOffsetY.coerceIn(0f, containerHeightPx - nodeState.heightPx)
+                                    val maxOffsetX = max(0f, containerWidthPx - nodeState.widthPx)
+                                    val maxOffsetY = max(0f, containerHeightPx - nodeState.heightPx)
+                                    val newOffsetX = draggedNodeOffsetX.coerceIn(0f, maxOffsetX)
+                                    val newOffsetY = draggedNodeOffsetY.coerceIn(0f, maxOffsetY)
                                     nodeState.updatePosition(
                                         newOffsetX = newOffsetX,
                                         newOffsetY = newOffsetY,

@@ -9,7 +9,7 @@ import com.peekr.core.data.source.network.dto.user.response.UserResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import com.peekr.core.data.source.network.util.networkCallWithoutResponse
-import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.UserId
 import javax.inject.Inject
 
 class UserNetworkDataSourceImpl @Inject constructor(
@@ -21,8 +21,8 @@ class UserNetworkDataSourceImpl @Inject constructor(
     override suspend fun getMyProfile(): NetworkResult<MyProfileResponse> =
         networkCall { userApi.getMyProfile() }
 
-    override suspend fun getUserProfile(displayId: DisplayId): NetworkResult<UserProfileResponse> =
-        networkCall { userApi.getUserProfile(displayId.value) }
+    override suspend fun getUserProfile(userId: UserId): NetworkResult<UserProfileResponse> =
+        networkCall { userApi.getUserProfile(userId.value) }
 
     override suspend fun updateUser(patch: UserPatchRequest): NetworkResult<Unit> =
         networkCallWithoutResponse { userApi.updateUser(patch) }

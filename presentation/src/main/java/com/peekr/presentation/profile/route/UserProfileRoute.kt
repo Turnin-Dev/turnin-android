@@ -14,7 +14,9 @@ import com.peekr.presentation.profile.view.UserProfileScreen
 import com.peekr.presentation.profile.viewmodel.UserProfileViewModel
 
 @Composable
-internal fun UserProfileRoute() {
+internal fun UserProfileRoute(
+    onBackPressed: () -> Unit,
+) {
     // Lock Orientation
     LockScreenOrientation()
 
@@ -35,6 +37,6 @@ internal fun UserProfileRoute() {
             .background(PeekrTheme.colorScheme.backgroundNormal),
         userProfile = uiState.userProfile,
         onUiEvent = viewModel::processEvent,
-        onBackPressed = {},
+        onBackPressed = onBackPressed,
     )
 }

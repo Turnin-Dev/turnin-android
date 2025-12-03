@@ -113,7 +113,7 @@ internal fun KeywordModal(
                         iconSize = PeekrIconSize.Small,
                         tint = PeekrTheme.colorScheme.textNormal,
                         contentDescription = stringResource(
-                            R.string.my_profile_screen_add_keyword_modal_content_desc_more,
+                            R.string.my_profile_add_keyword_modal_content_desc_more,
                         ),
                     )
                 }

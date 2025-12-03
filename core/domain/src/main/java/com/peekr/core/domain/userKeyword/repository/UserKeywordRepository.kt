@@ -3,6 +3,7 @@ package com.peekr.core.domain.userKeyword.repository
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
@@ -16,7 +17,9 @@ interface UserKeywordRepository {
     /**
      * 사용자 키워드 리스트 조회
      */
-    fun getUserKeywords(): Flow<Result<UserKeywords, CommonErrorType>>
+    fun getUserKeywords(
+        userId: UserId,
+    ): Flow<Result<UserKeywords, CommonErrorType>>
 
     /**
      * 사용자 키워드 설명 조회

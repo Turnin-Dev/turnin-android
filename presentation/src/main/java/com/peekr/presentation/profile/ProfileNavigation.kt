@@ -25,14 +25,18 @@ fun NavGraphBuilder.profileNavigation(
                 onSettingClick = {
                     // TODO: 임시 테스트 코드
                     bottomNavController.navigate(
-                        SubGraph.BottomNav.Profile.User("hong_gd_123"),
+                        SubGraph.BottomNav.Profile.User(1L),
                     )
                 },
             )
         }
 
         composable<SubGraph.BottomNav.Profile.User> {
-            UserProfileRoute()
+            UserProfileRoute(
+                onBackPressed = {
+                    bottomNavController.popBackStack()
+                },
+            )
         }
     }
 }

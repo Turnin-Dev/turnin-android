@@ -20,7 +20,9 @@ import retrofit2.http.Query
 interface UserKeywordApi {
     /** 사용자 키워드 리스트 조회 */
     @GET(NetworkApiPath.UserKeyword.ROUTE)
-    suspend fun getUserKeywords(): Response<UserKeywordsResponse>
+    suspend fun getUserKeywords(
+        @Query("userId") userId: Long,
+    ): Response<UserKeywordsResponse>
 
     /** 사용자 키워드 설명 조회 */
     @GET(NetworkApiPath.UserKeyword.DESCRIPTION)

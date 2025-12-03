@@ -19,8 +19,8 @@ class UserProfileViewModel @Inject constructor(
     private val usecases: UserProfileUseCases,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<UserProfileContract.UiState, UserProfileContract.UiEvent, UserProfileContract.UiEffect>() {
-    private val currentDisplayId: String by lazy {
-        requireNotNull(savedStateHandle.get<String>("displayId"))
+    private val currentUserId: Long by lazy {
+        requireNotNull(savedStateHandle.get<Long>("userId"))
     }
 
     override fun createInitialState(): UserProfileContract.UiState =
@@ -43,7 +43,7 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private suspend fun initNavArgumentData(): Boolean = runCatching {
-        currentDisplayId
+        currentUserId
     }
         .onFailure {
             showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
@@ -51,7 +51,7 @@ class UserProfileViewModel @Inject constructor(
         .isSuccess
 
     private suspend fun getUserProfile() {
-        usecases.getUserProfile(currentDisplayId).collect { result ->
+        usecases.getUserProfile(currentUserId).collect { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {

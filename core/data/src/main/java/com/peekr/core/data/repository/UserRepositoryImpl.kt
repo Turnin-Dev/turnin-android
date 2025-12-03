@@ -13,7 +13,6 @@ import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
-import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreMyProfile
@@ -71,10 +70,10 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getUserProfile(displayId: DisplayId): Flow<Result<CoreUserProfile, CommonErrorType>> =
+    override fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>> =
         safeResultFlow<CoreUserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
-            when (val result = userNetworkDataSource.getUserProfile(displayId)) {
+            when (val result = userNetworkDataSource.getUserProfile(userId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }

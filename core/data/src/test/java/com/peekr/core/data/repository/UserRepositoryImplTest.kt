@@ -157,11 +157,11 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getUserProfile(TestDisplayId)
+            dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Success(TestUserProfileResponse)
 
         // when
-        val result = repository.getUserProfile(TestDisplayId).last()
+        val result = repository.getUserProfile(TestUserId).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -176,11 +176,11 @@ class UserRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.Forbidden
         coEvery {
-            dataSource.getUserProfile(TestDisplayId)
+            dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getUserProfile(TestDisplayId).last()
+        val result = repository.getUserProfile(TestUserId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -194,10 +194,10 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
-        coEvery { dataSource.getUserProfile(TestDisplayId) } throws exception
+        coEvery { dataSource.getUserProfile(TestUserId) } throws exception
 
         // when
-        val result = repository.getUserProfile(TestDisplayId).last()
+        val result = repository.getUserProfile(TestUserId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -321,10 +321,11 @@ class UserRepositoryImplTest {
     }
 
     companion object {
-        private val TestUserId = UserId(1L)
+        private val TestMyUserId = UserId(1L)
+        private val TestUserId = UserId(2L)
         private val TestDisplayId = DisplayId("did")
         private val TestUserResponse = UserResponse(
-            id = TestUserId.value,
+            id = TestMyUserId.value,
             role = Role.USER,
             provider = SocialLoginProvider.GOOGLE,
             providerId = "id",
@@ -349,6 +350,7 @@ class UserRepositoryImplTest {
         )
         private val TestIntroducePatchRequest = IntroducePatchRequest("hello")
         private val TestUserProfileResponse = UserProfileResponse(
+            userId = TestUserId.value,
             displayId = TestDisplayId.value,
             name = "name",
             profileImageUrl = "",
@@ -359,6 +361,7 @@ class UserRepositoryImplTest {
             friendsCount = 51,
         )
         private val TestMyProfileResponse = MyProfileResponse(
+            userId = TestMyUserId.value,
             displayId = "id",
             name = "name",
             profileImageUrl = "",

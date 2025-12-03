@@ -15,6 +15,7 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.usecase.my.GetMyProfileUseCase
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -35,8 +36,11 @@ class GetMyProfileUseCaseTest {
             userRepository.getMyProfile()
         } returns flowOf(Result.Success(TestCoreMyProfile))
         every {
-            userKeywordRepository.getUserKeywords()
+            userKeywordRepository.getUserKeywords(TestMyUserId)
         } returns flowOf(Result.Success(TestUserKeywords))
+        coEvery {
+            userRepository.getUserId()
+        } returns TestMyUserId
     }
 
     @Test
@@ -51,6 +55,7 @@ class GetMyProfileUseCaseTest {
     }
 
     companion object {
+        private val TestMyUserId = UserId(1L)
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
@@ -64,6 +69,7 @@ class GetMyProfileUseCaseTest {
         )
         private val TestUserKeywords = UserKeywords(listOf(TestUserKeyword))
         private val TestCoreMyProfile = CoreMyProfile(
+            userId = TestMyUserId,
             displayId = DisplayId("did"),
             name = Name("name"),
             profileImageUrl = null,

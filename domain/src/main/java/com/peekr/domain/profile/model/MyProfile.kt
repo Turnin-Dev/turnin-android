@@ -3,11 +3,13 @@ package com.peekr.domain.profile.model
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 
 /**
  * 나의 프로필
  *
+ * @property userId 사용자 ID
  * @property displayId 사용자 표시 ID
  * @property name 이름
  * @property profileImageUrl 프로필 사진 url
@@ -18,6 +20,7 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
  * @property active 사용자 활성화 여부
  */
 data class MyProfile(
+    val userId: UserId,
     val displayId: DisplayId,
     val name: Name,
     val profileImageUrl: String?,

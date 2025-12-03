@@ -66,7 +66,7 @@ fun UserProfileScreen(
                             .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                         title = userProfile.displayId,
                         onReportClick = {},
-                        onBackPressed = {},
+                        onBackPressed = onBackPressed,
                     )
                 } ?: TopBarSkeleton()
             },
@@ -169,16 +169,16 @@ private fun Profile(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_nothing),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Plus,
-                        onClick = { onFriendsButtonClick(FriendshipStatus.NOTHING) },
+                        onClick = { onFriendsButtonClick(friendshipStatus) },
                     )
                 }
 
                 FriendshipStatus.FRIENDS -> {
                     PeekrOutlinedButton(
-                        text = stringResource(R.string.user_profile_screen_friendship_status_btn_nothing),
+                        text = stringResource(R.string.user_profile_screen_friendship_status_btn_friends),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Check,
-                        onClick = { onFriendsButtonClick(FriendshipStatus.FRIENDS) },
+                        onClick = { onFriendsButtonClick(friendshipStatus) },
                     )
                 }
 
@@ -187,7 +187,7 @@ private fun Profile(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_requested),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Cancel,
-                        onClick = { onFriendsButtonClick(FriendshipStatus.NOTHING) },
+                        onClick = { onFriendsButtonClick(friendshipStatus) },
                     )
                 }
 
@@ -196,7 +196,7 @@ private fun Profile(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_received),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Arrow2Right,
-                        onClick = { onFriendsButtonClick(FriendshipStatus.NOTHING) },
+                        onClick = { onFriendsButtonClick(friendshipStatus) },
                     )
                 }
             }
