@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.graph
+package com.peekr.core.presentation.feature.keyword.view
 
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
@@ -25,8 +25,6 @@ import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
 import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
-import com.peekr.core.presentation.feature.keyword.view.KeywordNodeEdge
-import com.peekr.core.presentation.feature.keyword.view.UserNode
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 
 /**
@@ -34,8 +32,9 @@ import com.peekr.core.presentation.ui.model.UiUserKeyword
  *
  * @param modifier [Modifier]
  * @param profileImageUrl 사용자 프로필 이미지 url (사용자 노드에서 사용)
- * @param nodeReset 키워드 노드 리셋 여부
  * @param keywords 키워드 리스트
+ * @param nodeReset 키워드 노드 리셋 여부
+ * @param onUserNodeClick 사용자 노드 클릭 시 콜백
  * @param onNodeClick 키워드 노드 클릭 시 콜백
  * @param onNodeLongClick 키워드 노드 길게 클릭 시 콜백
  * @param onNodeChanged 키워드 노드 위치 변화 시 콜백
@@ -44,11 +43,13 @@ import com.peekr.core.presentation.ui.model.UiUserKeyword
 fun KeywordGraphView(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
-    nodeReset: Boolean,
     keywords: List<UiUserKeyword>,
-    onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
-    onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
-    onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
+    freeGesture: Boolean,
+    nodeReset: Boolean = false,
+    onUserNodeClick: (() -> Unit)? = null,
+    onNodeClick: ((UserKeywordIdType, UserIdType, KeywordNameType) -> Unit)? = null,
+    onNodeLongClick: ((UserKeywordIdType, KeywordNameType) -> Unit)? = null,
+    onNodeChanged: ((UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit)? = null,
 ) {
     // 키워드 그래프 뷰
     GraphBoard(modifier = modifier) {
@@ -59,7 +60,7 @@ fun KeywordGraphView(
                 .size(UserNodeSizeDp)
                 .zIndex(2f),
             profileImageUrl = profileImageUrl,
-            onClick = { },
+            onClick = { onUserNodeClick?.invoke() },
         )
 
         // 키워드 노드 & 엣지
@@ -71,21 +72,26 @@ fun KeywordGraphView(
                     initialOffsetY = keyword.offsetY.toFloat(),
                     label = keyword.keywordName,
                     nodeReset = nodeReset,
+                    freeGesture = freeGesture,
                     onNodeClick = {
-                        onNodeClick(
+                        onNodeClick?.invoke(
                             keyword.id,
                             keyword.userId,
                             keyword.keywordName,
                         )
                     },
                     onNodeLongClick = {
-                        onNodeLongClick(
+                        onNodeLongClick?.invoke(
                             keyword.id,
                             keyword.keywordName,
                         )
                     },
                     onNodeChanged = { offsetX, offsetY ->
-                        onNodeChanged(keyword.id, offsetX, offsetY)
+                        onNodeChanged?.invoke(
+                            keyword.id,
+                            offsetX,
+                            offsetY,
+                        )
                     },
                 )
             }
@@ -159,8 +165,6 @@ private fun KeywordGraphViewPreview() {
         profileImageUrl = null,
         nodeReset = false,
         keywords = UiUserKeyword.samples,
-        onNodeClick = { _, _, _ -> },
-        onNodeLongClick = { _, _ -> },
-        onNodeChanged = { _, _, _ -> },
+        freeGesture = true,
     )
 }

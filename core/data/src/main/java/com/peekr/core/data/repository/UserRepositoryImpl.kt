@@ -13,13 +13,12 @@ import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
-import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.user.model.MyProfile
+import com.peekr.core.domain.user.model.CoreMyProfile
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
-import com.peekr.core.domain.user.model.UserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -54,8 +53,8 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getMyProfile(): Flow<Result<MyProfile, CommonErrorType>> =
-        safeResultFlow<MyProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+    override fun getMyProfile(): Flow<Result<CoreMyProfile, CommonErrorType>> =
+        safeResultFlow<CoreMyProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = userNetworkDataSource.getMyProfile()) {
                 is NetworkResult.Success -> {
@@ -71,10 +70,10 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getUserProfile(displayId: DisplayId): Flow<Result<UserProfile, CommonErrorType>> =
-        safeResultFlow<UserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+    override fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>> =
+        safeResultFlow<CoreUserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
-            when (val result = userNetworkDataSource.getUserProfile(displayId)) {
+            when (val result = userNetworkDataSource.getUserProfile(userId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }

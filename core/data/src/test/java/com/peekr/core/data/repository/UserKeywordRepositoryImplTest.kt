@@ -43,11 +43,11 @@ class UserKeywordRepositoryImplTest {
     fun `사용자 키워드 리스트 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getUserKeywords()
+            dataSource.getUserKeywords(TestUserId)
         } returns NetworkResult.Success(TestUserKeywordsResponse)
 
         // when
-        val result = repository.getUserKeywords().last()
+        val result = repository.getUserKeywords(TestUserId).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -62,11 +62,11 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.NotFound
         coEvery {
-            dataSource.getUserKeywords()
+            dataSource.getUserKeywords(TestUserId)
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getUserKeywords().last()
+        val result = repository.getUserKeywords(TestUserId).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -81,11 +81,11 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.getUserKeywords()
+            dataSource.getUserKeywords(TestUserId)
         } throws exception
 
         // when
-        val result = repository.getUserKeywords().last()
+        val result = repository.getUserKeywords(TestUserId).last()
 
         // then
         assertTrue(result is Result.Error)

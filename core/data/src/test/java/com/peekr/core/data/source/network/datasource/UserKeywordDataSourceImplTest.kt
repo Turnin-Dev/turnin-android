@@ -51,7 +51,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getUserKeywords()
+        val response = dataSource.getUserKeywords(TestUserId)
 
         // then
         assertTrue(response is NetworkResult.Success)
@@ -72,7 +72,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getUserKeywords()
+        val response = dataSource.getUserKeywords(TestUserId)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -88,10 +88,10 @@ class UserKeywordDataSourceImplTest {
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
         dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getUserKeywords() } throws exception
+        coEvery { mockApi.getUserKeywords(TestUserId.value) } throws exception
 
         // when
-        val response = dataSource.getUserKeywords()
+        val response = dataSource.getUserKeywords(TestUserId)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -113,7 +113,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getUserKeywords()
+        val response = dataSource.getUserKeywords(TestUserId)
 
         // then
         assertTrue(response is NetworkResult.Error)

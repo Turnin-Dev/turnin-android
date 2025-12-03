@@ -5,14 +5,16 @@ import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.presentation.profile.model.UiProfile
+import com.peekr.presentation.profile.model.UiMyProfile
 
-class ProfileContract {
+/**
+ * 나의 프로필 UI 계약
+ */
+class MyProfileContract {
     /**
-     * 프로필 상태 클래스
+     * 나의 프로필 상태 클래스
      *
-     * @param isMyProfile 내 프로필 여부
-     * @param profile UI용 프로필
+     * @param myProfile UI용 프로필
      * @param keywordTextField 키워드 텍스트 필드 상태 (내 프로필 한정)
      * @param keywordDescTextField 키워드 내용 텍스트 필드 상태 (내 프로필 한정)
      * @param updatedKeywordNodesOffset 업데이트된 키워드 노드 오프셋 (내 프로필 한정)
@@ -22,8 +24,7 @@ class ProfileContract {
      * @param error 에러 메시지
      */
     data class UiState(
-        val isMyProfile: Boolean = false,
-        val profile: UiProfile? = null,
+        val myProfile: UiMyProfile? = null,
         val keywordTextField: KeywordTextFieldState = KeywordTextFieldState(),
         val keywordDescTextField: KeywordTextFieldState = KeywordTextFieldState(),
         val updatedKeywordNodesOffset: Map<UserKeywordId, ChangedKeywordNodeOffset> = emptyMap<UserKeywordId, ChangedKeywordNodeOffset>(),
@@ -34,17 +35,8 @@ class ProfileContract {
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
-        // ------------------------------ 공통 ------------------------------
-
         /** 모든 모달을 닫기 이벤트 */
         data object CloseAllModals : UiEvent
-
-        // ------------------------------ 다른 사용자 한정 ------------------------------
-
-        /** 프로필 신고 */
-        data class ReportProfile(val userId: Long) : UiEvent
-
-        // ------------------------------ 내 키워드 한정 ------------------------------
 
         /** 키워드 추가 모달에서 키워드 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordTextChanged(val value: String) : UiEvent

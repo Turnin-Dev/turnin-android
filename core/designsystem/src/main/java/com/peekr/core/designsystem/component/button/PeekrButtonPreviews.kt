@@ -42,7 +42,7 @@ private fun SolidButton_Default() {
             )
             PeekrSolidButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 onClick = {},
             )
         }
@@ -86,7 +86,7 @@ private fun SolidButton_Loading_Default() {
             )
             PeekrSolidButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 loading = true,
                 onClick = {},
             )
@@ -122,7 +122,7 @@ private fun SolidButton_Icon() {
             )
             PeekrSolidButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 icon = PeekrIcons.Default.Normal.Arrow2Left,
                 onClick = {},
             )
@@ -158,7 +158,7 @@ private fun SolidButton_Disabled() {
             )
             PeekrSolidButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 enabled = false,
                 onClick = {},
             )
@@ -191,7 +191,7 @@ private fun OutlinedButton_Default() {
             )
             PeekrOutlinedButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 onClick = {},
             )
         }
@@ -226,7 +226,7 @@ private fun OutlinedButton_Icon() {
             )
             PeekrOutlinedButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 icon = PeekrIcons.Default.Normal.Arrow2Left,
                 onClick = {},
             )
@@ -262,7 +262,7 @@ private fun OutlinedButton_Disabled() {
             )
             PeekrOutlinedButton(
                 text = "Label",
-                style = PeekrButtonStyle.ExtraSmall,
+                style = PeekrButtonStyle.Tiny,
                 enabled = false,
                 onClick = {},
             )

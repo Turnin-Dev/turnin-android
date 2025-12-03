@@ -4,13 +4,15 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.user.model.UserProfile
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
  * 사용자 프로필 조회 응답 바디
  *
+ * @property userId 사용자 ID
  * @property displayId 사용자 표시 ID
  * @property name 사용자 이름
  * @property profileImageUrl 사용자 프로필 사진 url
@@ -22,6 +24,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class UserProfileResponse(
+    val userId: Long,
     val displayId: String,
     val name: String,
     val profileImageUrl: String?,
@@ -33,8 +36,9 @@ data class UserProfileResponse(
     val active: Boolean,
 )
 
-fun UserProfileResponse.toDomainModel(): UserProfile =
-    UserProfile(
+fun UserProfileResponse.toDomainModel(): CoreUserProfile =
+    CoreUserProfile(
+        userId = UserId(userId),
         displayId = DisplayId(displayId),
         name = Name(name),
         profileImageUrl = profileImageUrl,

@@ -10,6 +10,7 @@ import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
@@ -25,14 +26,14 @@ class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
-    override fun getUserKeywords(): Flow<Result<UserKeywords, CommonErrorType>> =
+    override fun getUserKeywords(userId: UserId): Flow<Result<UserKeywords, CommonErrorType>> =
         safeResultFlow<UserKeywords, CommonErrorType>(
             dispatcher = ioDispatcher,
             unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
-            when (val result = userKeywordNetworkDataSource.getUserKeywords()) {
+            when (val result = userKeywordNetworkDataSource.getUserKeywords(userId)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }

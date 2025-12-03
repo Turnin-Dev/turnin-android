@@ -5,6 +5,7 @@ import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.profile.usecase.my.UpdateUserKeywordDescriptionUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf

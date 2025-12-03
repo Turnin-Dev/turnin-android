@@ -37,7 +37,7 @@ fun NodeOptionModal(
             modifier = contentModifier.fillMaxWidth(),
             onCancel = onCancel,
             ModalContentToken(
-                stringResource(R.string.profile_screen_node_option_modal_btn_delete),
+                stringResource(R.string.my_profile_bottom_modal_node_option_delete),
                 PeekrTheme.colorScheme.statusNegative,
                 onDelete,
             ),

@@ -36,8 +36,8 @@ internal fun EditKeywordModal(
 ) {
     KeywordModal(
         modifier = modifier,
-        title = stringResource(R.string.profile_screen_edit_keyword_modal_title),
-        acceptLabel = stringResource(R.string.profile_screen_edit_keyword_modal_btn),
+        title = stringResource(R.string.my_profile_modal_edit_keyword_btn_edit),
+        acceptLabel = stringResource(R.string.my_profile_modal_edit_keyword_btn_accept),
         isOpen = isOpen,
         loading = loading,
         keywordTextFieldReadOnly = keywordTextFieldReadOnly,

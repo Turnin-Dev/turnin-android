@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase
+package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.mapError
@@ -27,7 +27,7 @@ class AddUserKeywordUseCase @Inject constructor(
      * @param keyword 키워드 명
      * @param description 키워드 내용
      *
-     * @return [UserKeyword]
+     * @return [com.peekr.core.domain.userKeyword.model.UserKeyword]
      */
     operator fun invoke(
         keyword: String,
@@ -39,8 +39,8 @@ class AddUserKeywordUseCase @Inject constructor(
             if (userId != null) {
                 val createUserKeyword = CreateUserKeyword(
                     userId = userId,
-                    keyword = KeywordValue(keyword),
-                    description = KeywordDescription(description),
+                    keyword = KeywordValue.Companion(keyword),
+                    description = KeywordDescription.Companion(description),
                     offsetX = INITIAL_OFFSET_X,
                     offsetY = INITIAL_OFFSET_Y,
                 )

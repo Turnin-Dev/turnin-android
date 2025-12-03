@@ -57,7 +57,7 @@ private fun CancelWarningModalPreview() {
 
             SafeCancelModal(
                 isOpen = isOpen,
-                title = R.string.profile_screen_safe_modal_cancel,
+                title = R.string.my_profile_modal_safe_cancel,
                 onAcceptClick = {},
                 onCancelClick = { isOpen = false },
             )

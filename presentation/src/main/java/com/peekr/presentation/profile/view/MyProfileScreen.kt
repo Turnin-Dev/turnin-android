@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,11 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
 import com.peekr.core.designsystem.component.icon.PeekrIcon
@@ -40,7 +35,6 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingle
-import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Cancel
 import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.PeekrIconType
@@ -48,27 +42,42 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.presentation.feature.keyword.KeywordNameType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
 import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
 import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
-import com.peekr.core.presentation.feature.keyword.graph.KeywordGraphView
+import com.peekr.core.presentation.feature.keyword.view.KeywordGraphView
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.model.UiProfile
-import com.peekr.presentation.profile.state.ProfileContract
+import com.peekr.presentation.profile.model.UiMyProfile
+import com.peekr.presentation.profile.state.MyProfileContract
+import com.peekr.presentation.profile.view.frame.ProfileFrame
+import com.peekr.presentation.profile.view.frame.ProfileScreenFrame
+import com.peekr.presentation.profile.view.frame.ProfileScreenTokens
 
+/**
+ * 나의 프로필 화면
+ *
+ * @param modifier [Modifier]
+ * @param myProfile 프로필 - [UiMyProfile]
+ * @param fullScreenLoading 전체 화면 로딩 여부
+ * @param error 에러
+ * @param onUiEvent UI 이벤트
+ * @param onSettingClick 설정 클릭 시
+ * @param onOpenAddKeywordModal 키워드 추가 모달 열기 콜백
+ * @param onOpenNodeOptionModal 키워드 노드 옵션 모달 열기 콜백
+ * @param onOpenKeywordDetailModal 키워드 설명 모달 열기 콜백
+ */
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
-    profile: UiProfile?,
+    myProfile: UiMyProfile?,
     fullScreenLoading: Boolean,
     error: UiText?,
-    onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onSettingClick: () -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
@@ -78,7 +87,7 @@ fun MyProfileScreen(
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                profile?.let {
+                myProfile?.let {
                     TopBar(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -86,30 +95,30 @@ fun MyProfileScreen(
                                 start = ScreenTokens.HorizontalPadding,
                                 end = ScreenTokens.HorizontalPaddingWithTouchTarget,
                             ),
-                        title = profile.displayId,
+                        title = myProfile.displayId,
                         onSettingClick = onSettingClick,
                     )
                 } ?: TopBarSkeleton()
             },
             profile = {
-                profile?.let {
+                myProfile?.let {
                     Profile(
                         modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = profile.profileImageUrl,
-                        name = profile.name,
-                        friendsCount = profile.friendsCount,
-                        introduce = profile.introduce,
+                        profileImageUrl = myProfile.profileImageUrl,
+                        name = myProfile.name,
+                        friendsCount = myProfile.friendsCount,
+                        introduce = myProfile.introduce,
                         onProfileImageClick = {},
-                        onFriendsTotalClick = {},
+                        onFriendsCountClick = {},
                     )
                 } ?: ProfileSkeleton()
             },
             keywordGraph = {
-                profile?.let {
+                myProfile?.let {
                     KeywordGraph(
                         modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = profile.profileImageUrl,
-                        keywords = profile.keywords,
+                        profileImageUrl = myProfile.profileImageUrl,
+                        keywords = myProfile.keywords,
                         onUiEvent = onUiEvent,
                         onNodeClick = { userKeywordId, userId, keyword ->
                             onOpenKeywordDetailModal(userKeywordId, userId, keyword)
@@ -119,7 +128,7 @@ fun MyProfileScreen(
                         },
                         onNodeChanged = { userKeywordId, offsetX, offsetY ->
                             onUiEvent(
-                                ProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
+                                MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
                                     userKeywordId = userKeywordId,
                                     offsetX = offsetX,
                                     offsetY = offsetY,
@@ -131,13 +140,13 @@ fun MyProfileScreen(
             },
         )
 
-        profile?.let {
+        myProfile?.let {
             PeekrFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(FabPaddingDp)
                     .size(FabSize),
-                contentDescription = stringResource(R.string.profile_screen_fab_content_desc),
+                contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
                 onClick = onOpenAddKeywordModal,
             )
         }
@@ -167,8 +176,8 @@ private fun TopBar(
         optionSlot = {
             PeekrIconButton(
                 icon = PeekrIcons.Outlined.Bold.Settings,
-                iconSize = TopBarIconSize,
-                contentDescription = stringResource(R.string.profile_screen_top_bar_settings),
+                iconSize = TopBarOptionIconSize,
+                contentDescription = stringResource(R.string.my_profile_screen_top_bar_settings),
                 onClick = onSettingClick,
             )
         },
@@ -184,7 +193,7 @@ private fun TopBar(
  * @param friendsCount 친구 수
  * @param introduce 소개 글
  * @param onProfileImageClick 프로필 사진 클릭 시
- * @param onFriendsTotalClick 친구 수 클릭 시
+ * @param onFriendsCountClick 친구 수 클릭 시
  */
 @Composable
 private fun Profile(
@@ -194,96 +203,17 @@ private fun Profile(
     friendsCount: Long,
     introduce: String,
     onProfileImageClick: () -> Unit,
-    onFriendsTotalClick: () -> Unit,
+    onFriendsCountClick: () -> Unit,
 ) {
-    var expandedIntroduce by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isIntroduceTextOverFlowing by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    Column(
+    ProfileFrame(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-        // 프로필 사진 & 이름 & 친구 수
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // 프로필 사진
-            PeekrAvatar(
-                modifier = Modifier.size(AvatarSize),
-                model = profileImageUrl,
-                contentDescription = stringResource(R.string.profile_screen_avatar_content_desc),
-                onClick = onProfileImageClick,
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                // 이름
-                Text(
-                    text = name,
-                    style = PeekrTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = PeekrTheme.colorScheme.textNormal,
-                )
-                // 친구 수
-                Row(
-                    modifier = Modifier.clickableSingleWithoutRipple(onClick = onFriendsTotalClick),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.profile_screen_friends_total),
-                        style = PeekrTheme.typography.body3Normal,
-                        fontWeight = FontWeight.Bold,
-                        color = PeekrTheme.colorScheme.textNormal,
-                    )
-                    Text(
-                        text = "$friendsCount",
-                        style = PeekrTheme.typography.body3Normal,
-                        fontWeight = FontWeight.Normal,
-                        color = PeekrTheme.colorScheme.textNormal,
-                    )
-                }
-            }
-        }
-
-        // 소개 글
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = introduce,
-                style = PeekrTheme.typography.body4,
-                fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textNormal,
-                textAlign = TextAlign.Start,
-                maxLines = if (expandedIntroduce) 10 else INTRODUCE_MAX_LINE_COUNT,
-                overflow = if (expandedIntroduce) TextOverflow.Visible else TextOverflow.Ellipsis,
-                onTextLayout = { textLayoutResult ->
-                    isIntroduceTextOverFlowing = textLayoutResult.hasVisualOverflow ||
-                        textLayoutResult.lineCount > INTRODUCE_MAX_LINE_COUNT
-                },
-            )
-            if (isIntroduceTextOverFlowing) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .clickableSingle {
-                            expandedIntroduce = !expandedIntroduce
-                        },
-                    text = if (expandedIntroduce) "접기" else "...더보기",
-                    style = PeekrTheme.typography.caption1,
-                    fontWeight = FontWeight.Normal,
-                    color = PeekrTheme.colorScheme.textAssist2,
-                    textAlign = TextAlign.End,
-                )
-            }
-        }
-    }
+        profileImageUrl = profileImageUrl,
+        name = name,
+        friendsCount = friendsCount,
+        introduce = introduce,
+        onProfileImageClick = onProfileImageClick,
+        onFriendsCountClick = onFriendsCountClick,
+    )
 }
 
 /**
@@ -302,7 +232,7 @@ private fun KeywordGraph(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     keywords: List<UiUserKeyword>,
-    onUiEvent: (ProfileContract.UiEvent) -> Unit,
+    onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
     onNodeLongClick: (UserKeywordIdType, KeywordNameType) -> Unit,
     onNodeChanged: (UserKeywordIdType, NodeOffsetXType, NodeOffsetYType) -> Unit,
@@ -317,6 +247,7 @@ private fun KeywordGraph(
             profileImageUrl = profileImageUrl,
             keywords = keywords,
             nodeReset = nodeReset,
+            freeGesture = true,
             onNodeClick = { userKeywordId, userId, keyword ->
                 onNodeClick(userKeywordId, userId, keyword)
             },
@@ -334,11 +265,11 @@ private fun KeywordGraph(
                     .align(Alignment.TopEnd)
                     .padding(FabPaddingDp),
                 onChange = {
-                    onUiEvent(ProfileContract.UiEvent.UpdateKeywordNodeOffset)
+                    onUiEvent(MyProfileContract.UiEvent.UpdateKeywordNodeOffset)
                     nodeChanged = false
                 },
                 onCancel = {
-                    onUiEvent(ProfileContract.UiEvent.ResetKeywordNodeOffset)
+                    onUiEvent(MyProfileContract.UiEvent.ResetKeywordNodeOffset)
                     nodeReset = true
                     nodeChanged = false
                 },
@@ -367,13 +298,13 @@ private fun NodeChangedButtons(
         NodeChangedButton(
             modifier = Modifier,
             icon = PeekrIcons.Default.Bold.Check,
-            contentDescription = stringResource(R.string.profile_screen_node_changed_btn_desc_ok),
+            contentDescription = stringResource(R.string.my_profile_screen_node_changed_btn_desc_ok),
             onClick = onChange,
         )
         NodeChangedButton(
             modifier = Modifier,
             icon = PeekrIcons.Default.Bold.Cancel,
-            contentDescription = stringResource(R.string.profile_screen_node_changed_btn_desc_cancel),
+            contentDescription = stringResource(R.string.my_profile_screen_node_changed_btn_desc_cancel),
             onClick = onCancel,
         )
     }
@@ -416,10 +347,8 @@ private fun NodeChangedButton(
 }
 
 private val FabSize = 50.dp
-private val AvatarSize = 70.dp
 private val FabPaddingDp = 20.dp
-private const val INTRODUCE_MAX_LINE_COUNT = 2
-private val TopBarIconSize = PeekrIconSize.Small
+private val TopBarOptionIconSize = PeekrIconSize.Small
 
 // ------------------------------ Skeletons ------------------------------
 @Composable
@@ -450,7 +379,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            SkeletonBox(Modifier.size(AvatarSize, AvatarSize), CircleShape)
+            SkeletonBox(Modifier.size(ProfileScreenTokens.AvatarSize), CircleShape)
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.Start,
@@ -502,7 +431,7 @@ private fun ProfilePreview() {
             introduce = "hello world!",
             friendsCount = 28,
             onProfileImageClick = {},
-            onFriendsTotalClick = {},
+            onFriendsCountClick = {},
         )
     }
 }
@@ -513,7 +442,7 @@ private fun MyProfileScreenPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            profile = UiProfile(
+            myProfile = UiMyProfile(
                 displayId = "Honggd123",
                 name = "홍길동",
                 profileImageUrl = null,
@@ -524,7 +453,6 @@ private fun MyProfileScreenPreview() {
                 friendsCount = 86,
                 lastLoginAt = 1000L,
                 active = true,
-                friendshipStatus = FriendshipStatus.NOTHING,
                 keywords = UiUserKeyword.samples,
             ),
             fullScreenLoading = false,
@@ -544,7 +472,7 @@ private fun SkeletonPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            profile = null,
+            myProfile = null,
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},

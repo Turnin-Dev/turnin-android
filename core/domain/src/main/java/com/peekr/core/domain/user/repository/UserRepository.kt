@@ -2,13 +2,12 @@ package com.peekr.core.domain.user.repository
 
 import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.user.model.MyProfile
+import com.peekr.core.domain.user.model.CoreMyProfile
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
-import com.peekr.core.domain.user.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 
 /** 사용자 리포지토리 */
@@ -28,18 +27,18 @@ interface UserRepository {
     /**
      * 나의 프로필 조회
      *
-     * @return [MyProfile]
+     * @return [CoreMyProfile]
      */
-    fun getMyProfile(): Flow<Result<MyProfile, CommonErrorType>>
+    fun getMyProfile(): Flow<Result<CoreMyProfile, CommonErrorType>>
 
     /**
      * 사용자 프로필 조회
      *
-     * @param displayId 사용자 표시 ID
+     * @param userId 사용자 ID
      *
-     * @return [UserProfile]
+     * @return [CoreUserProfile]
      */
-    fun getUserProfile(displayId: DisplayId): Flow<Result<UserProfile, CommonErrorType>>
+    fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>>
 
     /**
      * 사용자 수정

@@ -6,7 +6,7 @@ import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.UserId
 
 /** 사용자 데이터 소스 */
 interface UserNetworkDataSource {
@@ -27,11 +27,11 @@ interface UserNetworkDataSource {
     /**
      * 사용자 프로필 조회
      *
-     * @param displayId 사용자 표시 ID
+     * @param userId 사용자 ID
      *
      * @return [UserProfileResponse]
      */
-    suspend fun getUserProfile(displayId: DisplayId): NetworkResult<UserProfileResponse>
+    suspend fun getUserProfile(userId: UserId): NetworkResult<UserProfileResponse>
 
     /**
      * 사용자 수정

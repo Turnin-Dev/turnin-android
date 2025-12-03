@@ -10,11 +10,12 @@ import com.peekr.core.domain.model.KeywordValue
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.user.model.UserProfile
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.profile.usecase.user.GetUserProfileUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -32,22 +33,22 @@ class GetUserProfileUseCaseTest {
     @Before
     fun setUp() {
         every {
-            userRepository.getUserProfile(TestDisplayId)
-        } returns flowOf(Result.Success(TestUserProfile))
+            userRepository.getUserProfile(TestUserId)
+        } returns flowOf(Result.Success(TestCoreUserProfile))
         every {
-            userKeywordRepository.getUserKeywords()
+            userKeywordRepository.getUserKeywords(TestUserId)
         } returns flowOf(Result.Success(TestUserKeywords))
     }
 
     @Test
     fun `사용자 프로필 조회 성공 테스트`() = runTest {
         // when
-        val result = usecase(TestDisplayId).last()
+        val result = usecase(TestUserId.value).last()
 
         // then
         val success = result as Result.Success
         assertEquals(TestUserKeywords.keywords, success.data.keywords)
-        assertEquals(TestUserProfile.friendshipStatus, success.data.friendshipStatus)
+        assertEquals(TestCoreUserProfile.friendshipStatus, success.data.friendshipStatus)
     }
 
     companion object {
@@ -65,7 +66,8 @@ class GetUserProfileUseCaseTest {
             updatedAt = 1000,
         )
         private val TestUserKeywords = UserKeywords(listOf(TestUserKeyword))
-        private val TestUserProfile = UserProfile(
+        private val TestCoreUserProfile = CoreUserProfile(
+            userId = TestUserId,
             displayId = TestDisplayId,
             name = Name("name"),
             profileImageUrl = null,

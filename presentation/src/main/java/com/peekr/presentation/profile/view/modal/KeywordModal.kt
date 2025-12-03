@@ -113,7 +113,7 @@ internal fun KeywordModal(
                         iconSize = PeekrIconSize.Small,
                         tint = PeekrTheme.colorScheme.textNormal,
                         contentDescription = stringResource(
-                            R.string.profile_screen_add_keyword_modal_content_desc_more,
+                            R.string.my_profile_add_keyword_modal_content_desc_more,
                         ),
                     )
                 }
@@ -172,10 +172,10 @@ private fun ModalContent(
         ) {
             InputSection(
                 modifier = Modifier.fillMaxWidth(),
-                title = stringResource(R.string.profile_screen_keyword_modal_input_keyword),
+                title = stringResource(R.string.my_profile_modal_input_keyword_title),
                 text = keywordText,
                 onTextChanged = onKeywordTextChanged,
-                placeholder = stringResource(R.string.profile_screen_keyword_modal_input_keyword_ph),
+                placeholder = stringResource(R.string.my_profile_modal_input_keyword_title_placeholder),
                 singleLine = true,
                 isError = keywordErrorMessage != null,
                 errorMessage = keywordErrorMessage,
@@ -183,10 +183,10 @@ private fun ModalContent(
             )
             InputSection(
                 modifier = Modifier.fillMaxWidth(),
-                title = stringResource(R.string.profile_screen_keyword_modal_input_keyword_desc),
+                title = stringResource(R.string.my_profile_modal_input_keyword_desc),
                 text = keywordDescText,
                 onTextChanged = onKeywordDescTextChanged,
-                placeholder = stringResource(R.string.profile_screen_keyword_modal_input_keyword_desc_ph),
+                placeholder = stringResource(R.string.my_profile_modal_input_keyword_desc_placeholder),
                 singleLine = false,
                 isError = keywordDescErrorMessage != null,
                 errorMessage = keywordDescErrorMessage,
@@ -308,7 +308,7 @@ private fun Buttons(
         )
         PeekrNegativeButton(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.profile_screen_keyword_modal_btn_cancel),
+            text = stringResource(R.string.my_profile_modal_add_keyword_btn_cancel),
             style = ButtonStyle,
             onClick = onCancelClick,
         )
