@@ -4,7 +4,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
-import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
@@ -15,7 +14,6 @@ import com.peekr.domain.keywordDetail.usecase.UpdateDescriptionUseCase
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.error.asUiText
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
-import com.peekr.presentation.login.error.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
@@ -44,8 +42,8 @@ class KeywordDetailViewModel @Inject constructor(
 
     override suspend fun loadInitialData() {
         val initResult = initNavArgumentData()
-        // initNavArgumentData 가 결과를 반환하기 전(false를 반환할 경우)
-        // 화면 전체를 에러로 표시하는 이벤트를 UI로 보내기 때문에 다른 기능이 실행될 수 없다.
+        // initNavArgumentData 가 실패할 경우(false를 반환할 경우)
+        // 에러 처리를 하고 프로필 로드 기능을 중단한다(다른 기능이 실행될 수 없다).
         if (!initResult) return
 
         viewModelScope.launch {

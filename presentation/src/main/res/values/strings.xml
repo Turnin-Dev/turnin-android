@@ -50,7 +50,7 @@
     <string name="my_profile_modal_add_keyword_btn_cancel">취소</string>
     <string name="my_profile_modal_edit_keyword_btn_edit">키워드 수정</string>
     <string name="my_profile_modal_edit_keyword_btn_accept">수정</string>
-    <string name="my_profile_add_keyword_modal_content_desc_more">취소</string>
+    <string name="my_profile_add_keyword_modal_content_desc_more">더보기</string>
     <!-- My Profile Screen (Safe Modal) -->
     <string name="my_profile_modal_safe_cancel">변경사항을 버리시겠습니까?</string>
     <string name="my_profile_modal_safe_delete">정말 삭제하시겠습니까?</string>

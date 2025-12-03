@@ -36,8 +36,8 @@ class UserProfileViewModel @Inject constructor(
 
     override suspend fun loadInitialData() {
         val initResult = initNavArgumentData()
-        // initNavArgumentData 가 결과를 반환하기 전(false를 반환할 경우)
-        // 화면 전체를 에러로 표시하는 이벤트를 UI로 보내기 때문에 다른 기능이 실행될 수 없다.
+        // initNavArgumentData 가 실패할 경우(false를 반환할 경우)
+        // 에러 처리를 하고 프로필 로드 기능을 중단한다(다른 기능이 실행될 수 없다).
         if (!initResult) return
         getUserProfile()
     }

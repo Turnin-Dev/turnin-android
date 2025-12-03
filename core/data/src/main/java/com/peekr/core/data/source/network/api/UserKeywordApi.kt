@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.network.api
 
-import com.peekr.core.data.source.network.api.NetworkApiPath
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
