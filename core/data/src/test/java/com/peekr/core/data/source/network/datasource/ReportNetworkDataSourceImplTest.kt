@@ -108,10 +108,8 @@ class ReportNetworkDataSourceImplTest {
 
         // then
         assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Network.NotFound,
-            (response as NetworkResult.Error).error,
-        )
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -163,10 +161,8 @@ class ReportNetworkDataSourceImplTest {
 
         // then
         assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Network.NotFound,
-            (response as NetworkResult.Error).error,
-        )
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     companion object {

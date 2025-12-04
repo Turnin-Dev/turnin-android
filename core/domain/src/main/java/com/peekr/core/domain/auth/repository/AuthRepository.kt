@@ -5,8 +5,8 @@ import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
 import kotlinx.coroutines.flow.Flow
 

@@ -1,7 +1,7 @@
 package com.peekr.core.domain.userKeyword.repository
 
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId

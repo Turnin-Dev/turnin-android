@@ -1,7 +1,7 @@
 package com.peekr.core.domain.report.repository
 
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.report.model.Report
 import com.peekr.core.domain.report.model.ReportReasons
 import kotlinx.coroutines.flow.Flow

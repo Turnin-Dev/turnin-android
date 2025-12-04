@@ -6,9 +6,9 @@ import com.peekr.core.data.source.network.datasource.FileNetworkDataSource
 import com.peekr.core.data.source.network.dto.file.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.file.FileRepository
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl

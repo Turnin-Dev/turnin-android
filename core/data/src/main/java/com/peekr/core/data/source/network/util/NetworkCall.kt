@@ -84,17 +84,10 @@ private fun <T> handleResponse(response: Response<T>): NetworkResult<T> = when {
         NetworkResult.Success(response.body()!!)
     }
 
-    response.isSuccessful && response.body() == null -> {
-        NetworkResult.Error(
-            error = NetworkErrorType.Network.EmptyResponse,
-            status = response.code(),
-        )
-    }
-
     else -> {
         val errorResponse = parseServerError(response)
         NetworkResult.Error(
-            error = mapHttpStatusToErrorType(response.code()),
+            error = NetworkErrorType.Network.HttpError(response.code()),
             code = errorResponse?.code,
             status = response.code(),
             message = errorResponse?.message,
@@ -109,7 +102,7 @@ private fun <T> handleResponseWithoutBody(response: Response<T>): NetworkResult<
     } else {
         val errorResponse = parseServerError(response)
         NetworkResult.Error(
-            error = mapHttpStatusToErrorType(response.code()),
+            error = NetworkErrorType.Network.HttpError(response.code()),
             code = errorResponse?.code,
             status = response.code(),
             message = errorResponse?.message,
@@ -120,7 +113,7 @@ private fun <T> handleResponseWithoutBody(response: Response<T>): NetworkResult<
 private fun handleHttpException(e: HttpException): NetworkResult.Error {
     val errorResponse = parseServerErrorFromException(e)
     return NetworkResult.Error(
-        error = mapHttpStatusToErrorType(e.code()),
+        error = NetworkErrorType.Network.HttpError(e.code()),
         code = errorResponse?.code,
         status = e.code(),
         message = errorResponse?.message,
@@ -139,21 +132,6 @@ private fun parseServerErrorFromException(e: HttpException): CommonErrorResponse
         ?.source()
         ?.let { source -> moshiAdapter.fromJson(source) }
 }.getOrNull()
-
-/** HTTP 상태 코드를 에러 타입으로 변환 */
-private fun mapHttpStatusToErrorType(statusCode: Int): NetworkErrorType = when (statusCode) {
-    400 -> NetworkErrorType.Network.BadRequest
-    401 -> NetworkErrorType.Network.Unauthorized
-    403 -> NetworkErrorType.Network.Forbidden
-    404 -> NetworkErrorType.Network.NotFound
-    408 -> NetworkErrorType.Network.RequestTimeout
-    409 -> NetworkErrorType.Network.Conflict
-    500 -> NetworkErrorType.Network.InternalServerError
-    502 -> NetworkErrorType.Network.BadGateway
-    503 -> NetworkErrorType.Network.ServiceUnavailable
-    504 -> NetworkErrorType.Network.GatewayTimeout
-    else -> NetworkErrorType.Network.HttpError
-}
 
 /** 서버 에러 응답 파싱 */
 private fun <T> parseServerError(response: Response<T>): CommonErrorResponse? = runCatching {

@@ -7,8 +7,8 @@ import com.peekr.core.data.source.network.dto.keyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.keyword.repository.KeywordRepository
 import com.peekr.core.domain.model.KeywordId
 import io.mockk.coEvery
@@ -46,7 +46,7 @@ class KeywordRepositoryImplTest {
     @Test
     fun `키워드 ID로 키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getKeywordById(TestKeywordId)
         } returns NetworkResult.Error(expectedError)
@@ -101,7 +101,7 @@ class KeywordRepositoryImplTest {
     @Test
     fun `키워드 명으로 키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getKeywordByName(TEST_KEYWORD)
         } returns NetworkResult.Error(expectedError)
@@ -154,7 +154,7 @@ class KeywordRepositoryImplTest {
     @Test
     fun `키워드 생성 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.createKeyword(TestCreateKeywordRequest)
         } returns NetworkResult.Error(expectedError)

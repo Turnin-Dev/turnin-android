@@ -4,7 +4,7 @@ import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.common.mapError
+import com.peekr.core.domain.common.error.mapError
 import com.peekr.domain.login.error.LoginErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

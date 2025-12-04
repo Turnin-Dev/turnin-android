@@ -1,7 +1,7 @@
 package com.peekr.domain.keywordDetail.error
 
 import com.peekr.core.domain.common.BaseError
-import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.error.CommonErrorType
 
 sealed interface KeywordDetailErrorType : BaseError {
     data object UserIdNotFound : KeywordDetailErrorType

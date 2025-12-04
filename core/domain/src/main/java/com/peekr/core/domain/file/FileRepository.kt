@@ -1,7 +1,7 @@
 package com.peekr.core.domain.file
 
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.file.model.PresignedUrl
 import kotlinx.coroutines.flow.Flow

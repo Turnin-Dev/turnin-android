@@ -1,7 +1,7 @@
 package com.peekr.domain.profile.error
 
 import com.peekr.core.domain.common.BaseError
-import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.validation.ValidationErrorType
 
 sealed interface ProfileErrorType : BaseError {

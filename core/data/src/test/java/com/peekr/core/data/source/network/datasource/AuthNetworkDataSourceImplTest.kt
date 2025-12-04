@@ -125,7 +125,8 @@ class AuthNetworkDataSourceImplTest {
 
         // then
         Assert.assertTrue(result is NetworkResult.Error)
-        Assert.assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Network.Conflict)
+        val error = (result as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        Assert.assertEquals(409, error.status)
     }
 
     @Test

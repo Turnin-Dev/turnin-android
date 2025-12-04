@@ -103,7 +103,8 @@ class KeywordDataSourceImplTest {
 
         // then
         assertTrue(response is NetworkResult.Error)
-        assertEquals((response as NetworkResult.Error).error, NetworkErrorType.Network.NotFound)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -178,7 +179,8 @@ class KeywordDataSourceImplTest {
 
         // then
         assertTrue(response is NetworkResult.Error)
-        assertEquals((response as NetworkResult.Error).error, NetworkErrorType.Network.NotFound)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test

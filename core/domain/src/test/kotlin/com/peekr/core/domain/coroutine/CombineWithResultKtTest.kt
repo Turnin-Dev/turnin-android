@@ -1,9 +1,9 @@
 package com.peekr.core.domain.coroutine
 
 import com.peekr.core.domain.common.BaseError
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.combineWithResult
+import com.peekr.core.domain.common.error.CommonErrorType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -87,7 +87,7 @@ class CombineWithResultKtTest {
     @Test
     fun `첫 번째 Flow가 Error면 해당 Error를 반환한다`() = runTest {
         // given
-        val error = CommonErrorType.Network.ClientError
+        val error = CommonErrorType.Unexpected(null)
         val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error))
         val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Success(1))
 
@@ -105,7 +105,7 @@ class CombineWithResultKtTest {
     @Test
     fun `두 번째 Flow가 Error면 해당 Error를 반환한다`() = runTest {
         // given
-        val error = CommonErrorType.Network.ClientError
+        val error = CommonErrorType.Unexpected(null)
         val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Success(1))
         val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error))
 
@@ -123,8 +123,8 @@ class CombineWithResultKtTest {
     @Test
     fun `두 Flow 모두 Error일 때 첫 번째 Error를 반환한다`() = runTest {
         // given
-        val error1 = CommonErrorType.Network.ClientError
-        val error2 = CommonErrorType.Network.ServerError
+        val error1 = CommonErrorType.Unexpected(null)
+        val error2 = CommonErrorType.Unexpected(null)
         val flow1: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error1))
         val flow2: Flow<Result<Int, BaseError>> = flowOf(Result.Error(error2))
 

@@ -1,7 +1,7 @@
 package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.common.mapError
+import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.MyProfilePatch

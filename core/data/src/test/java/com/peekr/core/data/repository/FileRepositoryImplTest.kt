@@ -46,7 +46,7 @@ class FileRepositoryImplTest {
     fun `getFileUploadPresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
-            val expected = NetworkErrorType.Network.Conflict
+            val expected = NetworkErrorType.Unexpected(null)
             coEvery {
                 dataSource.getFileUploadPresignedUrl(any(), any())
             } returns NetworkResult.Error(error = expected, message = mockErrorMessage)

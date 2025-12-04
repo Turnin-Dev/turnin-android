@@ -11,8 +11,8 @@ import com.peekr.core.data.source.network.dto.user.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
@@ -60,7 +60,7 @@ class UserRepositoryImplTest {
     @Test
     fun `사용자 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getUser()
         } returns NetworkResult.Error(expectedError)
@@ -118,7 +118,7 @@ class UserRepositoryImplTest {
     @Test
     fun `나의 프로필 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getMyProfile()
         } returns NetworkResult.Error(expectedError)
@@ -174,7 +174,7 @@ class UserRepositoryImplTest {
     @Test
     fun `사용자 프로필 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Error(expectedError)
@@ -226,7 +226,7 @@ class UserRepositoryImplTest {
     @Test
     fun `사용자 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } returns NetworkResult.Error(expectedError)
@@ -281,7 +281,7 @@ class UserRepositoryImplTest {
     @Test
     fun `사용자 소개글 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } returns NetworkResult.Error(expectedError)

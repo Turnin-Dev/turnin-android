@@ -6,9 +6,9 @@ import com.peekr.core.data.source.network.dto.userKeyword.request.toDataModel
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
