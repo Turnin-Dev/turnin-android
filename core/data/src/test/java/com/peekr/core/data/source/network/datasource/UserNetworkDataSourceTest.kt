@@ -112,11 +112,9 @@ class UserNetworkDataSourceTest {
         val response = dataSource.getUser()
 
         // then
-        Assert.assertTrue(response is NetworkResult.Error)
-        Assert.assertEquals(
-            NetworkErrorType.Network.NotFound,
-            (response as NetworkResult.Error).error,
-        )
+        assertTrue(response is NetworkResult.Error)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -186,8 +184,8 @@ class UserNetworkDataSourceTest {
         val response = dataSource.getMyProfile()
 
         // then
-        val errorResponse = response as NetworkResult.Error
-        assertEquals(NetworkErrorType.Network.NotFound, errorResponse.error)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -257,8 +255,8 @@ class UserNetworkDataSourceTest {
         val response = dataSource.getUserProfile(TestUserId)
 
         // then
-        val errorResponse = response as NetworkResult.Error
-        assertEquals(NetworkErrorType.Network.NotFound, errorResponse.error)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -306,8 +304,8 @@ class UserNetworkDataSourceTest {
         val response = dataSource.updateUser(TestUserPatchRequest)
 
         // then
-        val errorResponse = response as NetworkResult.Error
-        assertEquals(NetworkErrorType.Network.NotFound, errorResponse.error)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -355,8 +353,8 @@ class UserNetworkDataSourceTest {
         val response = dataSource.updateIntroduce(TestIntroducePatchRequest)
 
         // then
-        val errorResponse = response as NetworkResult.Error
-        assertEquals(NetworkErrorType.Network.NotFound, errorResponse.error)
+        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
+        assertEquals(404, error.status)
     }
 
     companion object {

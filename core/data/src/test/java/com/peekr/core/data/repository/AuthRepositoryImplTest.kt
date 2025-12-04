@@ -63,7 +63,7 @@ class AuthRepositoryImplTest {
     fun `login() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
-            val expectedError = NetworkErrorType.Network.Conflict
+            val expectedError = NetworkErrorType.Unexpected(null)
             coEvery {
                 dataSource.login(any())
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
@@ -72,12 +72,12 @@ class AuthRepositoryImplTest {
             val result = repository.login(mockLoginCredentials).last()
 
             // then
-            Assert.assertTrue(result is Result.Error)
-            Assert.assertEquals(
+            assertTrue(result is Result.Error)
+            assertEquals(
                 expectedError.toCommonErrorType(),
                 (result as Result.Error).error,
             )
-            Assert.assertEquals(result.message, mockErrorMessage)
+            assertEquals(result.message, mockErrorMessage)
         }
 
     @Test
@@ -112,7 +112,7 @@ class AuthRepositoryImplTest {
     fun `existsUser() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
-            val expectedError = NetworkErrorType.Network.Conflict
+            val expectedError = NetworkErrorType.Unexpected(null)
             coEvery {
                 dataSource.existsUser(any())
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
@@ -161,7 +161,7 @@ class AuthRepositoryImplTest {
     fun `existsDisplayId() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
         runTest {
             // given
-            val expectedError = NetworkErrorType.Network.Conflict
+            val expectedError = NetworkErrorType.Unexpected(null)
             coEvery {
                 dataSource.existsDisplayId(mockDisplayId)
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
@@ -197,7 +197,7 @@ class AuthRepositoryImplTest {
     @Test
     fun `register() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Conflict
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.register(any())
         } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
@@ -206,12 +206,12 @@ class AuthRepositoryImplTest {
         val result = repository.register(mockRegister).last()
 
         // then
-        Assert.assertTrue(result is Result.Error)
-        Assert.assertEquals(
+        assertTrue(result is Result.Error)
+        assertEquals(
             expectedError.toCommonErrorType(),
             (result as Result.Error).error,
         )
-        Assert.assertEquals(result.message, mockErrorMessage)
+        assertEquals(result.message, mockErrorMessage)
     }
 
     @Test

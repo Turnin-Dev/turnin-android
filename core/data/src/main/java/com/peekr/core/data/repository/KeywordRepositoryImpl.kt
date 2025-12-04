@@ -1,6 +1,7 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.data.HttpStatusCode
 import com.peekr.core.data.source.network.datasource.KeywordNetworkDataSource
 import com.peekr.core.data.source.network.dto.keyword.request.CreateKeywordRequest
 import com.peekr.core.data.source.network.dto.keyword.response.toDomainModel
@@ -31,7 +32,9 @@ class KeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    if (result.error == NetworkErrorType.Network.NotFound) {
+                    if (result.error is NetworkErrorType.Network.HttpError &&
+                        result.error.status == HttpStatusCode.NotFound.code
+                    ) {
                         emit(Result.Success(null))
                     } else {
                         val error = result.error.toCommonErrorType()
@@ -51,7 +54,9 @@ class KeywordRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    if (result.error == NetworkErrorType.Network.NotFound) {
+                    if (result.error is NetworkErrorType.Network.HttpError &&
+                        result.error.status == HttpStatusCode.NotFound.code
+                    ) {
                         emit(Result.Success(null))
                     } else {
                         val error = result.error.toCommonErrorType()

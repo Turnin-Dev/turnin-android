@@ -10,24 +10,43 @@ sealed interface CommonErrorType : BaseError {
     }
 
     /** 네트워크에서 발생한 에러 타입 */
-    enum class Network : CommonErrorType {
-        /** 허가되지 않은 인증 */
-        Unauthorized, // 401
+    sealed interface Network : CommonErrorType {
+        data object BadRequest : Network
 
-        /** 클라이언트에서 발생한 에러 */
-        ClientError,
+        data object Unauthorized : Network
 
-        /** 서버 상에서 발생한 에러 */
-        ServerError,
+        data object Forbidden : Network
+
+        data object NotFound : Network
+
+        data object Conflict : Network
+
+        data object RequestTimeout : Network
+
+        data object InternalServerError : Network
+
+        data object BadGateway : Network
+
+        data object ServiceUnavailable : Network
+
+        data object GatewayTimeout : Network
+
+        data class ClientError(
+            val status: Int,
+        ) : Network
+
+        data class ServerError(
+            val status: Int,
+        ) : Network
 
         /** 서버 및 네트워크 연결 에러 */
-        ConnectionFailed,
+        data object ConnectionFailed : Network
 
         /** 지원하지 않는 파일 유형 */
-        InvalidFileType,
+        data object InvalidFileType : Network
 
         /** 파일 업로드 실패 에러 */
-        UploadFileFailed,
+        data object UploadFileFailed : Network
     }
 
     /** 예외 타입 */

@@ -60,7 +60,7 @@ class UserKeywordRepositoryImplTest {
     @Test
     fun `사용자 키워드 리스트 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.NotFound
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getUserKeywords(TestUserId)
         } returns NetworkResult.Error(expectedError)
@@ -118,7 +118,7 @@ class UserKeywordRepositoryImplTest {
     @Test
     fun `사용자 키워드 설명 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.NotFound
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getDescription(TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)
@@ -176,7 +176,7 @@ class UserKeywordRepositoryImplTest {
     @Test
     fun `사용자 키워드 생성 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.NotFound
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Error(expectedError)
@@ -241,7 +241,7 @@ class UserKeywordRepositoryImplTest {
     @Test
     fun `사용자 키워드 오프셋 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.NotFound
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.patchOffset(
                 userKeywordId = TestUserKeywordId,
@@ -320,7 +320,7 @@ class UserKeywordRepositoryImplTest {
     @Test
     fun `사용자 키워드 설명 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.NotFound
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.patchDescription(
                 userKeywordId = TestUserKeywordId,
@@ -388,7 +388,7 @@ class UserKeywordRepositoryImplTest {
     @Test
     fun `사용자 키워드 삭제 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.NotFound
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)

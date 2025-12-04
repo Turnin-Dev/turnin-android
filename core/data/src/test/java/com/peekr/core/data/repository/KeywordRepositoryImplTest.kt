@@ -46,7 +46,7 @@ class KeywordRepositoryImplTest {
     @Test
     fun `키워드 ID로 키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getKeywordById(TestKeywordId)
         } returns NetworkResult.Error(expectedError)
@@ -101,7 +101,7 @@ class KeywordRepositoryImplTest {
     @Test
     fun `키워드 명으로 키워드 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.getKeywordByName(TEST_KEYWORD)
         } returns NetworkResult.Error(expectedError)
@@ -154,7 +154,7 @@ class KeywordRepositoryImplTest {
     @Test
     fun `키워드 생성 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Network.Forbidden
+        val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
             dataSource.createKeyword(TestCreateKeywordRequest)
         } returns NetworkResult.Error(expectedError)
