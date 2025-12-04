@@ -1,7 +1,7 @@
 package com.peekr.domain.login.error
 
 import com.peekr.core.domain.common.BaseError
-import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.error.CommonErrorType
 
 sealed interface LoginErrorType : BaseError {
     /** ID 토큰 파싱 에러 */

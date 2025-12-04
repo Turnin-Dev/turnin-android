@@ -16,9 +16,9 @@ import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher

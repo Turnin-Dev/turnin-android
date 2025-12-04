@@ -4,8 +4,8 @@ import com.peekr.core.domain.auth.model.JWTToken
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId

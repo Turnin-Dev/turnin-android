@@ -1,4 +1,6 @@
-package com.peekr.core.domain.common
+package com.peekr.core.domain.common.error
+
+import com.peekr.core.domain.common.BaseError
 
 sealed interface CommonErrorType : BaseError {
     /** 로컬에서 발생한 에러 타입 */

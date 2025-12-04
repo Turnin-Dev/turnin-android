@@ -15,8 +15,8 @@ import com.peekr.core.domain.auth.model.ExistsUser
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId

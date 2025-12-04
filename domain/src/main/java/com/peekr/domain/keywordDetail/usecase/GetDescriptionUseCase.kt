@@ -1,7 +1,7 @@
 package com.peekr.domain.keywordDetail.usecase
 
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.common.mapError
+import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository

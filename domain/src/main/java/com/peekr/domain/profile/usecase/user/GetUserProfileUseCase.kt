@@ -1,9 +1,9 @@
 package com.peekr.domain.profile.usecase.user
 
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.combineWithResult
-import com.peekr.core.domain.common.mapError
+import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository

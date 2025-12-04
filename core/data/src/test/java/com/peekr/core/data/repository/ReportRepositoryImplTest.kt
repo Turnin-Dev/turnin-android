@@ -7,8 +7,8 @@ import com.peekr.core.data.source.network.dto.report.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.report.model.Report
 import com.peekr.core.domain.report.model.ReportReasonId

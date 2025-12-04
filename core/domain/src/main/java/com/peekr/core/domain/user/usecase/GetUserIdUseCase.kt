@@ -1,7 +1,7 @@
 package com.peekr.core.domain.user.usecase
 
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
 import javax.inject.Inject

@@ -1,7 +1,7 @@
 package com.peekr.core.domain.user.repository
 
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreMyProfile

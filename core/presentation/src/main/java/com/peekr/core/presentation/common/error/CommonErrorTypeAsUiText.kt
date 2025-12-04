@@ -1,6 +1,6 @@
 package com.peekr.core.presentation.common.error
 
-import com.peekr.core.domain.common.CommonErrorType
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.core.presentation.ui.util.UiText.StringResource

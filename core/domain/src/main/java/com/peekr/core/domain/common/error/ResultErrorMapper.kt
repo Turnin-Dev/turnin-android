@@ -1,5 +1,7 @@
-package com.peekr.core.domain.common
+package com.peekr.core.domain.common.error
 
+import com.peekr.core.domain.common.BaseError
+import com.peekr.core.domain.common.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -11,8 +11,8 @@ import com.peekr.core.data.source.network.dto.user.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.common.CommonErrorType
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce

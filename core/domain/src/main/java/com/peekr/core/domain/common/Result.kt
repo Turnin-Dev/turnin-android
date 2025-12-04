@@ -1,5 +1,7 @@
 package com.peekr.core.domain.common
 
+import com.peekr.core.domain.common.error.ContractErrorCode
+
 /**
  * 에러 베이스 타입
  *
