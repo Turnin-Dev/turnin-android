@@ -1,11 +1,10 @@
 package com.peekr.presentation.report
 
-import android.widget.Toast
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -20,6 +19,7 @@ import com.peekr.presentation.report.view.ReportResultModal
 import com.peekr.presentation.report.view.SelectReportBlockModal
 import com.peekr.presentation.report.view.SelectReportReasonModal
 import com.peekr.presentation.report.viewmodel.ReportViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.reportNavigation(
@@ -36,7 +36,11 @@ fun NavGraphBuilder.reportNavigation(
                 onDismissRequest = { navController.popBackStack() },
                 onCancel = { navController.popBackStack() },
                 selectReport = {
-                    navController.navigate(SubGraph.Report.SelectReportReason)
+                    navController.navigate(SubGraph.Report.SelectReportReason) {
+                        popUpTo(SubGraph.Report.SelectReportBlock) {
+                            inclusive = true
+                        }
+                    }
                 },
                 selectBlock = {},
             )
@@ -64,7 +68,11 @@ fun NavGraphBuilder.reportNavigation(
                     viewModel.processEvent(
                         ReportContract.UiEvent.SelectReportReason(reportReason),
                     )
-                    navController.navigate(SubGraph.Report.InputReportReason)
+                    navController.navigate(SubGraph.Report.InputReportReason) {
+                        popUpTo(SubGraph.Report.SelectReportReason) {
+                            inclusive = true
+                        }
+                    }
                 },
             )
         }
@@ -78,7 +86,11 @@ fun NavGraphBuilder.reportNavigation(
             ObserveAsEvents(viewModel.effect) { effect ->
                 when (effect) {
                     ReportContract.UiEffect.NavigateToReportResult -> {
-                        navController.navigate(SubGraph.Report.ReportResult)
+                        navController.navigate(SubGraph.Report.ReportResult) {
+                            popUpTo(SubGraph.Report.InputReportReason) {
+                                inclusive = true
+                            }
+                        }
                     }
                 }
             }
@@ -101,7 +113,7 @@ fun NavGraphBuilder.reportNavigation(
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val sheetState = rememberModalBottomSheetState()
-            val context = LocalContext.current
+            val scope = rememberCoroutineScope()
 
             uiState.reportResult?.let { isSuccess ->
                 ReportResultModal(
@@ -110,8 +122,10 @@ fun NavGraphBuilder.reportNavigation(
                     onDismissRequest = { navController.popBackStack() },
                     onCancel = { navController.popBackStack() },
                     onFinishClick = {
-                        // 신고 네비게이션을 자체를 빠져나가도록!
-                        Toast.makeText(context, "신고 완료", Toast.LENGTH_SHORT).show()
+                        scope.launch {
+                            sheetState.hide()
+                            navController.popBackStack<SubGraph.Report.Root>(inclusive = true)
+                        }
                     },
                 )
             }

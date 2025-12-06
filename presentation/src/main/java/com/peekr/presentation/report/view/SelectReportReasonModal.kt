@@ -11,7 +11,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.modal.ModalContentToken
@@ -49,7 +48,6 @@ fun SelectReportReasonModal(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
-        scrimColor = Color.Transparent,
         onDismissRequest = onDismissRequest,
     ) { contentModifier ->
         val reasonTokens = reportReasons.map { reason ->
