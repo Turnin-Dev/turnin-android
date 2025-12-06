@@ -14,6 +14,7 @@ import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFram
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.home.main.HomeMainScreen
 import com.peekr.presentation.profile.profileNavigation
+import com.peekr.presentation.report.reportNavigation
 
 @Composable
 fun BottomNavigation(
@@ -49,6 +50,10 @@ fun BottomNavigation(
             profileNavigation(
                 appNavController = appNavController,
                 bottomNavController = bottomNavController,
+            )
+
+            reportNavigation(
+                navController = bottomNavController,
             )
         }
     }

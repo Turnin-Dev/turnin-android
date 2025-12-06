@@ -37,7 +37,7 @@ sealed interface SubGraph {
         }
     }
 
-    /** 로그인 중첩 그래프 */
+    /** 로그인 그래프 */
     sealed interface Login : SubGraph {
         @Serializable
         data object Root : Login
@@ -65,6 +65,25 @@ sealed interface SubGraph {
 
         @Serializable
         data object CropProfileImage : Register
+    }
+
+    sealed interface Report : SubGraph {
+        @Serializable
+        data class Root(
+            val userId: Long,
+        ) : Report
+
+        @Serializable
+        data object SelectReportBlock : Report
+
+        @Serializable
+        data object SelectReportReason : Report
+
+        @Serializable
+        data object InputReportReason : Report
+
+        @Serializable
+        data object ReportResult : Report
     }
 }
 

@@ -19,6 +19,7 @@ import com.peekr.domain.profile.model.UserProfile
  * @property active 사용자 활성화 여부
  */
 data class UiUserProfile(
+    val userId: Long,
     val displayId: String,
     val name: String,
     val profileImageUrl: String?,
@@ -32,6 +33,7 @@ data class UiUserProfile(
 
 fun UserProfile.toUiModel(): UiUserProfile =
     UiUserProfile(
+        userId = userId.value,
         displayId = displayId.value,
         name = name.value,
         profileImageUrl = profileImageUrl,

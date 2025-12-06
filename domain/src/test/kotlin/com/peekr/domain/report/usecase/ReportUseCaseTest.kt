@@ -1,0 +1,95 @@
+package com.peekr.domain.report.usecase
+
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.report.model.ReportReasonId
+import com.peekr.core.domain.report.repository.ReportRepository
+import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.domain.report.error.ReportErrorType
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+
+class ReportUseCaseTest {
+    private val userRepository: UserRepository = mockk()
+    private val reportRepository: ReportRepository = mockk()
+    private val usecase = ReportUseCase(userRepository, reportRepository)
+
+    @Before
+    fun setUp() {
+        coEvery { userRepository.getUserId() } returns TestUserId
+    }
+
+    @Test
+    fun `신고 성공 시 true를 반환한다`() = runTest {
+        // given
+        every {
+            reportRepository.createReport(any())
+        } returns flowOf(Result.Success(Unit))
+
+        // when
+        val result = usecase(
+            reportedId = TEST_REPORTED_ID,
+            reasonId = TestReportReasonId,
+            customReason = null,
+        ).last()
+
+        // then
+        val success = result as Result.Success
+        assertTrue(success.data)
+    }
+
+    @Test
+    fun `중복 신고 시 false를 반환한다`() = runTest {
+        // given
+        every {
+            reportRepository.createReport(any())
+        } returns flowOf(Result.Error(CommonErrorType.Network.Conflict))
+
+        // when
+        val result = usecase(
+            reportedId = TEST_REPORTED_ID,
+            reasonId = TestReportReasonId,
+            customReason = null,
+        ).last()
+
+        // then
+        val success = result as Result.Success
+        assertFalse(success.data)
+    }
+
+    @Test
+    fun `사용자 ID를 가져오지 못하는 경우 에러를 반환한다`() = runTest {
+        // given
+        coEvery { userRepository.getUserId() } returns null
+
+        // when
+        val result = usecase(
+            reportedId = TEST_REPORTED_ID,
+            reasonId = TestReportReasonId,
+            customReason = null,
+        ).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(
+            ReportErrorType.UserIdNotFound,
+            error.error,
+        )
+    }
+
+    companion object {
+        private val TestUserId = UserId(10L)
+        private const val TEST_REPORTED_ID = 1L
+        private val TestReportReasonId = ReportReasonId(1L)
+    }
+}

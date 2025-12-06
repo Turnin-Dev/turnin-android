@@ -52,6 +52,7 @@ fun UserProfileScreen(
     userProfile: UiUserProfile? = null,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
+    onReportClick: (Long) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -63,7 +64,9 @@ fun UserProfileScreen(
                             .fillMaxWidth()
                             .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                         title = userProfile.displayId,
-                        onReportClick = {},
+                        onReportClick = {
+                            onReportClick(userProfile.userId)
+                        },
                         onBackPressed = onBackPressed,
                     )
                 } ?: TopBarSkeleton()
@@ -348,6 +351,7 @@ private fun UserProfileScreenPreview() {
         UserProfileScreen(
             modifier = Modifier.fillMaxSize(),
             userProfile = UiUserProfile(
+                userId = 1L,
                 displayId = "Honggd123",
                 name = "홍길동",
                 profileImageUrl = null,
@@ -363,6 +367,7 @@ private fun UserProfileScreenPreview() {
             ),
             onUiEvent = {},
             onBackPressed = {},
+            onReportClick = {},
         )
     }
 }

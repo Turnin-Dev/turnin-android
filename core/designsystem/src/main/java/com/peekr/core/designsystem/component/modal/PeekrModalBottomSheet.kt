@@ -2,7 +2,6 @@ package com.peekr.core.designsystem.component.modal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +40,7 @@ fun PeekrModalBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shouldDismissOnBackPress: Boolean = true,
+    scrimColor: Color = ScrimColor,
     sheetGesturesEnabled: Boolean = true,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -57,9 +57,8 @@ fun PeekrModalBottomSheet(
         dragHandle = null,
         containerColor = PeekrTheme.colorScheme.backgroundNormal,
         contentColor = PeekrTheme.colorScheme.textNormal,
-        scrimColor = ScrimColor,
+        scrimColor = scrimColor,
         shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
-        contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         properties = ModalBottomSheetProperties(shouldDismissOnBackPress),
         sheetGesturesEnabled = sheetGesturesEnabled,
     ) {
@@ -72,6 +71,6 @@ fun PeekrModalBottomSheet(
 }
 
 private val BottomSheetContentPaddingValues =
-    PaddingValues(top = 30.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+    PaddingValues(top = 26.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
 
 private val ScrimColor = Color(0xB3141414)
