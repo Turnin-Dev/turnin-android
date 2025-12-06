@@ -3,7 +3,6 @@ package com.peekr.presentation.report.state
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
-import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.report.model.UiReportReason
 
 class ReportContract {
@@ -11,7 +10,6 @@ class ReportContract {
         val reportReasons: List<UiReportReason> = emptyList(),
         val reportResult: Boolean? = null,
         val loading: Boolean = false,
-        val error: UiText? = null,
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
@@ -28,5 +26,7 @@ class ReportContract {
 
     sealed interface UiEffect : BaseUiEffect {
         data object NavigateToReportResult : UiEffect
+
+        data object CloseReportModal : UiEffect
     }
 }

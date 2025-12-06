@@ -4,6 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.report.error.ReportErrorType
 import com.peekr.domain.report.usecase.GetReportReasonsUseCase
 import com.peekr.domain.report.usecase.ReportUseCase
@@ -15,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ReportViewModel @Inject constructor(
@@ -57,8 +61,8 @@ class ReportViewModel @Inject constructor(
         reportedId
     }
         .onFailure {
-            updateState {
-                this.copy(error = ReportErrorType.NotSelectedReportedId.asUiText())
+            viewModelScope.launch {
+                showSnackBarAndCloseScreen(ReportErrorType.NotSelectedReportedId.asUiText())
             }
         }
         .isSuccess
@@ -80,19 +84,14 @@ class ReportViewModel @Inject constructor(
 
                     is Result.Error -> {
                         updateState {
-                            this.copy(
-                                loading = false,
-                                error = result.error.asUiText(),
-                            )
+                            this.copy(loading = false)
                         }
+                        showSnackBarAndCloseScreen(result.error.asUiText())
                     }
 
                     is Result.Success -> {
                         updateState {
-                            this.copy(
-                                error = null,
-                                reportResult = result.data,
-                            )
+                            this.copy(reportResult = result.data)
                         }
                         sendEffect {
                             ReportContract.UiEffect.NavigateToReportResult
@@ -103,10 +102,10 @@ class ReportViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
-        } ?: {
+        } ?: run {
             // 신고 사유 미 선택 시 에러 발생
-            updateState {
-                this.copy(error = ReportErrorType.NotSelectedReportReason.asUiText())
+            viewModelScope.launch {
+                showSnackBarAndCloseScreen(ReportErrorType.NotSelectedReportReason.asUiText())
             }
         }
     }
@@ -122,23 +121,27 @@ class ReportViewModel @Inject constructor(
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(
-                            loading = false,
-                            error = result.error.asUiText(),
-                        )
+                        this.copy(loading = false)
                     }
+                    showSnackBarAndCloseScreen(result.error.asUiText())
                 }
 
                 is Result.Success -> {
                     updateState {
                         this.copy(
                             loading = false,
-                            error = null,
                             reportReasons = result.data.reasons.map { it.toUiModel() },
                         )
                     }
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private suspend fun showSnackBarAndCloseScreen(message: UiText) {
+        sendEffect {
+            ReportContract.UiEffect.CloseReportModal
+        }
+        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

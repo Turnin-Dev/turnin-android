@@ -1,6 +1,7 @@
 package com.peekr.presentation.report
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import com.peekr.presentation.report.view.ReportResultModal
 import com.peekr.presentation.report.view.SelectReportBlockModal
 import com.peekr.presentation.report.view.SelectReportReasonModal
 import com.peekr.presentation.report.viewmodel.ReportViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,11 +53,22 @@ fun NavGraphBuilder.reportNavigation(
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val sheetState = rememberModalBottomSheetState()
+            val scope = rememberCoroutineScope()
 
             LaunchedEffect(Unit) {
                 viewModel.processEvent(
                     ReportContract.UiEvent.GetReportReasons,
                 )
+            }
+
+            ObserveAsEvents(viewModel.effect) { effect ->
+                if (effect is ReportContract.UiEffect.CloseReportModal) {
+                    exitReportNavigation(
+                        scope = scope,
+                        sheetState = sheetState,
+                        navController = navController,
+                    )
+                }
             }
 
             SelectReportReasonModal(
@@ -82,6 +95,7 @@ fun NavGraphBuilder.reportNavigation(
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val sheetState = rememberModalBottomSheetState()
+            val scope = rememberCoroutineScope()
 
             ObserveAsEvents(viewModel.effect) { effect ->
                 when (effect) {
@@ -91,6 +105,14 @@ fun NavGraphBuilder.reportNavigation(
                                 inclusive = true
                             }
                         }
+                    }
+
+                    ReportContract.UiEffect.CloseReportModal -> {
+                        exitReportNavigation(
+                            scope = scope,
+                            sheetState = sheetState,
+                            navController = navController,
+                        )
                     }
                 }
             }
@@ -122,13 +144,26 @@ fun NavGraphBuilder.reportNavigation(
                     onDismissRequest = { navController.popBackStack() },
                     onCancel = { navController.popBackStack() },
                     onFinishClick = {
-                        scope.launch {
-                            sheetState.hide()
-                            navController.popBackStack<SubGraph.Report.Root>(inclusive = true)
-                        }
+                        exitReportNavigation(
+                            scope = scope,
+                            sheetState = sheetState,
+                            navController = navController,
+                        )
                     },
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun exitReportNavigation(
+    scope: CoroutineScope,
+    sheetState: SheetState,
+    navController: NavHostController,
+) {
+    scope.launch {
+        sheetState.hide()
+        navController.popBackStack<SubGraph.Report.Root>(inclusive = true)
     }
 }
