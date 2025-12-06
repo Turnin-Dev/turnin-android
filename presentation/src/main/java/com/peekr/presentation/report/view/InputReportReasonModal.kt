@@ -36,7 +36,6 @@ import com.peekr.presentation.R
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
- * @param onCancel 모달 취소 시
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +44,6 @@ fun InputReportReasonModal(
     sheetState: SheetState,
     loading: Boolean,
     onDismissRequest: () -> Unit,
-    onCancel: () -> Unit,
     onReport: (String?) -> Unit,
 ) {
     val (reason, onReasonChanged) = rememberSaveable { mutableStateOf("") }
@@ -152,7 +150,6 @@ private fun InputReportReasonPreview() {
             sheetState = sheetState,
             loading = false,
             onDismissRequest = {},
-            onCancel = {},
             onReport = {},
         )
     }

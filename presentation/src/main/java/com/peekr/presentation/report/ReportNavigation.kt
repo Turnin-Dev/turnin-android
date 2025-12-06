@@ -121,7 +121,6 @@ fun NavGraphBuilder.reportNavigation(
                 sheetState = sheetState,
                 loading = uiState.loading,
                 onDismissRequest = { navController.popBackStack() },
-                onCancel = { navController.popBackStack() },
                 onReport = { reason ->
                     viewModel.processEvent(
                         ReportContract.UiEvent.OnReport(reason),
@@ -142,7 +141,6 @@ fun NavGraphBuilder.reportNavigation(
                     sheetState = sheetState,
                     isSuccess = isSuccess,
                     onDismissRequest = { navController.popBackStack() },
-                    onCancel = { navController.popBackStack() },
                     onFinishClick = {
                         exitReportNavigation(
                             scope = scope,

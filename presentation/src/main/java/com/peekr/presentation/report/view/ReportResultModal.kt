@@ -42,7 +42,6 @@ fun ReportResultModal(
     sheetState: SheetState,
     isSuccess: Boolean,
     onDismissRequest: () -> Unit,
-    onCancel: () -> Unit,
     onFinishClick: () -> Unit,
 ) {
     PeekrModalBottomSheet(
@@ -173,7 +172,6 @@ private fun ReportResultModalPreview() {
             sheetState = sheetState,
             isSuccess = true,
             onDismissRequest = {},
-            onCancel = {},
             onFinishClick = {},
         )
     }
