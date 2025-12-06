@@ -8,12 +8,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.home.main.HomeMainScreen
 import com.peekr.presentation.profile.profileNavigation
+import com.peekr.presentation.report.reportNavigation
 
 @Composable
 fun BottomNavigation(
@@ -49,6 +51,10 @@ fun BottomNavigation(
             profileNavigation(
                 appNavController = appNavController,
                 bottomNavController = bottomNavController,
+            )
+
+            reportNavigation(
+                navController = bottomNavController,
             )
         }
     }

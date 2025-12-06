@@ -1,4 +1,4 @@
-package com.peekr.presentation.reportBlock.view
+package com.peekr.presentation.report.view
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,8 +26,8 @@ import com.peekr.presentation.R
  * @param sheetState [SheetState]
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
  * @param onCancel 모달 취소 시
- * @param onReport 신고 수행 콜백
- * @param onBlock 차단 수행 콜백
+ * @param selectReport 신고 수행 콜백
+ * @param selectBlock 차단 수행 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,8 +36,8 @@ fun SelectReportBlockModal(
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onReport: () -> Unit,
-    onBlock: () -> Unit,
+    selectReport: () -> Unit,
+    selectBlock: () -> Unit,
 ) {
     PeekrModalBottomSheet(
         modifier = modifier,
@@ -51,12 +51,12 @@ fun SelectReportBlockModal(
             ModalContentToken(
                 stringResource(R.string.report_block_modal_report),
                 PeekrTheme.colorScheme.textNormal,
-                onReport,
+                selectReport,
             ),
             ModalContentToken(
                 stringResource(R.string.report_block_modal_block),
                 PeekrTheme.colorScheme.statusNegative,
-                onBlock,
+                selectBlock,
             ),
         )
     }
@@ -74,8 +74,8 @@ private fun SelectReportBlockModalPreview() {
             sheetState = sheetState,
             onDismissRequest = { showBottomSheet = false },
             onCancel = { showBottomSheet = false },
-            onReport = {},
-            onBlock = {},
+            selectReport = {},
+            selectBlock = {},
         )
     }
 }

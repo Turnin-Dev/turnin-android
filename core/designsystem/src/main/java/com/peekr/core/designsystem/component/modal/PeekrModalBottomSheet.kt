@@ -40,6 +40,7 @@ fun PeekrModalBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     shouldDismissOnBackPress: Boolean = true,
+    scrimColor: Color = ScrimColor,
     sheetGesturesEnabled: Boolean = true,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -56,7 +57,7 @@ fun PeekrModalBottomSheet(
         dragHandle = null,
         containerColor = PeekrTheme.colorScheme.backgroundNormal,
         contentColor = PeekrTheme.colorScheme.textNormal,
-        scrimColor = ScrimColor,
+        scrimColor = scrimColor,
         shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
         properties = ModalBottomSheetProperties(shouldDismissOnBackPress),
         sheetGesturesEnabled = sheetGesturesEnabled,

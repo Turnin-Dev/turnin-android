@@ -1,4 +1,4 @@
-package com.peekr.presentation.reportBlock.view
+package com.peekr.presentation.report.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.modal.ModalContentToken
@@ -20,7 +21,7 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.domain.report.model.ReportReasonId
-import com.peekr.presentation.reportBlock.model.UiReportReason
+import com.peekr.presentation.report.model.UiReportReason
 
 /**
  * 신고 사유 선택 모달
@@ -48,6 +49,7 @@ fun SelectReportReasonModal(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
+        scrimColor = Color.Transparent,
         onDismissRequest = onDismissRequest,
     ) { contentModifier ->
         val reasonTokens = reportReasons.map { reason ->
@@ -58,14 +60,14 @@ fun SelectReportReasonModal(
             )
         }
 
-        if (!loading) {
+        if (loading && reportReasons.isEmpty()) {
+            ModalContentSkeleton(contentModifier)
+        } else {
             PeekrModalBottomSheetContent(
                 modifier = contentModifier.fillMaxWidth(),
                 onCancel = onCancel,
                 *reasonTokens.toTypedArray(),
             )
-        } else {
-            ModalContentSkeleton(contentModifier)
         }
     }
 }

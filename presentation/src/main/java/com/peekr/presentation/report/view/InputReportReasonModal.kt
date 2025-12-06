@@ -1,4 +1,4 @@
-package com.peekr.presentation.reportBlock.view
+package com.peekr.presentation.report.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,7 +47,7 @@ fun InputReportReasonModal(
     loading: Boolean,
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onReport: () -> Unit,
+    onReport: (String?) -> Unit,
 ) {
     val (reason, onReasonChanged) = rememberSaveable { mutableStateOf("") }
 
@@ -54,6 +55,7 @@ fun InputReportReasonModal(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
+        scrimColor = Color.Transparent,
         onDismissRequest = onDismissRequest,
     ) { contentModifier ->
         Content(
@@ -61,7 +63,7 @@ fun InputReportReasonModal(
             loading = loading,
             text = reason,
             onTextChanged = onReasonChanged,
-            onReport = onReport,
+            onReport = { onReport(reason.ifEmpty { null }) },
         )
     }
 }
@@ -85,7 +87,6 @@ private fun Content(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
             .heightIn(min = ContentMinHeight),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {

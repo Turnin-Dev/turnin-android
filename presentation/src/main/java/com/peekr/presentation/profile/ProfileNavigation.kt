@@ -20,7 +20,7 @@ fun NavGraphBuilder.profileNavigation(
         composable<SubGraph.BottomNav.Profile.Me> {
             MyProfileRoute(
                 onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
-                    appNavController.navigateKeywordDetail(userKeywordId.value, userId.value, keyword)
+                    appNavController.navigateToKeywordDetail(userKeywordId.value, userId.value, keyword)
                 },
                 onSettingClick = {
                     // TODO: 임시 테스트 코드
@@ -36,12 +36,21 @@ fun NavGraphBuilder.profileNavigation(
                 onBackPressed = {
                     bottomNavController.popBackStack()
                 },
+                onReportClick = { reportedId ->
+                    bottomNavController.navigateToReport(reportedId)
+                },
             )
         }
     }
 }
 
-private fun NavController.navigateKeywordDetail(
+private fun NavController.navigateToReport(
+    reportedId: Long,
+) {
+    navigate(SubGraph.Report.Root(reportedId))
+}
+
+private fun NavController.navigateToKeywordDetail(
     userKeywordId: Long,
     userId: Long,
     keyword: String,

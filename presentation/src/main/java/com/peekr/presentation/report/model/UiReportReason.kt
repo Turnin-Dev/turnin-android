@@ -1,5 +1,6 @@
-package com.peekr.presentation.reportBlock.model
+package com.peekr.presentation.report.model
 
+import com.peekr.core.domain.report.model.ReportReason
 import com.peekr.core.domain.report.model.ReportReasonId
 
 /**
@@ -14,3 +15,10 @@ data class UiReportReason(
     val code: String,
     val description: String,
 )
+
+fun ReportReason.toUiModel(): UiReportReason =
+    UiReportReason(
+        id = id,
+        code = code,
+        description = description,
+    )
