@@ -2,7 +2,7 @@ package com.peekr.core.data.source.network.dto.friend.response
 
 import com.peekr.core.domain.friend.model.Friend
 import com.peekr.core.domain.friend.model.FriendId
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.model.UserId
 import com.squareup.moshi.JsonClass
 

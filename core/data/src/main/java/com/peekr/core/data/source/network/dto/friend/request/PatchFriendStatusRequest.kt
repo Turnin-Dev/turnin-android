@@ -1,7 +1,7 @@
 package com.peekr.core.data.source.network.dto.friend.request
 
-import com.peekr.core.domain.friend.model.PatchFriendshipStatus
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.squareup.moshi.JsonClass
 
 /**
@@ -12,14 +12,14 @@ import com.squareup.moshi.JsonClass
  * @property status 친구 관계 상태
  */
 @JsonClass(generateAdapter = true)
-data class PatchFriendshipStatusRequest(
+data class PatchFriendStatusRequest(
     val requesterId: Long,
     val receiverId: Long,
-    val status: FriendshipStatus,
+    val status: FriendStatus,
 )
 
-fun PatchFriendshipStatus.toDataModel(): PatchFriendshipStatusRequest =
-    PatchFriendshipStatusRequest(
+fun PatchFriendStatus.toDataModel(): PatchFriendStatusRequest =
+    PatchFriendStatusRequest(
         requesterId = requesterId.value,
         receiverId = receiverId.value,
         status = status,

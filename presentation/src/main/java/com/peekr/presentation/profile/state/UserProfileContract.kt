@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile.state
 
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
@@ -20,12 +20,8 @@ class UserProfileContract {
     sealed interface UiEvent : BaseUiEvent {
         /**
          * 신고 이벤트
-         *
-         * @param userId 신고할 사용자 ID
          */
-        data class OnReport(
-            val userId: Long,
-        ) : UiEvent
+        data object OnReport : UiEvent
 
         /**
          * 친구 상태 버튼 클릭 이벤트

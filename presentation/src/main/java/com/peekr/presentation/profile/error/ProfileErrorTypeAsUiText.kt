@@ -9,7 +9,7 @@ import com.peekr.presentation.R
 internal fun ProfileErrorType.asUiText(): UiText = when (this) {
     is ProfileErrorType.CommonError -> this.error.asUiText()
     is ProfileErrorType.ValidationError -> this.error.asUiText()
-    ProfileErrorType.UserNotFound -> StringResource(R.string.profile_error_user_not_found)
+    ProfileErrorType.MyUserIdNotFound -> StringResource(R.string.profile_error_my_user_id_not_found)
     ProfileErrorType.ProfileLoadFailed -> StringResource(R.string.profile_error_profile_load_failed)
     is ProfileErrorType.Unexpected -> StringResource(R.string.profile_error_unexpected)
     ProfileErrorType.UpdateUserKeywordOffsetFailed ->

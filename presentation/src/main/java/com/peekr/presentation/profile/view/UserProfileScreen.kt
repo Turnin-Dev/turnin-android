@@ -32,7 +32,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.presentation.feature.keyword.KeywordNameType
 import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
@@ -65,7 +65,7 @@ fun UserProfileScreen(
                         title = userProfile.displayId,
                         onReportClick = {
                             onUiEvent(
-                                UserProfileContract.UiEvent.OnReport(userProfile.userId),
+                                UserProfileContract.UiEvent.OnReport,
                             )
                         },
                         onBackPressed = onBackPressed,

@@ -1,7 +1,7 @@
 package com.peekr.core.domain.user.model
 
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId

@@ -2,7 +2,7 @@ package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
@@ -30,11 +30,11 @@ class UserProfileViewModel @Inject constructor(
     override suspend fun handleEvent(event: UserProfileContract.UiEvent) {
         when (event) {
             is UserProfileContract.UiEvent.OnReport -> {
-                report(event.userId)
+                report()
             }
 
             is UserProfileContract.UiEvent.OnFriendshipButtonClick -> {
-                processFriendshipStatus(event.friendshipStatus)
+                updateFriendshipStatus(event.friendshipStatus)
             }
         }
     }
@@ -85,14 +85,14 @@ class UserProfileViewModel @Inject constructor(
     }
 
     // 신고
-    private fun report(userId: Long) {
+    private fun report() {
         sendEffect {
-            UserProfileContract.UiEffect.NavigateToReport(userId)
+            UserProfileContract.UiEffect.NavigateToReport(currentUserId)
         }
     }
 
     // 친구 상태에 따라 기능 수행
-    private fun processFriendshipStatus(
+    private fun updateFriendshipStatus(
         friendshipStatus: FriendshipStatus,
     ) {
     }

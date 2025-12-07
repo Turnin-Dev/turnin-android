@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile.model
 
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.model.UserProfile

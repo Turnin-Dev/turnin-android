@@ -1,6 +1,6 @@
 package com.peekr.core.domain.friend.model
 
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.model.UserId
 
 /**

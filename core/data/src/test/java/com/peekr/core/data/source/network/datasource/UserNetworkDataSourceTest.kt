@@ -9,8 +9,8 @@ import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Role
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId

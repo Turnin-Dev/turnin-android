@@ -1,4 +1,4 @@
-package com.peekr.core.domain.model
+package com.peekr.core.domain.friend.model
 
 /**
  * 친구 관계 상태

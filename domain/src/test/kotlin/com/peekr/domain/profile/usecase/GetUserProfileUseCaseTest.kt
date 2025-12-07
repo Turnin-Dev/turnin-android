@@ -1,8 +1,8 @@
 package com.peekr.domain.profile.usecase
 
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.FriendshipStatus
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId

@@ -3,7 +3,7 @@ package com.peekr.core.data.repository
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
-import com.peekr.core.data.source.network.dto.friend.request.PatchFriendshipStatusRequest
+import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
@@ -12,8 +12,9 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
-import com.peekr.core.domain.friend.model.PatchFriendshipStatus
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.model.UserId
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -41,7 +42,7 @@ class FriendRepositoryImplTest {
             dataSource.deleteFriend(TestDeleteFriendRequest)
         } returns NetworkResult.Success(Unit)
         coEvery {
-            dataSource.updateFriendshipStatus(TestPatchFriendshipStatusRequest)
+            dataSource.updateFriendStatus(TestPatchFriendStatusRequest)
         } returns NetworkResult.Success(Unit)
     }
 
@@ -175,7 +176,7 @@ class FriendRepositoryImplTest {
     @Test
     fun `친구 관계 상태 수정 - 성공 테스트`() = runTest {
         // when
-        val result = repository.updateFriendshipStatus(TestPatchFriendshipStatus).last()
+        val result = repository.updateFriendStatus(TestPatchFriendStatus).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -186,11 +187,11 @@ class FriendRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.updateFriendshipStatus(any())
+            dataSource.updateFriendStatus(any())
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.updateFriendshipStatus(TestPatchFriendshipStatus).last()
+        val result = repository.updateFriendStatus(TestPatchFriendStatus).last()
 
         // then
         val error = result as Result.Error
@@ -202,11 +203,11 @@ class FriendRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.updateFriendshipStatus(any())
+            dataSource.updateFriendStatus(any())
         } throws exception
 
         // when
-        val result = repository.updateFriendshipStatus(TestPatchFriendshipStatus).last()
+        val result = repository.updateFriendStatus(TestPatchFriendStatus).last()
 
         // then
         val error = result as Result.Error
@@ -223,11 +224,11 @@ class FriendRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Network.HttpError(404)
         coEvery {
-            dataSource.updateFriendshipStatus(any())
+            dataSource.updateFriendStatus(any())
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.updateFriendshipStatus(TestPatchFriendshipStatus).last()
+        val result = repository.updateFriendStatus(TestPatchFriendStatus).last()
 
         // then
         val error = result as Result.Error
@@ -254,10 +255,10 @@ class FriendRepositoryImplTest {
             requesterId = TestRequesterId.value,
             receiverId = TestReceiverId.value,
         )
-        private val TestPatchFriendshipStatusRequest = PatchFriendshipStatusRequest(
+        private val TestPatchFriendStatusRequest = PatchFriendStatusRequest(
             requesterId = TestRequesterId.value,
             receiverId = TestReceiverId.value,
-            status = FriendshipStatus.NOTHING,
+            status = FriendStatus.PENDING,
         )
         private val TestAddFriend = AddFriend(
             requesterId = TestRequesterId,
@@ -267,10 +268,10 @@ class FriendRepositoryImplTest {
             requesterId = TestRequesterId,
             receiverId = TestReceiverId,
         )
-        private val TestPatchFriendshipStatus = PatchFriendshipStatus(
+        private val TestPatchFriendStatus = PatchFriendStatus(
             requesterId = TestRequesterId,
             receiverId = TestReceiverId,
-            status = FriendshipStatus.NOTHING,
+            status = FriendStatus.PENDING,
         )
     }
 }

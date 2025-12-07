@@ -1,7 +1,7 @@
 package com.peekr.core.data.source.network.api
 
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
-import com.peekr.core.data.source.network.dto.friend.request.PatchFriendshipStatusRequest
+import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -39,14 +39,14 @@ interface FriendApi {
     ): Response<Unit>
 
     /**
-     * 친구 관계 상태 수정
+     * 친구 상태 수정
      *
      * HTTP 에러 상태코드 별 설명
      * - `403`: 요청자 ID와 실제 요청을 한 사용자 ID가 같지 않은 경우
      * - `404`: 친구 데이터에서 수정 대상을 찾지 못하는 경우 (높은 확률로 이미 처리된 요청.)
      */
     @PATCH(NetworkApiPath.Friend.STATUS)
-    suspend fun updateFriendshipStatus(
-        @Body patchFriendshipStatusRequest: PatchFriendshipStatusRequest,
+    suspend fun updateFriendStatus(
+        @Body patchFriendStatusRequest: PatchFriendStatusRequest,
     ): Response<Unit>
 }

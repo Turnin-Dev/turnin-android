@@ -49,6 +49,6 @@ class GetMyProfileUseCase @Inject constructor(
                     }
                 },
             )
-        } ?: emit(Result.Error(ProfileErrorType.UserNotFound))
+        } ?: emit(Result.Error(ProfileErrorType.MyUserIdNotFound))
     }
 }

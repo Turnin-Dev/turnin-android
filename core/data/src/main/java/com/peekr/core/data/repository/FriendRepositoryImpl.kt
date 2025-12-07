@@ -12,7 +12,7 @@ import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.Friend
-import com.peekr.core.domain.friend.model.PatchFriendshipStatus
+import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.friend.repository.FriendRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -52,14 +52,14 @@ class FriendRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun updateFriendshipStatus(
-        patchFriendshipStatus: PatchFriendshipStatus,
+    override fun updateFriendStatus(
+        patchFriendStatus: PatchFriendStatus,
     ): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (
                 val result =
-                    friendNetworkDataSource.updateFriendshipStatus(patchFriendshipStatus.toDataModel())
+                    friendNetworkDataSource.updateFriendStatus(patchFriendStatus.toDataModel())
             ) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(Unit))
