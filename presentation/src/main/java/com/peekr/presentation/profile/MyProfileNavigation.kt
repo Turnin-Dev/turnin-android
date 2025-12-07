@@ -8,9 +8,8 @@ import androidx.navigation.navigation
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.profile.route.MyProfileRoute
-import com.peekr.presentation.profile.route.UserProfileRoute
 
-fun NavGraphBuilder.profileNavigation(
+fun NavGraphBuilder.myProfileNavigation(
     appNavController: NavHostController,
     bottomNavController: NavHostController,
 ) {
@@ -30,24 +29,7 @@ fun NavGraphBuilder.profileNavigation(
                 },
             )
         }
-
-        composable<SubGraph.BottomNav.Profile.User> {
-            UserProfileRoute(
-                onBackPressed = {
-                    bottomNavController.popBackStack()
-                },
-                onReportClick = { reportedId ->
-                    bottomNavController.navigateToReport(reportedId)
-                },
-            )
-        }
     }
-}
-
-private fun NavController.navigateToReport(
-    reportedId: Long,
-) {
-    navigate(SubGraph.Report.Root(reportedId))
 }
 
 private fun NavController.navigateToKeywordDetail(

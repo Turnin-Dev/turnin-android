@@ -13,7 +13,8 @@ import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.home.main.HomeMainScreen
-import com.peekr.presentation.profile.profileNavigation
+import com.peekr.presentation.profile.myProfileNavigation
+import com.peekr.presentation.profile.userProfileNavigation
 import com.peekr.presentation.report.reportNavigation
 
 @Composable
@@ -47,9 +48,13 @@ fun BottomNavigation(
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
             }
 
-            profileNavigation(
+            myProfileNavigation(
                 appNavController = appNavController,
                 bottomNavController = bottomNavController,
+            )
+
+            userProfileNavigation(
+                navController = bottomNavController,
             )
 
             reportNavigation(
