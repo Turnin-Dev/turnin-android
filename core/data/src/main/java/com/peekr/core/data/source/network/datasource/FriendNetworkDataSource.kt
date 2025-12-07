@@ -30,7 +30,7 @@ interface FriendNetworkDataSource {
     ): NetworkResult<Unit>
 
     /**
-     * 친구 관계 상태 수정
+     * 친구 상태 수정
      *
      * @param patchFriendStatusRequest 친구 상태 수정 요청 바디
      * @see FriendApi.updateFriendStatus

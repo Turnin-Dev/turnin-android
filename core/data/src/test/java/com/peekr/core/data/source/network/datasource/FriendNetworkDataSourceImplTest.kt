@@ -9,7 +9,6 @@ import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.domain.friend.model.FriendshipStatus
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -211,7 +210,7 @@ class FriendNetworkDataSourceImplTest {
             id = 1L,
             requesterId = TEST_REQUESTER_ID,
             receiverId = TEST_RECEIVER_ID,
-            status = FriendshipStatus.NOTHING,
+            status = FriendStatus.PENDING,
             respondedAt = 1000L,
             createdAt = 1000L,
             updatedAt = 1000L,

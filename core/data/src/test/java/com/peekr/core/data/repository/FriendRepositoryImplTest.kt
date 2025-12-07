@@ -13,7 +13,6 @@ import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.model.UserId
 import io.mockk.coEvery
@@ -242,7 +241,7 @@ class FriendRepositoryImplTest {
             id = 1L,
             requesterId = TestRequesterId.value,
             receiverId = TestReceiverId.value,
-            status = FriendshipStatus.NOTHING,
+            status = FriendStatus.PENDING,
             respondedAt = 1000L,
             createdAt = 1000L,
             updatedAt = 1000L,
