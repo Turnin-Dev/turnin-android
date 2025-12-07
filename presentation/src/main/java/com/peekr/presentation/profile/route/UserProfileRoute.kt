@@ -10,13 +10,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.ui.util.LockScreenOrientation
+import com.peekr.presentation.profile.state.UserProfileContract
 import com.peekr.presentation.profile.view.UserProfileScreen
 import com.peekr.presentation.profile.viewmodel.UserProfileViewModel
 
 @Composable
 internal fun UserProfileRoute(
     onBackPressed: () -> Unit,
-    onReportClick: (Long) -> Unit,
+    navigateToReport: (Long) -> Unit,
 ) {
     // Lock Orientation
     LockScreenOrientation()
@@ -25,9 +26,11 @@ internal fun UserProfileRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // ------------------------------ UiEffect ------------------------------
-    ObserveAsEvents(viewModel.effect) {
-        when (it) {
-            else -> {}
+    ObserveAsEvents(viewModel.effect) { effect ->
+        when (effect) {
+            is UserProfileContract.UiEffect.NavigateToReport -> {
+                navigateToReport(effect.userId)
+            }
         }
     }
 
@@ -39,6 +42,5 @@ internal fun UserProfileRoute(
         userProfile = uiState.userProfile,
         onUiEvent = viewModel::processEvent,
         onBackPressed = onBackPressed,
-        onReportClick = onReportClick,
     )
 }

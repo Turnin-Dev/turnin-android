@@ -52,7 +52,6 @@ fun UserProfileScreen(
     userProfile: UiUserProfile? = null,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
-    onReportClick: (Long) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -65,7 +64,9 @@ fun UserProfileScreen(
                             .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                         title = userProfile.displayId,
                         onReportClick = {
-                            onReportClick(userProfile.userId)
+                            onUiEvent(
+                                UserProfileContract.UiEvent.OnReport(userProfile.userId),
+                            )
                         },
                         onBackPressed = onBackPressed,
                     )
@@ -367,7 +368,6 @@ private fun UserProfileScreenPreview() {
             ),
             onUiEvent = {},
             onBackPressed = {},
-            onReportClick = {},
         )
     }
 }

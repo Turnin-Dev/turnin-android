@@ -14,7 +14,7 @@ fun NavGraphBuilder.userProfileNavigation(
             onBackPressed = {
                 navController.popBackStack()
             },
-            onReportClick = { reportedId ->
+            navigateToReport = { reportedId ->
                 navController.navigateToReport(reportedId)
             },
         )

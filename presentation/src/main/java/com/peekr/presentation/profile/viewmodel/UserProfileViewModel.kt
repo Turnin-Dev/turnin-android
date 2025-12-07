@@ -29,7 +29,11 @@ class UserProfileViewModel @Inject constructor(
     override suspend fun handleEvent(event: UserProfileContract.UiEvent) {
         when (event) {
             is UserProfileContract.UiEvent.OnReport -> {
-                // TODO: 신고 로직 작성
+                report(event.userId)
+            }
+
+            is UserProfileContract.UiEvent.OnFriendshipButtonClick -> {
+                //
             }
         }
     }
@@ -76,6 +80,12 @@ class UserProfileViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun report(userId: Long) {
+        sendEffect {
+            UserProfileContract.UiEffect.NavigateToReport(userId)
         }
     }
 
