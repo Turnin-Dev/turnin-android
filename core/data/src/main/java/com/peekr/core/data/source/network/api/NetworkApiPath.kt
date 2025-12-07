@@ -48,4 +48,8 @@ object NetworkApiPath {
         const val ROUTE = "$BASE/report"
         const val REASON = "$ROUTE/reason"
     }
+
+    object Friend {
+        const val ROUTE = "$BASE/friend"
+    }
 }
