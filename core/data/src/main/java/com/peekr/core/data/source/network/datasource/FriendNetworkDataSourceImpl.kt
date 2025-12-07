@@ -17,7 +17,12 @@ class FriendNetworkDataSourceImpl @Inject constructor(
         networkCall { friendApi.addFriend(addFriendRequest) }
 
     override suspend fun deleteFriend(deleteFriendRequest: DeleteFriendRequest): NetworkResult<Unit> =
-        networkCallWithoutResponse { friendApi.deleteFriend(deleteFriendRequest) }
+        networkCallWithoutResponse {
+            friendApi.deleteFriend(
+                requesterId = deleteFriendRequest.requesterId,
+                receiverId = deleteFriendRequest.receiverId,
+            )
+        }
 
     override suspend fun updateFriendshipStatus(
         patchFriendshipStatusRequest: PatchFriendshipStatusRequest,

@@ -51,5 +51,6 @@ object NetworkApiPath {
 
     object Friend {
         const val ROUTE = "$BASE/friend"
+        const val STATUS = "$ROUTE/status"
     }
 }
