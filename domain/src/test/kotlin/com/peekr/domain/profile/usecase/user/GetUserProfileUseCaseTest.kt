@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase
+package com.peekr.domain.profile.usecase.user
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.friend.model.FriendStatus
@@ -15,13 +15,12 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.domain.profile.usecase.user.GetUserProfileUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -47,21 +46,21 @@ class GetUserProfileUseCaseTest {
 
         // then
         val success = result as Result.Success
-        assertEquals(TestUserKeywords.keywords, success.data.keywords)
-        assertEquals(TestCoreUserProfile.friendStatus, success.data.friendStatus)
+        Assert.assertEquals(TestUserKeywords.keywords, success.data.keywords)
+        Assert.assertEquals(TestCoreUserProfile.friendStatus, success.data.friendStatus)
     }
 
     companion object {
-        private val TestUserId = UserId(1L)
-        private val TestDisplayId = DisplayId("did")
+        private val TestUserId = UserId.Companion(1L)
+        private val TestDisplayId = DisplayId.Companion("did")
         private val TestUserKeyword = UserKeyword(
-            id = UserKeywordId(1L),
-            keywordId = KeywordId(1L),
-            keyword = KeywordValue("key"),
+            id = UserKeywordId.Companion(1L),
+            keywordId = KeywordId.Companion(1L),
+            keyword = KeywordValue.Companion("key"),
             userId = TestUserId,
             offsetX = 0.0,
             offsetY = 0.0,
-            description = KeywordDescription("hello"),
+            description = KeywordDescription.Companion("hello"),
             createdAt = 1000,
             updatedAt = 1000,
         )
@@ -69,9 +68,9 @@ class GetUserProfileUseCaseTest {
         private val TestCoreUserProfile = CoreUserProfile(
             userId = TestUserId,
             displayId = TestDisplayId,
-            name = Name("name"),
+            name = Name.Companion("name"),
             profileImageUrl = null,
-            introduce = Introduce("hello"),
+            introduce = Introduce.Companion("hello"),
             lastLoginAt = 1000L,
             friendsCount = 50L,
             active = true,
