@@ -23,6 +23,7 @@ class UserProfileViewModel @Inject constructor(
     private val usecases: UserProfileUseCases,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<UserProfileContract.UiState, UserProfileContract.UiEvent, UserProfileContract.UiEffect>() {
+    /** 친구 사용자 ID */
     private val currentUserId: Long by lazy {
         requireNotNull(savedStateHandle.get<Long>("userId"))
     }
@@ -134,7 +135,6 @@ class UserProfileViewModel @Inject constructor(
                 }
 
                 is Result.Success -> {
-                    // TODO: SSOT 어긋남 고민
                     updateState {
                         this.copy(
                             loading = false,
