@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase
+package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
@@ -14,7 +14,6 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.domain.profile.usecase.my.GetMyProfileUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

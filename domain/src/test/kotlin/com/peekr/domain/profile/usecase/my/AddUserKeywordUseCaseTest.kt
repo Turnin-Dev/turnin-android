@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase
+package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
@@ -11,7 +11,6 @@ import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
-import com.peekr.domain.profile.usecase.my.AddUserKeywordUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
