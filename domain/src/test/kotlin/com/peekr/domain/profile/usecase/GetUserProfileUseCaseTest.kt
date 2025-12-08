@@ -1,7 +1,7 @@
 package com.peekr.domain.profile.usecase
 
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.KeywordDescription
@@ -48,7 +48,7 @@ class GetUserProfileUseCaseTest {
         // then
         val success = result as Result.Success
         assertEquals(TestUserKeywords.keywords, success.data.keywords)
-        assertEquals(TestCoreUserProfile.friendshipStatus, success.data.friendshipStatus)
+        assertEquals(TestCoreUserProfile.friendStatus, success.data.friendStatus)
     }
 
     companion object {
@@ -75,7 +75,7 @@ class GetUserProfileUseCaseTest {
             lastLoginAt = 1000L,
             friendsCount = 50L,
             active = true,
-            friendshipStatus = FriendshipStatus.NOTHING,
+            friendStatus = FriendStatus.NOTHING,
         )
     }
 }

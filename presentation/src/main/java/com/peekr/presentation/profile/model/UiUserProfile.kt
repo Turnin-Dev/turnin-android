@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile.model
 
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.model.UserProfile
@@ -15,7 +15,7 @@ import com.peekr.domain.profile.model.UserProfile
  * @property friendsCount 친구 수
  * @property lastLoginAt 마지막 로그인 일시
  * @property keywords 키워드 리스트
- * @property friendshipStatus 친구 관계 상태 (내 프로필이 아닌 경우에만 null이 아님)
+ * @property friendStatus 친구 관계 상태 (내 프로필이 아닌 경우에만 null이 아님)
  * @property active 사용자 활성화 여부
  */
 data class UiUserProfile(
@@ -27,7 +27,7 @@ data class UiUserProfile(
     val friendsCount: Long,
     val lastLoginAt: Long,
     val keywords: List<UiUserKeyword>,
-    val friendshipStatus: FriendshipStatus,
+    val friendStatus: FriendStatus,
     val active: Boolean,
 )
 
@@ -41,6 +41,6 @@ fun UserProfile.toUiModel(): UiUserProfile =
         friendsCount = friendsCount,
         lastLoginAt = lastLoginAt,
         active = active,
-        friendshipStatus = friendshipStatus,
+        friendStatus = friendStatus,
         keywords = keywords.toUiModel(),
     )

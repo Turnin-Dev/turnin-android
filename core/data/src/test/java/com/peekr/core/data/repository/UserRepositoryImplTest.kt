@@ -13,7 +13,7 @@ import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -357,7 +357,7 @@ class UserRepositoryImplTest {
             introduce = "hello",
             lastLoginAt = 1000L,
             active = true,
-            friendshipStatus = FriendshipStatus.NOTHING,
+            friendStatus = FriendStatus.NOTHING,
             friendsCount = 51,
         )
         private val TestMyProfileResponse = MyProfileResponse(

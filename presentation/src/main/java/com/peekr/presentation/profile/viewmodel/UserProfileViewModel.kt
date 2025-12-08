@@ -2,7 +2,7 @@ package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
@@ -34,7 +34,7 @@ class UserProfileViewModel @Inject constructor(
             }
 
             is UserProfileContract.UiEvent.OnFriendshipButtonClick -> {
-                updateFriendshipStatus(event.friendshipStatus)
+                updateFriendshipStatus(event.friendStatus)
             }
         }
     }
@@ -93,7 +93,7 @@ class UserProfileViewModel @Inject constructor(
 
     // 친구 상태에 따라 기능 수행
     private fun updateFriendshipStatus(
-        friendshipStatus: FriendshipStatus,
+        friendStatus: FriendStatus,
     ) {
     }
 

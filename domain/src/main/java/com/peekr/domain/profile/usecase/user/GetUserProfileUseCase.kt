@@ -42,7 +42,7 @@ class GetUserProfileUseCase @Inject constructor(
                     friendsCount = userProfile.data.friendsCount,
                     lastLoginAt = userProfile.data.lastLoginAt,
                     active = userProfile.data.active,
-                    friendshipStatus = userProfile.data.friendshipStatus,
+                    friendStatus = userProfile.data.friendStatus,
                     keywords = userKeywords.data.keywords,
                 )
                 Result.Success(myProfile)

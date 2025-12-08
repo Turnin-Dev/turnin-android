@@ -1,6 +1,6 @@
 package com.peekr.core.data.source.network.dto.user.response
 
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -19,7 +19,7 @@ import com.squareup.moshi.JsonClass
  * @property introduce 사용자 소개 글
  * @property lastLoginAt 사용자 마지막 로그인 일자
  * @property friendsCount 친구 수
- * @property friendshipStatus 친구 관계 상태
+ * @property friendStatus 친구 관계 상태
  * @property active 사용자 활성화 여부
  */
 @JsonClass(generateAdapter = true)
@@ -31,7 +31,7 @@ data class UserProfileResponse(
     val introduce: String,
     val lastLoginAt: Long,
     val friendsCount: Long,
-    val friendshipStatus: FriendshipStatus,
+    val friendStatus: FriendStatus,
     @Json(name = "isActive")
     val active: Boolean,
 )
@@ -45,6 +45,6 @@ fun UserProfileResponse.toDomainModel(): CoreUserProfile =
         introduce = Introduce(introduce),
         lastLoginAt = lastLoginAt,
         friendsCount = friendsCount,
-        friendshipStatus = friendshipStatus,
+        friendStatus = friendStatus,
         active = active,
     )

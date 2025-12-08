@@ -1,6 +1,6 @@
 package com.peekr.core.domain.user.model
 
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -16,7 +16,7 @@ import com.peekr.core.domain.model.UserId
  * @property introduce 사용자 소개 글
  * @property lastLoginAt 사용자 마지막 로그인 일자
  * @property friendsCount 친구 수
- * @property friendshipStatus 친구 관계 상태
+ * @property friendStatus 친구 관계 상태
  * @property active 사용자 활성화 여부
  */
 data class CoreUserProfile(
@@ -27,6 +27,6 @@ data class CoreUserProfile(
     val introduce: Introduce,
     val lastLoginAt: Long,
     val friendsCount: Long,
-    val friendshipStatus: FriendshipStatus,
+    val friendStatus: FriendStatus,
     val active: Boolean,
 )

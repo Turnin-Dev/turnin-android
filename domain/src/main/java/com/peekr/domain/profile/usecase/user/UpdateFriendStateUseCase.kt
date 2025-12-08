@@ -4,8 +4,8 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
+import com.peekr.core.domain.friend.model.FriendRequestStatus
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.domain.friend.model.FriendshipStatus
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.friend.repository.FriendRepository
 import com.peekr.core.domain.model.UserId
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.map
  *
  * @see invoke
  */
-class UpdateFriendshipStateUseCase @Inject constructor(
+class UpdateFriendStateUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val friendRepository: FriendRepository,
 ) {
@@ -30,17 +30,17 @@ class UpdateFriendshipStateUseCase @Inject constructor(
      * 현재 상태에 따라 친구 관계 상태를 업데이트한다.
      *
      * @param receiverId 친구 관계 상태가 업데이트될 대상의 사용자 ID
-     * @param currentFriendshipStatus 현재 친구 관계 상태
+     * @param currentFriendStatus 현재 친구 관계 상태
      */
     operator fun invoke(
         receiverId: Long,
-        currentFriendshipStatus: FriendshipStatus,
+        currentFriendStatus: FriendStatus,
     ): Flow<Result<Unit, ProfileErrorType>> = flow {
         userRepository.getUserId()?.let { userId ->
             val receiverIdVO = UserId(receiverId)
 
-            when (currentFriendshipStatus) {
-                FriendshipStatus.NOTHING -> {
+            when (currentFriendStatus) {
+                FriendStatus.NOTHING -> {
                     // 1)
                     // 현재 상태: 아무 것도 아닌 상태
                     // 상태 변경 시: 친구 추가 진행
@@ -52,7 +52,7 @@ class UpdateFriendshipStateUseCase @Inject constructor(
                     )
                 }
 
-                FriendshipStatus.FRIENDS -> {
+                FriendStatus.FRIENDS -> {
                     // 2)
                     // 현재 상태: 친구인 상태
                     // 상태 변경 시: 친구 삭제 진행
@@ -64,7 +64,7 @@ class UpdateFriendshipStateUseCase @Inject constructor(
                     )
                 }
 
-                FriendshipStatus.REQUESTED -> {
+                FriendStatus.REQUESTED -> {
                     // 3)
                     // 현재 상태: 친구 요청을 보낸 상태
                     // 상태 변경 시: 친구 삭제 진행 (= 친구 요청 삭제)
@@ -76,7 +76,7 @@ class UpdateFriendshipStateUseCase @Inject constructor(
                     )
                 }
 
-                FriendshipStatus.RECEIVED -> {
+                FriendStatus.RECEIVED -> {
                     // 4.)
                     // 현재 상태: 친구 요청을 받은 상태
                     // 상태 변경 시: 친구 요청 수락
@@ -84,7 +84,7 @@ class UpdateFriendshipStateUseCase @Inject constructor(
                         updateFriendshipStatusFlow(
                             requesterId = userId,
                             receiverId = receiverIdVO,
-                            friendStatus = FriendStatus.ACCEPTED,
+                            friendRequestStatus = FriendRequestStatus.ACCEPTED,
                         ),
                     )
                 }
@@ -135,12 +135,12 @@ class UpdateFriendshipStateUseCase @Inject constructor(
     private fun updateFriendshipStatusFlow(
         requesterId: UserId,
         receiverId: UserId,
-        friendStatus: FriendStatus,
+        friendRequestStatus: FriendRequestStatus,
     ): Flow<Result<Unit, ProfileErrorType>> = flow {
         val patchFriendStatus = PatchFriendStatus(
             requesterId = requesterId,
             receiverId = receiverId,
-            status = friendStatus,
+            requestStatus = friendRequestStatus,
         )
         emitAll(
             friendRepository

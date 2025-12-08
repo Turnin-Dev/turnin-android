@@ -8,7 +8,7 @@ import com.peekr.core.domain.model.UserId
  * @property id 친구 ID
  * @property requesterId 요청한 사용자 ID
  * @property receiverId 요청 받은 사용자 ID
- * @property status 친구 상태
+ * @property requestStatus 친구 상태
  * @property respondedAt 요청 응답 일자
  * @property createdAt 요청 생성 일자
  * @property updatedAt 요청 수정 일자
@@ -17,7 +17,7 @@ data class Friend(
     val id: FriendId,
     val requesterId: UserId,
     val receiverId: UserId,
-    val status: FriendStatus,
+    val requestStatus: FriendRequestStatus,
     val respondedAt: Long,
     val createdAt: Long,
     val updatedAt: Long,

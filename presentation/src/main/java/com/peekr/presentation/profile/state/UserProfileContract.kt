@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile.state
 
-import com.peekr.core.domain.friend.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
@@ -27,7 +27,7 @@ class UserProfileContract {
          * 친구 상태 버튼 클릭 이벤트
          */
         data class OnFriendshipButtonClick(
-            val friendshipStatus: FriendshipStatus,
+            val friendStatus: FriendStatus,
         ) : UiEvent
     }
 
