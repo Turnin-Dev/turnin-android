@@ -1,6 +1,8 @@
 package com.peekr.domain.profile.usecase.user
 
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.mapSuccess
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
@@ -31,11 +33,13 @@ class UpdateFriendStateUseCase @Inject constructor(
      *
      * @param receiverId 친구 관계 상태가 업데이트될 대상의 사용자 ID
      * @param currentFriendStatus 현재 친구 관계 상태
+     *
+     * @return 업데이트 후 변경된 친구 상태를 반환한다
      */
     operator fun invoke(
         receiverId: Long,
         currentFriendStatus: FriendStatus,
-    ): Flow<Result<Unit, ProfileErrorType>> = flow {
+    ): Flow<Result<FriendStatus, ProfileErrorType>> = flow {
         userRepository.getUserId()?.let { userId ->
             val receiverIdVO = UserId(receiverId)
 
@@ -48,7 +52,9 @@ class UpdateFriendStateUseCase @Inject constructor(
                         addFriendFlow(
                             requesterId = userId,
                             receiverId = receiverIdVO,
-                        ),
+                        ).mapSuccess {
+                            currentFriendStatus.toggle()
+                        },
                     )
                 }
 
@@ -60,7 +66,9 @@ class UpdateFriendStateUseCase @Inject constructor(
                         deleteFriendFlow(
                             requesterId = userId,
                             receiverId = receiverIdVO,
-                        ),
+                        ).mapSuccess {
+                            currentFriendStatus.toggle()
+                        },
                     )
                 }
 
@@ -72,7 +80,9 @@ class UpdateFriendStateUseCase @Inject constructor(
                         deleteFriendFlow(
                             requesterId = userId,
                             receiverId = receiverIdVO,
-                        ),
+                        ).mapSuccess {
+                            currentFriendStatus.toggle()
+                        },
                     )
                 }
 
@@ -85,7 +95,9 @@ class UpdateFriendStateUseCase @Inject constructor(
                             requesterId = userId,
                             receiverId = receiverIdVO,
                             friendRequestStatus = FriendRequestStatus.ACCEPTED,
-                        ),
+                        ).mapSuccess {
+                            currentFriendStatus.toggle()
+                        },
                     )
                 }
             }
@@ -105,7 +117,13 @@ class UpdateFriendStateUseCase @Inject constructor(
                     when (result) {
                         Result.Loading -> Result.Loading
                         is Result.Error -> {
-                            Result.Error(ProfileErrorType.CommonError(result.error))
+                            when (result.error) {
+                                CommonErrorType.Network.Conflict -> {
+                                    Result.Error(ProfileErrorType.AlreadyFriendsOrRequested)
+                                }
+
+                                else -> Result.Error(ProfileErrorType.CommonError(result.error))
+                            }
                         }
 
                         is Result.Success -> {
@@ -126,7 +144,13 @@ class UpdateFriendStateUseCase @Inject constructor(
             friendRepository
                 .deleteFriend(deleteFriend)
                 .mapError { commonError ->
-                    ProfileErrorType.CommonError(commonError)
+                    when (commonError) {
+                        CommonErrorType.Network.NotFound -> {
+                            ProfileErrorType.AlreadyProcessed
+                        }
+
+                        else -> ProfileErrorType.CommonError(commonError)
+                    }
                 },
         )
     }
@@ -146,7 +170,13 @@ class UpdateFriendStateUseCase @Inject constructor(
             friendRepository
                 .updateFriendStatus(patchFriendStatus)
                 .mapError { commonError ->
-                    ProfileErrorType.CommonError(commonError)
+                    when (commonError) {
+                        CommonErrorType.Network.NotFound -> {
+                            ProfileErrorType.AlreadyProcessed
+                        }
+
+                        else -> ProfileErrorType.CommonError(commonError)
+                    }
                 },
         )
     }

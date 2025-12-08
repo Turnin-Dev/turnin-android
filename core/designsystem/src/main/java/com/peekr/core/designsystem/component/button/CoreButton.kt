@@ -94,7 +94,7 @@ internal fun CoreButton(
                 CircularProgressIndicator(
                     modifier = Modifier.size(style.iconSize),
                     strokeWidth = 3.dp,
-                    color = PeekrTheme.colorScheme.staticWhite,
+                    color = type.buttonColors().contentColor,
                 )
             }
         }

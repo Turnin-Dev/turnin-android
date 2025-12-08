@@ -15,4 +15,13 @@ enum class FriendStatus {
 
     /** 친구 요청을 받은 상태 */
     RECEIVED,
+    ;
+
+    fun toggle(): FriendStatus =
+        when (this) {
+            NOTHING -> REQUESTED
+            FRIENDS -> NOTHING
+            REQUESTED -> NOTHING
+            RECEIVED -> FRIENDS
+        }
 }

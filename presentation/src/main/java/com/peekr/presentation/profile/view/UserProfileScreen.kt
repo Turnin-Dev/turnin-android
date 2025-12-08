@@ -85,7 +85,7 @@ fun UserProfileScreen(
                         onFriendsCountClick = {},
                         onFriendsButtonClick = { currentFriendshipStatus ->
                             onUiEvent(
-                                UserProfileContract.UiEvent.OnFriendshipButtonClick(
+                                UserProfileContract.UiEvent.OnFriendButtonClick(
                                     friendStatus = currentFriendshipStatus,
                                 ),
                             )

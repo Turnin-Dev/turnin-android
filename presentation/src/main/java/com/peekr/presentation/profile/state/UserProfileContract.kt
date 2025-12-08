@@ -24,16 +24,23 @@ class UserProfileContract {
         data object OnReport : UiEvent
 
         /**
-         * 친구 상태 버튼 클릭 이벤트
+         * 친구 버튼 클릭 이벤트
          */
-        data class OnFriendshipButtonClick(
+        data class OnFriendButtonClick(
             val friendStatus: FriendStatus,
         ) : UiEvent
+
+        /**
+         * 친구 삭제 이벤트
+         */
+        data object DeleteFriend : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
         data class NavigateToReport(
             val userId: Long,
         ) : UiEffect
+
+        data object OpenDeleteFriendModal : UiEffect
     }
 }
