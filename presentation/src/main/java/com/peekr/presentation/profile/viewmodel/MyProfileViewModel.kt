@@ -112,7 +112,7 @@ class MyProfileViewModel @Inject constructor(
                 safeCancel(event.keyword, event.description)
             }
 
-            MyProfileContract.UiEvent.CloseAllModals -> {
+            MyProfileContract.UiEvent.CloseAllModalsAndResetTextField -> {
                 closeAllModalsAndResetTextFields()
             }
 
@@ -195,17 +195,26 @@ class MyProfileViewModel @Inject constructor(
         } else {
             usecases.deleteUserKeyword(userKeywordId).onEach { result ->
                 when (result) {
-                    Result.Loading -> updateState { this.copy(fullScreenLoading = true) }
-                    is Result.Error -> updateState {
-                        this.copy(fullScreenLoading = false, error = result.error.asUiText())
+                    Result.Loading -> {
+                        updateState { this.copy(fullScreenLoading = true) }
+                    }
+
+                    is Result.Error -> {
+                        updateState {
+                            this.copy(fullScreenLoading = false, error = result.error.asUiText())
+                        }
+                        showSnackBar(result.error.asUiText())
                     }
 
                     is Result.Success -> {
                         updateState {
-                            this.copy(fullScreenLoading = false, error = null)
+                            this.copy(
+                                fullScreenLoading = false,
+                                error = null,
+                                selectedKeyword = SelectedKeywordState(),
+                            )
                         }
                         sendEffect { MyProfileContract.UiEffect.CloseAllModals }
-                        resetSelectedKeyword()
                         showSnackBar(StringResource(R.string.profile_success_delete_user_keyword))
                         // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                         loadInitialData()
@@ -224,12 +233,17 @@ class MyProfileViewModel @Inject constructor(
                 .addUserKeyword(keyword, description)
                 .onEach { result ->
                     when (result) {
-                        is Result.Error -> updateState {
-                            this.copy(fullScreenLoading = false, error = result.error.asUiText())
+                        Result.Loading -> {
+                            updateState {
+                                this.copy(fullScreenLoading = true, error = null)
+                            }
                         }
 
-                        Result.Loading -> updateState {
-                            this.copy(fullScreenLoading = true, error = null)
+                        is Result.Error -> {
+                            updateState {
+                                this.copy(fullScreenLoading = false, error = result.error.asUiText())
+                            }
+                            showSnackBar(result.error.asUiText())
                         }
 
                         is Result.Success -> {
@@ -239,16 +253,11 @@ class MyProfileViewModel @Inject constructor(
                                     error = null,
                                     keywordTextField = KeywordTextFieldState(),
                                     keywordDescTextField = KeywordTextFieldState(),
+                                    selectedKeyword = SelectedKeywordState(),
                                 )
                             }
-                            sendEffect { MyProfileContract.UiEffect.CloseAllModals }
-                            resetSelectedKeyword()
-                            showSnackBar(
-                                StringResource(
-                                    R.string.profile_success_add_user_keyword,
-                                ),
-                            )
-
+                            closeAllModalsAndResetTextFields()
+                            showSnackBar(StringResource(R.string.profile_success_add_user_keyword))
                             // 성공 시, 초기 데이터 다시 로드 (새로 고침)
                             loadInitialData()
                         }
@@ -281,9 +290,15 @@ class MyProfileViewModel @Inject constructor(
                             .updateUserKeywordOffset(userKeywordId, offset.offsetX, offset.offsetY)
                             .collect { result ->
                                 when (result) {
-                                    Result.Loading -> updateState { this.copy(fullScreenLoading = true) }
-                                    is Result.Error -> updateState {
-                                        this.copy(fullScreenLoading = false, error = result.error.asUiText())
+                                    Result.Loading -> {
+                                        updateState { this.copy(fullScreenLoading = true) }
+                                    }
+
+                                    is Result.Error -> {
+                                        updateState {
+                                            this.copy(fullScreenLoading = false, error = result.error.asUiText())
+                                        }
+                                        showSnackBar(result.error.asUiText())
                                     }
 
                                     is Result.Success -> {
@@ -298,18 +313,8 @@ class MyProfileViewModel @Inject constructor(
                 }.awaitAll()
 
             if (successCount.get() == keywordNodes.size) {
-                showSnackBar(
-                    StringResource(
-                        R.string.profile_success_update_user_keyword_offset,
-                    ),
-                )
+                showSnackBar(StringResource(R.string.profile_success_update_user_keyword_offset))
             }
-        }
-    }
-
-    private fun resetSelectedKeyword() {
-        updateState {
-            this.copy(selectedKeyword = SelectedKeywordState())
         }
     }
 

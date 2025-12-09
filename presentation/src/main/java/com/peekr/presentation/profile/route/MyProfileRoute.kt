@@ -99,7 +99,7 @@ internal fun MyProfileRoute(
         isOpen = isSafeCancelModalOpen,
         title = R.string.my_profile_modal_safe_cancel,
         onAcceptClick = {
-            viewModel.processEvent(MyProfileContract.UiEvent.CloseAllModals)
+            viewModel.processEvent(MyProfileContract.UiEvent.CloseAllModalsAndResetTextField)
         },
         onCancelClick = { isSafeCancelModalOpen = false },
     )

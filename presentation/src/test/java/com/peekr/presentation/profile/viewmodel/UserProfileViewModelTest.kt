@@ -120,7 +120,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
     }
 
     @Test
-    fun `"FRIENDS" 상태에서 친구 상태 업데이트 시 모달 이벤트 발행 후 모달에서 삭제를 진행해야 정상적으로 업데이트된다`() {
+    fun `"FRIENDS" 상태에서 친구 상태 업데이트 이벤트 발생 시 모달 이벤트 발행 후 모달에서 삭제를 진행해야 정상적으로 업데이트된다`() {
         // 모달 일회성 이벤트 발행 테스트
         testEffect(
             viewModel = viewModel,

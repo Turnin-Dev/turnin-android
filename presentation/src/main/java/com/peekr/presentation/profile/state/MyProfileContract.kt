@@ -15,9 +15,9 @@ class MyProfileContract {
      * 나의 프로필 상태 클래스
      *
      * @param myProfile UI용 프로필
-     * @param keywordTextField 키워드 텍스트 필드 상태 (내 프로필 한정)
-     * @param keywordDescTextField 키워드 내용 텍스트 필드 상태 (내 프로필 한정)
-     * @param updatedKeywordNodesOffset 업데이트된 키워드 노드 오프셋 (내 프로필 한정)
+     * @param keywordTextField 키워드 텍스트 필드 상태
+     * @param keywordDescTextField 키워드 내용 텍스트 필드 상태
+     * @param updatedKeywordNodesOffset 업데이트된 키워드 노드 오프셋
      * @param selectedKeyword 선택된 키워드
      * @param loading 로딩 여부
      * @param fullScreenLoading 전체 화면 로딩 여부
@@ -35,8 +35,8 @@ class MyProfileContract {
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
-        /** 모든 모달을 닫기 이벤트 */
-        data object CloseAllModals : UiEvent
+        /** 모든 모달을 닫고 텍스트필드를 초기화하는 이벤트 */
+        data object CloseAllModalsAndResetTextField : UiEvent
 
         /** 키워드 추가 모달에서 키워드 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordTextChanged(val value: String) : UiEvent
