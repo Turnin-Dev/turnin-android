@@ -52,7 +52,7 @@ class AddUserKeywordUseCase @Inject constructor(
                         },
                 )
             } else {
-                emit(Result.Error(error = ProfileErrorType.UserNotFound))
+                emit(Result.Error(error = ProfileErrorType.MyUserIdNotFound))
             }
         } catch (e: CommonValidationException) {
             val error = ProfileErrorType.ValidationError(e.toValidationErrorType())

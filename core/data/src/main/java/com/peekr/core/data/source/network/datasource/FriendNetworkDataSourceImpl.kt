@@ -3,7 +3,7 @@ package com.peekr.core.data.source.network.datasource
 import com.peekr.core.data.source.network.api.FriendApi
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
-import com.peekr.core.data.source.network.dto.friend.request.PatchFriendshipStatusRequest
+import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
@@ -24,8 +24,8 @@ class FriendNetworkDataSourceImpl @Inject constructor(
             )
         }
 
-    override suspend fun updateFriendshipStatus(
-        patchFriendshipStatusRequest: PatchFriendshipStatusRequest,
+    override suspend fun updateFriendStatus(
+        patchFriendStatusRequest: PatchFriendStatusRequest,
     ): NetworkResult<Unit> =
-        networkCallWithoutResponse { friendApi.updateFriendshipStatus(patchFriendshipStatusRequest) }
+        networkCallWithoutResponse { friendApi.updateFriendStatus(patchFriendStatusRequest) }
 }

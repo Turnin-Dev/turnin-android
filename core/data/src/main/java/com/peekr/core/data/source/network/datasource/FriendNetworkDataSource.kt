@@ -3,7 +3,7 @@ package com.peekr.core.data.source.network.datasource
 import com.peekr.core.data.source.network.api.FriendApi
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
-import com.peekr.core.data.source.network.dto.friend.request.PatchFriendshipStatusRequest
+import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 
@@ -30,12 +30,12 @@ interface FriendNetworkDataSource {
     ): NetworkResult<Unit>
 
     /**
-     * 친구 관계 상태 수정
+     * 친구 상태 수정
      *
-     * @param patchFriendshipStatusRequest 친구 관계 상태 수정 요청 바디
-     * @see FriendApi.updateFriendshipStatus
+     * @param patchFriendStatusRequest 친구 상태 수정 요청 바디
+     * @see FriendApi.updateFriendStatus
      */
-    suspend fun updateFriendshipStatus(
-        patchFriendshipStatusRequest: PatchFriendshipStatusRequest,
+    suspend fun updateFriendStatus(
+        patchFriendStatusRequest: PatchFriendStatusRequest,
     ): NetworkResult<Unit>
 }

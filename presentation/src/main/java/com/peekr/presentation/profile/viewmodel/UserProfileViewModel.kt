@@ -1,8 +1,9 @@
 package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
@@ -14,12 +15,15 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.UserProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val usecases: UserProfileUseCases,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<UserProfileContract.UiState, UserProfileContract.UiEvent, UserProfileContract.UiEffect>() {
+    /** 친구 사용자 ID */
     private val currentUserId: Long by lazy {
         requireNotNull(savedStateHandle.get<Long>("userId"))
     }
@@ -30,11 +34,21 @@ class UserProfileViewModel @Inject constructor(
     override suspend fun handleEvent(event: UserProfileContract.UiEvent) {
         when (event) {
             is UserProfileContract.UiEvent.OnReport -> {
-                report(event.userId)
+                report()
             }
 
-            is UserProfileContract.UiEvent.OnFriendshipButtonClick -> {
-                processFriendshipStatus(event.friendshipStatus)
+            is UserProfileContract.UiEvent.OnFriendButtonClick -> {
+                if (event.friendStatus == FriendStatus.FRIENDS) {
+                    sendEffect {
+                        UserProfileContract.UiEffect.OpenDeleteFriendModal
+                    }
+                } else {
+                    updateFriendStatus(event.friendStatus)
+                }
+            }
+
+            UserProfileContract.UiEvent.DeleteFriend -> {
+                updateFriendStatus(FriendStatus.FRIENDS)
             }
         }
     }
@@ -85,16 +99,59 @@ class UserProfileViewModel @Inject constructor(
     }
 
     // 신고
-    private fun report(userId: Long) {
+    private fun report() {
         sendEffect {
-            UserProfileContract.UiEffect.NavigateToReport(userId)
+            UserProfileContract.UiEffect.NavigateToReport(currentUserId)
         }
     }
 
     // 친구 상태에 따라 기능 수행
-    private fun processFriendshipStatus(
-        friendshipStatus: FriendshipStatus,
+    private fun updateFriendStatus(
+        friendStatus: FriendStatus,
     ) {
+        // 1) 친구 상태 즉시 업데이트 (UI 우선 업데이트)
+        updateState {
+            this.copy(
+                userProfile = this.userProfile?.copy(friendStatus = friendStatus.toggle()),
+            )
+        }
+
+        // 2) 친구 상태 업데이트 요청
+        usecases.updateFriendStatus(
+            receiverId = currentUserId,
+            currentFriendStatus = friendStatus,
+        ).onEach { result ->
+            when (result) {
+                Result.Loading -> {}
+
+                is Result.Error -> {
+                    // 3) 실패 시 친구 상태 롤백
+                    updateState {
+                        this.copy(
+                            userProfile = this.userProfile?.copy(friendStatus = friendStatus),
+                        )
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                        )
+                    }
+                    if (result.data != friendStatus.toggle()) {
+                        // 4) 친구 상태 결과 값과 달라도 롤백
+                        updateState {
+                            this.copy(
+                                userProfile = this.userProfile?.copy(friendStatus = friendStatus),
+                            )
+                        }
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private suspend fun showSnackBar(message: UiText) {

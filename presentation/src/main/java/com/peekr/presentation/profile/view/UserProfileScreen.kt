@@ -32,7 +32,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.feature.keyword.KeywordNameType
 import com.peekr.core.presentation.feature.keyword.UserIdType
 import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
@@ -65,7 +65,7 @@ fun UserProfileScreen(
                         title = userProfile.displayId,
                         onReportClick = {
                             onUiEvent(
-                                UserProfileContract.UiEvent.OnReport(userProfile.userId),
+                                UserProfileContract.UiEvent.OnReport,
                             )
                         },
                         onBackPressed = onBackPressed,
@@ -80,13 +80,13 @@ fun UserProfileScreen(
                         name = userProfile.name,
                         friendsCount = userProfile.friendsCount,
                         introduce = userProfile.introduce,
-                        friendshipStatus = userProfile.friendshipStatus,
+                        friendStatus = userProfile.friendStatus,
                         onProfileImageClick = {},
                         onFriendsCountClick = {},
                         onFriendsButtonClick = { currentFriendshipStatus ->
                             onUiEvent(
-                                UserProfileContract.UiEvent.OnFriendshipButtonClick(
-                                    friendshipStatus = currentFriendshipStatus,
+                                UserProfileContract.UiEvent.OnFriendButtonClick(
+                                    friendStatus = currentFriendshipStatus,
                                 ),
                             )
                         },
@@ -145,7 +145,7 @@ private fun TopBar(
  * @param name 이름
  * @param friendsCount 친구 수
  * @param introduce 소개 글
- * @param friendshipStatus 친구 관계 상태
+ * @param friendStatus 친구 관계 상태
  * @param onProfileImageClick 프로필 사진 클릭 시
  * @param onFriendsCountClick 친구 수 클릭 시
  */
@@ -156,10 +156,10 @@ private fun Profile(
     name: String,
     friendsCount: Long,
     introduce: String,
-    friendshipStatus: FriendshipStatus,
+    friendStatus: FriendStatus,
     onProfileImageClick: () -> Unit,
     onFriendsCountClick: () -> Unit,
-    onFriendsButtonClick: (currentFriendshipStatus: FriendshipStatus) -> Unit,
+    onFriendsButtonClick: (currentFriendStatus: FriendStatus) -> Unit,
 ) {
     ProfileFrame(
         modifier = modifier,
@@ -170,40 +170,40 @@ private fun Profile(
         onProfileImageClick = onProfileImageClick,
         onFriendsCountClick = onFriendsCountClick,
         friendshipStatusButton = {
-            when (friendshipStatus) {
-                FriendshipStatus.NOTHING -> {
+            when (friendStatus) {
+                FriendStatus.NOTHING -> {
                     PeekrSolidButton(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_nothing),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Plus,
-                        onClick = { onFriendsButtonClick(friendshipStatus) },
+                        onClick = { onFriendsButtonClick(friendStatus) },
                     )
                 }
 
-                FriendshipStatus.FRIENDS -> {
+                FriendStatus.FRIENDS -> {
                     PeekrOutlinedButton(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_friends),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Check,
-                        onClick = { onFriendsButtonClick(friendshipStatus) },
+                        onClick = { onFriendsButtonClick(friendStatus) },
                     )
                 }
 
-                FriendshipStatus.REQUESTED -> {
+                FriendStatus.REQUESTED -> {
                     PeekrOutlinedButton(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_requested),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Cancel,
-                        onClick = { onFriendsButtonClick(friendshipStatus) },
+                        onClick = { onFriendsButtonClick(friendStatus) },
                     )
                 }
 
-                FriendshipStatus.RECEIVED -> {
+                FriendStatus.RECEIVED -> {
                     PeekrSolidButton(
                         text = stringResource(R.string.user_profile_screen_friendship_status_btn_received),
                         style = PeekrButtonStyle.Tiny,
                         icon = PeekrIcons.Default.Bold.Arrow2Right,
-                        onClick = { onFriendsButtonClick(friendshipStatus) },
+                        onClick = { onFriendsButtonClick(friendStatus) },
                     )
                 }
             }
@@ -334,13 +334,13 @@ private fun TopBarPreview() {
 private fun ProfilePreview() {
     PeekrAppTheme {
         Column {
-            FriendshipStatus.entries.forEach {
+            FriendStatus.entries.forEach {
                 Profile(
                     name = "Hong",
                     profileImageUrl = null,
                     introduce = "hello world!",
                     friendsCount = 28,
-                    friendshipStatus = it,
+                    friendStatus = it,
                     onProfileImageClick = {},
                     onFriendsCountClick = {},
                     onFriendsButtonClick = {},
@@ -368,7 +368,7 @@ private fun UserProfileScreenPreview() {
                 friendsCount = 86,
                 lastLoginAt = 1000L,
                 active = true,
-                friendshipStatus = FriendshipStatus.NOTHING,
+                friendStatus = FriendStatus.NOTHING,
                 keywords = UiUserKeyword.samples,
             ),
             onUiEvent = {},

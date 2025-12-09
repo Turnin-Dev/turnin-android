@@ -1,7 +1,6 @@
-package com.peekr.domain.profile.usecase
+package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.validation.ValidationResult
-import com.peekr.domain.profile.usecase.my.ValidateKeywordDescriptionUseCase
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test

@@ -4,11 +4,11 @@ import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.FriendApi
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
-import com.peekr.core.data.source.network.dto.friend.request.PatchFriendshipStatusRequest
+import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.model.FriendshipStatus
+import com.peekr.core.domain.friend.model.FriendRequestStatus
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -51,7 +51,7 @@ class FriendNetworkDataSourceImplTest {
         val success = response as NetworkResult.Success
         assertEquals(TestFriendResponse.requesterId, success.data.requesterId)
         assertEquals(TestFriendResponse.receiverId, success.data.receiverId)
-        assertEquals(TestFriendResponse.status, success.data.status)
+        assertEquals(TestFriendResponse.requestState, success.data.requestState)
     }
 
     @Test
@@ -164,7 +164,7 @@ class FriendNetworkDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.updateFriendshipStatus(TestPatchFriendshipStatusRequest)
+        val response = dataSource.updateFriendStatus(TestPatchFriendRequestStatusRequest)
 
         // then
         assertTrue(response is NetworkResult.Success)
@@ -176,10 +176,10 @@ class FriendNetworkDataSourceImplTest {
         val mockApi: FriendApi = mockk()
         val exception = Exception()
         dataSource = FriendNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.updateFriendshipStatus(any()) } throws exception
+        coEvery { mockApi.updateFriendStatus(any()) } throws exception
 
         // when
-        val response = dataSource.updateFriendshipStatus(TestPatchFriendshipStatusRequest)
+        val response = dataSource.updateFriendStatus(TestPatchFriendRequestStatusRequest)
 
         // then
         val error = response as NetworkResult.Error
@@ -196,7 +196,7 @@ class FriendNetworkDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.updateFriendshipStatus(TestPatchFriendshipStatusRequest)
+        val response = dataSource.updateFriendStatus(TestPatchFriendRequestStatusRequest)
 
         // then
         val error = response as NetworkResult.Error
@@ -210,7 +210,7 @@ class FriendNetworkDataSourceImplTest {
             id = 1L,
             requesterId = TEST_REQUESTER_ID,
             receiverId = TEST_RECEIVER_ID,
-            status = FriendshipStatus.NOTHING,
+            requestState = FriendRequestStatus.PENDING,
             respondedAt = 1000L,
             createdAt = 1000L,
             updatedAt = 1000L,
@@ -223,10 +223,10 @@ class FriendNetworkDataSourceImplTest {
             requesterId = TEST_REQUESTER_ID,
             receiverId = TEST_RECEIVER_ID,
         )
-        private val TestPatchFriendshipStatusRequest = PatchFriendshipStatusRequest(
+        private val TestPatchFriendRequestStatusRequest = PatchFriendStatusRequest(
             requesterId = TEST_REQUESTER_ID,
             receiverId = TEST_RECEIVER_ID,
-            status = FriendshipStatus.NOTHING,
+            requestStatus = FriendRequestStatus.PENDING,
         )
         private val TestInvalidResponse =
             """
