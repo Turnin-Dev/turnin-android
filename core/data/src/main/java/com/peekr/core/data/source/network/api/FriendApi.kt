@@ -3,15 +3,27 @@ package com.peekr.core.data.source.network.api
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
+import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
 /** Friend Network API */
 interface FriendApi {
+    /**
+     * 친구 목록 조회 (페이지네이션)
+     */
+    @GET(NetworkApiPath.Friend.ROUTE)
+    suspend fun getFriends(
+        @Query("userId") userId: Long,
+        @Query("page") page: Long,
+        @Query("size") size: Int,
+    ): Response<FriendsResponse>
+
     /**
      * 친구 추가
      *

@@ -6,6 +6,7 @@ import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
+import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.friend.model.FriendRequestStatus
@@ -31,6 +32,76 @@ class FriendNetworkDataSourceImplTest {
     @Before
     fun setUp() {
         dataSource = FriendNetworkDataSourceImpl(friendApi)
+    }
+
+    @Test
+    fun `친구 목록 조회 - 성공 테스트`() = runTest {
+        // given
+        val testFriendsResponseJson = testRule.encodeToJson(TestFriendsResponse)
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(testFriendsResponseJson)
+            },
+        )
+
+        // when
+        val response = dataSource.getFriends(1L, 1, 10)
+
+        // then
+        val success = response as NetworkResult.Success
+        assertEquals(TestFriendsResponse, success.data)
+    }
+
+    @Test
+    fun `친구 목록 조회 - 잘못된 응답 바디로 응답 시 알려진 에러를 반환한다`() = runTest {
+        // given
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(TestInvalidResponse)
+            },
+        )
+
+        // when
+        val response = dataSource.getFriends(1L, 1, 10)
+
+        // then
+        val error = response as NetworkResult.Error
+        assertEquals(NetworkErrorType.Exception.JsonData, error.error)
+    }
+
+    @Test
+    fun `친구 목록 조회 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
+        // given
+        val mockApi: FriendApi = mockk()
+        val exception = Exception()
+        dataSource = FriendNetworkDataSourceImpl(mockApi)
+        coEvery { mockApi.getFriends(any(), any(), any()) } throws exception
+
+        // when
+        val response = dataSource.getFriends(1L, 1, 10)
+
+        // then
+        val error = response as NetworkResult.Error
+        assertEquals(NetworkErrorType.Unexpected(exception), error.error)
+    }
+
+    @Test
+    fun `친구 목록 조회 - HTTP 상태코드 404 응답 시 NotFound 에러로 반환한다`() = runTest {
+        // given
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(404)
+            },
+        )
+
+        // when
+        val response = dataSource.getFriends(1L, 1, 10)
+
+        // then
+        val error = response as NetworkResult.Error
+        assertEquals(404, error.status)
     }
 
     @Test
@@ -234,5 +305,12 @@ class FriendNetworkDataSourceImplTest {
                 "what": "???"
             }
             """.trimIndent()
+        private val TestFriendsResponse = FriendsResponse(
+            pageNumber = 1,
+            pageSize = 1,
+            totalSize = 100,
+            hasNext = true,
+            friends = listOf(TestFriendResponse),
+        )
     }
 }
