@@ -38,6 +38,11 @@ dependencies {
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // Paging3
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+    testImplementation(libs.androidx.paging.common)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
