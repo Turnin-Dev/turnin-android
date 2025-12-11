@@ -20,19 +20,19 @@ private class ItemListResponse(
 ) : PagingDataHolder<Item>
 
 private fun interface ApiCallMock {
-    suspend fun call(page: Long, size: Int): NetworkResult<ItemListResponse>
+    suspend fun call(page: Long): NetworkResult<ItemListResponse>
 }
 
-private fun createItems(startId: Int, count: Int): List<Item> = (startId until startId + count).map { id ->
-    Item(id = id, name = "Item $id")
-}
+private fun createItems(startId: Int, count: Int): List<Item> =
+    (startId until startId + count).map { id ->
+        Item(id = id, name = "Item $id")
+    }
 
 class PeekrPagingSourceTest {
     private val mockApiCall: ApiCallMock = mockk()
 
     private fun createPagingSource(): PeekrPagingSource<Item, ItemListResponse> = PeekrPagingSource(
-        apiCall = { page, size -> mockApiCall.call(page, size) },
-        pageSize = PAGE_SIZE,
+        apiCall = { page -> mockApiCall.call(page) },
     )
 
     @Test
@@ -43,7 +43,7 @@ class PeekrPagingSourceTest {
 
         // 1(초기) 페이지 요청 시 성공 응답을 반환하도록 설정
         coEvery {
-            mockApiCall.call(PeekrPagingSource.START_PAGE_INDEX, PAGE_SIZE)
+            mockApiCall.call(PeekrPagingSource.START_PAGE_INDEX)
         } returns NetworkResult.Success(response)
 
         // when
@@ -75,7 +75,7 @@ class PeekrPagingSourceTest {
 
         // 3 페이지 요청 시 성공 응답을 반환하도록 설정
         coEvery {
-            mockApiCall.call(currentPage, PAGE_SIZE)
+            mockApiCall.call(currentPage)
         } returns NetworkResult.Success(response)
 
         // when
@@ -105,7 +105,7 @@ class PeekrPagingSourceTest {
 
         // 5 페이지 요청 시 빈 리스트 응답을 반환하도록 설정
         coEvery {
-            mockApiCall.call(currentPage, PAGE_SIZE)
+            mockApiCall.call(currentPage)
         } returns NetworkResult.Success(response)
 
         // when
@@ -135,7 +135,7 @@ class PeekrPagingSourceTest {
         val errorMessage = "Internal Server Error"
 
         // NetworkResult.Error 반환하도록 설정
-        coEvery { mockApiCall.call(any(), any()) } returns
+        coEvery { mockApiCall.call(any()) } returns
             NetworkResult.Error(
                 error = networkError,
                 code = errorCode,
@@ -169,7 +169,7 @@ class PeekrPagingSourceTest {
         val networkException = IOException("Network connection failed")
 
         // apiCall 자체가 예외를 던지도록 설정
-        coEvery { mockApiCall.call(any(), any()) } throws networkException
+        coEvery { mockApiCall.call(any()) } throws networkException
 
         // when
         val pagingSource = createPagingSource()

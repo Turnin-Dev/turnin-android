@@ -310,7 +310,7 @@ class FriendNetworkDataSourceImplTest {
             pageSize = 1,
             totalSize = 100,
             hasNext = true,
-            friends = listOf(TestFriendResponse),
+            list = listOf(TestFriendResponse),
         )
     }
 }

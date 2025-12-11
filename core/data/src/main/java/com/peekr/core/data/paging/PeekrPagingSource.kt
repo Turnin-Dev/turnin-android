@@ -9,14 +9,12 @@ import com.peekr.core.data.source.network.util.NetworkResult
  *
  * @param T 응답으로 받으려는 데이터 모델
  * @param R T를 의존하고 있는 [PagingDataHolder]를 구현하는 데이터 모델
- * @param apiCall 페이지네이션 API 호출 람다
- * @param pageSize 페이지 크기
+ * @param apiCall 페이지네이션 API 호출 람다 (page: 페이지 번호)
  *
  * @throws PagingApiCallException 페이징 도중 API 호출에서 에러가 발생하는 경우
  */
 class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
-    private val apiCall: suspend (page: Long, size: Int) -> NetworkResult<R>,
-    private val pageSize: Int,
+    private val apiCall: suspend (page: Long) -> NetworkResult<R>,
 ) : PagingSource<Long, T>() {
     companion object {
         const val START_PAGE_INDEX = 1L
@@ -36,7 +34,7 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
             val currentPage = params.key ?: START_PAGE_INDEX
 
             // API 호출
-            val result = apiCall(currentPage, pageSize)
+            val result = apiCall(currentPage)
 
             return when (result) {
                 is NetworkResult.Error -> {
