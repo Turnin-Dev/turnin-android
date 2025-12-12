@@ -66,7 +66,7 @@ class PeekrPagingSourceTest {
         )
 
         // then
-        assertEquals(result, expected)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -101,7 +101,7 @@ class PeekrPagingSourceTest {
         )
 
         // then
-        assertEquals(result, expected)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -131,7 +131,7 @@ class PeekrPagingSourceTest {
         )
 
         // then
-        assertEquals(result, expected)
+        assertEquals(expected, result)
     }
 
     @Test

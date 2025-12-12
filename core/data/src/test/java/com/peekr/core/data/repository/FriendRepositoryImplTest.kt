@@ -87,6 +87,9 @@ class FriendRepositoryImplTest {
         unmockkStatic(Log::class)
     }
 
+    /**
+     * 해당 테스트는 prefetchDistance가 pageSize보다 작다는 가정 하에 진행된다.
+     */
     @Test
     fun `친구 목록 조회 - 초기 호출 성공 시 도메인 모델로 변환된 데이터를 반환한다`() = runTest {
         // given
@@ -96,13 +99,27 @@ class FriendRepositoryImplTest {
         // 첫 번째 페이지 설정 (page=1, size=20)
         coEvery {
             dataSource.getFriends(1L, 1, pageSize)
-        } returns NetworkResult.Success(createFriendsResponse(1, pageSize))
+        } returns NetworkResult.Success(
+            createFriendsResponse(
+                pageNumber = 1L,
+                startId = 1L,
+                count = pageSize,
+                hasNext = true,
+            ),
+        )
 
         // 두 번째 페이지 설정 (page=2, size=20)
         // Paging Source는 initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
         coEvery {
             dataSource.getFriends(1L, 2, pageSize)
-        } returns NetworkResult.Success(createFriendsResponse(pageSize + 1L, pageSize))
+        } returns NetworkResult.Success(
+            createFriendsResponse(
+                pageNumber = 2L,
+                startId = (pageSize + 1).toLong(),
+                count = pageSize,
+                hasNext = false,
+            ),
+        )
 
         // when
         val pagingData = repository.getFriends(UserId(1L)).asSnapshot()
@@ -343,11 +360,16 @@ class FriendRepositoryImplTest {
         )
     }
 
-    private fun createFriendsResponse(startId: Long, count: Int): FriendsResponse = FriendsResponse(
-        pageNumber = 1L,
+    private fun createFriendsResponse(
+        pageNumber: Long,
+        startId: Long,
+        count: Int,
+        hasNext: Boolean,
+    ): FriendsResponse = FriendsResponse(
+        pageNumber = pageNumber,
         pageSize = count,
         totalSize = 100L,
-        hasNext = true, // 페이지 크기만큼 데이터가 있으면 next = true 가정
+        hasNext = hasNext,
         list = createFriendResponseList(startId, count),
     )
 
