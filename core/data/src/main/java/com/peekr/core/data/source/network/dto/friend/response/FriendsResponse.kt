@@ -21,8 +21,8 @@ data class FriendsResponse(
     val totalSize: Long,
     override val hasNext: Boolean,
     @Json(name = "friends")
-    override val list: List<FriendResponse>,
-) : PagingDataHolder<FriendResponse>
+    override val list: List<FriendInfoResponse>,
+) : PagingDataHolder<FriendInfoResponse>
 
 fun FriendsResponse.toDomainModel(): Friends =
     Friends(

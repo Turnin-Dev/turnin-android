@@ -5,6 +5,7 @@ import com.peekr.core.data.source.network.api.FriendApi
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
+import com.peekr.core.data.source.network.dto.friend.response.FriendInfoResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
@@ -305,12 +306,23 @@ class FriendNetworkDataSourceImplTest {
                 "what": "???"
             }
             """.trimIndent()
+
+        private val TestFriendInfoResponse = FriendInfoResponse(
+            id = 1L,
+            userId = TEST_RECEIVER_ID,
+            name = "name",
+            profileImageUrl = null,
+            respondedAt = 1000,
+            createdAt = 1000,
+            updatedAt = 1000,
+        )
+
         private val TestFriendsResponse = FriendsResponse(
             pageNumber = 1,
             pageSize = 1,
             totalSize = 100,
             hasNext = true,
-            list = listOf(TestFriendResponse),
+            list = listOf(TestFriendInfoResponse),
         )
     }
 }

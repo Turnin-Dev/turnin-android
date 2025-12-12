@@ -9,7 +9,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.paging.PeekrPagingSource
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.toDataModel
-import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
+import com.peekr.core.data.source.network.dto.friend.response.FriendInfoResponse
 import com.peekr.core.data.source.network.dto.friend.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -19,6 +19,7 @@ import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.Friend
+import com.peekr.core.domain.friend.model.FriendInfo
 import com.peekr.core.domain.friend.model.FriendPagingTokens
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.friend.repository.FriendRepository
@@ -35,7 +36,7 @@ class FriendRepositoryImpl @Inject constructor(
 ) : FriendRepository {
     private val tag = this::class.java.simpleName
 
-    override fun getFriends(userId: UserId): Flow<PagingData<Friend>> {
+    override fun getFriends(userId: UserId): Flow<PagingData<FriendInfo>> {
         val pageSize = FriendPagingTokens.PAGE_SIZE
         val prefetchDistance = FriendPagingTokens.PREFETCH_DISTANCE
 
@@ -54,7 +55,7 @@ class FriendRepositoryImpl @Inject constructor(
             },
         )
             .flow
-            .map { pagingData -> pagingData.map(FriendResponse::toDomainModel) }
+            .map { pagingData -> pagingData.map(FriendInfoResponse::toDomainModel) }
             .catch { e ->
                 AppLogger.d(tag, e, "Unexpected friend pagination error")
                 emit(PagingData.empty())
