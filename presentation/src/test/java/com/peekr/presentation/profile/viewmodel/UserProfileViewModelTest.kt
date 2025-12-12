@@ -17,13 +17,14 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.UserProfileContract
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class UserProfileViewModelTest : MVIBaseViewModelTest<
     UserProfileContract.UiState,
     UserProfileContract.UiEvent,
@@ -76,9 +77,10 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         every {
             usecases.getUserProfile(any())
         } returns flowOf(Result.Error(expectedError))
+        viewModel = UserProfileViewModel(usecases, savedStateHandle)
 
         val snackbarJob = launch {
-            SnackbarController.events.first()
+            SnackbarController.events.collect {}
         }
 
         // when, then

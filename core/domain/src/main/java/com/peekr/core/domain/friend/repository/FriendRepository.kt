@@ -1,15 +1,24 @@
 package com.peekr.core.domain.friend.repository
 
+import androidx.paging.PagingData
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.Friend
 import com.peekr.core.domain.friend.model.PatchFriendStatus
+import com.peekr.core.domain.model.UserId
 import kotlinx.coroutines.flow.Flow
 
 /** Friend 리포지토리 */
 interface FriendRepository {
+    /**
+     * 친구 목록 조회 (페이지네이션)
+     *
+     * @param userId 조회할 사용자 ID
+     */
+    fun getFriends(userId: UserId): Flow<PagingData<Friend>>
+
     /**
      * 친구 추가
      *

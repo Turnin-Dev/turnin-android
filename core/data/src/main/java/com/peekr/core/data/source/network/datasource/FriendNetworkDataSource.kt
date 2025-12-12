@@ -5,9 +5,25 @@ import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
+import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 
 interface FriendNetworkDataSource {
+    /**
+     * 친구 목록 조회 (페이지네이션)
+     *
+     * @param userId 조회할 사용자 ID
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     *
+     * @return [FriendsResponse]
+     */
+    suspend fun getFriends(
+        userId: Long,
+        page: Long,
+        size: Int,
+    ): NetworkResult<FriendsResponse>
+
     /**
      * 친구 추가
      *
