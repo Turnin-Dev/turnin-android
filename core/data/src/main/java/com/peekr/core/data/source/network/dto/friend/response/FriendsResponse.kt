@@ -19,7 +19,7 @@ data class FriendsResponse(
     val pageNumber: Long,
     val pageSize: Int,
     val totalSize: Long,
-    val hasNext: Boolean,
+    override val hasNext: Boolean,
     @Json(name = "friends")
     override val list: List<FriendResponse>,
 ) : PagingDataHolder<FriendResponse>

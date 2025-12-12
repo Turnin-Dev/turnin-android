@@ -56,8 +56,8 @@ class FriendRepositoryImpl @Inject constructor(
             .flow
             .map { pagingData -> pagingData.map(FriendResponse::toDomainModel) }
             .catch { e ->
-                AppLogger.d(tag, e, "Friend pagination error")
-                emit(PagingData.empty<Friend>())
+                AppLogger.d(tag, e, "Unexpected friend pagination error")
+                emit(PagingData.empty())
             }
     }
 

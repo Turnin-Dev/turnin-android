@@ -16,6 +16,7 @@ import org.junit.Test
 private data class Item(val id: Int, val name: String) : Any()
 
 private class ItemListResponse(
+    override val hasNext: Boolean,
     override val list: List<Item>,
 ) : PagingDataHolder<Item>
 
@@ -39,7 +40,10 @@ class PeekrPagingSourceTest {
     fun `최초 로드 (Initial Load) 성공 테스트`() = runTest {
         // given
         val items = createItems(1, PAGE_SIZE)
-        val response = ItemListResponse(list = items)
+        val response = ItemListResponse(
+            list = items,
+            hasNext = true,
+        )
 
         // 1(초기) 페이지 요청 시 성공 응답을 반환하도록 설정
         coEvery {
@@ -71,7 +75,10 @@ class PeekrPagingSourceTest {
         val currentPage = 3L
         val startIndex = (currentPage - 1) * PAGE_SIZE + 1
         val items = createItems(startIndex.toInt(), PAGE_SIZE)
-        val response = ItemListResponse(list = items)
+        val response = ItemListResponse(
+            list = items,
+            hasNext = true,
+        )
 
         // 3 페이지 요청 시 성공 응답을 반환하도록 설정
         coEvery {
@@ -101,7 +108,7 @@ class PeekrPagingSourceTest {
     fun `마지막 페이지 로드 성공 (데이터 없음) 테스트`() = runTest {
         // given
         val currentPage = 5L
-        val response = ItemListResponse(list = emptyList())
+        val response = ItemListResponse(list = emptyList(), hasNext = false)
 
         // 5 페이지 요청 시 빈 리스트 응답을 반환하도록 설정
         coEvery {
@@ -195,6 +202,11 @@ class PeekrPagingSourceTest {
             pages = listOf(
                 LoadResult.Page(
                     data = createItems(1, 10),
+                    prevKey = null,
+                    nextKey = 2L,
+                ),
+                LoadResult.Page(
+                    data = createItems(11, 10),
                     prevKey = 1L,
                     nextKey = 3L,
                 ),

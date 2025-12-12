@@ -3,6 +3,7 @@ package com.peekr.core.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.peekr.core.data.source.network.util.NetworkResult
+import kotlinx.coroutines.CancellationException
 
 /**
  * 오프셋 기반으로 동작하는 공통 PagingSource.
@@ -50,11 +51,10 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
 
                 is NetworkResult.Success -> {
                     val pageData = result.data
-                    val nextKey = if (pageData.list.isEmpty()) {
-                        // 현재 페이지의 데이터가 비어있다면 다음 페이지는 없다고 판단
-                        null
-                    } else {
+                    val nextKey = if (pageData.hasNext) {
                         currentPage + 1
+                    } else {
+                        null
                     }
                     val prevKey = if (currentPage == START_PAGE_INDEX) null else currentPage - 1
 
@@ -66,6 +66,7 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
                 }
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             return LoadResult.Error(e)
         }
     }

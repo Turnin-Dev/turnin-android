@@ -29,6 +29,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.unmockkObject
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -82,7 +83,7 @@ class FriendRepositoryImplTest {
     @After
     fun tearDown() {
         clearAllMocks()
-        unmockkStatic(AppLogger::class)
+        unmockkObject(AppLogger::class)
         unmockkStatic(Log::class)
     }
 
@@ -350,15 +351,16 @@ class FriendRepositoryImplTest {
         list = createFriendResponseList(startId, count),
     )
 
-    private fun createFriendResponseList(startId: Long, count: Int): List<FriendResponse> = (startId until startId + count).map { id ->
-        FriendResponse(
-            id = id,
-            requesterId = 1L,
-            receiverId = 2L,
-            requestState = FriendRequestStatus.PENDING,
-            respondedAt = 1000L,
-            createdAt = 1000L,
-            updatedAt = 1000L,
-        )
-    }
+    private fun createFriendResponseList(startId: Long, count: Int): List<FriendResponse> =
+        (startId until startId + count).map { id ->
+            FriendResponse(
+                id = id,
+                requesterId = 1L,
+                receiverId = 2L,
+                requestState = FriendRequestStatus.PENDING,
+                respondedAt = 1000L,
+                createdAt = 1000L,
+                updatedAt = 1000L,
+            )
+        }
 }
