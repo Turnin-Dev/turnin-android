@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.paging.PeekrPagingSource
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.toDataModel
@@ -32,12 +33,18 @@ class FriendRepositoryImpl @Inject constructor(
     private val friendNetworkDataSource: FriendNetworkDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : FriendRepository {
+    private val tag = this::class.java.simpleName
+
     override fun getFriends(userId: UserId): Flow<PagingData<Friend>> {
         val pageSize = FriendPagingTokens.PAGE_SIZE
         val prefetchDistance = FriendPagingTokens.PREFETCH_DISTANCE
 
         return Pager(
-            config = PagingConfig(pageSize = pageSize, prefetchDistance = prefetchDistance),
+            config = PagingConfig(
+                pageSize = pageSize,
+                prefetchDistance = prefetchDistance,
+                initialLoadSize = pageSize + prefetchDistance,
+            ),
             pagingSourceFactory = {
                 PeekrPagingSource(
                     apiCall = { page ->
@@ -48,7 +55,10 @@ class FriendRepositoryImpl @Inject constructor(
         )
             .flow
             .map { pagingData -> pagingData.map(FriendResponse::toDomainModel) }
-            .catch { PagingData.empty<Friend>() }
+            .catch { e ->
+                AppLogger.d(tag, e, "Friend pagination error")
+                emit(PagingData.empty<Friend>())
+            }
     }
 
     override fun addFriend(addFriend: AddFriend): Flow<Result<Friend, CommonErrorType>> =

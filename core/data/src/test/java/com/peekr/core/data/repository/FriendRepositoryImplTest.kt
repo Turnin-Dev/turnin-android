@@ -1,10 +1,15 @@
 package com.peekr.core.data.repository
 
+import android.util.Log
+import androidx.paging.testing.asSnapshot
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
+import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
+import com.peekr.core.data.source.network.dto.friend.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -12,20 +17,33 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
+import com.peekr.core.domain.friend.model.FriendPagingTokens
 import com.peekr.core.domain.friend.model.FriendRequestStatus
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.model.UserId
+import io.mockk.Runs
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * Friend 리포지토리 + 페이징 테스트가 포함
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class FriendRepositoryImplTest {
     private val dataSource: FriendNetworkDataSource = mockk()
@@ -43,6 +61,56 @@ class FriendRepositoryImplTest {
         coEvery {
             dataSource.updateFriendStatus(TestPatchFriendRequestStatusRequest)
         } returns NetworkResult.Success(Unit)
+
+        mockkObject(AppLogger)
+        every { AppLogger.d(any(), any()) } just Runs
+        every { AppLogger.d(any(), any(), any()) } just Runs
+        // Paging 라이브러리 내부에서 발생하는 Log 호출 방지
+        mockkStatic(Log::class)
+        every { Log.v(any(), any()) } returns 0
+        every { Log.v(any(), any(), any()) } returns 0
+        every { Log.d(any(), any()) } returns 0
+        every { Log.d(any(), any(), any()) } returns 0
+        every { Log.i(any(), any()) } returns 0
+        every { Log.w(any(), any<String>()) } returns 0
+        every { Log.e(any(), any()) } returns 0
+        every { Log.isLoggable(any<String>(), any()) } returns true
+        every { Log.e(any(), any(), any()) } returns 0
+        every { Log.w(any(), any<String>(), any()) } returns 0
+    }
+
+    @After
+    fun tearDown() {
+        clearAllMocks()
+        unmockkStatic(AppLogger::class)
+        unmockkStatic(Log::class)
+    }
+
+    @Test
+    fun `친구 목록 조회 - 초기 호출 성공 시 도메인 모델로 변환된 데이터를 반환한다`() = runTest {
+        // given
+        val pageSize = FriendPagingTokens.PAGE_SIZE
+        val expectedFirstPage = createFriendResponseList(1, pageSize).map { it.toDomainModel() }
+
+        // 첫 번째 페이지 설정 (page=1, size=20)
+        coEvery {
+            dataSource.getFriends(1L, 1, pageSize)
+        } returns NetworkResult.Success(createFriendsResponse(1, pageSize))
+
+        // 두 번째 페이지 설정 (page=2, size=20)
+        // Paging Source는 initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
+        coEvery {
+            dataSource.getFriends(1L, 2, pageSize)
+        } returns NetworkResult.Success(createFriendsResponse(pageSize + 1L, pageSize))
+
+        // when
+        val pagingData = repository.getFriends(UserId(1L)).asSnapshot()
+
+        // then
+        assertEquals(pageSize * 2, pagingData.size)
+        assertEquals(expectedFirstPage.first().id, pagingData.first().id)
+        val expectedLastId = pageSize * 2
+        assertEquals(expectedLastId.toLong(), pagingData.last().id.value)
     }
 
     @Test
@@ -271,6 +339,26 @@ class FriendRepositoryImplTest {
             requesterId = TestRequesterId,
             receiverId = TestReceiverId,
             requestStatus = FriendRequestStatus.PENDING,
+        )
+    }
+
+    private fun createFriendsResponse(startId: Long, count: Int): FriendsResponse = FriendsResponse(
+        pageNumber = 1L,
+        pageSize = count,
+        totalSize = 100L,
+        hasNext = true, // 페이지 크기만큼 데이터가 있으면 next = true 가정
+        list = createFriendResponseList(startId, count),
+    )
+
+    private fun createFriendResponseList(startId: Long, count: Int): List<FriendResponse> = (startId until startId + count).map { id ->
+        FriendResponse(
+            id = id,
+            requesterId = 1L,
+            receiverId = 2L,
+            requestState = FriendRequestStatus.PENDING,
+            respondedAt = 1000L,
+            createdAt = 1000L,
+            updatedAt = 1000L,
         )
     }
 }
