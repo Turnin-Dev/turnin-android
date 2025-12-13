@@ -310,6 +310,7 @@ class FriendNetworkDataSourceImplTest {
         private val TestFriendInfoResponse = FriendInfoResponse(
             id = 1L,
             userId = TEST_RECEIVER_ID,
+            displayId = "did",
             name = "name",
             profileImageUrl = null,
             respondedAt = 1000,

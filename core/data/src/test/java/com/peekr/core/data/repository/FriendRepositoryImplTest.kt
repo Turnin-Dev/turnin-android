@@ -378,6 +378,7 @@ class FriendRepositoryImplTest {
             FriendInfoResponse(
                 id = id,
                 userId = id,
+                displayId = "did",
                 name = "name",
                 profileImageUrl = null,
                 respondedAt = 1000,

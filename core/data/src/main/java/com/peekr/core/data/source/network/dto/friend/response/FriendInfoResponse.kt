@@ -2,6 +2,7 @@ package com.peekr.core.data.source.network.dto.friend.response
 
 import com.peekr.core.domain.friend.model.FriendId
 import com.peekr.core.domain.friend.model.FriendInfo
+import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.squareup.moshi.JsonClass
@@ -11,6 +12,7 @@ import com.squareup.moshi.JsonClass
  *
  * @property id 친구 ID
  * @property userId 친구의 사용자 ID
+ * @property displayId 친구의 사용자 표시 ID
  * @property name 친구의 사용자 이름
  * @property profileImageUrl 친구의 프로필 사진 url
  * @property respondedAt 요청 응답 일자
@@ -21,6 +23,7 @@ import com.squareup.moshi.JsonClass
 data class FriendInfoResponse(
     val id: Long,
     val userId: Long,
+    val displayId: String,
     val name: String,
     val profileImageUrl: String?,
     val respondedAt: Long,
@@ -32,6 +35,7 @@ fun FriendInfoResponse.toDomainModel(): FriendInfo =
     FriendInfo(
         id = FriendId(id),
         userId = UserId(userId),
+        displayId = DisplayId(displayId),
         name = Name(name),
         profileImageUrl = profileImageUrl,
         respondedAt = respondedAt,
