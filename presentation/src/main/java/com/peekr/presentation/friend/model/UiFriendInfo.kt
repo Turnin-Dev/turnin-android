@@ -1,5 +1,7 @@
 package com.peekr.presentation.friend.model
 
+import com.peekr.core.domain.friend.model.FriendInfo
+
 /**
  * UI용 친구 정보
  *
@@ -22,3 +24,15 @@ data class UiFriendInfo(
     val createdAt: Long,
     val updatedAt: Long,
 )
+
+fun FriendInfo.toUiModel(): UiFriendInfo =
+    UiFriendInfo(
+        id = id.value,
+        userId = userId.value,
+        displayId = displayId.value,
+        name = name.value,
+        profileImageUrl = profileImageUrl,
+        respondedAt = respondedAt,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

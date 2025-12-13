@@ -2,6 +2,9 @@ package com.peekr.core.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import kotlinx.coroutines.CancellationException
 
@@ -17,6 +20,8 @@ import kotlinx.coroutines.CancellationException
 class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
     private val apiCall: suspend (page: Long) -> NetworkResult<R>,
 ) : PagingSource<Long, T>() {
+    private val tag = this::class.java.simpleName
+
     companion object {
         const val START_PAGE_INDEX = 1L
     }
@@ -39,12 +44,11 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
 
             return when (result) {
                 is NetworkResult.Error -> {
+                    AppLogger.d(tag, "Paging source load failed: ${result.error.toCommonErrorType()}")
                     LoadResult.Error(
                         PagingApiCallException(
-                            error = result.error,
-                            code = result.code,
-                            status = result.status,
-                            message = result.message,
+                            error = result.error.toCommonErrorType(),
+                            message = result.error.toErrorMessage(),
                         ),
                     )
                 }
@@ -58,6 +62,7 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
                     }
                     val prevKey = if (currentPage == START_PAGE_INDEX) null else currentPage - 1
 
+                    AppLogger.d(tag, "Paging source load successful.")
                     LoadResult.Page(
                         data = pageData.list,
                         prevKey = prevKey,
@@ -67,7 +72,19 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
             }
         } catch (e: Exception) {
             if (e is CancellationException) throw e
+            AppLogger.d(tag, e, "Paging source exception during load.")
             return LoadResult.Error(e)
         }
     }
+}
+
+private fun NetworkErrorType.toErrorMessage(): String = when (this) {
+    NetworkErrorType.Exception.IO -> "네트워크 연결을 확인해주세요."
+    NetworkErrorType.Exception.TimeOut -> "네트워크 연결 시간이 초과되었어요."
+    NetworkErrorType.Exception.JsonData -> "서버 통신 과정에서 오류가 발생했어요."
+    NetworkErrorType.Exception.JsonEncoding -> "서버 통신 과정에서 오류가 발생했어요."
+    NetworkErrorType.Exception.MalformedJson -> "서버 통신 과정에서 오류가 발생했어요."
+    is NetworkErrorType.Network.HttpError -> "서버 통신 과정에서 오류가 발생했어요."
+    NetworkErrorType.Network.ConnectionFailed -> "네트워크 연결을 확인해주세요."
+    else -> "잠시 오류가 발생했어요. 다시 시도 해주세요."
 }

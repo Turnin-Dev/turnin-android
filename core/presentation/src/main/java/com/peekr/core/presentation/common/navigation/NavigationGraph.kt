@@ -100,4 +100,9 @@ sealed interface Screens {
         val userId: Long,
         val keyword: String,
     ) : Screens
+
+    @Serializable
+    data class FriendsList(
+        val userId: Long,
+    ) : Screens
 }

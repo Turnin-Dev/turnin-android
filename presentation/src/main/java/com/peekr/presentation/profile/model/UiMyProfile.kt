@@ -7,6 +7,7 @@ import com.peekr.domain.profile.model.MyProfile
 /**
  * UI용 나의 프로필
  *
+ * @property userId 사용자 ID
  * @property displayId 사용자 표시 ID
  * @property name 이름
  * @property profileImageUrl 프로필 사진 url
@@ -17,6 +18,7 @@ import com.peekr.domain.profile.model.MyProfile
  * @property active 사용자 활성화 여부
  */
 data class UiMyProfile(
+    val userId: Long,
     val displayId: String,
     val name: String,
     val profileImageUrl: String?,
@@ -29,6 +31,7 @@ data class UiMyProfile(
 
 fun MyProfile.toUiModel(): UiMyProfile =
     UiMyProfile(
+        userId = userId.value,
         displayId = displayId.value,
         name = name.value,
         profileImageUrl = profileImageUrl,

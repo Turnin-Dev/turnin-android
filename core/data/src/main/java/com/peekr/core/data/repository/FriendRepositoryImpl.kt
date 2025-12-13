@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.peekr.core.common.coroutine.IO
-import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.paging.PeekrPagingSource
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.toDataModel
@@ -27,15 +26,12 @@ import com.peekr.core.domain.model.UserId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class FriendRepositoryImpl @Inject constructor(
     private val friendNetworkDataSource: FriendNetworkDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : FriendRepository {
-    private val tag = this::class.java.simpleName
-
     override fun getFriends(userId: UserId): Flow<PagingData<FriendInfo>> {
         val pageSize = FriendPagingTokens.PAGE_SIZE
         val prefetchDistance = FriendPagingTokens.PREFETCH_DISTANCE
@@ -55,10 +51,8 @@ class FriendRepositoryImpl @Inject constructor(
             },
         )
             .flow
-            .map { pagingData -> pagingData.map(FriendInfoResponse::toDomainModel) }
-            .catch { e ->
-                AppLogger.d(tag, e, "Unexpected friend pagination error")
-                emit(PagingData.empty())
+            .map { pagingData ->
+                pagingData.map(FriendInfoResponse::toDomainModel)
             }
     }
 

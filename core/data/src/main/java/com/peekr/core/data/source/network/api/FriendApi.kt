@@ -17,7 +17,7 @@ interface FriendApi {
     /**
      * 친구 목록 조회 (페이지네이션)
      */
-    @GET(NetworkApiPath.Friend.ROUTE)
+    @GET(NetworkApiPath.Friend.LIST)
     suspend fun getFriends(
         @Query("userId") userId: Long,
         @Query("page") page: Long,

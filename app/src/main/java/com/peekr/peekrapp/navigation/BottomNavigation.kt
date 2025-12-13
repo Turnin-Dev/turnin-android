@@ -12,6 +12,7 @@ import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
+import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.home.main.HomeMainScreen
 import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
@@ -58,6 +59,10 @@ fun BottomNavigation(
             )
 
             reportNavigation(
+                navController = bottomNavController,
+            )
+
+            friendsListScreen(
                 navController = bottomNavController,
             )
         }

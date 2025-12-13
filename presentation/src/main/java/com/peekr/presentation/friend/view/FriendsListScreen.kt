@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -124,13 +126,57 @@ private fun Contents(
             }
         }
 
-        item {
-            if (
-                friends.loadState.append is LoadState.Loading ||
-                friends.loadState.refresh is LoadState.Loading
-            ) {
-                FriendCardSkeleton(Modifier.fillMaxWidth())
+        // 상태 별 Footer UI
+        when (val appendState = friends.loadState.append) {
+            is LoadState.Loading -> {
+                item {
+                    FriendCardSkeleton(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = ScreenTokens.HorizontalPadding),
+                    )
+                }
             }
+
+            is LoadState.Error -> {
+                item {
+                    ErrorFooterItem(
+                        errorMessage = appendState.error.message ?: "알 수 없는 에러",
+                        onRetryClick = { friends.retry() }, // 여기서 retry 호출
+                    )
+                }
+            }
+
+            is LoadState.NotLoading -> {
+                // 더 이상 로드할 데이터가 없거나 정상 상태일 때
+                if (friends.loadState.append.endOfPaginationReached && friends.itemCount > 0) {
+                    item {
+                        // 필요하다면 "마지막 페이지입니다" 등의 문구 추가
+                        ErrorFooterItem(
+                            errorMessage = "마지막 페이지입니다.",
+                            onRetryClick = { friends.retry() }, // 여기서 retry 호출
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ErrorFooterItem(
+    errorMessage: String,
+    onRetryClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = errorMessage, color = Color.Red)
+        Button(onClick = onRetryClick) {
+            Text("재시도")
         }
     }
 }
