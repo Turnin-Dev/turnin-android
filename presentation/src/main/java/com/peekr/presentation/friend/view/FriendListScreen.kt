@@ -147,8 +147,7 @@ private fun FriendList(
                 item {
                     FooterError(
                         modifier = Modifier.fillMaxWidth(),
-                        errorMessage = refreshState.error.message
-                            ?: stringResource(R.string.friend_list_error_message_default),
+                        errorMessage = stringResource(R.string.friend_list_error_message_default),
                         onRetry = { friends.retry() },
                     )
                 }
@@ -193,8 +192,7 @@ private fun FriendList(
                         item {
                             FooterError(
                                 modifier = Modifier.fillMaxWidth(),
-                                errorMessage = appendState.error.message
-                                    ?: stringResource(R.string.friend_list_error_message_default),
+                                errorMessage = stringResource(R.string.friend_list_error_message_default),
                                 onRetry = { friends.retry() },
                             )
                         }
