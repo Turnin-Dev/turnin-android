@@ -6,16 +6,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,10 +37,11 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.friend.model.UiFriendInfo
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun FriendsListScreen(
@@ -53,7 +60,7 @@ fun FriendsListScreen(
             )
         },
         contents = {
-            Contents(
+            FriendsList(
                 modifier = Modifier.fillMaxSize(),
                 friends = friends,
                 onFriendClick = {},
@@ -62,6 +69,13 @@ fun FriendsListScreen(
     )
 }
 
+/**
+ * 친구 목록 화면 프레임
+ *
+ * @param modifier [Modifier]
+ * @param topBar 탑바
+ * @param contents 메인 컨텐츠 (친구 목록)
+ */
 @Composable
 private fun FriendsListFrame(
     modifier: Modifier = Modifier,
@@ -93,91 +107,124 @@ private fun TopBar(
 }
 
 /**
- * 메인 컨텐츠
+ * 친구 목록
  *
  * @param modifier [Modifier]
  * @param friends 친구 목록
+ * @param onFriendClick 친구 클릭 시 콜백
  */
 @Composable
-private fun Contents(
+private fun FriendsList(
     modifier: Modifier = Modifier,
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(bottom = 16.dp),
-    ) {
-        items(
-            count = friends.itemCount,
-            key = friends.itemKey { it.id },
-        ) { idx ->
-            val friend = friends[idx]
-            friend?.let {
-                FriendCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickableSingle(onClick = { onFriendClick(friend) })
-                        .padding(horizontal = ScreenTokens.HorizontalPadding),
-                    profileImageUrl = friend.profileImageUrl,
-                    name = friend.name,
-                    displayId = friend.displayId,
-                )
-            }
+    val pullToRefreshState = rememberPullToRefreshState()
+    var isRefreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(friends.loadState.refresh) {
+        isRefreshing = when (friends.loadState.refresh) {
+            LoadState.Loading -> true
+            else -> false
         }
+    }
 
-        // 상태 별 Footer UI
-        when (val appendState = friends.loadState.append) {
-            is LoadState.Loading -> {
-                item {
-                    FriendCardSkeleton(
-                        Modifier
+    // 당겨서 새로고침 영역
+    PullToRefreshBox(
+        modifier = modifier,
+        state = pullToRefreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = { friends.refresh() },
+        indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
+    ) {
+        // 친구 목록 + Footer
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 16.dp),
+        ) {
+            // 친구 목록
+            items(
+                count = friends.itemCount,
+                key = friends.itemKey { it.id },
+            ) { idx ->
+                val friend = friends[idx]
+                friend?.let {
+                    FriendCard(
+                        modifier = Modifier
                             .fillMaxWidth()
+                            .clickableSingle(onClick = { onFriendClick(friend) })
                             .padding(horizontal = ScreenTokens.HorizontalPadding),
+                        profileImageUrl = friend.profileImageUrl,
+                        name = friend.name,
+                        displayId = friend.displayId,
                     )
                 }
             }
 
-            is LoadState.Error -> {
-                item {
-                    ErrorFooterItem(
-                        errorMessage = appendState.error.message ?: "알 수 없는 에러",
-                        onRetryClick = { friends.retry() }, // 여기서 retry 호출
-                    )
-                }
-            }
-
-            is LoadState.NotLoading -> {
-                // 더 이상 로드할 데이터가 없거나 정상 상태일 때
-                if (friends.loadState.append.endOfPaginationReached && friends.itemCount > 0) {
+            // 상태 별 Footer UI
+            when (val appendState = friends.loadState.append) {
+                is LoadState.Loading -> {
+                    // 로딩 시
                     item {
-                        // 필요하다면 "마지막 페이지입니다" 등의 문구 추가
-                        ErrorFooterItem(
-                            errorMessage = "마지막 페이지입니다.",
-                            onRetryClick = { friends.retry() }, // 여기서 retry 호출
+                        FriendCardSkeleton(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = ScreenTokens.HorizontalPadding),
                         )
                     }
+                }
+
+                is LoadState.Error -> {
+                    // 에러 발생 시
+                    item {
+                        FooterError(
+                            modifier = Modifier.fillMaxWidth(),
+                            errorMessage = appendState.error.message
+                                ?: stringResource(R.string.friend_list_error_message_default),
+                            onRetry = { friends.retry() },
+                        )
+                    }
+                }
+
+                is LoadState.NotLoading -> {
+                    // 더 이상 로드할 데이터가 없거나 정상 상태 or 마지막 페이지인 상태
+                    // 아무 것도 보여주지 않는다.
                 }
             }
         }
     }
 }
 
+/**
+ * 에러 발생 시 목록 하단에 표시할 footer
+ *
+ * @param modifier [Modifier]
+ * @param errorMessage 에러 메시지
+ * @param onRetry 재시도 로직
+ */
 @Composable
-fun ErrorFooterItem(
+private fun FooterError(
+    modifier: Modifier = Modifier,
     errorMessage: String,
-    onRetryClick: () -> Unit,
+    onRetry: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = modifier.heightIn(min = 78.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
     ) {
-        Text(text = errorMessage, color = Color.Red)
-        Button(onClick = onRetryClick) {
-            Text("재시도")
-        }
+        Text(
+            text = errorMessage,
+            style = PeekrTheme.typography.label1,
+            fontWeight = FontWeight.Medium,
+            color = PeekrTheme.colorScheme.textAssist2,
+        )
+        Text(
+            modifier = Modifier.clickableSingle(onClick = onRetry),
+            text = stringResource(R.string.friend_list_error_retry),
+            style = PeekrTheme.typography.label1,
+            fontWeight = FontWeight.Bold,
+            color = PeekrTheme.colorScheme.textStrong,
+        )
     }
 }
 
@@ -287,14 +334,26 @@ private fun FriendCardSkeletonPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
-private fun ContentsPreview() {
+private fun FriendsListPreview() {
     val friends = testFriendsPagingData.collectAsLazyPagingItems()
 
     PeekrAppTheme {
-        Contents(
+        FriendsList(
             modifier = Modifier.fillMaxSize(),
             friends = friends,
             onFriendClick = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun FooterErrorPreview() {
+    PeekrAppTheme {
+        FooterError(
+            modifier = Modifier.fillMaxWidth(),
+            errorMessage = "에러가 발생했어요.",
+            onRetry = {},
         )
     }
 }
@@ -313,7 +372,7 @@ private fun FriendsListScreenPreview() {
     }
 }
 
-private val testFriendsPagingData = flowOf(
+private val testFriendsPagingData = MutableStateFlow(
     PagingData.from(
         List(40) {
             UiFriendInfo(
