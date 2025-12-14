@@ -27,6 +27,11 @@ fun NavGraphBuilder.myProfileNavigation(
                         SubGraph.BottomNav.Profile.User(1L),
                     )
                 },
+                onFriendsCountClick = { userId ->
+                    bottomNavController.navigate(
+                        Screens.FriendsList(userId),
+                    )
+                },
             )
         }
     }

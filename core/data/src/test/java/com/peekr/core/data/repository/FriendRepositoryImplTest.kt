@@ -7,6 +7,7 @@ import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
+import com.peekr.core.data.source.network.dto.friend.response.FriendInfoResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
 import com.peekr.core.data.source.network.dto.friend.response.toDomainModel
@@ -32,7 +33,6 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkObject
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -94,7 +94,7 @@ class FriendRepositoryImplTest {
     fun `친구 목록 조회 - 초기 호출 성공 시 도메인 모델로 변환된 데이터를 반환한다`() = runTest {
         // given
         val pageSize = FriendPagingTokens.PAGE_SIZE
-        val expectedFirstPage = createFriendResponseList(1, pageSize).map { it.toDomainModel() }
+        val expectedFirstPage = createFriendInfoResponseList(1, pageSize).map { it.toDomainModel() }
 
         // 첫 번째 페이지 설정 (page=1, size=20)
         coEvery {
@@ -117,7 +117,7 @@ class FriendRepositoryImplTest {
                 pageNumber = 2L,
                 startId = (pageSize + 1).toLong(),
                 count = pageSize,
-                hasNext = false,
+                hasNext = true,
             ),
         )
 
@@ -370,19 +370,20 @@ class FriendRepositoryImplTest {
         pageSize = count,
         totalSize = 100L,
         hasNext = hasNext,
-        list = createFriendResponseList(startId, count),
+        list = createFriendInfoResponseList(startId, count),
     )
 
-    private fun createFriendResponseList(startId: Long, count: Int): List<FriendResponse> =
+    private fun createFriendInfoResponseList(startId: Long, count: Int): List<FriendInfoResponse> =
         (startId until startId + count).map { id ->
-            FriendResponse(
+            FriendInfoResponse(
                 id = id,
-                requesterId = 1L,
-                receiverId = 2L,
-                requestState = FriendRequestStatus.PENDING,
-                respondedAt = 1000L,
-                createdAt = 1000L,
-                updatedAt = 1000L,
+                userId = id,
+                displayId = "did",
+                name = "name",
+                profileImageUrl = null,
+                respondedAt = 1000,
+                createdAt = 1000,
+                updatedAt = 1000,
             )
         }
 }

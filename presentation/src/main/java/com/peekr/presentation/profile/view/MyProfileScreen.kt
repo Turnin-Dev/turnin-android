@@ -79,6 +79,7 @@ fun MyProfileScreen(
     error: UiText?,
     onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onSettingClick: () -> Unit,
+    onFriendsCountClick: (Long) -> Unit,
     onOpenAddKeywordModal: () -> Unit,
     onOpenNodeOptionModal: (UserKeywordIdType, KeywordNameType) -> Unit,
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
@@ -109,7 +110,7 @@ fun MyProfileScreen(
                         friendsCount = myProfile.friendsCount,
                         introduce = myProfile.introduce,
                         onProfileImageClick = {},
-                        onFriendsCountClick = {},
+                        onFriendsCountClick = { onFriendsCountClick(myProfile.userId) },
                     )
                 } ?: ProfileSkeleton()
             },
@@ -443,6 +444,7 @@ private fun MyProfileScreenPreview() {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             myProfile = UiMyProfile(
+                userId = 1L,
                 displayId = "Honggd123",
                 name = "홍길동",
                 profileImageUrl = null,
@@ -462,6 +464,7 @@ private fun MyProfileScreenPreview() {
             onOpenNodeOptionModal = { _, _ -> },
             onOpenKeywordDetailModal = { _, _, _ -> },
             onSettingClick = {},
+            onFriendsCountClick = {},
         )
     }
 }
@@ -480,6 +483,7 @@ private fun SkeletonPreview() {
             onOpenNodeOptionModal = { _, _ -> },
             onOpenKeywordDetailModal = { _, _, _ -> },
             onSettingClick = {},
+            onFriendsCountClick = {},
         )
     }
 }

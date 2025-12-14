@@ -14,5 +14,5 @@ data class Friends(
     val pageSize: Int,
     val totalSize: Long,
     val hasNext: Boolean,
-    val friends: List<Friend>,
+    val friends: List<FriendInfo>,
 )

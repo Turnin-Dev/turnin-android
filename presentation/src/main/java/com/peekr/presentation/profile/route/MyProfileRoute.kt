@@ -32,6 +32,7 @@ import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 internal fun MyProfileRoute(
     onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
     onSettingClick: () -> Unit,
+    onFriendsCountClick: (Long) -> Unit,
 ) {
     // Lock Orientation
     LockScreenOrientation()
@@ -145,5 +146,6 @@ internal fun MyProfileRoute(
             onOpenKeywordDetailModal(userKeywordId, userId, keyword)
         },
         onSettingClick = onSettingClick,
+        onFriendsCountClick = onFriendsCountClick,
     )
 }

@@ -113,6 +113,13 @@
     <string name="report_error_not_selected_reporter_id">오류가 발생했습니다.\n신고할 사용자의 프로필 화면에서 다시 신고를 진행해주세요.</string>
     <string name="report_error_unexpected">신고 과정에서 오류가 발생했습니다. 다시 신고를 진행해주세요.</string>
 
+    <!-- Friend -->
+    <string name="friend_list_top_bar_title">친구</string>
+    <string name="friend_list_error_message_default">문제가 발생했어요. 다시 시도해주세요.</string>
+    <string name="friend_list_error_retry">다시 시도</string>
+    <!-- Friend Error -->
+    <string name="friend_error_user_id_not_found">사용자를 찾을 수 없습니다. 다시 시도해주세요.</string>
+    <string name="friend_error_unexpected">친구 목록을 불러오는 과정에서 오류가 발생했습니다. 다시 시도해주세요.</string>
 
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->
