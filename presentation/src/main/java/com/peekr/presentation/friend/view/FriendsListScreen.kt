@@ -141,53 +141,56 @@ private fun FriendsList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 16.dp),
         ) {
-            // 친구 목록
-            items(
-                count = friends.itemCount,
-                key = friends.itemKey { it.id },
-            ) { idx ->
-                val friend = friends[idx]
-                friend?.let {
-                    FriendCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickableSingle(onClick = { onFriendClick(friend) })
-                            .padding(horizontal = ScreenTokens.HorizontalPadding),
-                        profileImageUrl = friend.profileImageUrl,
-                        name = friend.name,
-                        displayId = friend.displayId,
-                    )
+            // 초기 로딩 시 스켈레톤 표시
+            if (isRefreshing && friends.itemCount == 0) {
+                items(20) {
+                    FriendCardSkeleton()
                 }
-            }
-
-            // 상태 별 Footer UI
-            when (val appendState = friends.loadState.append) {
-                is LoadState.Loading -> {
-                    // 로딩 시
-                    item {
-                        FriendCardSkeleton(
-                            Modifier
+            } else {
+                // 친구 목록 표시
+                items(
+                    count = friends.itemCount,
+                    key = friends.itemKey { it.id },
+                ) { idx ->
+                    val friend = friends[idx]
+                    friend?.let {
+                        FriendCard(
+                            modifier = Modifier
                                 .fillMaxWidth()
+                                .clickableSingle(onClick = { onFriendClick(friend) })
                                 .padding(horizontal = ScreenTokens.HorizontalPadding),
+                            profileImageUrl = friend.profileImageUrl,
+                            name = friend.name,
+                            displayId = friend.displayId,
                         )
                     }
                 }
 
-                is LoadState.Error -> {
-                    // 에러 발생 시
-                    item {
-                        FooterError(
-                            modifier = Modifier.fillMaxWidth(),
-                            errorMessage = appendState.error.message
-                                ?: stringResource(R.string.friend_list_error_message_default),
-                            onRetry = { friends.retry() },
-                        )
+                // 상태 별 Footer UI
+                when (val appendState = friends.loadState.append) {
+                    is LoadState.Loading -> {
+                        // 로딩 시
+                        item {
+                            FriendCardSkeleton()
+                        }
                     }
-                }
 
-                is LoadState.NotLoading -> {
-                    // 더 이상 로드할 데이터가 없거나 정상 상태 or 마지막 페이지인 상태
-                    // 아무 것도 보여주지 않는다.
+                    is LoadState.Error -> {
+                        // 에러 발생 시
+                        item {
+                            FooterError(
+                                modifier = Modifier.fillMaxWidth(),
+                                errorMessage = appendState.error.message
+                                    ?: stringResource(R.string.friend_list_error_message_default),
+                                onRetry = { friends.retry() },
+                            )
+                        }
+                    }
+
+                    is LoadState.NotLoading -> {
+                        // 더 이상 로드할 데이터가 없거나 정상 상태 or 마지막 페이지인 상태
+                        // 아무 것도 보여주지 않는다.
+                    }
                 }
             }
         }
@@ -279,7 +282,9 @@ private fun FriendCard(
 @Composable
 private fun FriendCardSkeleton(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.padding(vertical = 10.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp, horizontal = ScreenTokens.HorizontalPadding),
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,
     ) {
