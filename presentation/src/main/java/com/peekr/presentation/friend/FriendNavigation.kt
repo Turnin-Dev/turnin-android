@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.Screens
-import com.peekr.presentation.friend.view.FriendsListScreen
+import com.peekr.presentation.friend.view.FriendListScreen
 import com.peekr.presentation.friend.viewmodel.FriendListViewModel
 
 fun NavGraphBuilder.friendsListScreen(navController: NavHostController) {
@@ -18,7 +18,7 @@ fun NavGraphBuilder.friendsListScreen(navController: NavHostController) {
         val friendListViewModel: FriendListViewModel = hiltViewModel()
         val friends = friendListViewModel.friendsPagingData.collectAsLazyPagingItems()
 
-        FriendsListScreen(
+        FriendListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),

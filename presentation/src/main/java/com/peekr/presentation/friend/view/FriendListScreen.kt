@@ -44,12 +44,12 @@ import com.peekr.presentation.friend.model.UiFriendInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun FriendsListScreen(
+fun FriendListScreen(
     modifier: Modifier = Modifier,
     friends: LazyPagingItems<UiFriendInfo>,
     onBackPress: () -> Unit,
 ) {
-    FriendsListFrame(
+    FriendListFrame(
         modifier = modifier,
         topBar = {
             TopBar(
@@ -60,7 +60,7 @@ fun FriendsListScreen(
             )
         },
         contents = {
-            FriendsList(
+            FriendList(
                 modifier = Modifier.fillMaxSize(),
                 friends = friends,
                 onFriendClick = {},
@@ -77,7 +77,7 @@ fun FriendsListScreen(
  * @param contents 메인 컨텐츠 (친구 목록)
  */
 @Composable
-private fun FriendsListFrame(
+private fun FriendListFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
     contents: @Composable () -> Unit,
@@ -114,7 +114,7 @@ private fun TopBar(
  * @param onFriendClick 친구 클릭 시 콜백
  */
 @Composable
-private fun FriendsList(
+private fun FriendList(
     modifier: Modifier = Modifier,
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
@@ -339,11 +339,11 @@ private fun FriendCardSkeletonPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
-private fun FriendsListPreview() {
+private fun FriendListPreview() {
     val friends = testFriendsPagingData.collectAsLazyPagingItems()
 
     PeekrAppTheme {
-        FriendsList(
+        FriendList(
             modifier = Modifier.fillMaxSize(),
             friends = friends,
             onFriendClick = {},
@@ -365,11 +365,11 @@ private fun FooterErrorPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
-private fun FriendsListScreenPreview() {
+private fun FriendListScreenPreview() {
     val friends = testFriendsPagingData.collectAsLazyPagingItems()
 
     PeekrAppTheme {
-        FriendsListScreen(
+        FriendListScreen(
             modifier = Modifier.fillMaxSize(),
             friends = friends,
             onBackPress = {},
