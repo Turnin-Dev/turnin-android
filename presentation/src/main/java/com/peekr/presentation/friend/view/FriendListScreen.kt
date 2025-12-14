@@ -141,6 +141,19 @@ private fun FriendList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 16.dp),
         ) {
+            // 초기 에러 발생 시
+            val refreshState = friends.loadState.refresh
+            if (refreshState is LoadState.Error && friends.itemCount == 0) {
+                item {
+                    FooterError(
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = refreshState.error.message
+                            ?: stringResource(R.string.friend_list_error_message_default),
+                        onRetry = { friends.retry() },
+                    )
+                }
+            }
+
             // 초기 로딩 시 스켈레톤 표시
             if (isRefreshing && friends.itemCount == 0) {
                 items(20) {
@@ -157,11 +170,11 @@ private fun FriendList(
                         FriendCard(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickableSingle(onClick = { onFriendClick(friend) })
+                                .clickableSingle(onClick = { onFriendClick(it) })
                                 .padding(horizontal = ScreenTokens.HorizontalPadding),
-                            profileImageUrl = friend.profileImageUrl,
-                            name = friend.name,
-                            displayId = friend.displayId,
+                            profileImageUrl = it.profileImageUrl,
+                            name = it.name,
+                            displayId = it.displayId,
                         )
                     }
                 }

@@ -16,6 +16,7 @@ import com.peekr.presentation.friend.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 @HiltViewModel
@@ -28,17 +29,21 @@ class FriendListViewModel @Inject constructor(
     val userId: Long = savedStateHandle.get<Long>("userId") ?: -1
 
     // TODO: 이렇게 검사할거면 UserId VO 객체의 유효성 검사가 의미가 있는지 생각해보기
-    val friendsPagingData = getFriendsPaginationUseCase(userId)
-        .map { pagingData: PagingData<FriendInfo> ->
-            pagingData.map { friendInfo ->
-                friendInfo.toUiModel()
+    val friendsPagingData = if (userId > 0) {
+        getFriendsPaginationUseCase(userId)
+            .map { pagingData: PagingData<FriendInfo> ->
+                pagingData.map { friendInfo ->
+                    friendInfo.toUiModel()
+                }
             }
-        }
-        .catch { e ->
-            AppLogger.d(tag, e, "Unexpected friend pagination error")
-            emit(PagingData.empty())
-        }
-        .cachedIn(viewModelScope)
+            .catch { e ->
+                AppLogger.d(tag, e, "Unexpected friend pagination error")
+                emit(PagingData.empty())
+            }
+            .cachedIn(viewModelScope)
+    } else {
+        flowOf(PagingData.empty())
+    }
 
     private suspend fun showSnackBar(message: UiText) {
         SnackbarController.sendEvent(SnackbarEvent(message = message))

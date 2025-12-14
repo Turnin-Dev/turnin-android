@@ -6,6 +6,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.error.CommonErrorType
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -72,8 +73,13 @@ class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
             }
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            AppLogger.d(tag, e, "Paging source exception during load.")
-            return LoadResult.Error(e)
+            AppLogger.e(tag, e, "Paging source exception during load.")
+            return LoadResult.Error(
+                PagingApiCallException(
+                    error = CommonErrorType.Unexpected(e),
+                    message = UNEXPECTED_MESSAGE,
+                ),
+            )
         }
     }
 }
@@ -86,5 +92,7 @@ private fun NetworkErrorType.toErrorMessage(): String = when (this) {
     NetworkErrorType.Exception.MalformedJson -> "서버 통신 과정에서 오류가 발생했어요."
     is NetworkErrorType.Network.HttpError -> "서버 통신 과정에서 오류가 발생했어요."
     NetworkErrorType.Network.ConnectionFailed -> "네트워크 연결을 확인해주세요."
-    else -> "잠시 오류가 발생했어요. 다시 시도 해주세요."
+    else -> UNEXPECTED_MESSAGE
 }
+
+private const val UNEXPECTED_MESSAGE = "잠시 오류가 발생했어요. 다시 시도 해주세요."
