@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
     testImplementation(libs.androidx.paging.common)
+    testImplementation(libs.androidx.paging.testing)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)
