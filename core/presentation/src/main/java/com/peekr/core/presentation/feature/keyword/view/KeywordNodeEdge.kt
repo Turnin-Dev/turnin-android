@@ -84,8 +84,8 @@ fun KeywordNodeEdge(
     ) {
         // 키워드 엣지(간선)
         KeywordEdge(
-            targetX = animatedNodeOffsetX + nodeState.widthPx / 2,
-            targetY = animatedNodeOffsetY + nodeState.heightPx / 2,
+            targetX = animatedNodeOffsetX,
+            targetY = animatedNodeOffsetY,
         )
 
         // 키워드 노드
@@ -98,8 +98,8 @@ fun KeywordNodeEdge(
                     )
                 }
                 .graphicsLayer {
-                    translationX = animatedNodeOffsetX
-                    translationY = animatedNodeOffsetY
+                    translationX = animatedNodeOffsetX - (nodeState.widthPx / 2)
+                    translationY = animatedNodeOffsetY - (nodeState.heightPx / 2)
                 }
                 .then(
                     if (freeGesture) {
