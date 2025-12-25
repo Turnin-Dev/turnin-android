@@ -57,7 +57,9 @@ fun PeekrAppTheme(
         body4 = body4(),
         label1 = label1(),
         label2 = label2(),
+        label3 = label3(),
         caption1 = caption1(),
+        caption2 = caption2(),
     )
 
     @OptIn(ExperimentalMaterial3Api::class)

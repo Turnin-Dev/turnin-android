@@ -10,13 +10,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import com.peekr.core.designsystem.R
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -37,6 +39,7 @@ import com.peekr.core.designsystem.util.icon.Profile
  * @param model [AsyncImage]에서 사용 가능한 이미지 모델
  * @param contentDescription 이미지 설명
  * @param modifier [Modifier]
+ * @param filterQuality 이미지 화질
  * @param onClick 클릭 시
  */
 @Composable
@@ -44,6 +47,7 @@ fun PeekrAvatar(
     model: Any?,
     contentDescription: String?,
     modifier: Modifier = Modifier,
+    filterQuality: FilterQuality = FilterQuality.Medium,
     onClick: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
@@ -51,16 +55,14 @@ fun PeekrAvatar(
         ImageRequest
             .Builder(context)
             .data(model)
-            .crossfade(true)
             .build()
     }
-    var placeholderState by remember { mutableStateOf(false) }
 
     CoreAvatar(
         modifier = modifier,
         onClick = onClick,
         image = {
-            AsyncImage(
+            SubcomposeAsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(CircleShape),
@@ -68,12 +70,17 @@ fun PeekrAvatar(
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center,
-                onState = { state ->
-                    placeholderState = state.getPlaceholderResult()
-                },
-            )
-            if (placeholderState) {
-                AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
+                filterQuality = filterQuality,
+            ) {
+                when (painter.state) {
+                    is AsyncImagePainter.State.Success -> {
+                        SubcomposeAsyncImageContent()
+                    }
+
+                    else -> {
+                        AvatarPlaceholder(modifier = Modifier.clip(CircleShape))
+                    }
+                }
             }
         },
     )
@@ -145,7 +152,7 @@ private fun AvatarPlaceholder(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp),
             imageVector = PeekrIcons.Filled.Normal.Profile.imageVector,
@@ -154,11 +161,3 @@ private fun AvatarPlaceholder(modifier: Modifier = Modifier) {
         )
     }
 }
-
-private fun AsyncImagePainter.State.getPlaceholderResult(): Boolean =
-    when (this) {
-        AsyncImagePainter.State.Empty -> true
-        is AsyncImagePainter.State.Error -> true
-        is AsyncImagePainter.State.Loading -> true
-        is AsyncImagePainter.State.Success -> false
-    }
