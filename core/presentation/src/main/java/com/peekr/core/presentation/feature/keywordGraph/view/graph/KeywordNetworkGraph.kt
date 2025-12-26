@@ -8,11 +8,17 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +44,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -45,9 +52,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.peekr.core.designsystem.component.button.PeekrIconButton
+import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.icon.Arrow1Down
+import com.peekr.core.designsystem.util.icon.Arrow1Up
+import com.peekr.core.designsystem.util.icon.PeekrIcons
+import com.peekr.core.designsystem.util.peekrShadow
+import com.peekr.core.presentation.R
 import com.peekr.core.presentation.feature.keywordGraph.model.UiKeywordNode
 import com.peekr.core.presentation.feature.keywordGraph.model.UiUserCluster
 import com.peekr.core.presentation.feature.keywordGraph.model.UiUserNode
@@ -166,6 +181,7 @@ fun KeywordNetworkGraph(
     val animDragOffset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
     val animZoom = remember { Animatable(1f) }
     val coroutineScope = rememberCoroutineScope()
+    var isUserCardListOpen by remember { mutableStateOf(false) }
 
     // ------------------------------ 데이터 전처리 ------------------------------
     // 하단 사용자 리스트용 모든 클러스터 리스트
@@ -244,6 +260,14 @@ fun KeywordNetworkGraph(
                     lazyListState.animateScrollToItem(index)
                 }
             }
+            LaunchedEffect(isUserCardListOpen) {
+                if (isUserCardListOpen) {
+                    val index = allClusters.indexOfFirst { cluster ->
+                        cluster.userNode.userId == selectedUserId
+                    }
+                    lazyListState.animateScrollToItem(index)
+                }
+            }
 
             // ------------------------------ 로깅 ------------------------------
             val visibleClusters = remember(viewportRect) {
@@ -315,13 +339,16 @@ fun KeywordNetworkGraph(
         }
 
         // 사용자 리스트 (하단에 위치)
-        UserCardList(
+        UserCardListSection(
             modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp),
-            state = lazyListState,
-            users = allClusters.map { it.userNode },
+            isOpen = isUserCardListOpen,
+            lazyListState = lazyListState,
+            userNodes = allClusters.map { it.userNode },
             selectedUserId = selectedUserId,
+            onToggle = { isUserCardListOpen = !isUserCardListOpen },
             onUserClick = { userNode ->
                 selectedUserId = userNode.userId
                 val targetPos = clusterPositions[userNode.userId] ?: Offset.Zero
@@ -465,6 +492,60 @@ private fun ClusterView(
                 },
             color = userNodeColor,
         )
+    }
+}
+
+/**
+ * 사용자 카드 리스트 영역
+ *
+ * @param modifier [Modifier]
+ * @param isOpen 사용자 리스트 활성화 여부
+ * @param lazyListState [LazyListState]
+ * @param userNodes 모든 클러스터
+ * @param selectedUserId 선택된 사용자 ID
+ * @param onToggle 사용자 리스트 활성화 토글
+ * @param onUserClick 사용자 클릭 시 콜백
+ */
+@Composable
+private fun UserCardListSection(
+    modifier: Modifier = Modifier,
+    isOpen: Boolean,
+    lazyListState: LazyListState,
+    userNodes: List<UiUserNode>,
+    selectedUserId: Long?,
+    onToggle: () -> Unit,
+    onUserClick: (UiUserNode) -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        PeekrIconButton(
+            modifier = Modifier
+                .padding(end = 20.dp)
+                .peekrShadow(PeekrShadowType.Normal, CircleShape)
+                .clip(CircleShape)
+                .background(Color.White),
+            icon = if (isOpen) {
+                PeekrIcons.Default.Normal.Arrow1Down
+            } else {
+                PeekrIcons.Default.Normal.Arrow1Up
+            },
+            iconSize = PeekrIconSize.Small,
+            contentDescription = stringResource(R.string.keyword_network_graph_open_user_list),
+            onClick = { onToggle() },
+        )
+
+        if (isOpen) {
+            UserCardList(
+                modifier = Modifier.fillMaxWidth(),
+                state = lazyListState,
+                users = userNodes,
+                selectedUserId = selectedUserId,
+                onUserClick = { onUserClick(it) },
+            )
+        }
     }
 }
 
