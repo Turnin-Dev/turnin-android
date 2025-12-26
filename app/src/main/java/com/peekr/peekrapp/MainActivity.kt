@@ -19,7 +19,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -34,10 +33,10 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.feature.keyword.model.UiKeywordNode
-import com.peekr.core.presentation.feature.keyword.model.UiUserCluster
-import com.peekr.core.presentation.feature.keyword.model.UiUserNode
-import com.peekr.core.presentation.feature.keyword.view.graph.KeywordNetworkGraph
+import com.peekr.core.presentation.feature.keywordGraph.model.UiKeywordNode
+import com.peekr.core.presentation.feature.keywordGraph.model.UiUserCluster
+import com.peekr.core.presentation.feature.keywordGraph.model.UiUserNode
+import com.peekr.core.presentation.feature.keywordGraph.view.graph.KeywordNetworkGraph
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import dagger.hilt.android.AndroidEntryPoint

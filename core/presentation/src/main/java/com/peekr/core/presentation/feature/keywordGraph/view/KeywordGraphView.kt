@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.view
+package com.peekr.core.presentation.feature.keywordGraph.view
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -15,12 +15,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.peekr.core.presentation.feature.keyword.KeywordNameType
-import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
-import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
-import com.peekr.core.presentation.feature.keyword.UserIdType
-import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
-import com.peekr.core.presentation.feature.keyword.view.graph.GraphBoard
+import com.peekr.core.presentation.feature.keywordGraph.KeywordNameType
+import com.peekr.core.presentation.feature.keywordGraph.NodeOffsetXType
+import com.peekr.core.presentation.feature.keywordGraph.NodeOffsetYType
+import com.peekr.core.presentation.feature.keywordGraph.UserIdType
+import com.peekr.core.presentation.feature.keywordGraph.UserKeywordIdType
+import com.peekr.core.presentation.feature.keywordGraph.view.graph.GraphBoard
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 
 /**

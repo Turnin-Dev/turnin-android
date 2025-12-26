@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.view
+package com.peekr.core.presentation.feature.keywordGraph.view
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas

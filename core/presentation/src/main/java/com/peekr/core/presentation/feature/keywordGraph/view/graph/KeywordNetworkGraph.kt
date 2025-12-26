@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.view.graph
+package com.peekr.core.presentation.feature.keywordGraph.view.graph
 
 import android.util.Log
 import androidx.compose.animation.core.Animatable
@@ -48,12 +48,12 @@ import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
-import com.peekr.core.presentation.feature.keyword.model.UiKeywordNode
-import com.peekr.core.presentation.feature.keyword.model.UiUserCluster
-import com.peekr.core.presentation.feature.keyword.model.UiUserNode
-import com.peekr.core.presentation.feature.keyword.util.ClusterLayout
-import com.peekr.core.presentation.feature.keyword.view.UserNode
-import com.peekr.core.presentation.feature.keyword.view.UserNodeCanvas
+import com.peekr.core.presentation.feature.keywordGraph.model.UiKeywordNode
+import com.peekr.core.presentation.feature.keywordGraph.model.UiUserCluster
+import com.peekr.core.presentation.feature.keywordGraph.model.UiUserNode
+import com.peekr.core.presentation.feature.keywordGraph.util.ClusterLayout
+import com.peekr.core.presentation.feature.keywordGraph.view.UserNode
+import com.peekr.core.presentation.feature.keywordGraph.view.UserNodeCanvas
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import kotlin.math.cos
 import kotlin.math.sin

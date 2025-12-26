@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.view.graph
+package com.peekr.core.presentation.feature.keywordGraph.view.graph
 
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box

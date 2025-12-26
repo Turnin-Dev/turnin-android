@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.state
+package com.peekr.core.presentation.feature.keywordGraph.state
 
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable

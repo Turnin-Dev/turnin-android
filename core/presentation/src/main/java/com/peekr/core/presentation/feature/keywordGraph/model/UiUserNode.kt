@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.model
+package com.peekr.core.presentation.feature.keywordGraph.model
 
 /**
  * 키워드 그래프 UI용 사용자 노드

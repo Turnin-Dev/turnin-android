@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.view.graph
+package com.peekr.core.presentation.feature.keywordGraph.view.graph
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,7 +43,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.presentation.feature.keyword.model.UiUserNode
+import com.peekr.core.presentation.feature.keywordGraph.model.UiUserNode
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 
 /**

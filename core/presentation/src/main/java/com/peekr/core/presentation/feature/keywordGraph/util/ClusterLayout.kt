@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.util
+package com.peekr.core.presentation.feature.keywordGraph.util
 
 import androidx.compose.ui.geometry.Offset
 import kotlin.math.PI

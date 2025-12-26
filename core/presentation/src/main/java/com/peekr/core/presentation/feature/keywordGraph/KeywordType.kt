@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword
+package com.peekr.core.presentation.feature.keywordGraph
 
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
