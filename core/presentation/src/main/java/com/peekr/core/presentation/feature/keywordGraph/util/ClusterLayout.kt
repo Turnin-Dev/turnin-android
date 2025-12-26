@@ -107,7 +107,6 @@ private fun calculateHoneycombOffset(index: Int, spacing: Float): Offset {
     val corner2 = Offset((cos(angle2) * layer * spacing).toFloat(), (sin(angle2) * layer * spacing).toFloat())
 
     // 두 꼭짓점 사이를 선형 보간하여 변 위에 배치
-    val ratio = (posInSide + 1).toFloat() / layer
     return corner1 + (corner2 - corner1) * (posInSide.toFloat() / layer)
 }
 
