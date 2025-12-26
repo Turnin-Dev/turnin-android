@@ -5,10 +5,10 @@ package com.peekr.core.presentation.feature.keyword.model
  *
  * @property userKeywordId 사용자 키워드 ID
  * @property keywordId 키워드 ID
- * @property keyword 키워드
+ * @property keywordName 키워드
  */
 data class UiKeywordNode(
     val userKeywordId: Long,
     val keywordId: Long,
-    val keyword: String,
+    val keywordName: String,
 )

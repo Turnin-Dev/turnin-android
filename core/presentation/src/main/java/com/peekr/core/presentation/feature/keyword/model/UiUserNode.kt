@@ -8,5 +8,6 @@ package com.peekr.core.presentation.feature.keyword.model
  */
 data class UiUserNode(
     val userId: Long,
+    val userName: String,
     val profileImageUrl: String?,
 )
