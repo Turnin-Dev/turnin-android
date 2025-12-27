@@ -338,17 +338,17 @@ fun KeywordNetworkGraph(
             }
         }
 
-        // 옵션 1. 사용자 리스트 (하단에 위치)
-        UserCardListSection(
+        // 툴바 (하단에 위치)
+        // 나에게로 돌아오기, 새로고침, 사용자 리스트
+        ToolBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp),
+                .padding(bottom = 24.dp, end = ScreenTokens.HorizontalPadding),
             isOpen = isUserCardListOpen,
             lazyListState = lazyListState,
             userNodes = allClusters.map { it.userNode },
             selectedUserId = selectedUserId,
-            onToggle = { isUserCardListOpen = !isUserCardListOpen },
             onUserClick = { userNode ->
                 selectedUserId = userNode.userId
                 val targetPos = clusterPositions[userNode.userId] ?: Offset.Zero
@@ -362,48 +362,19 @@ fun KeywordNetworkGraph(
                     }
                 }
             },
-        )
-
-        // 옵션 2, 3 (상단에 위치)
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(ScreenTokens.HorizontalPadding),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            // 옵션 2. 나에게로 돌아오기
-            PeekrIconButton(
-                modifier = Modifier
-                    .peekrShadow(PeekrShadowType.Normal, CircleShape)
-                    .clip(CircleShape)
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
-                icon = PeekrIcons.Outlined.Normal.Pin,
-                iconSize = PeekrIconSize.Normal,
-                contentDescription = stringResource(R.string.keyword_network_graph_move_to_my_cluster),
-                onClick = {
-                    coroutineScope.launch {
-                        launch {
-                            animDragOffset.snapTo(Offset.Zero)
-                        }
-                        launch {
-                            animZoom.snapTo(1f)
-                        }
+            onToggleUserList = { isUserCardListOpen = !isUserCardListOpen },
+            onMoveToMyCluster = {
+                coroutineScope.launch {
+                    launch {
+                        animDragOffset.snapTo(Offset.Zero)
                     }
-                },
-            )
-
-            // 옵션 3. 새로고침
-            PeekrIconButton(
-                modifier = Modifier
-                    .peekrShadow(PeekrShadowType.Normal, CircleShape)
-                    .clip(CircleShape)
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
-                icon = PeekrIcons.Default.Normal.Refresh,
-                iconSize = PeekrIconSize.Normal,
-                contentDescription = stringResource(R.string.keyword_network_graph_refresh),
-                onClick = { },
-            )
-        }
+                    launch {
+                        animZoom.snapTo(1f)
+                    }
+                }
+            },
+            onRefresh = {},
+        )
     }
 }
 
@@ -531,34 +502,68 @@ private fun ClusterView(
 }
 
 /**
- * 사용자 카드 리스트 영역
+ * 툴바
+ *
+ * 툴바에는 3가지 옵션이 있다.
+ *
+ * 1. 나에게로 돌아오기
+ * 2. 새로고침
+ * 3. 사용자 리스트 토글
  *
  * @param modifier [Modifier]
  * @param isOpen 사용자 리스트 활성화 여부
  * @param lazyListState [LazyListState]
  * @param userNodes 모든 클러스터
  * @param selectedUserId 선택된 사용자 ID
- * @param onToggle 사용자 리스트 활성화 토글
  * @param onUserClick 사용자 클릭 시 콜백
+ * @param onToggleUserList 사용자 리스트 활성화 토글
+ * @param onMoveToMyCluster 나의 클러스터 이동 클릭 시 콜백
+ * @param onRefresh 새로고침 시 콜백
  */
 @Composable
-private fun UserCardListSection(
+private fun ToolBar(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
     lazyListState: LazyListState,
     userNodes: List<UiUserNode>,
     selectedUserId: Long?,
-    onToggle: () -> Unit,
     onUserClick: (UiUserNode) -> Unit,
+    onToggleUserList: () -> Unit,
+    onMoveToMyCluster: () -> Unit,
+    onRefresh: () -> Unit,
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
+        // 옵션 1. 나에게로 돌아오기
         PeekrIconButton(
             modifier = Modifier
-                .padding(end = 20.dp)
+                .peekrShadow(PeekrShadowType.Normal, CircleShape)
+                .clip(CircleShape)
+                .background(PeekrTheme.colorScheme.backgroundNormal),
+            icon = PeekrIcons.Outlined.Normal.Pin,
+            iconSize = PeekrIconSize.Normal,
+            contentDescription = stringResource(R.string.keyword_network_graph_move_to_my_cluster),
+            onClick = { onMoveToMyCluster() },
+        )
+
+        // 옵션 2. 새로고침
+        PeekrIconButton(
+            modifier = Modifier
+                .peekrShadow(PeekrShadowType.Normal, CircleShape)
+                .clip(CircleShape)
+                .background(PeekrTheme.colorScheme.backgroundNormal),
+            icon = PeekrIcons.Default.Normal.Refresh,
+            iconSize = PeekrIconSize.Normal,
+            contentDescription = stringResource(R.string.keyword_network_graph_refresh),
+            onClick = { onRefresh() },
+        )
+
+        // 옵션 3. 사용자 리스트 토글
+        PeekrIconButton(
+            modifier = Modifier
                 .peekrShadow(PeekrShadowType.Normal, CircleShape)
                 .clip(CircleShape)
                 .background(PeekrTheme.colorScheme.backgroundNormal),
@@ -567,11 +572,12 @@ private fun UserCardListSection(
             } else {
                 PeekrIcons.Default.Normal.Arrow1Up
             },
-            iconSize = PeekrIconSize.Medium,
+            iconSize = PeekrIconSize.Normal,
             contentDescription = stringResource(R.string.keyword_network_graph_open_user_list),
-            onClick = { onToggle() },
+            onClick = { onToggleUserList() },
         )
 
+        // 사용자 리스트
         if (isOpen) {
             UserCardList(
                 modifier = Modifier.fillMaxWidth(),
