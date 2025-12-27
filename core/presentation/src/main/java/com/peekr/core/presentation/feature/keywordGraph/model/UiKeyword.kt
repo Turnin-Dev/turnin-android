@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.model
+package com.peekr.core.presentation.feature.keywordGraph.model
 
 import com.peekr.core.presentation.ui.model.UiDisplayId
 

@@ -13,8 +13,8 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class PeekrApplication : Application(), ImageLoaderFactory {
-    // 약 10MB 정도
-    private val imageCacheMaxSize: Long = 10 * 1024 * 1024
+    // 약 50MB 정도
+    private val imageCacheMaxSize: Long = 50 * 1024 * 1024
 
     // 최대 메모리의 10퍼센트
     private val memoryCacheMaxSizePercent: Double = 0.10
@@ -42,12 +42,13 @@ class PeekrApplication : Application(), ImageLoaderFactory {
             DiskCache
                 .Builder()
                 .maxSizeBytes(imageCacheMaxSize)
-                .directory(cacheDir.resolve("flip_image_cache"))
+                .directory(cacheDir.resolve("peekr_image_cache"))
                 .build()
         }.apply {
             if (BuildConfig.DEBUG) {
                 logger(DebugLogger())
             }
         }.respectCacheHeaders(true) // 서버의 캐시 제어 헤더 사용 여부
+        .crossfade(true)
         .build()
 }

@@ -33,10 +33,10 @@ import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.presentation.feature.keyword.KeywordNameType
-import com.peekr.core.presentation.feature.keyword.UserIdType
-import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
-import com.peekr.core.presentation.feature.keyword.view.KeywordGraphView
+import com.peekr.core.presentation.feature.keywordGraph.KeywordNameType
+import com.peekr.core.presentation.feature.keywordGraph.UserIdType
+import com.peekr.core.presentation.feature.keywordGraph.UserKeywordIdType
+import com.peekr.core.presentation.feature.keywordGraph.view.KeywordGraphView
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R

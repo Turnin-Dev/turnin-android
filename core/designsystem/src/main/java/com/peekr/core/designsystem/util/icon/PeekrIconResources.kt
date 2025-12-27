@@ -168,6 +168,9 @@ val PeekrIcons.Default.Normal.Check: PeekrIconType
 val PeekrIcons.Default.Normal.Cancel: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_default_normal_cancel)
 
+val PeekrIcons.Default.Normal.Refresh: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_default_normal_refresh)
+
 // ------------------------------ Default (Bold) ------------------------------
 
 val PeekrIcons.Default.Bold.Arrow1Left: PeekrIconType
@@ -208,3 +211,6 @@ val PeekrIcons.Default.Bold.Check: PeekrIconType
 
 val PeekrIcons.Default.Bold.Cancel: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_default_bold_cancel)
+
+val PeekrIcons.Default.Bold.Refresh: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_default_bold_refresh)

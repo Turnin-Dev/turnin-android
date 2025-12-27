@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.feature.keyword.view
+package com.peekr.core.presentation.feature.keywordGraph.view
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import com.peekr.core.presentation.feature.keyword.NodeOffsetXType
-import com.peekr.core.presentation.feature.keyword.NodeOffsetYType
-import com.peekr.core.presentation.feature.keyword.state.NodeTokens
-import com.peekr.core.presentation.feature.keyword.state.rememberNodeState
+import com.peekr.core.presentation.feature.keywordGraph.NodeOffsetXType
+import com.peekr.core.presentation.feature.keywordGraph.NodeOffsetYType
+import com.peekr.core.presentation.feature.keywordGraph.state.NodeTokens
+import com.peekr.core.presentation.feature.keywordGraph.state.rememberNodeState
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -84,8 +84,8 @@ fun KeywordNodeEdge(
     ) {
         // 키워드 엣지(간선)
         KeywordEdge(
-            targetX = animatedNodeOffsetX + nodeState.widthPx / 2,
-            targetY = animatedNodeOffsetY + nodeState.heightPx / 2,
+            targetX = animatedNodeOffsetX,
+            targetY = animatedNodeOffsetY,
         )
 
         // 키워드 노드
@@ -98,8 +98,8 @@ fun KeywordNodeEdge(
                     )
                 }
                 .graphicsLayer {
-                    translationX = animatedNodeOffsetX
-                    translationY = animatedNodeOffsetY
+                    translationX = animatedNodeOffsetX - (nodeState.widthPx / 2)
+                    translationY = animatedNodeOffsetY - (nodeState.heightPx / 2)
                 }
                 .then(
                     if (freeGesture) {

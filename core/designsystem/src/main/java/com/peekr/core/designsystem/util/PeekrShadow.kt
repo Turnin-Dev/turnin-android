@@ -39,7 +39,6 @@ fun Modifier.peekrShadow(
     shape: Shape = RectangleShape,
 ): Modifier = composed {
     val isDarkMode = isSystemInDarkTheme()
-    val color = if (isDarkMode) Color.White else Color.Black
 
     when (type) {
         PeekrShadowType.Normal -> {
@@ -47,10 +46,11 @@ fun Modifier.peekrShadow(
                 shape = shape,
                 shadow = Shadow(
                     radius = 3.dp,
-                    color = color,
+                    color = Color.Black.copy(
+                        alpha = if (isDarkMode) 0.5f else 0.1f,
+                    ),
                     spread = 0.dp,
                     offset = DpOffset(0.dp, 0.dp),
-                    alpha = 0.1f,
                 ),
             )
         }

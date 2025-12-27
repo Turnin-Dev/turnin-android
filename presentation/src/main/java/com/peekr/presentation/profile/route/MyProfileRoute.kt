@@ -14,9 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.feature.keyword.KeywordNameType
-import com.peekr.core.presentation.feature.keyword.UserIdType
-import com.peekr.core.presentation.feature.keyword.UserKeywordIdType
+import com.peekr.core.presentation.feature.keywordGraph.KeywordNameType
+import com.peekr.core.presentation.feature.keywordGraph.UserIdType
+import com.peekr.core.presentation.feature.keywordGraph.UserKeywordIdType
 import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.MyProfileContract
