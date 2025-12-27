@@ -143,6 +143,7 @@ class MainActivity : ComponentActivity() {
                     Box(
                         Modifier
                             .fillMaxSize()
+                            .padding(innerPadding)
                             .background(PeekrTheme.colorScheme.backgroundNormal),
                     ) {
                         KeywordNetworkGraph(

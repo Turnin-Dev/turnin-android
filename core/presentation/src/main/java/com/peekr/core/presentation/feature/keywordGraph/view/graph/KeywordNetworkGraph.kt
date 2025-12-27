@@ -2,9 +2,7 @@ package com.peekr.core.presentation.feature.keywordGraph.view.graph
 
 import android.util.Log
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
@@ -61,7 +58,10 @@ import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.icon.Arrow1Down
 import com.peekr.core.designsystem.util.icon.Arrow1Up
 import com.peekr.core.designsystem.util.icon.PeekrIcons
+import com.peekr.core.designsystem.util.icon.Pin
+import com.peekr.core.designsystem.util.icon.Refresh
 import com.peekr.core.designsystem.util.peekrShadow
+import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.feature.keywordGraph.model.UiKeywordNode
 import com.peekr.core.presentation.feature.keywordGraph.model.UiUserCluster
@@ -338,7 +338,7 @@ fun KeywordNetworkGraph(
             }
         }
 
-        // 사용자 리스트 (하단에 위치)
+        // 옵션 1. 사용자 리스트 (하단에 위치)
         UserCardListSection(
             modifier = Modifier
                 .fillMaxWidth()
@@ -355,20 +355,55 @@ fun KeywordNetworkGraph(
 
                 coroutineScope.launch {
                     launch {
-                        animDragOffset.animateTo(
-                            targetValue = targetPos,
-                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-                        )
+                        animDragOffset.snapTo(targetPos)
                     }
                     launch {
-                        animZoom.animateTo(
-                            targetValue = 1f,
-                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-                        )
+                        animZoom.snapTo(1f)
                     }
                 }
             },
         )
+
+        // 옵션 2, 3 (상단에 위치)
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(ScreenTokens.HorizontalPadding),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            // 옵션 2. 나에게로 돌아오기
+            PeekrIconButton(
+                modifier = Modifier
+                    .peekrShadow(PeekrShadowType.Normal, CircleShape)
+                    .clip(CircleShape)
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                icon = PeekrIcons.Outlined.Normal.Pin,
+                iconSize = PeekrIconSize.Normal,
+                contentDescription = stringResource(R.string.keyword_network_graph_move_to_my_cluster),
+                onClick = {
+                    coroutineScope.launch {
+                        launch {
+                            animDragOffset.snapTo(Offset.Zero)
+                        }
+                        launch {
+                            animZoom.snapTo(1f)
+                        }
+                    }
+                },
+            )
+
+            // 옵션 3. 새로고침
+            PeekrIconButton(
+                modifier = Modifier
+                    .peekrShadow(PeekrShadowType.Normal, CircleShape)
+                    .clip(CircleShape)
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                icon = PeekrIcons.Default.Normal.Refresh,
+                iconSize = PeekrIconSize.Normal,
+                contentDescription = stringResource(R.string.keyword_network_graph_refresh),
+                onClick = { },
+            )
+        }
     }
 }
 
@@ -526,13 +561,13 @@ private fun UserCardListSection(
                 .padding(end = 20.dp)
                 .peekrShadow(PeekrShadowType.Normal, CircleShape)
                 .clip(CircleShape)
-                .background(Color.White),
+                .background(PeekrTheme.colorScheme.backgroundNormal),
             icon = if (isOpen) {
                 PeekrIcons.Default.Normal.Arrow1Down
             } else {
                 PeekrIcons.Default.Normal.Arrow1Up
             },
-            iconSize = PeekrIconSize.Small,
+            iconSize = PeekrIconSize.Medium,
             contentDescription = stringResource(R.string.keyword_network_graph_open_user_list),
             onClick = { onToggle() },
         )
