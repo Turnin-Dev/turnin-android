@@ -1,6 +1,5 @@
 package com.peekr.core.presentation.feature.keywordGraph.view.graph
 
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.Canvas
@@ -270,24 +269,24 @@ fun KeywordNetworkGraph(
             }
 
             // ------------------------------ 로깅 ------------------------------
-            val visibleClusters = remember(viewportRect) {
-                val clusters = mutableListOf<UiUserCluster>()
-                (otherClusters + myCluster).map { cluster ->
-                    val pos = clusterPositions[cluster.userNode.userId] ?: Offset.Zero
-                    val center = Offset(viewportSize.width / 2f, viewportSize.height / 2f)
-                    val absolutePos = pos + center
-                    if (viewportRect.overlaps(Rect(absolutePos, clusterRadiusPx))) {
-                        clusters.add(cluster)
-                    }
-                }
-
-                clusters
-            }
-
-            LaunchedEffect(visibleClusters) {
-                Log.d("Graph_Debug", "현재 렌더링 중인 클러스터 개수: ${visibleClusters.count()} / ${otherClusters.size + 1}")
-                Log.d("Graph_Debug", "현재 렌더링 중인 클러스터: $visibleClusters / ${otherClusters.size + 1}")
-            }
+//            val visibleClusters = remember(viewportRect) {
+//                val clusters = mutableListOf<UiUserCluster>()
+//                (otherClusters + myCluster).map { cluster ->
+//                    val pos = clusterPositions[cluster.userNode.userId] ?: Offset.Zero
+//                    val center = Offset(viewportSize.width / 2f, viewportSize.height / 2f)
+//                    val absolutePos = pos + center
+//                    if (viewportRect.overlaps(Rect(absolutePos, clusterRadiusPx))) {
+//                        clusters.add(cluster)
+//                    }
+//                }
+//
+//                clusters
+//            }
+//
+//            LaunchedEffect(visibleClusters) {
+//                Log.d("Graph_Debug", "현재 렌더링 중인 클러스터 개수: ${visibleClusters.count()} / ${otherClusters.size + 1}")
+//                Log.d("Graph_Debug", "현재 렌더링 중인 클러스터: $visibleClusters / ${otherClusters.size + 1}")
+//            }
             // ------------------------------ 로깅 끝 ------------------------------
 
             // 렌더링 레이어

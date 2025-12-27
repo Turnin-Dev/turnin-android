@@ -29,7 +29,7 @@ enum class ClusterLayout {
     fun getOffset(
         index: Int,
         spacing: Float,
-        nodesPerLayer: Int = 0,
+        nodesPerLayer: Int = 1,
     ): Offset = when (this) {
         Radial -> calculateRadialOffset(index, spacing, nodesPerLayer)
         Spiral -> calculateSpiralOffset(index, spacing)
