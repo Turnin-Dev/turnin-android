@@ -5,7 +5,7 @@ import com.peekr.core.domain.common.validation.CommonValidationException
 @JvmInline
 value class KeywordName private constructor(val value: String) {
     /**
-     * 키워드 명(값) VO
+     * 키워드 명 VO
      *
      * @throws CommonValidationException 유효성 검사 실패 시
      */
