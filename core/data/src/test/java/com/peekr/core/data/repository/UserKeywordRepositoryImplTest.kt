@@ -17,7 +17,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
@@ -429,7 +429,7 @@ class UserKeywordRepositoryImplTest {
         private val TestUserId = UserId(1L)
         private val TestUserKeywordId = UserKeywordId(1L)
         private val TestKeywordId = KeywordId(1L)
-        private val TestKeyword = KeywordValue("sampleKeyword")
+        private val TestKeyword = KeywordName("sampleKeyword")
         private val TestKeywordDescription = KeywordDescription("sample")
         private val TestUserKeywordResponse = UserKeywordResponse(
             id = TestUserKeywordId.value,

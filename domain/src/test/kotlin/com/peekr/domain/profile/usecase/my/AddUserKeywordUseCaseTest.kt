@@ -3,7 +3,7 @@ package com.peekr.domain.profile.usecase.my
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.repository.UserRepository
@@ -52,7 +52,7 @@ class AddUserKeywordUseCaseTest {
     fun `키워드 유효성 검사 실패 시 예외가 발생하고 정상적으로 에러를 반환한다`() = runTest {
         // when
         val result = usecase(
-            keyword = "a".repeat(KeywordValue.MAX_LENGTH + 1),
+            keyword = "a".repeat(KeywordName.MAX_LENGTH + 1),
             description = TestKeywordDescription.value,
         ).last()
 
@@ -65,7 +65,7 @@ class AddUserKeywordUseCaseTest {
         private const val INITIAL_OFFSET_X = 0.0
         private const val INITIAL_OFFSET_Y = 0.0
         private val TestUserId = UserId(1L)
-        private val TestKeyword = KeywordValue("sampleKeyword")
+        private val TestKeyword = KeywordName("sampleKeyword")
         private val TestKeywordDescription = KeywordDescription("hello")
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),

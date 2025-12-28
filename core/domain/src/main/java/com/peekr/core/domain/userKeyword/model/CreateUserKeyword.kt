@@ -1,7 +1,7 @@
 package com.peekr.core.domain.userKeyword.model
 
 import com.peekr.core.domain.model.KeywordDescription
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 
 /**
@@ -15,7 +15,7 @@ import com.peekr.core.domain.model.UserId
  */
 data class CreateUserKeyword(
     val userId: UserId,
-    val keyword: KeywordValue,
+    val keyword: KeywordName,
     val description: KeywordDescription,
     val offsetX: Double,
     val offsetY: Double,

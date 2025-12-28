@@ -2,7 +2,7 @@ package com.peekr.core.data.source.network.dto.keyword.response
 
 import com.peekr.core.domain.keyword.model.Keyword
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.squareup.moshi.JsonClass
 
 /**
@@ -26,7 +26,7 @@ data class KeywordResponse(
 fun KeywordResponse.toDomainModel(): Keyword =
     Keyword(
         id = KeywordId(id),
-        keyword = KeywordValue(keyword),
+        keyword = KeywordName(keyword),
         createdBy = createdBy,
         createdAt = createdAt,
         updatedAt = updatedAt,

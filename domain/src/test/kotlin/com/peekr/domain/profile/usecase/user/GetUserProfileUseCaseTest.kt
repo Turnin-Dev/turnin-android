@@ -6,7 +6,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
@@ -56,7 +56,7 @@ class GetUserProfileUseCaseTest {
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId.Companion(1L),
             keywordId = KeywordId.Companion(1L),
-            keyword = KeywordValue.Companion("key"),
+            keyword = KeywordName.Companion("key"),
             userId = TestUserId,
             offsetX = 0.0,
             offsetY = 0.0,

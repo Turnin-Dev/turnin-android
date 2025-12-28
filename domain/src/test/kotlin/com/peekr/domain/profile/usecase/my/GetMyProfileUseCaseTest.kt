@@ -5,7 +5,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
@@ -58,7 +58,7 @@ class GetMyProfileUseCaseTest {
         private val TestUserKeyword = UserKeyword(
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
-            keyword = KeywordValue("key"),
+            keyword = KeywordName("key"),
             userId = UserId(1L),
             offsetX = 0.0,
             offsetY = 0.0,
