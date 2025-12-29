@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  * @property nextCursor 다음 커서 값
  */
 @JsonClass(generateAdapter = true)
-data class CursorPageResponse<T, C>(
-    val items: List<T>,
-    val nextCursor: C?,
-)
+interface CursorPageResponse<T, C> {
+    val items: List<T>
+    val nextCursor: C?
+}

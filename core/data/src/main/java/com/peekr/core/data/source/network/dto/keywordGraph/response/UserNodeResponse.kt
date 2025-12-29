@@ -1,5 +1,8 @@
 package com.peekr.core.data.source.network.dto.keywordGraph.response
 
+import com.peekr.core.domain.keywordGraph.model.UserNode
+import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.model.UserId
 import com.squareup.moshi.JsonClass
 
 /**
@@ -15,3 +18,10 @@ data class UserNodeResponse(
     val userName: String,
     val profileImageUrl: String?,
 )
+
+fun UserNodeResponse.toDomainModel(): UserNode =
+    UserNode(
+        userId = UserId(userId),
+        userName = Name(userName),
+        profileImageUrl = profileImageUrl,
+    )

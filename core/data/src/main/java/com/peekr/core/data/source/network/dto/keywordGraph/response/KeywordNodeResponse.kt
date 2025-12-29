@@ -1,5 +1,9 @@
 package com.peekr.core.data.source.network.dto.keywordGraph.response
 
+import com.peekr.core.domain.keywordGraph.model.KeywordNode
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordName
+import com.peekr.core.domain.model.UserKeywordId
 import com.squareup.moshi.JsonClass
 
 /**
@@ -15,3 +19,10 @@ data class KeywordNodeResponse(
     val keywordId: Long,
     val keywordName: String,
 )
+
+fun KeywordNodeResponse.toDomainModel(): KeywordNode =
+    KeywordNode(
+        userKeywordId = UserKeywordId(userKeywordId),
+        keywordId = KeywordId(keywordId),
+        keywordName = KeywordName(keywordName),
+    )

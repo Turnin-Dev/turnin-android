@@ -1,7 +1,6 @@
 package com.peekr.core.data.source.network.datasource
 
-import com.peekr.core.data.source.network.dto.keywordGraph.response.NodeContextResponse
-import com.peekr.core.data.source.network.util.CursorPageResponse
+import com.peekr.core.data.source.network.dto.keywordGraph.response.NodeContextCursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 
 interface KeywordGraphNetworkDataSource {
@@ -14,7 +13,7 @@ interface KeywordGraphNetworkDataSource {
      */
     suspend fun getNodeContexts(
         userId: Long,
-        cursor: Long,
+        cursor: Long?,
         size: Int,
-    ): NetworkResult<CursorPageResponse<NodeContextResponse, Long>>
+    ): NetworkResult<NodeContextCursorPageResponse>
 }

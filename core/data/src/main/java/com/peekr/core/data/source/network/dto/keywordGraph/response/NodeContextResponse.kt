@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.dto.keywordGraph.response
 
+import com.peekr.core.domain.keywordGraph.model.NodeContext
 import com.squareup.moshi.JsonClass
 
 /**
@@ -13,3 +14,9 @@ data class NodeContextResponse(
     val userNode: UserNodeResponse,
     val keywordNodes: List<KeywordNodeResponse>,
 )
+
+fun NodeContextResponse.toDomainModel(): NodeContext =
+    NodeContext(
+        userNode = userNode.toDomainModel(),
+        keywordNodes = keywordNodes.map { it.toDomainModel() },
+    )
