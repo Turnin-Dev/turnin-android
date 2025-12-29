@@ -1,8 +1,8 @@
 package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.di.DefaultOkHttpClient
 import com.peekr.core.data.source.network.api.FileApi
-import com.peekr.core.data.source.network.di.DefaultOkHttpClient
 import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult

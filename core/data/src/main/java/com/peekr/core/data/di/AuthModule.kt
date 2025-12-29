@@ -1,4 +1,4 @@
-package com.peekr.core.data.source.network.di
+package com.peekr.core.data.di
 
 import com.peekr.core.data.repository.AuthRepositoryImpl
 import com.peekr.core.data.source.network.api.AuthApi

@@ -1,8 +1,10 @@
-package com.peekr.core.data.source.network.di
+package com.peekr.core.data.di
 
+import com.peekr.core.data.repository.KeywordGraphRepositoryImpl
 import com.peekr.core.data.source.network.api.KeywordGraphApi
 import com.peekr.core.data.source.network.datasource.KeywordGraphNetworkDataSource
 import com.peekr.core.data.source.network.datasource.KeywordGraphNetworkDataSourceImpl
+import com.peekr.core.domain.keywordGraph.repository.KeywordGraphRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,4 +35,9 @@ interface KeywordGraphBindModule {
     fun bindsKeywordGraphNetworkDataSource(
         impl: KeywordGraphNetworkDataSourceImpl,
     ): KeywordGraphNetworkDataSource
+
+    @Binds
+    fun bindsKeywordGraphRepository(
+        impl: KeywordGraphRepositoryImpl,
+    ): KeywordGraphRepository
 }
