@@ -13,16 +13,10 @@ interface KeywordGraphRepository {
      * [NodeContext]를 커서 기반 페이지네이션으로 조회한다.
      *
      * @param userId 조회할 사용자 ID
-     * @param cursor 커서
-     * @param size 페이지 사이즈
      *
      * @return [PagingData], [NodeContext]
      *
      * @see NodeContext
      */
-    fun getNodeContexts(
-        userId: UserId,
-        cursor: Long?,
-        size: Int,
-    ): Flow<PagingData<NodeContext>>
+    fun getNodeContexts(userId: UserId): Flow<PagingData<NodeContext>>
 }

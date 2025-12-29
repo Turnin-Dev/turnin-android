@@ -1,7 +1,5 @@
 package com.peekr.core.data.source.network.util
 
-import com.squareup.moshi.JsonClass
-
 /**
  * 커서 기반 페이지네이션 응답 바디를 구현하는 경우 해당 인터페이스를 구현해서 사용한다.
  *
@@ -10,7 +8,6 @@ import com.squareup.moshi.JsonClass
  * @property items 항목 목록
  * @property nextCursor 다음 커서 값
  */
-@JsonClass(generateAdapter = true)
 interface CursorPageResponse<T, C> {
     val items: List<T>
     val nextCursor: C?

@@ -19,11 +19,7 @@ import kotlinx.coroutines.flow.map
 class KeywordGraphRepositoryImpl @Inject constructor(
     private val keywordGraphNetworkDataSource: KeywordGraphNetworkDataSource,
 ) : KeywordGraphRepository {
-    override fun getNodeContexts(
-        userId: UserId,
-        cursor: Long?,
-        size: Int,
-    ): Flow<PagingData<NodeContext>> {
+    override fun getNodeContexts(userId: UserId): Flow<PagingData<NodeContext>> {
         val pageSize = KeywordGraphPagingTokens.PAGE_SIZE
 
         return Pager(

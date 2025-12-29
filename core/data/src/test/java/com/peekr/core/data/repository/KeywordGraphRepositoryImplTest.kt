@@ -59,7 +59,7 @@ class KeywordGraphRepositoryImplTest {
         } returns NetworkResult.Success(expectedCursorPage2)
 
         // when
-        val nodeContexts = repository.getNodeContexts(UserId(1L), null, pageSize).asSnapshot()
+        val nodeContexts = repository.getNodeContexts(UserId(1L)).asSnapshot()
 
         // then
         // 2개의 페이지만 테스트했으므로 개수는 (페이지 사이즈 * 2)이어야 한다.
@@ -77,7 +77,7 @@ class KeywordGraphRepositoryImplTest {
 
         // when
         val exception = runCatching {
-            repository.getNodeContexts(UserId(1L), null, pageSize).asSnapshot()
+            repository.getNodeContexts(UserId(1L)).asSnapshot()
         }.exceptionOrNull()
 
         // then
