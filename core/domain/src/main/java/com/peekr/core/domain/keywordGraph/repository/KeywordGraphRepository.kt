@@ -22,7 +22,7 @@ interface KeywordGraphRepository {
      */
     fun getNodeContexts(
         userId: UserId,
-        cursor: Long,
+        cursor: Long?,
         size: Int,
     ): Flow<PagingData<NodeContext>>
 }

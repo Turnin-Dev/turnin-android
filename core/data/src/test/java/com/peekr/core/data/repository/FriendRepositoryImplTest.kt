@@ -1,8 +1,8 @@
 package com.peekr.core.data.repository
 
-import android.util.Log
 import androidx.paging.testing.asSnapshot
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.MockLog
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
@@ -29,9 +29,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import io.mockk.unmockkObject
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -67,24 +65,14 @@ class FriendRepositoryImplTest {
         every { AppLogger.d(any(), any()) } just Runs
         every { AppLogger.d(any(), any(), any()) } just Runs
         // Paging 라이브러리 내부에서 발생하는 Log 호출 방지
-        mockkStatic(Log::class)
-        every { Log.v(any(), any()) } returns 0
-        every { Log.v(any(), any(), any()) } returns 0
-        every { Log.d(any(), any()) } returns 0
-        every { Log.d(any(), any(), any()) } returns 0
-        every { Log.i(any(), any()) } returns 0
-        every { Log.w(any(), any<String>()) } returns 0
-        every { Log.e(any(), any()) } returns 0
-        every { Log.isLoggable(any<String>(), any()) } returns true
-        every { Log.e(any(), any(), any()) } returns 0
-        every { Log.w(any(), any<String>(), any()) } returns 0
+        MockLog.mock()
     }
 
     @After
     fun tearDown() {
         clearAllMocks()
         unmockkObject(AppLogger::class)
-        unmockkStatic(Log::class)
+        MockLog.cleanUp()
     }
 
     /**
