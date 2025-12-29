@@ -2,7 +2,7 @@ package com.peekr.core.data.source.network.dto.userKeyword.response
 
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
@@ -39,7 +39,7 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
     UserKeyword(
         id = UserKeywordId(id),
         keywordId = KeywordId(keywordId),
-        keyword = KeywordValue(keyword),
+        keyword = KeywordName(keyword),
         userId = UserId(userId),
         offsetX = offsetX,
         offsetY = offsetY,

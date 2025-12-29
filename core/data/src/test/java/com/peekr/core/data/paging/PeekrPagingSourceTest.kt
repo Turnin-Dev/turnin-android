@@ -4,10 +4,10 @@ import androidx.paging.PagingSource.LoadParams
 import androidx.paging.PagingSource.LoadResult
 import androidx.paging.PagingState
 import com.peekr.core.data.source.network.error.NetworkErrorType
+import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import io.mockk.coEvery
 import io.mockk.mockk
-import java.io.IOException
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -32,9 +32,10 @@ private fun createItems(startId: Int, count: Int): List<Item> =
 class PeekrPagingSourceTest {
     private val mockApiCall: ApiCallMock = mockk()
 
-    private fun createPagingSource(): PeekrPagingSource<Item, ItemListResponse> = PeekrPagingSource(
-        apiCall = { page -> mockApiCall.call(page) },
-    )
+    private fun createPagingSource(): PeekrPagingSource<Item, ItemListResponse> =
+        PeekrPagingSource(
+            apiCall = { page -> mockApiCall.call(page) },
+        )
 
     @Test
     fun `최초 로드 (Initial Load) 성공 테스트`() = runTest {
@@ -44,6 +45,11 @@ class PeekrPagingSourceTest {
             list = items,
             hasNext = true,
         )
+        val expectedResult = LoadResult.Page(
+            data = items,
+            prevKey = null,
+            nextKey = PeekrPagingSource.START_PAGE_INDEX + 1,
+        )
 
         // 1(초기) 페이지 요청 시 성공 응답을 반환하도록 설정
         coEvery {
@@ -52,12 +58,7 @@ class PeekrPagingSourceTest {
 
         // when
         val pagingSource = createPagingSource()
-        val expected = LoadResult.Page(
-            data = items,
-            prevKey = null,
-            nextKey = PeekrPagingSource.START_PAGE_INDEX + 1,
-        )
-        val result = pagingSource.load(
+        val actualResult = pagingSource.load(
             LoadParams.Refresh(
                 key = null,
                 loadSize = PAGE_SIZE,
@@ -66,7 +67,7 @@ class PeekrPagingSourceTest {
         )
 
         // then
-        assertEquals(expected, result)
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test
@@ -79,6 +80,11 @@ class PeekrPagingSourceTest {
             list = items,
             hasNext = true,
         )
+        val expectedResult = LoadResult.Page(
+            data = items,
+            prevKey = currentPage - 1,
+            nextKey = currentPage + 1,
+        )
 
         // 3 페이지 요청 시 성공 응답을 반환하도록 설정
         coEvery {
@@ -87,12 +93,7 @@ class PeekrPagingSourceTest {
 
         // when
         val pagingSource = createPagingSource()
-        val expected = LoadResult.Page(
-            data = items,
-            prevKey = currentPage - 1,
-            nextKey = currentPage + 1,
-        )
-        val result = pagingSource.load(
+        val actualResult = pagingSource.load(
             LoadParams.Append(
                 key = currentPage,
                 loadSize = PAGE_SIZE,
@@ -101,7 +102,7 @@ class PeekrPagingSourceTest {
         )
 
         // then
-        assertEquals(expected, result)
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test
@@ -109,6 +110,11 @@ class PeekrPagingSourceTest {
         // given
         val currentPage = 5L
         val response = ItemListResponse(list = emptyList(), hasNext = false)
+        val expectedResult = LoadResult.Page(
+            data = emptyList(),
+            prevKey = currentPage - 1,
+            nextKey = null, // 데이터가 없으므로 nextKey는 null
+        )
 
         // 5 페이지 요청 시 빈 리스트 응답을 반환하도록 설정
         coEvery {
@@ -117,12 +123,7 @@ class PeekrPagingSourceTest {
 
         // when
         val pagingSource = createPagingSource()
-        val expected = LoadResult.Page(
-            data = emptyList(),
-            prevKey = currentPage - 1,
-            nextKey = null, // 데이터가 없으므로 nextKey는 null
-        )
-        val result = pagingSource.load(
+        val actualResult = pagingSource.load(
             LoadParams.Append(
                 key = currentPage,
                 loadSize = PAGE_SIZE,
@@ -131,11 +132,11 @@ class PeekrPagingSourceTest {
         )
 
         // then
-        assertEquals(expected, result)
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test
-    fun `API Error 발생 테스트`() = runTest {
+    fun `API Error 발생 시 PagingApiCallException 반환 테스트`() = runTest {
         // given
         val networkError = NetworkErrorType.Unexpected(null)
         val errorCode = "E001"
@@ -165,18 +166,13 @@ class PeekrPagingSourceTest {
         assertTrue(exception is PagingApiCallException)
         // 예외 내부 데이터 검증
         val pagingException = exception as PagingApiCallException
-        assertEquals(networkError, pagingException.error)
-        assertEquals(errorCode, pagingException.code)
-        assertEquals(errorMessage, pagingException.message)
+        assertEquals(networkError.toCommonErrorType(), pagingException.error)
     }
 
     @Test
-    fun `네트워크 예외 (try-catch 블록에서 잡는 Exception) 발생 테스트`() = runTest {
+    fun `Exception 발생 시 예외 처리 테스트`() = runTest {
         // given
-        val networkException = IOException("Network connection failed")
-
-        // apiCall 자체가 예외를 던지도록 설정
-        coEvery { mockApiCall.call(any()) } throws networkException
+        coEvery { mockApiCall.call(any()) } throws IllegalStateException("Unexpected error")
 
         // when
         val pagingSource = createPagingSource()
@@ -190,7 +186,7 @@ class PeekrPagingSourceTest {
 
         // then
         val error = result as LoadResult.Error
-        assertEquals(networkException, error.throwable)
+        assertTrue(error.throwable is PagingApiCallException)
     }
 
     @Test

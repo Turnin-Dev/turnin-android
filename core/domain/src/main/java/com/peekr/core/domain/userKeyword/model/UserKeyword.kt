@@ -2,7 +2,7 @@ package com.peekr.core.domain.userKeyword.model
 
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 
@@ -22,7 +22,7 @@ import com.peekr.core.domain.model.UserKeywordId
 data class UserKeyword(
     val id: UserKeywordId,
     val keywordId: KeywordId,
-    val keyword: KeywordValue,
+    val keyword: KeywordName,
     val userId: UserId,
     val offsetX: Double,
     val offsetY: Double,

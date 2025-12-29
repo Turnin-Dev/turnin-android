@@ -3,9 +3,9 @@ package com.peekr.core.domain.model
 import com.peekr.core.domain.common.validation.CommonValidationException
 
 @JvmInline
-value class KeywordValue private constructor(val value: String) {
+value class KeywordName private constructor(val value: String) {
     /**
-     * 키워드 명(값) VO
+     * 키워드 명 VO
      *
      * @throws CommonValidationException 유효성 검사 실패 시
      */
@@ -14,9 +14,9 @@ value class KeywordValue private constructor(val value: String) {
         const val MAX_LENGTH = 15
         private const val FIELD = "키워드"
 
-        fun from(value: String): KeywordValue = KeywordValue(value)
+        fun from(value: String): KeywordName = KeywordName(value)
 
-        operator fun invoke(value: String): KeywordValue = from(value)
+        operator fun invoke(value: String): KeywordName = from(value)
     }
 
     init {

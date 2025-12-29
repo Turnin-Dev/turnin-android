@@ -5,7 +5,7 @@ import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.common.validation.CommonValidationException
 import com.peekr.core.domain.common.validation.toValidationErrorType
 import com.peekr.core.domain.model.KeywordDescription
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
@@ -39,7 +39,7 @@ class AddUserKeywordUseCase @Inject constructor(
             if (userId != null) {
                 val createUserKeyword = CreateUserKeyword(
                     userId = userId,
-                    keyword = KeywordValue.Companion(keyword),
+                    keyword = KeywordName.Companion(keyword),
                     description = KeywordDescription.Companion(description),
                     offsetX = INITIAL_OFFSET_X,
                     offsetY = INITIAL_OFFSET_Y,

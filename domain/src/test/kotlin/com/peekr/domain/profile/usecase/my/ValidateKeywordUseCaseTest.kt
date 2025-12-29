@@ -2,7 +2,7 @@ package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.validation.ValidationErrorType
 import com.peekr.core.domain.common.validation.ValidationResult
-import com.peekr.core.domain.model.KeywordValue
+import com.peekr.core.domain.model.KeywordName
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -42,6 +42,6 @@ class ValidateKeywordUseCaseTest {
     companion object {
         private const val VALID_KEYWORD = "sample"
         private const val EMPTY_KEYWORD = ""
-        private val TOO_LONG_KEYWORD = "a".repeat(KeywordValue.MAX_LENGTH + 1)
+        private val TOO_LONG_KEYWORD = "a".repeat(KeywordName.MAX_LENGTH + 1)
     }
 }
