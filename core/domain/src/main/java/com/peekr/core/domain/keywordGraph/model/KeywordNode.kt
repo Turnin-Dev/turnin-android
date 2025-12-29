@@ -1,6 +1,7 @@
 package com.peekr.core.domain.keywordGraph.model
 
 import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserKeywordId
 
 /**
@@ -13,5 +14,5 @@ import com.peekr.core.domain.model.UserKeywordId
 data class KeywordNode(
     val userKeywordId: UserKeywordId,
     val keywordId: KeywordId,
-    val keywordName: String,
+    val keywordName: KeywordName,
 )

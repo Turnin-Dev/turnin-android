@@ -54,4 +54,8 @@ object NetworkApiPath {
         const val STATUS = "$ROUTE/status"
         const val LIST = "$ROUTE/list"
     }
+
+    object KeywordGraph {
+        const val ROUTE = "$BASE/keyword-graph"
+    }
 }
