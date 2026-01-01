@@ -29,6 +29,7 @@ data class PeekrColor(
     val componentEdge: Color,
     val componentEdge2: Color,
     val componentShimmer: Color,
+    val componentKeywordBG: Color,
 )
 
 val peekrLightColor = PeekrColor(
@@ -53,6 +54,7 @@ val peekrLightColor = PeekrColor(
     componentEdge = Color(0xFFBDBDBD),
     componentEdge2 = Color(0xFF777777),
     componentShimmer = Color(0xFFE0E0E0),
+    componentKeywordBG = Color(0xFFF8F9FA),
 )
 
 val peekrDarkColor = PeekrColor(
@@ -77,4 +79,5 @@ val peekrDarkColor = PeekrColor(
     componentEdge = Color(0xFF616161),
     componentEdge2 = Color(0xFF8A8A8A),
     componentShimmer = Color(0xFF3A3A3A),
+    componentKeywordBG = Color(0xFF1F2226),
 )

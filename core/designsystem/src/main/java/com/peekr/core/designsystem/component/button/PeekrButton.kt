@@ -46,9 +46,9 @@ enum class PeekrButtonStyle(
     ),
     Tiny(
         height = 25.dp,
-        cornerRadius = 4.dp,
+        cornerRadius = 6.dp,
         iconSize = 13.dp,
-        paddingValues = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
+        paddingValues = PaddingValues(horizontal = 12.dp, vertical = 7.dp),
         innerPadding = 5.dp,
     ),
 }
