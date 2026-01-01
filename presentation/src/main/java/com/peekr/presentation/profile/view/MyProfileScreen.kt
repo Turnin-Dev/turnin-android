@@ -115,7 +115,8 @@ fun MyProfileScreen(
                     )
                 } ?: ProfileSkeleton()
             },
-            keywordGraph = {
+            keywordsTitle = {},
+            keywords = {
                 myProfile?.let {
                     KeywordGraph(
                         modifier = Modifier.fillMaxWidth(),
