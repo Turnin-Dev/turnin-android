@@ -154,7 +154,7 @@ class MainActivity : ComponentActivity() {
                                     UiKeywordNode(it.id.value, it.keywordId.value, it.keywordName)
                                 },
                             ),
-                            otherClusters = List(500) {
+                            otherClusters = List(100) {
                                 UiUserCluster(
                                     userNode = UiUserNode(
                                         userId = (it + 1).toLong(),

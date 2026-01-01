@@ -343,7 +343,7 @@ fun KeywordNetworkGraph(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp, end = ScreenTokens.HorizontalPadding),
+                .padding(bottom = 24.dp),
             isOpen = isUserCardListOpen,
             lazyListState = lazyListState,
             userNodes = allClusters.map { it.userNode },
@@ -539,6 +539,7 @@ private fun ToolBar(
         // 옵션 1. 나에게로 돌아오기
         PeekrIconButton(
             modifier = Modifier
+                .padding(end = ScreenTokens.HorizontalPadding)
                 .peekrShadow(PeekrShadowType.Normal, CircleShape)
                 .clip(CircleShape)
                 .background(PeekrTheme.colorScheme.backgroundNormal),
@@ -551,6 +552,7 @@ private fun ToolBar(
         // 옵션 2. 새로고침
         PeekrIconButton(
             modifier = Modifier
+                .padding(end = ScreenTokens.HorizontalPadding)
                 .peekrShadow(PeekrShadowType.Normal, CircleShape)
                 .clip(CircleShape)
                 .background(PeekrTheme.colorScheme.backgroundNormal),
@@ -563,6 +565,7 @@ private fun ToolBar(
         // 옵션 3. 사용자 리스트 토글
         PeekrIconButton(
             modifier = Modifier
+                .padding(end = ScreenTokens.HorizontalPadding)
                 .peekrShadow(PeekrShadowType.Normal, CircleShape)
                 .clip(CircleShape)
                 .background(PeekrTheme.colorScheme.backgroundNormal),
