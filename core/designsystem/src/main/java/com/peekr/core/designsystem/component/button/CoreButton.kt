@@ -4,7 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -64,7 +64,7 @@ internal fun CoreButton(
 
     Button(
         onClick = { if (!loading) throttleClickEventProcessor.processEvent(onClick) },
-        modifier = modifier.height(style.height),
+        modifier = modifier.heightIn(min = style.height),
         enabled = enabled,
         colors = type.buttonColors(),
         border = type.borderStroke(enabled),

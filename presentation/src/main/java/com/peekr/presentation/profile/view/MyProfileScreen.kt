@@ -39,6 +39,7 @@ import com.peekr.core.designsystem.util.icon.Cancel
 import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
+import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
@@ -147,6 +148,7 @@ fun MyProfileScreen(
                     .align(Alignment.BottomEnd)
                     .padding(FabPaddingDp)
                     .size(FabSize),
+                icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
                 onClick = onOpenAddKeywordModal,
             )
