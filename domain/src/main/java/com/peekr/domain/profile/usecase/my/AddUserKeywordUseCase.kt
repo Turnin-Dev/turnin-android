@@ -41,8 +41,6 @@ class AddUserKeywordUseCase @Inject constructor(
                     userId = userId,
                     keyword = KeywordName.Companion(keyword),
                     description = KeywordDescription.Companion(description),
-                    offsetX = INITIAL_OFFSET_X,
-                    offsetY = INITIAL_OFFSET_Y,
                 )
                 emitAll(
                     userKeywordRepository
@@ -60,6 +58,3 @@ class AddUserKeywordUseCase @Inject constructor(
         }
     }
 }
-
-private const val INITIAL_OFFSET_X = 0.0
-private const val INITIAL_OFFSET_Y = 0.0

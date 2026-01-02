@@ -15,7 +15,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.presentation.profile.state.UserProfileContract
 import com.peekr.presentation.profile.view.UserProfileScreen
 import com.peekr.presentation.profile.view.modal.DeleteFriendModal
@@ -28,9 +27,6 @@ internal fun UserProfileRoute(
     onBackPressed: () -> Unit,
     navigateToReport: (Long) -> Unit,
 ) {
-    // Lock Orientation
-    LockScreenOrientation()
-
     val viewModel: UserProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var openDeleteFriendModal by rememberSaveable { mutableStateOf(false) }

@@ -3,10 +3,8 @@ package com.peekr.core.data.source.network.datasource
 import com.peekr.core.data.source.network.api.UserKeywordApi
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -31,14 +29,6 @@ class UserKeywordNetworkDataSourceImpl @Inject constructor(
         createUserKeywordRequest: CreateUserKeywordRequest,
     ): NetworkResult<UserKeywordResponse> =
         networkCall { userKeywordApi.createUserKeyword(createUserKeywordRequest) }
-
-    override suspend fun patchOffset(
-        userKeywordId: UserKeywordId,
-        patchOffsetRequest: PatchOffsetRequest,
-    ): NetworkResult<PatchOffsetResponse> =
-        networkCall {
-            userKeywordApi.patchOffset(userKeywordId.value, patchOffsetRequest)
-        }
 
     override suspend fun patchDescription(
         userKeywordId: UserKeywordId,

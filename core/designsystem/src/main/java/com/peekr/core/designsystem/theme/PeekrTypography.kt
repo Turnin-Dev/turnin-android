@@ -147,7 +147,7 @@ fun body3Many(): TextStyle = TextStyle(
 @Composable
 fun body4(): TextStyle = TextStyle(
     fontSize = 13.sp,
-    lineHeight = 20.8.sp,
+    lineHeight = 19.5.sp,
     letterSpacing = 0.03.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,

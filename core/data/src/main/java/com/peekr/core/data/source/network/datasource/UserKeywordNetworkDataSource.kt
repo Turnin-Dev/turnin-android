@@ -2,10 +2,8 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -38,17 +36,6 @@ interface UserKeywordNetworkDataSource {
     suspend fun createUserKeyword(
         createUserKeywordRequest: CreateUserKeywordRequest,
     ): NetworkResult<UserKeywordResponse>
-
-    /**
-     * 사용자 키워드 오프셋 수정
-     *
-     * @param userKeywordId 사용자 키워드 ID,
-     * @param patchOffsetRequest 사용자 키워드 오프셋 수정 요청 바디
-     */
-    suspend fun patchOffset(
-        userKeywordId: UserKeywordId,
-        patchOffsetRequest: PatchOffsetRequest,
-    ): NetworkResult<PatchOffsetResponse>
 
     /**
      * 사용자 키워드 설명 수정

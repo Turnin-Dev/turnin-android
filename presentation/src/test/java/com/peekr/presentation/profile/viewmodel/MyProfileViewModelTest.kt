@@ -11,7 +11,6 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.common.error.asUiText
@@ -22,7 +21,6 @@ import com.peekr.domain.profile.model.MyProfile
 import com.peekr.domain.profile.usecase.MyProfileUseCases
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
-import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
 import com.peekr.presentation.profile.state.KeywordTextFieldState
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.state.SelectedKeywordState
@@ -57,9 +55,6 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         every {
             usecases.addUserKeyword(any(), any())
         } returns flowOf(Result.Success(TestUserKeyword))
-        every {
-            usecases.updateUserKeywordOffset(any(), any(), any())
-        } returns flowOf(Result.Success(TestPatchOffset))
         every {
             usecases.validateKeyword(any())
         } returns ValidationResult.Valid("")
@@ -317,141 +312,6 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
     }
 
     @Test
-    fun `키워드 노드 오프셋 변경 - 이벤트 발생 시 정상적으로 상태를 업데이트한다`() {
-        val expectedUserKeywordId = UserKeywordId(1L)
-        val expectedKeywordNodeOffset = ChangedKeywordNodeOffset(1.0f, 2.0f)
-
-        testState(
-            viewModel = viewModel,
-            intents = listOf(
-                MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
-                    userKeywordId = expectedUserKeywordId,
-                    offsetX = expectedKeywordNodeOffset.offsetX,
-                    offsetY = expectedKeywordNodeOffset.offsetY,
-                ),
-            ),
-            assertions = listOf(
-                MyProfileContract.UiState(
-                    myProfile = TestMyProfile.toUiModel(),
-                    updatedKeywordNodesOffset =
-                        mapOf(
-                            expectedUserKeywordId to expectedKeywordNodeOffset,
-                        ),
-                ),
-            ),
-        )
-    }
-
-    @Test
-    fun `키워드 노드 오프셋 업데이트 - 이벤트 발생 후 성공 시 스낵바를 표시한다`() = runTest {
-        // given
-        val snackbarEvents = mutableListOf<SnackbarEvent>()
-        val snackbarJob = launch {
-            SnackbarController.events.toList(snackbarEvents)
-        }
-
-        // when, then
-        testState(
-            viewModel = viewModel,
-            intents = listOf(
-                MyProfileContract.UiEvent.UpdateKeywordNodeOffset,
-            ),
-            assertions = listOf(
-                MyProfileContract.UiState(
-                    myProfile = TestMyProfile.toUiModel(),
-                    fullScreenLoading = false,
-                    error = null,
-                ),
-            ),
-        )
-
-        // then: 스낵바 호출되었는지 검증
-        assertTrue(snackbarEvents.isNotEmpty())
-
-        // clean up
-        snackbarJob.cancel()
-    }
-
-    @Test
-    fun `키워드 노드 오프셋 업데이트 - 이벤트 발생 후 실패 시 에러 상태를 업데이트하고 스낵바를 표시한다`() = runTest {
-        // given
-        val expectedError = ProfileErrorType.Unexpected(null)
-        every {
-            usecases.updateUserKeywordOffset(
-                userKeywordId = any(),
-                offsetX = any(),
-                offsetY = any(),
-            )
-        } returns flowOf(Result.Error(expectedError))
-        viewModel = MyProfileViewModel(usecases)
-
-        val snackbarEvents = mutableListOf<SnackbarEvent>()
-        val snackbarJob = launch {
-            SnackbarController.events.toList(snackbarEvents)
-        }
-
-        // when, then
-        testState(
-            viewModel = viewModel,
-            intents = listOf(
-                MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
-                    userKeywordId = UserKeywordId(1L),
-                    offsetX = 1.0f,
-                    offsetY = 2.0f,
-                ),
-                MyProfileContract.UiEvent.UpdateKeywordNodeOffset,
-            ),
-            assertions = listOf(
-                MyProfileContract.UiState(
-                    myProfile = TestMyProfile.toUiModel(),
-                    fullScreenLoading = false,
-                    updatedKeywordNodesOffset = mapOf(
-                        UserKeywordId(1L) to ChangedKeywordNodeOffset(1.0f, 2.0f),
-                    ),
-                    error = expectedError.asUiText(),
-                ),
-            ),
-        )
-
-        // then: 스낵바 호출되었는지 검증
-        assertTrue(snackbarEvents.isNotEmpty())
-
-        // clean up
-        snackbarJob.cancel()
-    }
-
-    @Test
-    fun `키워드 노드 오프셋 리셋 - 이벤트 발생 시 변경된 키워드 노드 오프셋 상태 값을 빈 Map로 업데이트한다`() {
-        testState(
-            viewModel = viewModel,
-            assertAllState = true,
-            intents = listOf(
-                MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged(
-                    userKeywordId = UserKeywordId(1L),
-                    offsetX = 1.0f,
-                    offsetY = 2.0f,
-                ),
-                MyProfileContract.UiEvent.ResetKeywordNodeOffset,
-            ),
-            assertions = listOf(
-                MyProfileContract.UiState(
-                    myProfile = TestMyProfile.toUiModel(),
-                ),
-                MyProfileContract.UiState(
-                    myProfile = TestMyProfile.toUiModel(),
-                    updatedKeywordNodesOffset = mapOf(
-                        UserKeywordId(1L) to ChangedKeywordNodeOffset(1.0f, 2.0f),
-                    ),
-                ),
-                MyProfileContract.UiState(
-                    myProfile = TestMyProfile.toUiModel(),
-                    updatedKeywordNodesOffset = emptyMap(),
-                ),
-            ),
-        )
-    }
-
-    @Test
     fun `키워드 삭제 - 이벤트 발생 후 성공 시 일부 값을 리셋하고 새로고침을 수행한다`() {
         testState(
             viewModel = viewModel,
@@ -623,8 +483,6 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             keywordId = KeywordId(1L),
             keyword = KeywordName("key"),
             userId = TestMyUserId,
-            offsetX = 0.0,
-            offsetY = 0.0,
             description = KeywordDescription("hello"),
             createdAt = 1000,
             updatedAt = 1000,
@@ -639,10 +497,6 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             active = true,
             friendsCount = 51,
             keywords = listOf(TestUserKeyword),
-        )
-        private val TestPatchOffset = PatchOffset(
-            offsetX = 100.0,
-            offsetY = 200.0,
         )
     }
 }

@@ -60,8 +60,6 @@ class GetMyProfileUseCaseTest {
             keywordId = KeywordId(1L),
             keyword = KeywordName("key"),
             userId = UserId(1L),
-            offsetX = 0.0,
-            offsetY = 0.0,
             description = KeywordDescription("hello"),
             createdAt = 1000,
             updatedAt = 1000,

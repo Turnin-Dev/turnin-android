@@ -17,7 +17,6 @@ class MyProfileContract {
      * @param myProfile UI용 프로필
      * @param keywordTextField 키워드 텍스트 필드 상태
      * @param keywordDescTextField 키워드 내용 텍스트 필드 상태
-     * @param updatedKeywordNodesOffset 업데이트된 키워드 노드 오프셋
      * @param selectedKeyword 선택된 키워드
      * @param loading 로딩 여부
      * @param fullScreenLoading 전체 화면 로딩 여부
@@ -27,7 +26,6 @@ class MyProfileContract {
         val myProfile: UiMyProfile? = null,
         val keywordTextField: KeywordTextFieldState = KeywordTextFieldState(),
         val keywordDescTextField: KeywordTextFieldState = KeywordTextFieldState(),
-        val updatedKeywordNodesOffset: Map<UserKeywordId, ChangedKeywordNodeOffset> = emptyMap<UserKeywordId, ChangedKeywordNodeOffset>(),
         val selectedKeyword: SelectedKeywordState = SelectedKeywordState(),
         val loading: Boolean = false,
         val fullScreenLoading: Boolean = false,
@@ -43,19 +41,6 @@ class MyProfileContract {
 
         /** 키워드 추가 모달에서 키워드 설명 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordDescTextChanged(val value: String) : UiEvent
-
-        /** 키워드 위치 변경 이벤트 */
-        data class OnKeywordNodeOffsetChanged(
-            val userKeywordId: UserKeywordId,
-            val offsetX: Float,
-            val offsetY: Float,
-        ) : UiEvent
-
-        /** 키워드 위치 변경 업데이트 이벤트 */
-        data object UpdateKeywordNodeOffset : UiEvent
-
-        /** 키워드 위치 기존 값으로 초기화 이벤트 */
-        data object ResetKeywordNodeOffset : UiEvent
 
         /** 키워드 추가 이벤트 */
         data class AddKeyword(

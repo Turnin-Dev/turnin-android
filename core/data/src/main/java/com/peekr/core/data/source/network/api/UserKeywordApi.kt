@@ -2,10 +2,8 @@ package com.peekr.core.data.source.network.api
 
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import retrofit2.Response
@@ -34,13 +32,6 @@ interface UserKeywordApi {
     suspend fun createUserKeyword(
         @Body createUserKeywordRequest: CreateUserKeywordRequest,
     ): Response<UserKeywordResponse>
-
-    /** 사용자 키워드 오프셋 수정 */
-    @PATCH(NetworkApiPath.UserKeyword.PATCH_OFFSET)
-    suspend fun patchOffset(
-        @Query("userKeywordId") userKeywordId: Long,
-        @Body patchOffsetRequest: PatchOffsetRequest,
-    ): Response<PatchOffsetResponse>
 
     /** 사용자 키워드 설명 수정 */
     @PATCH(NetworkApiPath.UserKeyword.DESCRIPTION)

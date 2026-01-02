@@ -18,9 +18,6 @@ fun NavGraphBuilder.myProfileNavigation(
     ) {
         composable<SubGraph.BottomNav.Profile.Me> {
             MyProfileRoute(
-                onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
-                    appNavController.navigateToKeywordDetail(userKeywordId.value, userId.value, keyword)
-                },
                 onSettingClick = {
                     // TODO: 임시 테스트 코드
                     bottomNavController.navigate(

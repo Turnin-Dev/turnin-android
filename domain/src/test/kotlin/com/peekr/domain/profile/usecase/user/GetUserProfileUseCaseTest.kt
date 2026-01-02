@@ -58,8 +58,6 @@ class GetUserProfileUseCaseTest {
             keywordId = KeywordId.Companion(1L),
             keyword = KeywordName.Companion("key"),
             userId = TestUserId,
-            offsetX = 0.0,
-            offsetY = 0.0,
             description = KeywordDescription.Companion("hello"),
             createdAt = 1000,
             updatedAt = 1000,

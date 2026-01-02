@@ -14,7 +14,6 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
@@ -74,33 +73,6 @@ class UserKeywordRepositoryImpl @Inject constructor(
             emit(Result.Loading)
 
             when (val result = userKeywordNetworkDataSource.createUserKeyword(create.toDataModel())) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
-                }
-
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
-                }
-            }
-        }
-
-    override fun patchOffset(
-        userKeywordId: UserKeywordId,
-        patchOffset: PatchOffset,
-    ): Flow<Result<PatchOffset, CommonErrorType>> =
-        safeResultFlow<PatchOffset, CommonErrorType>(
-            dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
-        ) {
-            emit(Result.Loading)
-
-            when (
-                val result = userKeywordNetworkDataSource.patchOffset(
-                    userKeywordId,
-                    patchOffset.toDataModel(),
-                )
-            ) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }

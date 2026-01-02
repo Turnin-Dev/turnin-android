@@ -6,23 +6,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.PeekrShadowType
-import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
 
 /**
@@ -31,67 +28,80 @@ import com.peekr.core.designsystem.util.token.ScreenTokens
  * @param modifier [Modifier]
  * @param topBar 탑바 영역
  * @param profile 프로필 영역
- * @param keywordGraph 키워드 그래프 영역
+ * @param keywords 키워드 리스트
  */
 @Composable
 fun ProfileScreenFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
     profile: @Composable () -> Unit,
-    keywordGraph: @Composable () -> Unit,
+    keywordsTitle: @Composable () -> Unit,
+    keywords: @Composable () -> Unit,
 ) {
-    Column(modifier.verticalScroll(rememberScrollState())) {
-        Column(
-            Modifier
-                .heightIn(min = TopSectionMinHeightDp)
-                .zIndex(2f)
-                .background(PeekrTheme.colorScheme.backgroundNormal),
-        ) {
-            // TopBar
-            topBar()
+    Column(modifier) {
+        // TopBar
+        topBar()
 
+        LazyColumn {
             // Profile
-            Box(
-                Modifier
-                    .padding(ScreenTokens.HorizontalPadding)
-                    .zIndex(1f),
-            ) {
-                profile()
+            item {
+                Column(
+                    Modifier
+                        .padding(
+                            horizontal = ScreenTokens.HorizontalPadding,
+                            vertical = 10.dp,
+                        )
+                        .zIndex(1f),
+                ) {
+                    profile()
+                }
             }
-        }
-        ShadowSection(Modifier.fillMaxWidth())
 
-        // Keyword Graph
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            keywordGraph()
+            // Divider
+            item {
+                DividerSection(Modifier.fillMaxWidth())
+            }
+
+            // Keywords Title
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(PeekrTheme.colorScheme.backgroundNormal)
+                        .padding(
+                            horizontal = ScreenTokens.HorizontalPadding,
+                            vertical = 10.dp,
+                        ),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    keywordsTitle()
+                }
+            }
+
+            // Keywords
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPadding),
+                ) {
+                    keywords()
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun ShadowSection(modifier: Modifier = Modifier) {
+private fun DividerSection(modifier: Modifier = Modifier) {
     HorizontalDivider(
-        modifier = modifier
-            .fillMaxWidth()
-            .peekrShadow(
-                type = PeekrShadowType.Custom(
-                    blur = 6.dp,
-                    lightColor = Color.Black,
-                    darkColor = Color.White,
-                    alpha = 0.25f,
-                ),
-            ),
-        color = Color.Transparent,
+        modifier = modifier,
+        thickness = 0.35.dp,
+        color = PeekrTheme.colorScheme.lineDivider,
     )
 }
 
-/** 프로필 정보 영역 최소 높이 (소개 글 두 줄 기준 높이) */
-private val TopSectionMinHeightDp = 166.dp
-
-@Preview
+@Preview(heightDp = 400)
 @Composable
 private fun ProfileScreenFramePreview() {
     PeekrAppTheme {
@@ -113,10 +123,18 @@ private fun ProfileScreenFramePreview() {
                         .background(Color.Blue),
                 ) { Text("Profile") }
             },
-            keywordGraph = {
+            keywordsTitle = {
+                Text(
+                    text = "키워드 (0/5)",
+                    style = PeekrTheme.typography.body1,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            keywords = {
                 Box(
                     Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .height(500.dp)
                         .background(Color.Green),
                 ) { Text("KeywordGraph") }
             },

@@ -13,8 +13,6 @@ import com.peekr.core.domain.model.UserKeywordId
  * @property keywordId 키워드 ID
  * @property keyword 키워드 명
  * @property userId 사용자 ID
- * @property offsetX 키워드 위치 오프셋 X
- * @property offsetY 키워드 위치 오프셋 Y
  * @property description 키워드 설명
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
@@ -24,8 +22,6 @@ data class UserKeyword(
     val keywordId: KeywordId,
     val keyword: KeywordName,
     val userId: UserId,
-    val offsetX: Double,
-    val offsetY: Double,
     val description: KeywordDescription,
     val createdAt: Long,
     val updatedAt: Long,

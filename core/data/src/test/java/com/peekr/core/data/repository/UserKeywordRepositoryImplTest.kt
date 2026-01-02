@@ -3,10 +3,8 @@ package com.peekr.core.data.repository
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
@@ -22,7 +20,6 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.core.domain.userKeyword.model.PatchOffset
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -214,85 +211,6 @@ class UserKeywordRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 키워드 오프셋 수정 - 성공 테스트`() = runTest {
-        // given
-        coEvery {
-            dataSource.patchOffset(
-                userKeywordId = TestUserKeywordId,
-                patchOffsetRequest = TestPatchOffsetRequest,
-            )
-        } returns NetworkResult.Success(TestPatchOffsetResponse)
-
-        // when
-        val result = repository
-            .patchOffset(
-                userKeywordId = TestUserKeywordId,
-                patchOffset = TestPatchOffset,
-            ).last()
-
-        // then
-        assertTrue(result is Result.Success)
-        assertEquals(
-            TestPatchOffset,
-            (result as Result.Success).data,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 오프셋 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
-        // given
-        val expectedError = NetworkErrorType.Unexpected(null)
-        coEvery {
-            dataSource.patchOffset(
-                userKeywordId = TestUserKeywordId,
-                patchOffsetRequest = TestPatchOffsetRequest,
-            )
-        } returns NetworkResult.Error(expectedError)
-
-        // when
-        val result = repository
-            .patchOffset(
-                userKeywordId = TestUserKeywordId,
-                patchOffset = TestPatchOffset,
-            ).last()
-
-        // then
-        assertTrue(result is Result.Error)
-        assertEquals(
-            expectedError.toCommonErrorType(),
-            (result as Result.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 오프셋 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
-        // given
-        val exception = Exception("error!")
-        coEvery {
-            dataSource.patchOffset(
-                userKeywordId = TestUserKeywordId,
-                patchOffsetRequest = TestPatchOffsetRequest,
-            )
-        } throws exception
-
-        // when
-        val result = repository
-            .patchOffset(
-                userKeywordId = TestUserKeywordId,
-                patchOffset = TestPatchOffset,
-            ).last()
-
-        // then
-        assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
-            assertEquals(
-                CommonErrorType.Unexpected(exception).cause?.message,
-                (result.error as CommonErrorType.Unexpected).cause?.message,
-            )
-        }
-    }
-
-    @Test
     fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
@@ -436,8 +354,6 @@ class UserKeywordRepositoryImplTest {
             keywordId = TestKeywordId.value,
             keyword = TestKeyword.value,
             userId = TestUserId.value,
-            offsetX = 0.0,
-            offsetY = 0.0,
             createdAt = 1000,
             updatedAt = 1000,
         )
@@ -447,25 +363,12 @@ class UserKeywordRepositoryImplTest {
         private val TestCreateUserKeywordRequest = CreateUserKeywordRequest(
             userId = TestUserId.value,
             keyword = TestKeyword.value,
-            offsetX = 0.0,
-            offsetY = 0.0,
             description = TestKeywordDescription.value,
         )
         private val TestCreateUserKeyword = CreateUserKeyword(
             userId = TestUserId,
             keyword = TestKeyword,
             description = TestKeywordDescription,
-            offsetX = 0.0,
-            offsetY = 0.0,
-        )
-        private val TestPatchOffset = PatchOffset(1.0, 2.0)
-        private val TestPatchOffsetRequest = PatchOffsetRequest(
-            offsetX = TestPatchOffset.offsetX.toFloat(),
-            offsetY = TestPatchOffset.offsetY.toFloat(),
-        )
-        private val TestPatchOffsetResponse = PatchOffsetResponse(
-            offsetX = TestPatchOffset.offsetX.toFloat(),
-            offsetY = TestPatchOffset.offsetY.toFloat(),
         )
         private val TestPatchDescription = PatchDescription(KeywordDescription("hello"))
         private val TestPatchDescriptionRequest = PatchDescriptionRequest(

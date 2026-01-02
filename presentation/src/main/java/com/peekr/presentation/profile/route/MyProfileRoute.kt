@@ -14,10 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.feature.keywordGraph.KeywordNameType
-import com.peekr.core.presentation.feature.keywordGraph.UserIdType
-import com.peekr.core.presentation.feature.keywordGraph.UserKeywordIdType
-import com.peekr.core.presentation.ui.util.LockScreenOrientation
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.MyProfileScreen
@@ -30,13 +26,9 @@ import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MyProfileRoute(
-    onOpenKeywordDetailModal: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
 ) {
-    // Lock Orientation
-    LockScreenOrientation()
-
     val viewModel: MyProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -136,15 +128,6 @@ internal fun MyProfileRoute(
         error = uiState.error,
         onUiEvent = viewModel::processEvent,
         onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
-        onOpenNodeOptionModal = { userKeywordId, keyword ->
-            viewModel.processEvent(
-                MyProfileContract.UiEvent.OnSelectedKeywordChanged(userKeywordId, keyword),
-            )
-            isNodeOptionModelOpen = true
-        },
-        onOpenKeywordDetailModal = { userKeywordId, userId, keyword ->
-            onOpenKeywordDetailModal(userKeywordId, userId, keyword)
-        },
         onSettingClick = onSettingClick,
         onFriendsCountClick = onFriendsCountClick,
     )

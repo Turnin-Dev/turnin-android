@@ -177,7 +177,9 @@ private fun ProfileFramePreview() {
             profileImageUrl = null,
             name = "홍길동",
             friendsCount = 33,
-            introduce = "hello world!",
+            introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                "1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
+                "더보기 테스트용 셋째 줄",
             onProfileImageClick = {},
             onFriendsCountClick = {},
         )

@@ -4,10 +4,8 @@ import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.UserKeywordApi
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchOffsetRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchOffsetResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
@@ -286,77 +284,6 @@ class UserKeywordDataSourceImplTest {
     }
 
     @Test
-    fun `사용자 키워드 오프셋 수정 - 성공 테스트`() = runTest {
-        // given
-        val expectedResponse = testRule.encodeToJson(TestPatchOffsetResponse)
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(expectedResponse)
-            },
-        )
-
-        // when
-        val response = dataSource.patchOffset(
-            userKeywordId = TestUserKeywordId,
-            patchOffsetRequest = TestPatchOffsetRequest,
-        )
-
-        // then
-        val success = response as NetworkResult.Success
-        assertEquals(success.data.offsetX, TestPatchOffsetResponse.offsetX)
-        assertEquals(response.data.offsetY, TestPatchOffsetResponse.offsetY)
-    }
-
-    @Test
-    fun `사용자 키워드 오프셋 수정 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
-        // given
-        val mockApi: UserKeywordApi = mockk()
-        val exception = Exception()
-        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
-        coEvery {
-            mockApi.patchOffset(
-                userKeywordId = TestUserKeywordId.value,
-                patchOffsetRequest = TestPatchOffsetRequest,
-            )
-        } throws exception
-
-        // when
-        val response = dataSource.patchOffset(
-            userKeywordId = TestUserKeywordId,
-            patchOffsetRequest = TestPatchOffsetRequest,
-        )
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Unexpected(exception),
-            (response as NetworkResult.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 오프셋 수정 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
-        // given
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(404)
-            },
-        )
-
-        // when
-        val response = dataSource.patchOffset(
-            userKeywordId = TestUserKeywordId,
-            patchOffsetRequest = TestPatchOffsetRequest,
-        )
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
-        assertEquals(404, error.status)
-    }
-
-    @Test
     fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
         // given
         val expectedResponse = testRule.encodeToJson(TestPatchDescriptionResponse)
@@ -497,8 +424,6 @@ class UserKeywordDataSourceImplTest {
             keywordId = TestKeywordId.value,
             keyword = TEST_KEYWORD_NAME,
             userId = TestUserId.value,
-            offsetX = 0.0,
-            offsetY = 0.0,
             createdAt = 1000,
             updatedAt = 1000,
         )
@@ -508,17 +433,7 @@ class UserKeywordDataSourceImplTest {
         private val TestCreateUserKeywordRequest = CreateUserKeywordRequest(
             userId = TestUserId.value,
             keyword = TEST_KEYWORD_NAME,
-            offsetX = 0.0,
-            offsetY = 0.0,
             description = "sample",
-        )
-        private val TestPatchOffsetRequest = PatchOffsetRequest(
-            offsetX = 1.0f,
-            offsetY = 2.0f,
-        )
-        private val TestPatchOffsetResponse = PatchOffsetResponse(
-            offsetX = 1.0f,
-            offsetY = 2.0f,
         )
         private val TestPatchDescriptionRequest = PatchDescriptionRequest(
             description = "hello",

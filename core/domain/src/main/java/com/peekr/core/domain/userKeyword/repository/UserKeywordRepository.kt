@@ -7,7 +7,6 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
-import com.peekr.core.domain.userKeyword.model.PatchOffset
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import kotlinx.coroutines.flow.Flow
@@ -34,17 +33,6 @@ interface UserKeywordRepository {
      * @param create 사용자 키워드 생성 요청 객체
      */
     fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, CommonErrorType>>
-
-    /**
-     * 사용자 키워드 오프셋 수정
-     *
-     * @param userKeywordId 사용자 키워드 ID
-     * @param patchOffset 사용자 키워드 오프셋 수정 요청 객체
-     */
-    fun patchOffset(
-        userKeywordId: UserKeywordId,
-        patchOffset: PatchOffset,
-    ): Flow<Result<PatchOffset, CommonErrorType>>
 
     /**
      * 사용자 키워드 설명 수정

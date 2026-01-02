@@ -36,8 +36,6 @@
     <string name="my_profile_screen_fab_content_desc">키워드 추가</string>
     <string name="my_profile_screen_introduce_expand">더보기</string>
     <string name="my_profile_screen_introduce_collapse">접기</string>
-    <string name="my_profile_screen_node_changed_btn_desc_ok">변경 완료</string>
-    <string name="my_profile_screen_node_changed_btn_desc_cancel">변경 취소</string>
     <!-- My Profile Screen (AddKeywordModal, EditKeywordModal) -->
     <string name="my_profile_modal_input_keyword_title">키워드</string>
     <string name="my_profile_modal_input_keyword_title_placeholder">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
