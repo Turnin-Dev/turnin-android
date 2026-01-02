@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,12 +32,8 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.feature.keywordGraph.model.UiKeywordNode
-import com.peekr.core.presentation.feature.keywordGraph.model.UiUserCluster
-import com.peekr.core.presentation.feature.keywordGraph.model.UiUserNode
-import com.peekr.core.presentation.feature.keywordGraph.view.graph.KeywordNetworkGraph
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.model.UiUserKeyword
+import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
@@ -129,77 +124,15 @@ class MainActivity : ComponentActivity() {
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
 // ------------------------------ 메인(프로덕션 용) ------------------------------
-//                    val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
-//
-//                    AppNavigation(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        appNavController = appNavController,
-//                        loggedIn = loggedIn,
-//                    )
+                    val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
 
-// ------------------------------ 키워드 네트워크 그래프 테스트용 2 ------------------------------
-                    Box(
-                        Modifier
+                    AppNavigation(
+                        modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
-                            .background(PeekrTheme.colorScheme.backgroundNormal),
-                    ) {
-                        KeywordNetworkGraph(
-                            modifier = Modifier.fillMaxSize(),
-                            myCluster = UiUserCluster(
-                                userNode = UiUserNode(0, "Me", null),
-                                keywordNodes = UiUserKeyword.samples.map {
-                                    UiKeywordNode(it.id.value, it.keywordId.value, it.keywordName)
-                                },
-                            ),
-                            otherClusters = List(100) {
-                                UiUserCluster(
-                                    userNode = UiUserNode(
-                                        userId = (it + 1).toLong(),
-                                        userName = "username$it",
-                                        profileImageUrl = "https://fujifilm-korea.co.kr" +
-                                            "/image/playwith/wl/dt/soliywlj/html/" +
-                                            "278243925tmlm.jpg",
-                                    ),
-                                    keywordNodes = UiUserKeyword.samples.map {
-                                        UiKeywordNode(
-                                            it.id.value,
-                                            it.keywordId.value,
-                                            "a".repeat(15),
-                                        )
-                                    },
-                                )
-                            },
-                        )
-                    }
-
-// ------------------------------ 키워드 네트워크 그래프 테스트용 1 ------------------------------
-//                    Box(
-//                        Modifier
-//                            .fillMaxSize()
-//                            .background(Color.White),
-//                    ) {
-//                        NetworkUniverse(
-//                            modifier = Modifier.fillMaxSize(),
-//                            myCluster = UserCluster(
-//                                userId = "0",
-//                                profileImageUrl = null,
-//                                keywords = UiUserKeyword.samples,
-//                            ),
-//                            otherClusters = List(500) {
-//                                UserCluster(
-//                                    userId = "${it + 1}",
-//                                    profileImageUrl = "https://fujifilm-korea.co.kr/image/playwith/wl/dt/soliywlj/html/278243925tmlm.jpg",
-//                                    keywords = UiUserKeyword.samples,
-//                                )
-//                            },
-//                            connections = List(500) {
-//                                "0" to "${it + 1}"
-//                            },
-//                        )
-//                    }
+                            .padding(innerPadding),
+                        appNavController = appNavController,
+                        loggedIn = loggedIn,
+                    )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
 //                    NavHost(

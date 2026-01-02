@@ -72,8 +72,6 @@ class AddUserKeywordUseCaseTest {
             keywordId = KeywordId(1L),
             keyword = TestKeyword,
             userId = TestUserId,
-            offsetX = INITIAL_OFFSET_X,
-            offsetY = INITIAL_OFFSET_Y,
             description = TestKeywordDescription,
             createdAt = 1000,
             updatedAt = 1000,
@@ -82,8 +80,6 @@ class AddUserKeywordUseCaseTest {
             userId = TestUserId,
             keyword = TestKeyword,
             description = TestKeywordDescription,
-            offsetX = INITIAL_OFFSET_X,
-            offsetY = INITIAL_OFFSET_Y,
         )
     }
 }

@@ -15,15 +15,11 @@ import com.peekr.domain.profile.usecase.MyProfileUseCases
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
-import com.peekr.presentation.profile.state.ChangedKeywordNodeOffset
 import com.peekr.presentation.profile.state.KeywordTextFieldState
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.state.SelectedKeywordState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -88,22 +84,6 @@ class MyProfileViewModel @Inject constructor(
                 )
             }
 
-            is MyProfileContract.UiEvent.OnKeywordNodeOffsetChanged -> {
-                changeKeywordNodeOffset(
-                    userKeywordId = event.userKeywordId,
-                    offsetX = event.offsetX,
-                    offsetY = event.offsetY,
-                )
-            }
-
-            MyProfileContract.UiEvent.UpdateKeywordNodeOffset -> {
-                updateKeywordNodeOffset(currentUiState.updatedKeywordNodesOffset)
-            }
-
-            MyProfileContract.UiEvent.ResetKeywordNodeOffset -> {
-                resetKeywordNodeOffset()
-            }
-
             is MyProfileContract.UiEvent.DeleteKeyword -> {
                 deleteKeyword(event.userKeywordId)
             }
@@ -142,12 +122,6 @@ class MyProfileViewModel @Inject constructor(
             this.copy(
                 keywordDescTextField = this.keywordDescTextField.copy(value = description),
             )
-        }
-    }
-
-    private fun resetKeywordNodeOffset() {
-        updateState {
-            this.copy(updatedKeywordNodesOffset = emptyMap())
         }
     }
 
@@ -263,58 +237,6 @@ class MyProfileViewModel @Inject constructor(
                         }
                     }
                 }.launchIn(this)
-        }
-    }
-
-    private fun changeKeywordNodeOffset(
-        userKeywordId: UserKeywordId,
-        offsetX: Float,
-        offsetY: Float,
-    ) {
-        val changedKeywordNodeOffset = ChangedKeywordNodeOffset(offsetX, offsetY)
-        updateState {
-            this.copy(
-                updatedKeywordNodesOffset =
-                    this.updatedKeywordNodesOffset + (userKeywordId to changedKeywordNodeOffset),
-            )
-        }
-    }
-
-    fun updateKeywordNodeOffset(keywordNodes: Map<UserKeywordId, ChangedKeywordNodeOffset>) {
-        viewModelScope.launch {
-            var successCount = AtomicInteger(0)
-            keywordNodes
-                .map { (userKeywordId, offset) ->
-                    async {
-                        usecases
-                            .updateUserKeywordOffset(userKeywordId, offset.offsetX, offset.offsetY)
-                            .collect { result ->
-                                when (result) {
-                                    Result.Loading -> {
-                                        updateState { this.copy(fullScreenLoading = true) }
-                                    }
-
-                                    is Result.Error -> {
-                                        updateState {
-                                            this.copy(fullScreenLoading = false, error = result.error.asUiText())
-                                        }
-                                        showSnackBar(result.error.asUiText())
-                                    }
-
-                                    is Result.Success -> {
-                                        updateState {
-                                            this.copy(fullScreenLoading = false, error = null)
-                                        }
-                                        successCount.incrementAndGet()
-                                    }
-                                }
-                            }
-                    }
-                }.awaitAll()
-
-            if (successCount.get() == keywordNodes.size) {
-                showSnackBar(StringResource(R.string.profile_success_update_user_keyword_offset))
-            }
         }
     }
 

@@ -33,10 +33,6 @@ import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.presentation.feature.keywordGraph.KeywordNameType
-import com.peekr.core.presentation.feature.keywordGraph.UserIdType
-import com.peekr.core.presentation.feature.keywordGraph.UserKeywordIdType
-import com.peekr.core.presentation.feature.keywordGraph.view.KeywordGraphView
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -95,14 +91,6 @@ fun UserProfileScreen(
             },
             keywordsTitle = {},
             keywords = {
-                userProfile?.let {
-                    KeywordGraph(
-                        modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = userProfile.profileImageUrl,
-                        keywords = userProfile.keywords,
-                        onNodeClick = { _, _, _ -> },
-                    )
-                } ?: KeywordGraphSkeleton()
             },
         )
     }
@@ -212,34 +200,6 @@ private fun Profile(
     )
 }
 
-/**
- * 키워드 그래프 뷰 영역
- *
- * @param modifier [Modifier]
- * @param profileImageUrl 사용자 프로필 사진 url
- * @param keywords 사용자 키워드 리스트
- * @param onNodeClick 사용자 키워드 노드 클릭 시
- */
-@Composable
-private fun KeywordGraph(
-    modifier: Modifier = Modifier,
-    profileImageUrl: String?,
-    keywords: List<UiUserKeyword>,
-    onNodeClick: (UserKeywordIdType, UserIdType, KeywordNameType) -> Unit,
-) {
-    Box(modifier = modifier) {
-        KeywordGraphView(
-            modifier = Modifier,
-            profileImageUrl = profileImageUrl,
-            keywords = keywords,
-            freeGesture = false,
-            onNodeClick = { userKeywordId, userId, keyword ->
-                onNodeClick(userKeywordId, userId, keyword)
-            },
-        )
-    }
-}
-
 private val TopBarOptionIconSize = PeekrIconSize.Small
 
 // ------------------------------ Skeleton ------------------------------
@@ -306,13 +266,6 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
         ) {
             SkeletonBox(Modifier.size(81.dp, 25.dp))
         }
-    }
-}
-
-@Composable
-private fun KeywordGraphSkeleton() {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
-        SkeletonBox(Modifier.size(49.dp, 49.dp), CircleShape)
     }
 }
 
