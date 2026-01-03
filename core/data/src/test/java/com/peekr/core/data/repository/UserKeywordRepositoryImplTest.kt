@@ -354,6 +354,7 @@ class UserKeywordRepositoryImplTest {
             keywordId = TestKeywordId.value,
             keyword = TestKeyword.value,
             userId = TestUserId.value,
+            description = "description",
             createdAt = 1000,
             updatedAt = 1000,
         )

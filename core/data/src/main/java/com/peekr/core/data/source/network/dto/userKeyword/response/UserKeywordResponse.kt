@@ -22,10 +22,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class UserKeywordResponse(
     val id: Long,
+    val userId: Long,
     val keywordId: Long,
     @Json(name = "keywordName")
     val keyword: String,
-    val userId: Long,
+    val description: String?,
     val createdAt: Long,
     val updatedAt: Long,
 )

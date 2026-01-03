@@ -17,9 +17,10 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
  */
 data class UiUserKeyword(
     val id: UserKeywordId,
+    val userId: UserId,
     val keywordId: KeywordId,
     val keywordName: String,
-    val userId: UserId,
+    val description: String,
     val createdAt: Long,
     val updatedAt: Long,
 ) {
@@ -27,9 +28,10 @@ data class UiUserKeyword(
         val samples = List(5) {
             UiUserKeyword(
                 id = UserKeywordId((it + 1).toLong()),
+                userId = UserId(1L),
                 keywordId = KeywordId((it + 1).toLong()),
                 keywordName = "Label ${it + 1}",
-                userId = UserId(1L),
+                description = "Description ${it + 1}",
                 createdAt = 0L,
                 updatedAt = 0L,
             )
@@ -40,9 +42,10 @@ data class UiUserKeyword(
 fun UserKeyword.toUiModel(): UiUserKeyword =
     UiUserKeyword(
         id = id,
+        userId = userId,
         keywordId = keywordId,
         keywordName = keyword.value,
-        userId = userId,
+        description = description.value,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
