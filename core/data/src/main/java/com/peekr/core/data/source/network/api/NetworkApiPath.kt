@@ -55,7 +55,7 @@ object NetworkApiPath {
         const val LIST = "$ROUTE/list"
     }
 
-    object KeywordGraph {
-        const val ROUTE = "$BASE/keyword-graph"
+    object Discover {
+        const val ROUTE = "$BASE/discover"
     }
 }

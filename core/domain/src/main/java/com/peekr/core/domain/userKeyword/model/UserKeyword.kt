@@ -19,9 +19,9 @@ import com.peekr.core.domain.model.UserKeywordId
  */
 data class UserKeyword(
     val id: UserKeywordId,
+    val userId: UserId,
     val keywordId: KeywordId,
     val keyword: KeywordName,
-    val userId: UserId,
     val description: KeywordDescription,
     val createdAt: Long,
     val updatedAt: Long,

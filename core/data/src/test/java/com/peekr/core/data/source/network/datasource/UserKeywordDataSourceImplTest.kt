@@ -424,6 +424,7 @@ class UserKeywordDataSourceImplTest {
             keywordId = TestKeywordId.value,
             keyword = TEST_KEYWORD_NAME,
             userId = TestUserId.value,
+            description = "description",
             createdAt = 1000,
             updatedAt = 1000,
         )

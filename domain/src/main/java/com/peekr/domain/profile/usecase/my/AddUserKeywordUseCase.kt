@@ -39,8 +39,8 @@ class AddUserKeywordUseCase @Inject constructor(
             if (userId != null) {
                 val createUserKeyword = CreateUserKeyword(
                     userId = userId,
-                    keyword = KeywordName.Companion(keyword),
-                    description = KeywordDescription.Companion(description),
+                    keyword = KeywordName(keyword),
+                    description = KeywordDescription(description),
                 )
                 emitAll(
                     userKeywordRepository
