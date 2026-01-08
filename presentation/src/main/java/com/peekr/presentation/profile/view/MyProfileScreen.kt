@@ -1,22 +1,27 @@
 package com.peekr.presentation.profile.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
@@ -25,19 +30,28 @@ import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordId.Companion.invoke
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserId.Companion.invoke
+import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.model.UserKeywordId.Companion.invoke
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.domain.profile.model.ProfileRule
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
-import com.peekr.presentation.profile.view.frame.ProfileFrame
-import com.peekr.presentation.profile.view.frame.ProfileScreenFrame
-import com.peekr.presentation.profile.view.frame.ProfileScreenTokens
+import com.peekr.presentation.profile.view.common.KeywordCard
+import com.peekr.presentation.profile.view.common.ProfileFrame
+import com.peekr.presentation.profile.view.common.ProfileScreenFrame
+import com.peekr.presentation.profile.view.common.ProfileScreenTokens
 
 /**
  * 나의 프로필 화면
@@ -63,7 +77,9 @@ fun MyProfileScreen(
 ) {
     Box(modifier) {
         ProfileScreenFrame(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PeekrTheme.colorScheme.backgroundNormal),
             topBar = {
                 myProfile?.let {
                     TopBar(
@@ -91,8 +107,22 @@ fun MyProfileScreen(
                     )
                 } ?: ProfileSkeleton()
             },
-            keywordsTitle = {},
+            keywordsTitle = {
+                myProfile?.let {
+                    KeywordsTitle(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        count = myProfile.keywords.count(),
+                    )
+                }
+            },
             keywords = {
+                myProfile?.let {
+                    keywordItems(
+                        keywords = myProfile.keywords,
+                        onClick = { uiUserKeyword ->
+                        },
+                    )
+                }
             },
         )
 
@@ -171,6 +201,42 @@ private fun Profile(
         onProfileImageClick = onProfileImageClick,
         onFriendsCountClick = onFriendsCountClick,
     )
+}
+
+@Composable
+private fun KeywordsTitle(
+    modifier: Modifier = Modifier,
+    count: Int,
+) {
+    Text(
+        modifier = modifier,
+        text = stringResource(R.string.my_profile_screen_keywords_title) +
+            " ($count/${ProfileRule.MAX_KEYWORD_COUNT})",
+        style = PeekrTheme.typography.body1,
+        fontWeight = FontWeight.Bold,
+        color = PeekrTheme.colorScheme.textNormal,
+    )
+}
+
+private fun LazyListScope.keywordItems(
+    keywords: List<UiUserKeyword>,
+    onClick: (UiUserKeyword) -> Unit,
+) {
+    items(
+        count = keywords.size,
+        key = { keywords[it].id.value },
+    ) { index ->
+        val keyword = keywords[index]
+        KeywordCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = ScreenTokens.HorizontalPadding),
+            keyword = keyword.keywordName,
+            description = keyword.description,
+            onClick = { onClick(keyword) },
+        )
+        Spacer(Modifier.height(10.dp))
+    }
 }
 
 private val FabSize = 50.dp
@@ -288,6 +354,19 @@ private fun MyProfileScreenPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
+private fun KeywordItemsPreview() {
+    PeekrAppTheme {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            keywordItems(
+                keywords = LargeKeywordList,
+                onClick = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
 private fun SkeletonPreview() {
     PeekrAppTheme {
         MyProfileScreen(
@@ -301,4 +380,16 @@ private fun SkeletonPreview() {
             onFriendsCountClick = {},
         )
     }
+}
+
+private val LargeKeywordList = List(20) {
+    UiUserKeyword(
+        id = UserKeywordId((it + 1).toLong()),
+        userId = UserId(1L),
+        keywordId = KeywordId((it + 1).toLong()),
+        keywordName = "Label ${it + 1}",
+        description = "Description ${it + 1}",
+        createdAt = 0L,
+        updatedAt = 0L,
+    )
 }

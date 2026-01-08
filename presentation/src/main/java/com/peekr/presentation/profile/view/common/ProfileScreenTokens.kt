@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile.view.frame
+package com.peekr.presentation.profile.view.common
 
 import androidx.compose.ui.unit.dp
 

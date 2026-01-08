@@ -31,13 +31,13 @@ fun KeywordCard(
     modifier: Modifier = Modifier,
     keyword: String,
     description: String,
-    onDetailClick: () -> Unit,
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(PeekrTheme.shape.small))
             .background(PeekrTheme.colorScheme.componentKeywordBG)
-            .clickableSingle { onDetailClick() }
+            .clickableSingle { onClick() }
             .padding(
                 horizontal = 16.dp,
                 vertical = 14.dp,
@@ -87,7 +87,7 @@ private fun KeywordCardPreview() {
             modifier = Modifier.fillMaxWidth(),
             keyword = "Keyword",
             description = "description, description, description, description",
-            onDetailClick = {},
+            onClick = {},
         )
     }
 }

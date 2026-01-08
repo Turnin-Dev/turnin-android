@@ -38,9 +38,9 @@ import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiUserProfile
 import com.peekr.presentation.profile.state.UserProfileContract
-import com.peekr.presentation.profile.view.frame.ProfileFrame
-import com.peekr.presentation.profile.view.frame.ProfileScreenFrame
-import com.peekr.presentation.profile.view.frame.ProfileScreenTokens
+import com.peekr.presentation.profile.view.common.ProfileFrame
+import com.peekr.presentation.profile.view.common.ProfileScreenFrame
+import com.peekr.presentation.profile.view.common.ProfileScreenTokens
 
 @Composable
 fun UserProfileScreen(
