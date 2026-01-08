@@ -1,13 +1,17 @@
-package com.peekr.presentation.profile.view.frame
+package com.peekr.presentation.profile.view.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
@@ -25,24 +28,27 @@ import com.peekr.core.designsystem.util.token.ScreenTokens
 /**
  * 프로필 화면 프레임
  *
+ * 키워드 리스트 영역([keywords])은 [LazyListScope] 범위이고 필수 패딩을 직접 적용해줘야 한다.
+ *
  * @param modifier [Modifier]
  * @param topBar 탑바 영역
  * @param profile 프로필 영역
+ * @param keywordsTitle 키워드 타이틀 텍스트
  * @param keywords 키워드 리스트
  */
 @Composable
 fun ProfileScreenFrame(
     modifier: Modifier = Modifier,
-    topBar: @Composable () -> Unit,
-    profile: @Composable () -> Unit,
-    keywordsTitle: @Composable () -> Unit,
-    keywords: @Composable () -> Unit,
+    topBar: @Composable ColumnScope.() -> Unit,
+    profile: @Composable ColumnScope.() -> Unit,
+    keywordsTitle: @Composable BoxScope.() -> Unit,
+    keywords: LazyListScope.() -> Unit,
 ) {
     Column(modifier) {
         // TopBar
         topBar()
 
-        LazyColumn {
+        LazyColumn(contentPadding = PaddingValues(bottom = 10.dp)) {
             // Profile
             item {
                 Column(
@@ -50,8 +56,7 @@ fun ProfileScreenFrame(
                         .padding(
                             horizontal = ScreenTokens.HorizontalPadding,
                             vertical = 10.dp,
-                        )
-                        .zIndex(1f),
+                        ),
                 ) {
                     profile()
                 }
@@ -79,15 +84,7 @@ fun ProfileScreenFrame(
             }
 
             // Keywords
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = ScreenTokens.HorizontalPadding),
-                ) {
-                    keywords()
-                }
-            }
+            keywords()
         }
     }
 }
@@ -131,12 +128,14 @@ private fun ProfileScreenFramePreview() {
                 )
             },
             keywords = {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(500.dp)
-                        .background(Color.Green),
-                ) { Text("KeywordGraph") }
+                item {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(500.dp)
+                            .background(Color.Green),
+                    ) { Text("KeywordGraph") }
+                }
             },
         )
     }

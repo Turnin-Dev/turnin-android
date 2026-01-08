@@ -1,5 +1,6 @@
 package com.peekr.presentation.profile.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +24,7 @@ import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Settings
@@ -35,9 +35,13 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
-import com.peekr.presentation.profile.view.frame.ProfileFrame
-import com.peekr.presentation.profile.view.frame.ProfileScreenFrame
-import com.peekr.presentation.profile.view.frame.ProfileScreenTokens
+import com.peekr.presentation.profile.view.common.KeywordsTitle
+import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
+import com.peekr.presentation.profile.view.common.ProfileFrame
+import com.peekr.presentation.profile.view.common.ProfileScreenFrame
+import com.peekr.presentation.profile.view.common.ProfileScreenTokens
+import com.peekr.presentation.profile.view.common.keywordItems
+import com.peekr.presentation.profile.view.common.keywordItemsSkeleton
 
 /**
  * 나의 프로필 화면
@@ -63,7 +67,9 @@ fun MyProfileScreen(
 ) {
     Box(modifier) {
         ProfileScreenFrame(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PeekrTheme.colorScheme.backgroundNormal),
             topBar = {
                 myProfile?.let {
                     TopBar(
@@ -91,8 +97,22 @@ fun MyProfileScreen(
                     )
                 } ?: ProfileSkeleton()
             },
-            keywordsTitle = {},
+            keywordsTitle = {
+                myProfile?.let {
+                    KeywordsTitle(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        count = myProfile.keywords.count(),
+                    )
+                } ?: KeywordsTitleSkeleton()
+            },
             keywords = {
+                myProfile?.let {
+                    keywordItems(
+                        keywords = myProfile.keywords,
+                        onClick = { uiUserKeyword ->
+                        },
+                    )
+                } ?: keywordItemsSkeleton()
             },
         )
 
