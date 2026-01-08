@@ -10,8 +10,12 @@ object ProfileRule {
     const val MAX_KEYWORD_COUNT = 5
 
     /**
-     * 사용자가 키워드 등록 개수 제한을 초과했는지 검사
+     * 사용자가 키워드 등록 개수 제한에 도달했는지 검사
+     *
+     * @param currentCount 현재 키워드 개수
+     *
+     * @return 키워드 등록 개수 제한에 도달했으면 `true`, 아니면 `false`
      */
-    fun isKeywordLimitExceed(currentCount: Int): Boolean =
+    fun isKeywordLimitReached(currentCount: Int): Boolean =
         currentCount >= MAX_KEYWORD_COUNT
 }

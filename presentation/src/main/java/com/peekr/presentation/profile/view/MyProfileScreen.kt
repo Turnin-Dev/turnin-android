@@ -35,13 +35,13 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
-import com.peekr.presentation.profile.view.common.KeywordsTitle
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
+import com.peekr.presentation.profile.view.common.KeywordsTitleView
 import com.peekr.presentation.profile.view.common.ProfileFrame
 import com.peekr.presentation.profile.view.common.ProfileScreenFrame
 import com.peekr.presentation.profile.view.common.ProfileScreenTokens
-import com.peekr.presentation.profile.view.common.keywordItems
 import com.peekr.presentation.profile.view.common.keywordItemsSkeleton
+import com.peekr.presentation.profile.view.common.keywordItemsView
 
 /**
  * 나의 프로필 화면
@@ -99,7 +99,7 @@ fun MyProfileScreen(
             },
             keywordsTitle = {
                 myProfile?.let {
-                    KeywordsTitle(
+                    KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
                         count = myProfile.keywords.count(),
                     )
@@ -107,7 +107,7 @@ fun MyProfileScreen(
             },
             keywords = {
                 myProfile?.let {
-                    keywordItems(
+                    keywordItemsView(
                         keywords = myProfile.keywords,
                         onClick = { uiUserKeyword ->
                         },

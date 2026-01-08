@@ -21,7 +21,13 @@ import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 
-fun LazyListScope.keywordItems(
+/**
+ * [LazyListScope]범위 내에 있는 키워드 아이템 영역
+ *
+ * @param keywords [UiUserKeyword] 리스트
+ * @param onClick 키워드 클릭 시 콜백
+ */
+fun LazyListScope.keywordItemsView(
     keywords: List<UiUserKeyword>,
     onClick: (UiUserKeyword) -> Unit,
 ) {
@@ -31,7 +37,7 @@ fun LazyListScope.keywordItems(
     ) { index ->
         val keyword = keywords[index]
 
-        KeywordCard(
+        KeywordCardView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = ScreenTokens.HorizontalPadding),
@@ -61,7 +67,7 @@ fun LazyListScope.keywordItemsSkeleton() {
 private fun KeywordItemsPreview() {
     PeekrAppTheme {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            keywordItems(
+            keywordItemsView(
                 keywords = LargeKeywordList,
                 onClick = {},
             )

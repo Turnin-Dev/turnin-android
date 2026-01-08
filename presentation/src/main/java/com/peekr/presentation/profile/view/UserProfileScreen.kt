@@ -38,13 +38,13 @@ import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiUserProfile
 import com.peekr.presentation.profile.state.UserProfileContract
-import com.peekr.presentation.profile.view.common.KeywordsTitle
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
+import com.peekr.presentation.profile.view.common.KeywordsTitleView
 import com.peekr.presentation.profile.view.common.ProfileFrame
 import com.peekr.presentation.profile.view.common.ProfileScreenFrame
 import com.peekr.presentation.profile.view.common.ProfileScreenTokens
-import com.peekr.presentation.profile.view.common.keywordItems
 import com.peekr.presentation.profile.view.common.keywordItemsSkeleton
+import com.peekr.presentation.profile.view.common.keywordItemsView
 
 @Composable
 fun UserProfileScreen(
@@ -95,7 +95,7 @@ fun UserProfileScreen(
             },
             keywordsTitle = {
                 userProfile?.let {
-                    KeywordsTitle(
+                    KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
                         count = userProfile.keywords.count(),
                     )
@@ -103,7 +103,7 @@ fun UserProfileScreen(
             },
             keywords = {
                 userProfile?.let {
-                    keywordItems(
+                    keywordItemsView(
                         keywords = userProfile.keywords,
                         onClick = { uiUserKeyword ->
                         },
