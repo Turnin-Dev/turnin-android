@@ -38,7 +38,7 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
         keywordId = KeywordId(keywordId),
         keyword = KeywordName(keyword),
         userId = UserId(userId),
-        description = KeywordDescription(""),
+        description = KeywordDescription(description ?: ""),
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
