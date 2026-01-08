@@ -19,4 +19,5 @@ enum class PeekrIconSize(
     Normal(24.dp, 22.dp),
     Small(20.dp, 20.dp),
     Tiny(16.dp, 18.dp),
+    ExtraTiny(14.dp, 16.dp),
 }
