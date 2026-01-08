@@ -29,9 +29,6 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.model.KeywordId.Companion.invoke
-import com.peekr.core.domain.model.UserId.Companion.invoke
-import com.peekr.core.domain.model.UserKeywordId.Companion.invoke
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.core.presentation.ui.util.UiText

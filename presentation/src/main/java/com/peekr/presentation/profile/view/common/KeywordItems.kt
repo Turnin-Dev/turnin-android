@@ -16,14 +16,10 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordId.Companion.invoke
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserId.Companion.invoke
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.model.UserKeywordId.Companion.invoke
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
-import com.peekr.presentation.profile.view.common.keywordItems
 
 fun LazyListScope.keywordItems(
     keywords: List<UiUserKeyword>,
