@@ -20,21 +20,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.presentation.keywordEdit.keywordEditNavigation
+import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
@@ -125,15 +124,15 @@ class MainActivity : ComponentActivity() {
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
 // ------------------------------ 메인(프로덕션 용) ------------------------------
-//                    val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
-//
-//                    AppNavigation(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        appNavController = appNavController,
-//                        loggedIn = loggedIn,
-//                    )
+                    val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
+
+                    AppNavigation(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        appNavController = appNavController,
+                        loggedIn = loggedIn,
+                    )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
 //                    NavHost(
@@ -161,15 +160,15 @@ class MainActivity : ComponentActivity() {
 //                    }
 
 // ------------------------------ 키워드 편집 테스트용 ------------------------------
-                    NavHost(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        navController = appNavController,
-                        startDestination = Screens.KeywordEdit(null, null),
-                    ) {
-                        keywordEditNavigation(appNavController)
-                    }
+//                    NavHost(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding),
+//                        navController = appNavController,
+//                        startDestination = Screens.KeywordEdit(null, null),
+//                    ) {
+//                        keywordEditNavigation(appNavController)
+//                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
 //                    NavHost(

@@ -28,6 +28,7 @@ import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 internal fun MyProfileRoute(
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
+    onNavigateToKeywordAddScreen: () -> Unit,
 ) {
     val viewModel: MyProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -127,7 +128,7 @@ internal fun MyProfileRoute(
         fullScreenLoading = uiState.fullScreenLoading,
         error = uiState.error,
         onUiEvent = viewModel::processEvent,
-        onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
+        onNavigateToKeywordAddScreen = onNavigateToKeywordAddScreen,
         onSettingClick = onSettingClick,
         onFriendsCountClick = onFriendsCountClick,
     )

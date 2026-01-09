@@ -29,6 +29,9 @@ fun NavGraphBuilder.myProfileNavigation(
                         Screens.FriendsList(userId),
                     )
                 },
+                onNavigateToKeywordAddScreen = {
+                    appNavController.navigate(Screens.KeywordEdit(null, null))
+                },
             )
         }
     }
