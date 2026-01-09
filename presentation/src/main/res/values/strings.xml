@@ -29,6 +29,7 @@
     <string name="register_error_image_file_is_null">사진을 불러오지 못했습니다. 다시 시도해주세요.</string>
     <string name="register_error_unexpected">회원가입 중 오류가 발생했습니다. 다시 시도해주세요.</string>
 
+    <!-- Profile -->
     <!-- My Profile Screen -->
     <string name="my_profile_screen_top_bar_settings">설정</string>
     <string name="my_profile_screen_friends_total">친구</string>
@@ -37,7 +38,7 @@
     <string name="my_profile_screen_fab_content_desc">키워드 추가</string>
     <string name="my_profile_screen_introduce_expand">더보기</string>
     <string name="my_profile_screen_introduce_collapse">접기</string>
-    <!-- My Profile Screen (KeywordCard) -->
+    <!-- My Profile Screen (KeywordCardView) -->
     <string name="my_profile_screen_keyword_card">키워드 자세히 보기</string>
     <!-- My Profile Screen (AddKeywordModal, EditKeywordModal) -->
     <string name="my_profile_modal_input_keyword_title">키워드</string>
@@ -58,7 +59,6 @@
     <!-- My Profile Screen (Node Option Bottom Modal) -->
     <string name="my_profile_bottom_modal_node_option_edit">수정</string>
     <string name="my_profile_bottom_modal_node_option_delete">삭제</string>
-
     <!-- User Profile Screen -->
     <string name="user_profile_screen_top_bar_report">신고</string>
     <string name="user_profile_screen_friendship_status_btn_nothing">친구 추가</string>
@@ -67,7 +67,6 @@
     <string name="user_profile_screen_friendship_status_btn_received">요청 수락</string>
     <!-- User Profile Screen (DeleteFriendModal) -->
     <string name="user_profile_delete_friend_modal_content">친구 삭제</string>
-
     <!-- Profile Common Success -->
     <string name="profile_success_update_user_keyword_offset">키워드 위치가 수정됐습니다.</string>
     <string name="profile_success_add_user_keyword">키워드가 추가됐습니다.</string>
@@ -84,6 +83,11 @@
     <string name="profile_error_update_friend_status_failed">잠시 후 다시 시도해주세요.</string>
     <string name="profile_error_already_friends_or_requested">이미 친구거나 이미 요청된 상태입니다.</string>
     <string name="profile_error_already_processed">이미 처리된 요청입니다.</string>
+
+    <!-- KeywordAddScreen -->
+    <string name="keyword_add_screen_add">키워드 등록</string>
+    <string name="keyword_add_screen_input_keyword_placeholder">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
+    <string name="keyword_add_screen_input_description_placeholder">키워드에 관한 내용을 자유롭게 작성해주세요.</string>
 
     <!-- KeywordDetailModal -->
     <string name="keyword_detail_modal_tab_bar_title_1">내용</string>
