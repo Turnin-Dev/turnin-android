@@ -67,6 +67,7 @@ sealed interface SubGraph {
         data object CropProfileImage : Register
     }
 
+    /** 신고 그래프 */
     sealed interface Report : SubGraph {
         @Serializable
         data class Root(
@@ -94,6 +95,9 @@ sealed interface Screens {
     @Serializable
     data object TempMain : Screens
 
+    /**
+     * 키워드 상세 화면
+     */
     @Serializable
     data class KeywordDetail(
         val userKeywordId: Long,
@@ -101,6 +105,18 @@ sealed interface Screens {
         val keyword: String,
     ) : Screens
 
+    /**
+     * 키워드 수정 화면
+     */
+    @Serializable
+    data class KeywordEdit(
+        val keyword: String?,
+        val description: String?,
+    ) : Screens
+
+    /**
+     * 친구 목록 화면
+     */
     @Serializable
     data class FriendsList(
         val userId: Long,

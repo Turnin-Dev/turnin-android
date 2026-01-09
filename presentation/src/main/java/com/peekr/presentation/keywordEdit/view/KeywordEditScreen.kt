@@ -1,4 +1,4 @@
-package com.peekr.presentation.keywordAdd.view
+package com.peekr.presentation.keywordEdit.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,11 +27,11 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.modifier.accessibility
 import com.peekr.presentation.R
-import com.peekr.presentation.keywordAdd.state.KeywordAddContract
+import com.peekr.presentation.keywordEdit.state.KeywordEditContract
 import com.peekr.presentation.profile.state.KeywordTextFieldState
 
 /**
- * 키워드 추가 화면 프레임
+ * 키워드 편집 화면 프레임
  *
  * @param modifier [Modifier]
  * @param topBar 탑바
@@ -39,7 +39,7 @@ import com.peekr.presentation.profile.state.KeywordTextFieldState
  * @param inputDescription 키워드 내용 입력 영역
  */
 @Composable
-private fun KeywordAddScreenFrame(
+private fun KeywordEditScreenFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable ColumnScope.() -> Unit,
     inputKeyword: @Composable ColumnScope.() -> Unit,
@@ -64,7 +64,7 @@ private fun KeywordAddScreenFrame(
 }
 
 /**
- * 키워드 추가 화면
+ * 키워드 편집 화면
  *
  * @param modifier [Modifier]
  * @param uiState UI 상태
@@ -73,14 +73,14 @@ private fun KeywordAddScreenFrame(
  * @param onBackPressed 뒤로가기 클릭 시
  */
 @Composable
-fun KeywordAddScreen(
+fun KeywordEditScreen(
     modifier: Modifier = Modifier,
-    uiState: KeywordAddContract.UiState,
-    onUiEvent: (KeywordAddContract.UiEvent) -> Unit,
+    uiState: KeywordEditContract.UiState,
+    onUiEvent: (KeywordEditContract.UiEvent) -> Unit,
     onAddClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    KeywordAddScreenFrame(
+    KeywordEditScreenFrame(
         modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal),
         topBar = {
             TopBar(
@@ -96,7 +96,7 @@ fun KeywordAddScreen(
                 modifier = Modifier.fillMaxWidth(),
                 keywordTextFieldState = uiState.keyword,
                 onKeywordChanged = {
-                    onUiEvent(KeywordAddContract.UiEvent.OnKeywordChanged(it))
+                    onUiEvent(KeywordEditContract.UiEvent.OnKeywordChanged(it))
                 },
             )
         },
@@ -105,7 +105,7 @@ fun KeywordAddScreen(
                 modifier = Modifier.fillMaxWidth(),
                 description = uiState.description,
                 onDescriptionChanged = {
-                    onUiEvent(KeywordAddContract.UiEvent.OnDescriptionChanged(it))
+                    onUiEvent(KeywordEditContract.UiEvent.OnDescriptionChanged(it))
                 },
             )
         },
@@ -132,7 +132,7 @@ private fun TopBar(
             PeekrIconButton(
                 icon = PeekrIcons.Default.Normal.Check,
                 iconSize = PeekrIconSize.Small,
-                contentDescription = stringResource(R.string.keyword_add_screen_add),
+                contentDescription = stringResource(R.string.keyword_edit_screen_add),
                 tint = PeekrTheme.colorScheme.primary,
                 onClick = onAddClick,
             )
@@ -163,7 +163,7 @@ private fun InputKeyword(
             modifier = Modifier.fillMaxWidth(),
             text = keywordTextFieldState.value,
             onTextChanged = { onKeywordChanged(it) },
-            placeholder = stringResource(R.string.keyword_add_screen_input_keyword_placeholder),
+            placeholder = stringResource(R.string.keyword_edit_screen_input_keyword_placeholder),
             isError = isError,
         )
         if (isError) {
@@ -192,7 +192,7 @@ private fun InputDescription(
         modifier = modifier,
         text = description,
         onTextChanged = { onDescriptionChanged(it) },
-        placeholder = stringResource(R.string.keyword_add_screen_input_description_placeholder),
+        placeholder = stringResource(R.string.keyword_edit_screen_input_description_placeholder),
     )
 }
 
@@ -225,11 +225,11 @@ private fun TopBarPreview() {
 
 @Preview
 @Composable
-private fun KeywordAddScreenPreview() {
+private fun KeywordEditScreenPreview() {
     PeekrAppTheme {
-        KeywordAddScreen(
+        KeywordEditScreen(
             modifier = Modifier.fillMaxSize(),
-            uiState = KeywordAddContract.UiState(),
+            uiState = KeywordEditContract.UiState(),
             onUiEvent = {},
             onAddClick = {},
             onBackPressed = {},

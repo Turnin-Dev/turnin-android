@@ -1,4 +1,4 @@
-package com.peekr.presentation.keywordAdd.view
+package com.peekr.presentation.keywordEdit.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.BasicTextField
@@ -20,7 +20,7 @@ import com.peekr.core.designsystem.theme.PeekrTheme
  * @param readOnly 읽기 전용 여부
  */
 @Composable
-internal fun KeywordTextField(
+internal fun DescriptionTextField(
     text: String,
     onTextChanged: (String) -> Unit,
     placeholder: String,
@@ -32,18 +32,17 @@ internal fun KeywordTextField(
         modifier = modifier,
         value = text,
         onValueChange = { onTextChanged(it) },
-        textStyle = PeekrTheme.typography.headline2.copy(
+        textStyle = PeekrTheme.typography.body3Many.copy(
             color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Normal,
         ),
-        maxLines = 2,
         readOnly = readOnly,
     ) { innerTextField ->
         Box(contentAlignment = Alignment.CenterStart) {
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = PeekrTheme.typography.headline1.copy(fontWeight = FontWeight.Bold),
+                    style = PeekrTheme.typography.body3Many.copy(fontWeight = FontWeight.Normal),
                     color = PeekrTheme.colorScheme.textPlaceholder,
                 )
             }

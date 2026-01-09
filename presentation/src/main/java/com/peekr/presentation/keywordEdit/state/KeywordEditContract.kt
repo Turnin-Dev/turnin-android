@@ -1,4 +1,4 @@
-package com.peekr.presentation.keywordAdd.state
+package com.peekr.presentation.keywordEdit.state
 
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
@@ -7,9 +7,9 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.profile.state.KeywordTextFieldState
 
 /**
- * 키워드 추가 UI 계약
+ * 키워드 편집 UI 계약
  */
-class KeywordAddContract {
+class KeywordEditContract {
     /**
      * UI 상태
      *
