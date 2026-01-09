@@ -2,17 +2,27 @@ package com.peekr.presentation.keywordEdit.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +39,7 @@ import com.peekr.core.presentation.ui.modifier.accessibility
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordEdit.state.KeywordEditContract
 import com.peekr.presentation.profile.state.KeywordTextFieldState
+import kotlinx.coroutines.launch
 
 /**
  * 키워드 편집 화면 프레임
@@ -43,22 +54,45 @@ private fun KeywordEditScreenFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable ColumnScope.() -> Unit,
     inputKeyword: @Composable ColumnScope.() -> Unit,
-    inputDescription: @Composable ColumnScope.() -> Unit,
+    inputDescription: @Composable BoxScope.() -> Unit,
 ) {
-    Column(modifier) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
+    var inputDescHeight by remember { mutableIntStateOf(0) }
+
+    Column(
+        modifier
+            .fillMaxSize()
+            .imePadding(),
+    ) {
         topBar()
+
         Column(
             modifier = Modifier
-                .padding(
-                    horizontal = ScreenTokens.HorizontalPadding,
-                    vertical = 10.dp,
-                )
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = ScreenTokens.HorizontalPadding, vertical = 10.dp)
+                .height(IntrinsicSize.Min),
             verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.Start,
         ) {
             inputKeyword()
-            inputDescription()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onSizeChanged {
+                        val diff = it.height - inputDescHeight
+                        inputDescHeight = it.height
+                        if (diff == 0 || inputDescHeight == 0) {
+                            return@onSizeChanged
+                        }
+
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(scrollState.value + diff)
+                        }
+                    },
+            ) {
+                inputDescription()
+            }
         }
     }
 }
@@ -102,7 +136,7 @@ fun KeywordEditScreen(
         },
         inputDescription = {
             InputDescription(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 description = uiState.description,
                 onDescriptionChanged = {
                     onUiEvent(KeywordEditContract.UiEvent.OnDescriptionChanged(it))

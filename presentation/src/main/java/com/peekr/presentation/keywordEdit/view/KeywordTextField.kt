@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import com.peekr.core.designsystem.theme.PeekrTheme
 
@@ -36,8 +37,9 @@ internal fun KeywordTextField(
             color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
             fontWeight = FontWeight.Medium,
         ),
-        maxLines = 2,
+        singleLine = true,
         readOnly = readOnly,
+        cursorBrush = SolidColor(PeekrTheme.colorScheme.textNormal),
     ) { innerTextField ->
         Box(contentAlignment = Alignment.CenterStart) {
             if (text.isEmpty()) {

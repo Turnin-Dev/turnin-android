@@ -15,13 +15,13 @@ class KeywordEditViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: KeywordEditContract.UiEvent) {
         when (event) {
-            is KeywordEditContract.UiEvent.OnDescriptionChanged -> {
+            is KeywordEditContract.UiEvent.OnKeywordChanged -> {
                 updateState {
                     this.copy(keyword = this.keyword.copy(event.value))
                 }
             }
 
-            is KeywordEditContract.UiEvent.OnKeywordChanged -> {
+            is KeywordEditContract.UiEvent.OnDescriptionChanged -> {
                 updateState {
                     this.copy(description = event.value)
                 }

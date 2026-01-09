@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import com.peekr.core.designsystem.theme.PeekrTheme
 
@@ -37,8 +38,9 @@ internal fun DescriptionTextField(
             fontWeight = FontWeight.Normal,
         ),
         readOnly = readOnly,
+        cursorBrush = SolidColor(PeekrTheme.colorScheme.textNormal),
     ) { innerTextField ->
-        Box(contentAlignment = Alignment.CenterStart) {
+        Box(contentAlignment = Alignment.TopStart) {
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
