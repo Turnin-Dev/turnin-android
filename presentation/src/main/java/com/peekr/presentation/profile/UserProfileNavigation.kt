@@ -3,13 +3,14 @@ package com.peekr.presentation.profile
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.profile.route.UserProfileRoute
 
 fun NavGraphBuilder.userProfileNavigation(
     navController: NavController,
 ) {
-    composable<SubGraph.BottomNav.Profile.User> {
+    composable<Screens.UserProfile> {
         UserProfileRoute(
             onBackPressed = {
                 navController.popBackStack()

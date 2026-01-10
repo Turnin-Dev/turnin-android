@@ -34,7 +34,7 @@ sealed class BottomNavItem(
     )
 
     data object Profile : BottomNavItem(
-        route = SubGraph.BottomNav.Profile.Root,
+        route = SubGraph.BottomNav.Profile,
         title = R.string.bottom_nav_item_profile,
         icon = PeekrIcons.Filled.Normal.Profile,
     )

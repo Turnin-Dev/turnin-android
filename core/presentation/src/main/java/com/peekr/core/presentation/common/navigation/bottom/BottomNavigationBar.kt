@@ -19,7 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -64,6 +66,9 @@ fun BottomNavigationBar(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var selectedTab by rememberSaveable {
+        mutableStateOf(SubGraph.BottomNav.Home::class.qualifiedName ?: "")
+    }
 
     NavigationBar(
         modifier = modifier
@@ -93,7 +98,15 @@ fun BottomNavigationBar(
 //                            } == true
 
                             // 2) new mechanism
-                            currentDestination?.hasRoute(item.route::class) == true
+//                            currentDestination?.hasRoute(item.route::class)==true
+
+                            // 3) new mechanism 2
+//                            currentDestination?.hierarchy?.any { dest ->
+//                                dest.hasRoute(item.route::class)
+//                            }==true
+
+                            // 4) state mechanism
+                            selectedTab == item.route::class.qualifiedName
                         }
                     }
 
@@ -102,6 +115,7 @@ fun BottomNavigationBar(
                             .weight(1f)
                             .clickableSingle {
                                 onItemClickWithOptions(navController, item.route)
+                                selectedTab = item.route::class.qualifiedName ?: ""
                             }
                             .padding(vertical = ItemVerticalSpacingDp),
                         icon = item.icon,
@@ -169,8 +183,11 @@ private fun onItemClickWithOptions(
 ) {
     navController.navigate(route) {
         navController.graph.findStartDestination().route?.let {
-            popUpTo(it) { saveState = true }
+            popUpTo(it) {
+                saveState = true
+            }
         }
+
         launchSingleTop = true
         restoreState = true
     }
