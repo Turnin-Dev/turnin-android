@@ -10,6 +10,7 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
 import com.peekr.domain.profile.error.ProfileErrorType
 import io.mockk.coEvery
 import io.mockk.every

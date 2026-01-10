@@ -111,7 +111,6 @@ fun KeywordEditScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordEditContract.UiState,
     onUiEvent: (KeywordEditContract.UiEvent) -> Unit,
-    onAddClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     KeywordEditScreenFrame(
@@ -121,7 +120,9 @@ fun KeywordEditScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                onAddClick = onAddClick,
+                onAddClick = {
+                    onUiEvent(KeywordEditContract.UiEvent.AddKeyword)
+                },
                 onBackPressed = onBackPressed,
             )
         },
@@ -265,7 +266,6 @@ private fun KeywordEditScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordEditContract.UiState(),
             onUiEvent = {},
-            onAddClick = {},
             onBackPressed = {},
         )
     }

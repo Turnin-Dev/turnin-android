@@ -20,7 +20,6 @@ internal fun KeywordEditRoute(
         modifier = Modifier.fillMaxSize(),
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
-        onAddClick = {},
         onBackPressed = onBackPressed,
     )
 }

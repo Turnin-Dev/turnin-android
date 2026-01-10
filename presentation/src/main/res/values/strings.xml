@@ -84,10 +84,15 @@
     <string name="profile_error_already_friends_or_requested">이미 친구거나 이미 요청된 상태입니다.</string>
     <string name="profile_error_already_processed">이미 처리된 요청입니다.</string>
 
+    <!-- KeywordEdit -->
     <!-- KeywordEditScreen -->
     <string name="keyword_edit_screen_add">키워드 등록</string>
     <string name="keyword_edit_screen_input_keyword_placeholder">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
     <string name="keyword_edit_screen_input_description_placeholder">키워드에 관한 내용을 자유롭게 작성해주세요.</string>
+    <!-- KeywordEdit Error -->
+    <string name="keyword_edit_error_my_user_id_not_found">사용자의 정보 조회에 실패했습니다. 다시 시도 및 재로그인 해주세요.</string>
+    <!-- KeywordEdit Success -->
+    <string name="keyword_edit_success_add_keyword">키워드를 등록했습니다.</string>
 
     <!-- KeywordDetailModal -->
     <string name="keyword_detail_modal_tab_bar_title_1">내용</string>

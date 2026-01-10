@@ -1,14 +1,25 @@
 package com.peekr.presentation.keywordEdit.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
+import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
+import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
+import com.peekr.presentation.R
+import com.peekr.presentation.keywordEdit.error.asUiText
 import com.peekr.presentation.keywordEdit.state.KeywordEditContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class KeywordEditViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val addUserKeywordUseCase: AddUserKeywordUseCase,
+//    savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<KeywordEditContract.UiState, KeywordEditContract.UiEvent, KeywordEditContract.UiEffect>() {
     override fun createInitialState(): KeywordEditContract.UiState =
         KeywordEditContract.UiState()
@@ -26,6 +37,59 @@ class KeywordEditViewModel @Inject constructor(
                     this.copy(description = event.value)
                 }
             }
+
+            KeywordEditContract.UiEvent.AddKeyword -> {
+                addKeyword()
+            }
+
+            KeywordEditContract.UiEvent.SafeBackPressed -> {
+                safeBackPressed()
+            }
         }
+    }
+
+    /** 키워드 추가 */
+    private fun addKeyword() {
+        viewModelScope.launch {
+            addUserKeywordUseCase(
+                keyword = uiState.value.keyword.value,
+                description = uiState.value.description,
+            ).onEach { result ->
+                when (result) {
+                    Result.Loading -> {
+                        updateState {
+                            this.copy(loading = true)
+                        }
+                    }
+
+                    is Result.Error -> {
+                        updateState {
+                            this.copy(
+                                loading = false,
+                                error = result.error.asUiText(),
+                            )
+                        }
+                        showSnackBar(result.error.asUiText())
+                    }
+
+                    is Result.Success -> {
+                        showSnackBar(UiText.StringResource(R.string.keyword_edit_success_add_keyword))
+                        sendEffect { KeywordEditContract.UiEffect.CloseScreen }
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    /**
+     * 안전하게 뒤로가기 할 수 있도록 확인과정을 거친다.
+     *
+     * 작성중인 텍스트가 있다면 경고 모달을 띄우고 아니라면 뒤로가기를 마저 수행한다.
+     */
+    private fun safeBackPressed() {
+    }
+
+    private suspend fun showSnackBar(message: UiText) {
+        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

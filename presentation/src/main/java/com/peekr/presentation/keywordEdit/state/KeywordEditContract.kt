@@ -31,7 +31,16 @@ class KeywordEditContract {
 
         /** 키워드 내용 변경 이벤트 */
         data class OnDescriptionChanged(val value: String) : UiEvent
+
+        /** 키워드 추가 이벤트 */
+        data object AddKeyword : UiEvent
+
+        /** 안전하게 뒤로가기 */
+        data object SafeBackPressed : UiEvent
     }
 
-    sealed interface UiEffect : BaseUiEffect
+    sealed interface UiEffect : BaseUiEffect {
+        /** 화면 닫기 이펙트 */
+        data object CloseScreen : UiEffect
+    }
 }

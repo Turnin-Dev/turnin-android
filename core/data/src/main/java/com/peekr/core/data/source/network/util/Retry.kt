@@ -28,7 +28,6 @@ object NetworkRetryPolicy {
         HttpURLConnection.HTTP_BAD_GATEWAY, // 502
         HttpURLConnection.HTTP_UNAVAILABLE, // 503
         HttpURLConnection.HTTP_GATEWAY_TIMEOUT, // 504
-        429, // Too Many Requests
     )
 }
 

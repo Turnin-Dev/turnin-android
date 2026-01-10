@@ -17,7 +17,6 @@ import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.MyProfileScreen
-import com.peekr.presentation.profile.view.modal.AddKeywordModal
 import com.peekr.presentation.profile.view.modal.NodeOptionModal
 import com.peekr.presentation.profile.view.modal.SafeCancelModal
 import com.peekr.presentation.profile.view.modal.SafeDeleteModal
@@ -58,36 +57,6 @@ internal fun MyProfileRoute(
     }
 
     // ------------------------------ Modal ------------------------------
-    AddKeywordModal(
-        modifier = Modifier.fillMaxSize(),
-        isOpen = isAddKeywordModalOpen,
-        loading = uiState.fullScreenLoading,
-        keywordTextFieldState = uiState.keywordTextField,
-        onKeywordTextChanged = {
-            viewModel.processEvent(MyProfileContract.UiEvent.OnKeywordTextChanged(it))
-        },
-        keywordDescTextFieldState = uiState.keywordDescTextField,
-        onKeywordDescTextChanged = {
-            viewModel.processEvent(MyProfileContract.UiEvent.OnKeywordDescTextChanged(it))
-        },
-        onAddClick = {
-            viewModel.processEvent(
-                MyProfileContract.UiEvent.AddKeyword(
-                    uiState.keywordTextField.value,
-                    uiState.keywordDescTextField.value,
-                ),
-            )
-        },
-        onCancelClick = {
-            viewModel.processEvent(
-                MyProfileContract.UiEvent.CheckSafeCancel(
-                    keyword = uiState.keywordTextField.value,
-                    description = uiState.keywordDescTextField.value,
-                ),
-            )
-        },
-    )
-
     SafeCancelModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeCancelModalOpen,

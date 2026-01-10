@@ -22,7 +22,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
@@ -75,13 +74,6 @@ class MyProfileViewModel @Inject constructor(
 
             is MyProfileContract.UiEvent.OnKeywordDescTextChanged -> {
                 onKeywordDescTextChanged(event.value)
-            }
-
-            is MyProfileContract.UiEvent.AddKeyword -> {
-                addKeyword(
-                    keyword = event.keyword,
-                    description = event.description,
-                )
             }
 
             is MyProfileContract.UiEvent.DeleteKeyword -> {
@@ -195,48 +187,6 @@ class MyProfileViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
-        }
-    }
-
-    private fun addKeyword(
-        keyword: String,
-        description: String,
-    ) {
-        viewModelScope.launch {
-            usecases
-                .addUserKeyword(keyword, description)
-                .onEach { result ->
-                    when (result) {
-                        Result.Loading -> {
-                            updateState {
-                                this.copy(fullScreenLoading = true, error = null)
-                            }
-                        }
-
-                        is Result.Error -> {
-                            updateState {
-                                this.copy(fullScreenLoading = false, error = result.error.asUiText())
-                            }
-                            showSnackBar(result.error.asUiText())
-                        }
-
-                        is Result.Success -> {
-                            updateState {
-                                this.copy(
-                                    fullScreenLoading = false,
-                                    error = null,
-                                    keywordTextField = KeywordTextFieldState(),
-                                    keywordDescTextField = KeywordTextFieldState(),
-                                    selectedKeyword = SelectedKeywordState(),
-                                )
-                            }
-                            closeAllModalsAndResetTextFields()
-                            showSnackBar(StringResource(R.string.profile_success_add_user_keyword))
-                            // 성공 시, 초기 데이터 다시 로드 (새로 고침)
-                            loadInitialData()
-                        }
-                    }
-                }.launchIn(this)
         }
     }
 

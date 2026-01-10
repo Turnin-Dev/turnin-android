@@ -42,12 +42,6 @@ class MyProfileContract {
         /** 키워드 추가 모달에서 키워드 설명 텍스트 필드 값 변경 이벤트 */
         data class OnKeywordDescTextChanged(val value: String) : UiEvent
 
-        /** 키워드 추가 이벤트 */
-        data class AddKeyword(
-            val keyword: String,
-            val description: String,
-        ) : UiEvent
-
         /** 키워드 삭제 이벤트 */
         data class DeleteKeyword(
             val userKeywordId: UserKeywordId?,
