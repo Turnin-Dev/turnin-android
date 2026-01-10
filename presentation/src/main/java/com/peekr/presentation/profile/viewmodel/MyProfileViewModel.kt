@@ -3,7 +3,6 @@ package com.peekr.presentation.profile.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
@@ -14,7 +13,6 @@ import com.peekr.domain.profile.usecase.MyProfileUseCases
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.error.asUiText
 import com.peekr.presentation.profile.model.toUiModel
-import com.peekr.presentation.profile.state.KeywordTextFieldState
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.state.SelectedKeywordState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,20 +60,8 @@ class MyProfileViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: MyProfileContract.UiEvent) {
         when (event) {
-            is MyProfileContract.UiEvent.OnKeywordTextChanged -> {
-                onKeywordTextChanged(event.value)
-            }
-
-            is MyProfileContract.UiEvent.OnKeywordDescTextChanged -> {
-                onKeywordDescTextChanged(event.value)
-            }
-
             is MyProfileContract.UiEvent.DeleteKeyword -> {
                 deleteKeyword(event.userKeywordId)
-            }
-
-            is MyProfileContract.UiEvent.CheckSafeCancel -> {
-                safeCancel(event.keyword, event.description)
             }
 
             MyProfileContract.UiEvent.CloseAllModalsAndResetTextField -> {
@@ -95,30 +81,8 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
-    private fun onKeywordTextChanged(keyword: String) {
-        updateState {
-            this.copy(
-                keywordTextField = this.keywordTextField.copy(value = keyword),
-            )
-        }
-    }
-
-    private fun onKeywordDescTextChanged(description: String) {
-        updateState {
-            this.copy(
-                keywordDescTextField = this.keywordDescTextField.copy(value = description),
-            )
-        }
-    }
-
     private fun closeAllModalsAndResetTextFields() {
         sendEffect { MyProfileContract.UiEffect.CloseAllModals }
-        updateState {
-            this.copy(
-                keywordTextField = KeywordTextFieldState(),
-                keywordDescTextField = KeywordTextFieldState(),
-            )
-        }
     }
 
     private fun onSelectedKeywordChanged(
@@ -132,19 +96,6 @@ class MyProfileViewModel @Inject constructor(
                     keyword = keyword,
                 ),
             )
-        }
-    }
-
-    private fun safeCancel(
-        keyword: String?,
-        description: String?,
-    ) {
-        if ((keyword != null && keyword.isNotEmpty()) ||
-            (description != null && description.isNotEmpty())
-        ) {
-            sendEffect { MyProfileContract.UiEffect.OpenSafeCancelModal }
-        } else {
-            sendEffect { MyProfileContract.UiEffect.CloseAllModals }
         }
     }
 

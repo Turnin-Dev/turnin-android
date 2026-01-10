@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase.my
+package com.peekr.domain.keywordEdit.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.KeywordDescription
@@ -10,16 +10,14 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
-import com.peekr.domain.profile.error.ProfileErrorType
+import com.peekr.domain.keywordEdit.error.KeywordEditErrorType
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -46,7 +44,7 @@ class AddUserKeywordUseCaseTest {
 
         // then
         val success = result as Result.Success
-        assertEquals(TestUserKeyword, success.data)
+        Assert.assertEquals(TestUserKeyword, success.data)
     }
 
     @Test
@@ -59,12 +57,10 @@ class AddUserKeywordUseCaseTest {
 
         // then
         val error = result as Result.Error
-        assertTrue(error.error is ProfileErrorType.ValidationError)
+        Assert.assertTrue(error.error is KeywordEditErrorType.ValidationError)
     }
 
     companion object {
-        private const val INITIAL_OFFSET_X = 0.0
-        private const val INITIAL_OFFSET_Y = 0.0
         private val TestUserId = UserId(1L)
         private val TestKeyword = KeywordName("sampleKeyword")
         private val TestKeywordDescription = KeywordDescription("hello")

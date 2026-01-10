@@ -88,6 +88,12 @@ class KeywordEditViewModel @Inject constructor(
                     }
 
                     is Result.Success -> {
+                        updateState {
+                            this.copy(
+                                loading = false,
+                                error = null,
+                            )
+                        }
                         showSnackBar(UiText.StringResource(R.string.keyword_edit_success_add_keyword))
                         sendEffect { KeywordEditContract.UiEffect.CloseScreen }
                     }

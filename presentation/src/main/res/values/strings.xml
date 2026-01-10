@@ -92,6 +92,7 @@
     <string name="keyword_edit_modal_safe_cancel">변경사항을 버리시겠습니까?</string>
     <!-- KeywordEdit Error -->
     <string name="keyword_edit_error_my_user_id_not_found">사용자의 정보 조회에 실패했습니다. 다시 시도 및 재로그인 해주세요.</string>
+    <string name="keyword_edit_error_unexpected">문제가 발생했어요. 다시 시도해주세요.</string>
     <!-- KeywordEdit Success -->
     <string name="keyword_edit_success_add_keyword">키워드를 등록했습니다.</string>
 
