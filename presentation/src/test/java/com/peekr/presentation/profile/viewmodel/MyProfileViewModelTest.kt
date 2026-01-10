@@ -43,6 +43,8 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
 
     @Before
     fun setUp() {
+        SnackbarController.reset()
+
         // Mock
         every {
             usecases.getMyProfile()

@@ -37,6 +37,8 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
 
     @Before
     fun setUp() {
+        SnackbarController.reset()
+
         // Mock
         every {
             usecases.getUserProfile(TestUserId.value)

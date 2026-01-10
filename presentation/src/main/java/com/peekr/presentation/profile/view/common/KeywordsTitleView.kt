@@ -13,7 +13,7 @@ import com.peekr.domain.profile.model.ProfileRule
 import com.peekr.presentation.R
 
 /**
- * 프로필 화면에서 사용하는 키워트 타이틀 뷰 (키워드 개수 표시 UI)
+ * 프로필 화면에서 사용하는 키워드 타이틀 뷰 (키워드 개수 표시 UI)
  *
  * @param modifier [Modifier]
  * @param count 키워드 개수

@@ -39,6 +39,8 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
 
     @Before
     fun setUp() {
+        SnackbarController.reset()
+
         every {
             addUserKeywordUseCase(any(), any())
         } returns flowOf(Result.Success(TestUserKeyword))

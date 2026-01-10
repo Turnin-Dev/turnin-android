@@ -32,8 +32,6 @@ internal fun MyProfileRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var isAddKeywordModalOpen by rememberSaveable { mutableStateOf(false) }
-    var isEditKeywordModalOpen by rememberSaveable { mutableStateOf(false) }
     var isSafeCancelModalOpen by rememberSaveable { mutableStateOf(false) }
     var isSafeDeleteModalOpen by rememberSaveable { mutableStateOf(false) }
     var isNodeOptionModelOpen by rememberSaveable { mutableStateOf(false) }
@@ -49,8 +47,6 @@ internal fun MyProfileRoute(
                 isSafeDeleteModalOpen = false
                 isSafeCancelModalOpen = false
                 isNodeOptionModelOpen = false
-                isAddKeywordModalOpen = false
-                isEditKeywordModalOpen = false
             }
         }
     }

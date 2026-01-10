@@ -17,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class KeywordEditViewModel @Inject constructor(
@@ -65,41 +64,39 @@ class KeywordEditViewModel @Inject constructor(
 
     /** 키워드 추가 */
     private fun addKeyword() {
-        viewModelScope.launch {
-            addUserKeywordUseCase(
-                keyword = currentUiState.keyword.value,
-                description = currentUiState.description,
-            ).onEach { result ->
-                when (result) {
-                    Result.Loading -> {
-                        updateState {
-                            this.copy(loading = true)
-                        }
-                    }
-
-                    is Result.Error -> {
-                        updateState {
-                            this.copy(
-                                loading = false,
-                                error = result.error.asUiText(),
-                            )
-                        }
-                        showSnackBar(result.error.asUiText())
-                    }
-
-                    is Result.Success -> {
-                        updateState {
-                            this.copy(
-                                loading = false,
-                                error = null,
-                            )
-                        }
-                        showSnackBar(UiText.StringResource(R.string.keyword_edit_success_add_keyword))
-                        sendEffect { KeywordEditContract.UiEffect.CloseScreen }
+        addUserKeywordUseCase(
+            keyword = currentUiState.keyword.value,
+            description = currentUiState.description,
+        ).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
                     }
                 }
-            }.launchIn(viewModelScope)
-        }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = result.error.asUiText(),
+                        )
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                        )
+                    }
+                    showSnackBar(UiText.StringResource(R.string.keyword_edit_success_add_keyword))
+                    sendEffect { KeywordEditContract.UiEffect.CloseScreen }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     /**

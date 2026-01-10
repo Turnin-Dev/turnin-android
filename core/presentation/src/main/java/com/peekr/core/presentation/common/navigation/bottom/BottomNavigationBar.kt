@@ -90,7 +90,7 @@ fun BottomNavigationBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 bottomNavItems.forEach { item ->
-                    val checked by remember(currentDestination?.route) {
+                    val checked by remember(selectedTab) {
                         derivedStateOf {
                             // 1) old mechanism
 //                            currentDestination?.hierarchy?.any {
