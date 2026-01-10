@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -59,10 +60,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val appNavController = rememberNavController()
-
-            // ------------------------------ Auth Logout ------------------------------
             val navBackStackEntry by appNavController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
+
+            // ------------------------------ Auth Logout ------------------------------
             val isAuthScreen by remember(currentDestination?.route) {
                 derivedStateOf {
                     currentDestination?.hierarchy?.any {
@@ -87,6 +88,15 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
+            val snackbarBottomPadding = remember {
+                derivedStateOf {
+                    if (navBackStackEntry?.destination?.hasRoute<SubGraph.BottomNav.Root>() == true) {
+                        BottomNavigationBarTokens.MinHeightDp
+                    } else {
+                        0.dp
+                    }
+                }
+            }
 
             ObserveAsEvents(
                 flow = SnackbarController.events,
@@ -116,8 +126,7 @@ class MainActivity : ComponentActivity() {
                     containerColor = PeekrTheme.colorScheme.backgroundNormal,
                     snackbarHost = {
                         PeekrSnackbar(
-                            modifier = Modifier
-                                .padding(bottom = BottomNavigationBarTokens.MinHeightDp),
+                            modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
                             snackbarHostState = snackbarHostState,
                         )
                     },

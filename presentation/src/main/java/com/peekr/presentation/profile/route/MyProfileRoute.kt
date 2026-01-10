@@ -18,7 +18,6 @@ import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.MyProfileScreen
 import com.peekr.presentation.profile.view.modal.NodeOptionModal
-import com.peekr.presentation.profile.view.modal.SafeCancelModal
 import com.peekr.presentation.profile.view.modal.SafeDeleteModal
 import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 
@@ -57,16 +56,6 @@ internal fun MyProfileRoute(
     }
 
     // ------------------------------ Modal ------------------------------
-    SafeCancelModal(
-        modifier = Modifier.fillMaxSize(),
-        isOpen = isSafeCancelModalOpen,
-        title = R.string.my_profile_modal_safe_cancel,
-        onAcceptClick = {
-            viewModel.processEvent(MyProfileContract.UiEvent.CloseAllModalsAndResetTextField)
-        },
-        onCancelClick = { isSafeCancelModalOpen = false },
-    )
-
     SafeDeleteModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeDeleteModalOpen,

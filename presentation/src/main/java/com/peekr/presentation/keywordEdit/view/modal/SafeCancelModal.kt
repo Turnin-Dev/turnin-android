@@ -1,4 +1,4 @@
-package com.peekr.presentation.profile.view.modal
+package com.peekr.presentation.keywordEdit.view.modal
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -57,7 +57,7 @@ private fun CancelWarningModalPreview() {
 
             SafeCancelModal(
                 isOpen = isOpen,
-                title = R.string.my_profile_modal_safe_cancel,
+                title = R.string.keyword_edit_modal_safe_cancel,
                 onAcceptClick = {},
                 onCancelClick = { isOpen = false },
             )

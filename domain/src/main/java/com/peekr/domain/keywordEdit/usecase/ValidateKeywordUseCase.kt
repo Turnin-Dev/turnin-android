@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase.my
+package com.peekr.domain.keywordEdit.usecase
 
 import com.peekr.core.domain.common.validation.CommonValidationException
 import com.peekr.core.domain.common.validation.ValidationErrorType

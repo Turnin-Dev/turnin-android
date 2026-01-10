@@ -37,10 +37,16 @@ class KeywordEditContract {
 
         /** 안전하게 뒤로가기 */
         data object SafeBackPressed : UiEvent
+
+        /** 화면 닫기 이벤트 */
+        data object CloseScreen : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
         /** 화면 닫기 이펙트 */
         data object CloseScreen : UiEffect
+
+        /** 취소 경고 모달 열기 */
+        data object OpenSafeCancelModal : UiEffect
     }
 }

@@ -5,7 +5,6 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
@@ -29,11 +28,6 @@ class MyProfileViewModel @Inject constructor(
 ) : MVIBaseViewModel<MyProfileContract.UiState, MyProfileContract.UiEvent, MyProfileContract.UiEffect>() {
     override fun createInitialState(): MyProfileContract.UiState =
         MyProfileContract.UiState()
-
-    init {
-        setKeywordValidation()
-        setKeywordDescriptionValidation()
-    }
 
     override suspend fun loadInitialData() {
         // 새로고침으로 해당 함수를 호출해도 상관은 없으나, 아래 로직에 캐싱 로직이 있다면
@@ -192,54 +186,5 @@ class MyProfileViewModel @Inject constructor(
 
     private suspend fun showSnackBar(message: UiText) {
         SnackbarController.sendEvent(SnackbarEvent(message = message))
-    }
-
-    // ------------------------------ Validation ------------------------------
-    private fun setKeywordValidation() {
-        uiState.setTextFieldValidation(
-            scope = viewModelScope,
-            value = { it.keywordTextField.value },
-            validator = { usecases.validateKeyword(it) },
-            onValid = { _ ->
-                updateState {
-                    val updatedKeywordTextField = currentUiState
-                        .keywordTextField
-                        .copy(error = null)
-                    this.copy(keywordTextField = updatedKeywordTextField)
-                }
-            },
-            onInvalid = { error ->
-                updateState {
-                    val updatedKeywordTextField = currentUiState
-                        .keywordTextField
-                        .copy(error = error.asUiText())
-                    this.copy(keywordTextField = updatedKeywordTextField)
-                }
-            },
-        )
-    }
-
-    private fun setKeywordDescriptionValidation() {
-        uiState.setTextFieldValidation(
-            scope = viewModelScope,
-            value = { it.keywordDescTextField.value },
-            validator = { usecases.validateKeywordDescription(it) },
-            onValid = { _ ->
-                updateState {
-                    val updatedKeywordDescTextField = currentUiState
-                        .keywordDescTextField
-                        .copy(error = null)
-                    this.copy(keywordDescTextField = updatedKeywordDescTextField)
-                }
-            },
-            onInvalid = { error ->
-                updateState {
-                    val updatedKeywordDescTextField = currentUiState
-                        .keywordDescTextField
-                        .copy(error = error.asUiText())
-                    this.copy(keywordDescTextField = updatedKeywordDescTextField)
-                }
-            },
-        )
     }
 }

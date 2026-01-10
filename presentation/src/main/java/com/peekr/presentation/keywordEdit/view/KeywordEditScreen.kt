@@ -103,15 +103,12 @@ private fun KeywordEditScreenFrame(
  * @param modifier [Modifier]
  * @param uiState UI 상태
  * @param onUiEvent UI 이벤트
- * @param onAddClick 추가 클릭 시
- * @param onBackPressed 뒤로가기 클릭 시
  */
 @Composable
 fun KeywordEditScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordEditContract.UiState,
     onUiEvent: (KeywordEditContract.UiEvent) -> Unit,
-    onBackPressed: () -> Unit,
 ) {
     KeywordEditScreenFrame(
         modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal),
@@ -123,7 +120,9 @@ fun KeywordEditScreen(
                 onAddClick = {
                     onUiEvent(KeywordEditContract.UiEvent.AddKeyword)
                 },
-                onBackPressed = onBackPressed,
+                onBackPressed = {
+                    onUiEvent(KeywordEditContract.UiEvent.SafeBackPressed)
+                },
             )
         },
         inputKeyword = {
@@ -266,7 +265,6 @@ private fun KeywordEditScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordEditContract.UiState(),
             onUiEvent = {},
-            onBackPressed = {},
         )
     }
 }

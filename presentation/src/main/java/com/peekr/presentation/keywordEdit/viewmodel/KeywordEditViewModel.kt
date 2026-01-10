@@ -2,11 +2,14 @@ package com.peekr.presentation.keywordEdit.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
+import com.peekr.domain.keywordEdit.usecase.ValidateKeywordUseCase
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordEdit.error.asUiText
 import com.peekr.presentation.keywordEdit.state.KeywordEditContract
@@ -19,10 +22,15 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class KeywordEditViewModel @Inject constructor(
     private val addUserKeywordUseCase: AddUserKeywordUseCase,
+    private val validateKeywordUseCase: ValidateKeywordUseCase,
 //    savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<KeywordEditContract.UiState, KeywordEditContract.UiEvent, KeywordEditContract.UiEffect>() {
     override fun createInitialState(): KeywordEditContract.UiState =
         KeywordEditContract.UiState()
+
+    init {
+        setKeywordValidation()
+    }
 
     override suspend fun handleEvent(event: KeywordEditContract.UiEvent) {
         when (event) {
@@ -43,7 +51,14 @@ class KeywordEditViewModel @Inject constructor(
             }
 
             KeywordEditContract.UiEvent.SafeBackPressed -> {
-                safeBackPressed()
+                safeBackPressed(
+                    keyword = currentUiState.keyword.value,
+                    description = currentUiState.description,
+                )
+            }
+
+            KeywordEditContract.UiEvent.CloseScreen -> {
+                sendEffect { KeywordEditContract.UiEffect.CloseScreen }
             }
         }
     }
@@ -52,8 +67,8 @@ class KeywordEditViewModel @Inject constructor(
     private fun addKeyword() {
         viewModelScope.launch {
             addUserKeywordUseCase(
-                keyword = uiState.value.keyword.value,
-                description = uiState.value.description,
+                keyword = currentUiState.keyword.value,
+                description = currentUiState.description,
             ).onEach { result ->
                 when (result) {
                     Result.Loading -> {
@@ -86,10 +101,45 @@ class KeywordEditViewModel @Inject constructor(
      *
      * 작성중인 텍스트가 있다면 경고 모달을 띄우고 아니라면 뒤로가기를 마저 수행한다.
      */
-    private fun safeBackPressed() {
+    private fun safeBackPressed(
+        keyword: String?,
+        description: String?,
+    ) {
+        if ((keyword != null && keyword.isNotEmpty()) ||
+            (description != null && description.isNotEmpty())
+        ) {
+            sendEffect { KeywordEditContract.UiEffect.OpenSafeCancelModal }
+        } else {
+            sendEffect { KeywordEditContract.UiEffect.CloseScreen }
+        }
     }
 
     private suspend fun showSnackBar(message: UiText) {
         SnackbarController.sendEvent(SnackbarEvent(message = message))
+    }
+
+    // ------------------------------ Validation ------------------------------
+    private fun setKeywordValidation() {
+        uiState.setTextFieldValidation(
+            scope = viewModelScope,
+            value = { it.keyword.value },
+            validator = { validateKeywordUseCase(it) },
+            onValid = { _ ->
+                updateState {
+                    val updatedKeywordTextField = currentUiState
+                        .keyword
+                        .copy(error = null)
+                    this.copy(keyword = updatedKeywordTextField)
+                }
+            },
+            onInvalid = { error ->
+                updateState {
+                    val updatedKeywordTextField = currentUiState
+                        .keyword
+                        .copy(error = error.asUiText())
+                    this.copy(keyword = updatedKeywordTextField)
+                }
+            },
+        )
     }
 }

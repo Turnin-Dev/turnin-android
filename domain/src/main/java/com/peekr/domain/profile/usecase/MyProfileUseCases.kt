@@ -5,7 +5,6 @@ import com.peekr.domain.profile.usecase.my.GetMyProfileUseCase
 import com.peekr.domain.profile.usecase.my.UpdateProfileUseCase
 import com.peekr.domain.profile.usecase.my.UpdateUserKeywordDescriptionUseCase
 import com.peekr.domain.profile.usecase.my.ValidateKeywordDescriptionUseCase
-import com.peekr.domain.profile.usecase.my.ValidateKeywordUseCase
 import javax.inject.Inject
 
 class MyProfileUseCases @Inject constructor(
@@ -14,5 +13,4 @@ class MyProfileUseCases @Inject constructor(
     val updateProfile: UpdateProfileUseCase,
     val updateUserKeywordDescription: UpdateUserKeywordDescriptionUseCase,
     val validateKeywordDescription: ValidateKeywordDescriptionUseCase,
-    val validateKeyword: ValidateKeywordUseCase,
 )
