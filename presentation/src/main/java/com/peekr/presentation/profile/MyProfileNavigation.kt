@@ -1,6 +1,5 @@
 package com.peekr.presentation.profile
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -30,18 +29,4 @@ fun NavGraphBuilder.myProfileNavigation(
             },
         )
     }
-}
-
-private fun NavController.navigateToKeywordDetail(
-    userKeywordId: Long,
-    userId: Long,
-    keyword: String,
-) {
-    navigate(
-        Screens.KeywordDetail(
-            userKeywordId = userKeywordId,
-            userId = userId,
-            keyword = keyword,
-        ),
-    )
 }

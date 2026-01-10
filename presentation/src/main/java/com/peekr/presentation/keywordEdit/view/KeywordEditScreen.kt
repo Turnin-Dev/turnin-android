@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -110,40 +111,48 @@ fun KeywordEditScreen(
     uiState: KeywordEditContract.UiState,
     onUiEvent: (KeywordEditContract.UiEvent) -> Unit,
 ) {
-    KeywordEditScreenFrame(
-        modifier = modifier.background(PeekrTheme.colorScheme.backgroundNormal),
-        topBar = {
-            TopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                onAddClick = {
-                    onUiEvent(KeywordEditContract.UiEvent.AddKeyword)
-                },
-                onBackPressed = {
-                    onUiEvent(KeywordEditContract.UiEvent.SafeBackPressed)
-                },
-            )
-        },
-        inputKeyword = {
-            InputKeyword(
-                modifier = Modifier.fillMaxWidth(),
-                keywordTextFieldState = uiState.keyword,
-                onKeywordChanged = {
-                    onUiEvent(KeywordEditContract.UiEvent.OnKeywordChanged(it))
-                },
-            )
-        },
-        inputDescription = {
-            InputDescription(
-                modifier = Modifier.fillMaxSize(),
-                description = uiState.description,
-                onDescriptionChanged = {
-                    onUiEvent(KeywordEditContract.UiEvent.OnDescriptionChanged(it))
-                },
-            )
-        },
-    )
+    Box(modifier) {
+        KeywordEditScreenFrame(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PeekrTheme.colorScheme.backgroundNormal),
+            topBar = {
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                    onAddClick = {
+                        onUiEvent(KeywordEditContract.UiEvent.AddKeyword)
+                    },
+                    onBackPressed = {
+                        onUiEvent(KeywordEditContract.UiEvent.SafeBackPressed)
+                    },
+                )
+            },
+            inputKeyword = {
+                InputKeyword(
+                    modifier = Modifier.fillMaxWidth(),
+                    keywordTextFieldState = uiState.keyword,
+                    onKeywordChanged = {
+                        onUiEvent(KeywordEditContract.UiEvent.OnKeywordChanged(it))
+                    },
+                )
+            },
+            inputDescription = {
+                InputDescription(
+                    modifier = Modifier.fillMaxSize(),
+                    description = uiState.description,
+                    onDescriptionChanged = {
+                        onUiEvent(KeywordEditContract.UiEvent.OnDescriptionChanged(it))
+                    },
+                )
+            },
+        )
+
+        if (uiState.loading) {
+            PeekrLoadingScreen()
+        }
+    }
 }
 
 /**
