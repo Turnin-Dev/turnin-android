@@ -54,6 +54,7 @@ fun PeekrAppTheme(
         body2 = body2(),
         body3Normal = body3Normal(),
         body3Many = body3Many(),
+        body3Content = body3Content(),
         body4 = body4(),
         body5 = body5(),
         label1 = label1(),

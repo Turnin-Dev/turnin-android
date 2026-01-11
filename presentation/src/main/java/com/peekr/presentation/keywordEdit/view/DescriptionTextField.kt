@@ -33,7 +33,7 @@ internal fun DescriptionTextField(
         modifier = modifier,
         value = text,
         onValueChange = { onTextChanged(it) },
-        textStyle = PeekrTheme.typography.body3Many.copy(
+        textStyle = PeekrTheme.typography.body3Content.copy(
             color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
             fontWeight = FontWeight.Normal,
         ),
@@ -44,7 +44,7 @@ internal fun DescriptionTextField(
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = PeekrTheme.typography.body3Many.copy(fontWeight = FontWeight.Normal),
+                    style = PeekrTheme.typography.body3Content.copy(fontWeight = FontWeight.Normal),
                     color = PeekrTheme.colorScheme.textPlaceholder,
                 )
             }
