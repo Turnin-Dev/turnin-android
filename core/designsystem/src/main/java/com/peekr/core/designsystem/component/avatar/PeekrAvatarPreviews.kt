@@ -20,7 +20,7 @@ private fun Avatar_Size() {
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            repeat(150) {
+            repeat(30) {
                 PeekrAvatar(
                     modifier = Modifier.size((it + 50).dp),
                     model = if (it % 2 == 0) photos[0] else photos[1],

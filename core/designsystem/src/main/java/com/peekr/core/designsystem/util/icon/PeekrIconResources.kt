@@ -46,6 +46,9 @@ val PeekrIcons.Filled.Normal.Block: PeekrIconType
 val PeekrIcons.Filled.Normal.Edit: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_normal_edit)
 
+val PeekrIcons.Filled.Normal.Send: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_filled_normal_send)
+
 // ------------------------------ Filled (Bold) ------------------------------
 
 val PeekrIcons.Filled.Bold.Report: PeekrIconType
@@ -56,6 +59,9 @@ val PeekrIcons.Filled.Bold.Block: PeekrIconType
 
 val PeekrIcons.Filled.Bold.Edit: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_bold_edit)
+
+val PeekrIcons.Filled.Bold.Send: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_filled_bold_send)
 
 // ------------------------------ Outlined (Normal) ------------------------------
 
@@ -107,6 +113,9 @@ val PeekrIcons.Outlined.Normal.Block: PeekrIconType
 val PeekrIcons.Outlined.Normal.Edit: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_outlined_normal_edit)
 
+val PeekrIcons.Outlined.Normal.Send: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_outlined_normal_send)
+
 // ------------------------------ Outlined (Bold) ------------------------------
 
 val PeekrIcons.Outlined.Bold.Search: PeekrIconType
@@ -126,6 +135,9 @@ val PeekrIcons.Outlined.Bold.Block: PeekrIconType
 
 val PeekrIcons.Outlined.Bold.Edit: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_outlined_bold_edit)
+
+val PeekrIcons.Outlined.Bold.Send: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_outlined_bold_send)
 
 // ------------------------------ Default (Normal) ------------------------------
 
@@ -171,6 +183,9 @@ val PeekrIcons.Default.Normal.Cancel: PeekrIconType
 val PeekrIcons.Default.Normal.Refresh: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_default_normal_refresh)
 
+val PeekrIcons.Default.Normal.More: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_default_normal_more)
+
 // ------------------------------ Default (Bold) ------------------------------
 
 val PeekrIcons.Default.Bold.Arrow1Left: PeekrIconType
@@ -214,3 +229,6 @@ val PeekrIcons.Default.Bold.Cancel: PeekrIconType
 
 val PeekrIcons.Default.Bold.Refresh: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_default_bold_refresh)
+
+val PeekrIcons.Default.Bold.More: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_default_bold_more)
