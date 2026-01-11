@@ -1,9 +1,7 @@
-package com.peekr.core.presentation.ui.component.snackbar
+package com.peekr.core.presentation.common.snackbar
 
-import androidx.annotation.VisibleForTesting
 import com.peekr.core.presentation.ui.util.UiText
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.Flow
 
 data class SnackbarEvent(
     val message: UiText,
@@ -21,13 +19,13 @@ data class SnackbarAction(
  * ### 사용 예시
  *     fun showSnackbar() {
  *         viewModelScope.launch {
- *             SnackbarController.sendEvent(
+ *             snackbarController.sendEvent(
  *                 event = SnackbarEvent(
  *                     message = "Event Message",
  *                     action = SnackbarAction(
  *                         name = "Click me!",
  *                         action = {
- *                             SnackbarController.sendEvent(
+ *                             snackbarController.sendEvent(
  *                                 event = SnackbarEvent("Action Pressed!")
  *                             )
  *                         }
@@ -40,23 +38,8 @@ data class SnackbarAction(
  *  @see SnackbarEvent
  *  @see SnackbarAction
  */
-object SnackbarController {
-    private var _events = Channel<SnackbarEvent>()
-    val events = _events.receiveAsFlow()
+interface SnackbarController {
+    val events: Flow<SnackbarEvent>
 
-    /**
-     * 채널로 이벤트 전송
-     */
-    suspend fun sendEvent(event: SnackbarEvent) {
-        _events.send(event)
-    }
-
-    /**
-     * 테스트 격리를 위한 상태 초기화
-     */
-    @VisibleForTesting
-    fun reset() {
-        _events.close()
-        _events = Channel()
-    }
+    suspend fun sendEvent(event: SnackbarEvent)
 }

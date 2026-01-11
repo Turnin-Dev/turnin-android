@@ -3,9 +3,9 @@ package com.peekr.presentation.profile.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.presentation.common.snackbar.SnackbarController
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.core.presentation.ui.util.UiText.StringResource
 import com.peekr.domain.profile.error.ProfileErrorType
@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
+    private val snackbarController: SnackbarController,
     private val usecases: MyProfileUseCases,
 ) : MVIBaseViewModel<MyProfileContract.UiState, MyProfileContract.UiEvent, MyProfileContract.UiEffect>() {
     override fun createInitialState(): MyProfileContract.UiState =
@@ -136,6 +137,6 @@ class MyProfileViewModel @Inject constructor(
     }
 
     private suspend fun showSnackBar(message: UiText) {
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
+        snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

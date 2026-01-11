@@ -8,9 +8,9 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
+import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.domain.keywordEdit.error.KeywordEditErrorType
 import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
 import com.peekr.domain.keywordEdit.usecase.ValidateKeywordUseCase
@@ -33,14 +33,13 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
     KeywordEditContract.UiEffect,
     KeywordEditViewModel,
 >() {
+    private val snackbarController = FakeSnackbarController()
     private val addUserKeywordUseCase: AddUserKeywordUseCase = mockk()
     private val validateKeywordUseCase: ValidateKeywordUseCase = mockk()
     private lateinit var viewModel: KeywordEditViewModel
 
     @Before
     fun setUp() {
-        SnackbarController.reset()
-
         every {
             addUserKeywordUseCase(any(), any())
         } returns flowOf(Result.Success(TestUserKeyword))
@@ -49,6 +48,7 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
         } returns ValidationResult.Valid("")
 
         viewModel = KeywordEditViewModel(
+            snackbarController,
             addUserKeywordUseCase,
             validateKeywordUseCase,
         )
@@ -61,6 +61,7 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
             validateKeywordUseCase(any())
         } returns ValidationResult.Valid(expectedKeyword)
         viewModel = KeywordEditViewModel(
+            snackbarController,
             addUserKeywordUseCase,
             validateKeywordUseCase,
         )
@@ -87,7 +88,7 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
     fun `키워드 추가 - 성공 시 화면을 닫는 일회성 이벤트를 발행한다`() = runTest {
         // given
         val snackbarJob = launch {
-            SnackbarController.events.collect {}
+            snackbarController.events.collect {}
         }
 
         // when, then
@@ -109,7 +110,7 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
     fun `키워드 추가 - 성공 시 로딩, 에러 상태를 초기화한다`() = runTest {
         // given
         val snackbarJob = launch {
-            SnackbarController.events.collect {}
+            snackbarController.events.collect {}
         }
 
         // when, then
@@ -138,13 +139,14 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
             addUserKeywordUseCase(any(), any())
         } returns flowOf(Result.Error(expectedError))
         viewModel = KeywordEditViewModel(
+            snackbarController,
             addUserKeywordUseCase,
             validateKeywordUseCase,
         )
 
         val snackbarEvents = mutableListOf<SnackbarEvent>()
         val snackbarJob = launch {
-            SnackbarController.events.toList(snackbarEvents)
+            snackbarController.events.toList(snackbarEvents)
         }
 
         // when, then

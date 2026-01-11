@@ -8,9 +8,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.friend.model.FriendInfo
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
-import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.friend.usecase.GetFriendsPaginationUseCase
 import com.peekr.presentation.friend.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,9 +40,5 @@ class FriendListViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     } else {
         flowOf(PagingData.empty())
-    }
-
-    private suspend fun showSnackBar(message: UiText) {
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

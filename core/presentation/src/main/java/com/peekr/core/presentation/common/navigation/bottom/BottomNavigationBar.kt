@@ -130,12 +130,14 @@ fun BottomNavigationBar(
                         modifier = Modifier
                             .weight(1f)
                             .clickableSingle {
-                                navigateWithOption(
-                                    navController = navController,
-                                    currentRoute = item.route,
-                                    selectedTab = selectedTab,
-                                )
-                                selectedTab = item.route::class.qualifiedName ?: ""
+                                item.route::class.qualifiedName?.let { newTab ->
+                                    navigateWithOption(
+                                        navController = navController,
+                                        currentRoute = item.route,
+                                        selectedTab = selectedTab,
+                                    )
+                                    selectedTab = newTab
+                                }
                             }
                             .padding(vertical = ItemVerticalSpacingDp),
                         icon = item.icon,

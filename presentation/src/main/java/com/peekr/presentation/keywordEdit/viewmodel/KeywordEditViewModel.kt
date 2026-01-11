@@ -3,10 +3,10 @@ package com.peekr.presentation.keywordEdit.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.error.asUiText
+import com.peekr.core.presentation.common.snackbar.SnackbarController
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
 import com.peekr.domain.keywordEdit.usecase.ValidateKeywordUseCase
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class KeywordEditViewModel @Inject constructor(
+    private val snackbarController: SnackbarController,
     private val addUserKeywordUseCase: AddUserKeywordUseCase,
     private val validateKeywordUseCase: ValidateKeywordUseCase,
 //    savedStateHandle: SavedStateHandle,
@@ -118,7 +119,7 @@ class KeywordEditViewModel @Inject constructor(
     }
 
     private suspend fun showSnackBar(message: UiText) {
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
+        snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 
     // ------------------------------ Validation ------------------------------

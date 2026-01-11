@@ -32,8 +32,8 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
+import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -44,6 +44,9 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authEventBus: AuthEventBus
+
+    @Inject
+    lateinit var snackbarController: SnackbarController
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -99,7 +102,7 @@ class MainActivity : ComponentActivity() {
             }
 
             ObserveAsEvents(
-                flow = SnackbarController.events,
+                flow = snackbarController.events,
                 key1 = snackbarHostState,
                 onEvent = { event ->
                     coroutineScope.launch {

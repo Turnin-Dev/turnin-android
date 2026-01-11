@@ -11,10 +11,9 @@ import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
+import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
-import com.peekr.core.presentation.common.error.asUiText
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.MyProfile
 import com.peekr.domain.profile.usecase.MyProfileUseCases
@@ -38,13 +37,12 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
     MyProfileContract.UiEffect,
     MyProfileViewModel,
 >() {
+    private val snackbarController = FakeSnackbarController()
     private val usecases: MyProfileUseCases = mockk()
     private lateinit var viewModel: MyProfileViewModel
 
     @Before
     fun setUp() {
-        SnackbarController.reset()
-
         // Mock
         every {
             usecases.getMyProfile()
@@ -56,7 +54,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             usecases.validateKeywordDescription(any())
         } returns ValidationResult.Valid("")
 
-        viewModel = MyProfileViewModel(usecases)
+        viewModel = MyProfileViewModel(snackbarController, usecases)
     }
 
     @Test
@@ -79,11 +77,11 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         every {
             usecases.getMyProfile()
         } returns flowOf(Result.Error(expectedError))
-        viewModel = MyProfileViewModel(usecases)
+        viewModel = MyProfileViewModel(snackbarController, usecases)
 
         val snackEvents = mutableListOf<SnackbarEvent>()
         val snackbarJob = launch {
-            SnackbarController.events.toList(snackEvents)
+            snackbarController.events.toList(snackEvents)
         }
 
         // when, then
@@ -129,7 +127,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         // given
         val snackbarEvents = mutableListOf<SnackbarEvent>()
         val snackbarJob = launch {
-            SnackbarController.events.toList(snackbarEvents)
+            snackbarController.events.toList(snackbarEvents)
         }
 
         // when, then
@@ -154,11 +152,11 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         every {
             usecases.deleteUserKeyword(UserKeywordId(1L))
         } returns flowOf(Result.Error(expectedError))
-        viewModel = MyProfileViewModel(usecases)
+        viewModel = MyProfileViewModel(snackbarController, usecases)
 
         val snackbarEvents = mutableListOf<SnackbarEvent>()
         val snackbarJob = launch {
-            SnackbarController.events.toList(snackbarEvents)
+            snackbarController.events.toList(snackbarEvents)
         }
 
         // when, then
