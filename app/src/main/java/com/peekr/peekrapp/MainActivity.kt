@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -31,8 +32,8 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
+import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,6 +44,9 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authEventBus: AuthEventBus
+
+    @Inject
+    lateinit var snackbarController: SnackbarController
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -59,10 +63,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val appNavController = rememberNavController()
-
-            // ------------------------------ Auth Logout ------------------------------
             val navBackStackEntry by appNavController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
+
+            // ------------------------------ Auth Logout ------------------------------
             val isAuthScreen by remember(currentDestination?.route) {
                 derivedStateOf {
                     currentDestination?.hierarchy?.any {
@@ -87,9 +91,18 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
+            val snackbarBottomPadding = remember {
+                derivedStateOf {
+                    if (navBackStackEntry?.destination?.hasRoute<SubGraph.BottomNav.Root>() == true) {
+                        BottomNavigationBarTokens.MinHeightDp
+                    } else {
+                        0.dp
+                    }
+                }
+            }
 
             ObserveAsEvents(
-                flow = SnackbarController.events,
+                flow = snackbarController.events,
                 key1 = snackbarHostState,
                 onEvent = { event ->
                     coroutineScope.launch {
@@ -116,8 +129,7 @@ class MainActivity : ComponentActivity() {
                     containerColor = PeekrTheme.colorScheme.backgroundNormal,
                     snackbarHost = {
                         PeekrSnackbar(
-                            modifier = Modifier
-                                .padding(bottom = BottomNavigationBarTokens.MinHeightDp),
+                            modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
                             snackbarHostState = snackbarHostState,
                         )
                     },
@@ -157,6 +169,17 @@ class MainActivity : ComponentActivity() {
 //                        registerNavigation(
 //                            navController = appNavController,
 //                        )
+//                    }
+
+// ------------------------------ 키워드 편집 테스트용 ------------------------------
+//                    NavHost(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding),
+//                        navController = appNavController,
+//                        startDestination = Screens.KeywordEdit(null, null),
+//                    ) {
+//                        keywordEditNavigation(appNavController)
 //                    }
 
 // ------------------------------ 바텀 네비게이션 테스트용 ------------------------------

@@ -17,9 +17,7 @@ import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.MyProfileScreen
-import com.peekr.presentation.profile.view.modal.AddKeywordModal
 import com.peekr.presentation.profile.view.modal.NodeOptionModal
-import com.peekr.presentation.profile.view.modal.SafeCancelModal
 import com.peekr.presentation.profile.view.modal.SafeDeleteModal
 import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 
@@ -28,13 +26,12 @@ import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 internal fun MyProfileRoute(
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
+    onNavigateToKeywordAddScreen: () -> Unit,
 ) {
     val viewModel: MyProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var isAddKeywordModalOpen by rememberSaveable { mutableStateOf(false) }
-    var isEditKeywordModalOpen by rememberSaveable { mutableStateOf(false) }
     var isSafeCancelModalOpen by rememberSaveable { mutableStateOf(false) }
     var isSafeDeleteModalOpen by rememberSaveable { mutableStateOf(false) }
     var isNodeOptionModelOpen by rememberSaveable { mutableStateOf(false) }
@@ -50,53 +47,11 @@ internal fun MyProfileRoute(
                 isSafeDeleteModalOpen = false
                 isSafeCancelModalOpen = false
                 isNodeOptionModelOpen = false
-                isAddKeywordModalOpen = false
-                isEditKeywordModalOpen = false
             }
         }
     }
 
     // ------------------------------ Modal ------------------------------
-    AddKeywordModal(
-        modifier = Modifier.fillMaxSize(),
-        isOpen = isAddKeywordModalOpen,
-        loading = uiState.fullScreenLoading,
-        keywordTextFieldState = uiState.keywordTextField,
-        onKeywordTextChanged = {
-            viewModel.processEvent(MyProfileContract.UiEvent.OnKeywordTextChanged(it))
-        },
-        keywordDescTextFieldState = uiState.keywordDescTextField,
-        onKeywordDescTextChanged = {
-            viewModel.processEvent(MyProfileContract.UiEvent.OnKeywordDescTextChanged(it))
-        },
-        onAddClick = {
-            viewModel.processEvent(
-                MyProfileContract.UiEvent.AddKeyword(
-                    uiState.keywordTextField.value,
-                    uiState.keywordDescTextField.value,
-                ),
-            )
-        },
-        onCancelClick = {
-            viewModel.processEvent(
-                MyProfileContract.UiEvent.CheckSafeCancel(
-                    keyword = uiState.keywordTextField.value,
-                    description = uiState.keywordDescTextField.value,
-                ),
-            )
-        },
-    )
-
-    SafeCancelModal(
-        modifier = Modifier.fillMaxSize(),
-        isOpen = isSafeCancelModalOpen,
-        title = R.string.my_profile_modal_safe_cancel,
-        onAcceptClick = {
-            viewModel.processEvent(MyProfileContract.UiEvent.CloseAllModalsAndResetTextField)
-        },
-        onCancelClick = { isSafeCancelModalOpen = false },
-    )
-
     SafeDeleteModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isSafeDeleteModalOpen,
@@ -127,7 +82,7 @@ internal fun MyProfileRoute(
         fullScreenLoading = uiState.fullScreenLoading,
         error = uiState.error,
         onUiEvent = viewModel::processEvent,
-        onOpenAddKeywordModal = { isAddKeywordModalOpen = true },
+        onNavigateToKeywordAddScreen = onNavigateToKeywordAddScreen,
         onSettingClick = onSettingClick,
         onFriendsCountClick = onFriendsCountClick,
     )

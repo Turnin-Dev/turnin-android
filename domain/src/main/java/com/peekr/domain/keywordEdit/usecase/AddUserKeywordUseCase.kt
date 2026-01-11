@@ -1,4 +1,4 @@
-package com.peekr.domain.profile.usecase.my
+package com.peekr.domain.keywordEdit.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.mapError
@@ -10,7 +10,7 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import com.peekr.domain.profile.error.ProfileErrorType
+import com.peekr.domain.keywordEdit.error.KeywordEditErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -32,7 +32,7 @@ class AddUserKeywordUseCase @Inject constructor(
     operator fun invoke(
         keyword: String,
         description: String,
-    ): Flow<Result<UserKeyword, ProfileErrorType>> = flow {
+    ): Flow<Result<UserKeyword, KeywordEditErrorType>> = flow {
         try {
             emit(Result.Loading)
             val userId = userRepository.getUserId()
@@ -46,14 +46,14 @@ class AddUserKeywordUseCase @Inject constructor(
                     userKeywordRepository
                         .createUserKeyword(createUserKeyword)
                         .mapError { commonError ->
-                            ProfileErrorType.CommonError(commonError)
+                            KeywordEditErrorType.CommonError(commonError)
                         },
                 )
             } else {
-                emit(Result.Error(error = ProfileErrorType.MyUserIdNotFound))
+                emit(Result.Error(error = KeywordEditErrorType.MyUserIdNotFound))
             }
         } catch (e: CommonValidationException) {
-            val error = ProfileErrorType.ValidationError(e.toValidationErrorType())
+            val error = KeywordEditErrorType.ValidationError(e.toValidationErrorType())
             emit(Result.Error(error))
         }
     }

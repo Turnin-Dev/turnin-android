@@ -2,13 +2,13 @@ package com.peekr.core.domain.model
 
 import com.peekr.core.domain.common.validation.CommonValidationException
 
+/**
+ * 키워드 명 VO
+ *
+ * @throws CommonValidationException 유효성 검사 실패 시
+ */
 @JvmInline
 value class KeywordName private constructor(val value: String) {
-    /**
-     * 키워드 명 VO
-     *
-     * @throws CommonValidationException 유효성 검사 실패 시
-     */
     companion object {
         const val MIN_LENGTH = 1
         const val MAX_LENGTH = 15

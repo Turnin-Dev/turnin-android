@@ -5,6 +5,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.report.model.ReportReason
 import com.peekr.core.domain.report.model.ReportReasonId
 import com.peekr.core.domain.report.model.ReportReasons
+import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.domain.report.usecase.GetReportReasonsUseCase
 import com.peekr.domain.report.usecase.ReportUseCase
@@ -22,6 +23,7 @@ class ReportViewModelTest : MVIBaseViewModelTest<
     ReportContract.UiEffect,
     ReportViewModel,
 >() {
+    private val snackbarController = FakeSnackbarController()
     private val reportUseCase: ReportUseCase = mockk()
     private val getReportReasonsUseCase: GetReportReasonsUseCase = mockk()
     private lateinit var savedStateHandle: SavedStateHandle
@@ -40,6 +42,7 @@ class ReportViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestSavedStateHandle
 
         viewModel = ReportViewModel(
+            snackbarController = snackbarController,
             reportUseCase = reportUseCase,
             getReportReasonsUseCase = getReportReasonsUseCase,
             savedStateHandle = savedStateHandle,

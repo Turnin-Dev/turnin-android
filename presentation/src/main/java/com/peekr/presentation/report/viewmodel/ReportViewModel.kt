@@ -3,9 +3,9 @@ package com.peekr.presentation.report.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
+import com.peekr.core.presentation.common.snackbar.SnackbarController
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.report.error.ReportErrorType
 import com.peekr.domain.report.usecase.GetReportReasonsUseCase
@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ReportViewModel @Inject constructor(
+    private val snackbarController: SnackbarController,
     private val reportUseCase: ReportUseCase,
     private val getReportReasonsUseCase: GetReportReasonsUseCase,
     savedStateHandle: SavedStateHandle,
@@ -142,6 +143,6 @@ class ReportViewModel @Inject constructor(
         sendEffect {
             ReportContract.UiEffect.CloseReportModal
         }
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
+        snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

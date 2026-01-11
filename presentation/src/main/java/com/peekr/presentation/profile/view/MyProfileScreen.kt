@@ -35,13 +35,13 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
-import com.peekr.presentation.profile.view.common.KeywordsTitle
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
+import com.peekr.presentation.profile.view.common.KeywordsTitleView
 import com.peekr.presentation.profile.view.common.ProfileFrame
 import com.peekr.presentation.profile.view.common.ProfileScreenFrame
 import com.peekr.presentation.profile.view.common.ProfileScreenTokens
-import com.peekr.presentation.profile.view.common.keywordItems
 import com.peekr.presentation.profile.view.common.keywordItemsSkeleton
+import com.peekr.presentation.profile.view.common.keywordItemsView
 
 /**
  * 나의 프로필 화면
@@ -52,7 +52,7 @@ import com.peekr.presentation.profile.view.common.keywordItemsSkeleton
  * @param error 에러
  * @param onUiEvent UI 이벤트
  * @param onSettingClick 설정 클릭 시
- * @param onOpenAddKeywordModal 키워드 추가 모달 열기 콜백
+ * @param onNavigateToKeywordAddScreen 키워드 추가 화면 이동 콜백
  */
 @Composable
 fun MyProfileScreen(
@@ -63,7 +63,7 @@ fun MyProfileScreen(
     onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
-    onOpenAddKeywordModal: () -> Unit,
+    onNavigateToKeywordAddScreen: () -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -99,7 +99,7 @@ fun MyProfileScreen(
             },
             keywordsTitle = {
                 myProfile?.let {
-                    KeywordsTitle(
+                    KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
                         count = myProfile.keywords.count(),
                     )
@@ -107,7 +107,7 @@ fun MyProfileScreen(
             },
             keywords = {
                 myProfile?.let {
-                    keywordItems(
+                    keywordItemsView(
                         keywords = myProfile.keywords,
                         onClick = { uiUserKeyword ->
                         },
@@ -124,7 +124,7 @@ fun MyProfileScreen(
                     .size(FabSize),
                 icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
-                onClick = onOpenAddKeywordModal,
+                onClick = onNavigateToKeywordAddScreen,
             )
         }
 
@@ -299,7 +299,7 @@ private fun MyProfileScreenPreview() {
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
-            onOpenAddKeywordModal = {},
+            onNavigateToKeywordAddScreen = {},
             onSettingClick = {},
             onFriendsCountClick = {},
         )
@@ -316,7 +316,7 @@ private fun SkeletonPreview() {
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
-            onOpenAddKeywordModal = {},
+            onNavigateToKeywordAddScreen = {},
             onSettingClick = {},
             onFriendsCountClick = {},
         )

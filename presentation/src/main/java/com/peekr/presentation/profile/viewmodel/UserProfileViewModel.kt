@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.common.snackbar.SnackbarController
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.UserProfileUseCases
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
+    private val snackbarController: SnackbarController,
     private val usecases: UserProfileUseCases,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<UserProfileContract.UiState, UserProfileContract.UiEvent, UserProfileContract.UiEffect>() {
@@ -155,6 +156,6 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private suspend fun showSnackBar(message: UiText) {
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
+        snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

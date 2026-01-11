@@ -7,8 +7,8 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.UserProfile
 import com.peekr.domain.profile.usecase.UserProfileUseCases
@@ -31,6 +31,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
     UserProfileContract.UiEffect,
     UserProfileViewModel,
 >() {
+    private val snackbarController = FakeSnackbarController()
     private val usecases: UserProfileUseCases = mockk()
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var viewModel: UserProfileViewModel
@@ -52,7 +53,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         }
 
         savedStateHandle = TestSavedStateHandle
-        viewModel = UserProfileViewModel(usecases, savedStateHandle)
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
     }
 
     @Test
@@ -77,10 +78,10 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         every {
             usecases.getUserProfile(any())
         } returns flowOf(Result.Error(expectedError))
-        viewModel = UserProfileViewModel(usecases, savedStateHandle)
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
 
         val snackbarJob = launch {
-            SnackbarController.events.collect {}
+            snackbarController.events.collect {}
         }
 
         // when, then

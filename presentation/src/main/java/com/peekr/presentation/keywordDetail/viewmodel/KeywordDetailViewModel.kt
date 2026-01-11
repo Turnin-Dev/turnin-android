@@ -5,8 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarController
-import com.peekr.core.presentation.ui.component.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordDetail.usecase.CheckMyKeywordUseCase
 import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
@@ -194,9 +192,5 @@ class KeywordDetailViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private suspend fun showSnackBar(message: UiText) {
-        SnackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

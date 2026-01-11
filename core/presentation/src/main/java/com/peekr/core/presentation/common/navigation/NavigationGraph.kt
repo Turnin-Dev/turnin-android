@@ -19,22 +19,9 @@ sealed interface SubGraph {
         @Serializable
         data object Discover : BottomNav
 
-        /** 프로필 탭 */
-        sealed interface Profile : BottomNav {
-            /** 진입점 */
-            @Serializable
-            data object Root : Profile
-
-            /** 나의 프로필 */
-            @Serializable
-            data object Me : Profile
-
-            /** 사용자 프로필 */
-            @Serializable
-            data class User(
-                val userId: Long,
-            ) : Profile
-        }
+        /** 내 프로필 탭 */
+        @Serializable
+        data object Profile : BottomNav
     }
 
     /** 로그인 그래프 */
@@ -67,6 +54,7 @@ sealed interface SubGraph {
         data object CropProfileImage : Register
     }
 
+    /** 신고 그래프 */
     sealed interface Report : SubGraph {
         @Serializable
         data class Root(
@@ -94,6 +82,9 @@ sealed interface Screens {
     @Serializable
     data object TempMain : Screens
 
+    /**
+     * 키워드 상세 화면
+     */
     @Serializable
     data class KeywordDetail(
         val userKeywordId: Long,
@@ -101,8 +92,26 @@ sealed interface Screens {
         val keyword: String,
     ) : Screens
 
+    /**
+     * 키워드 수정 화면
+     */
+    @Serializable
+    data class KeywordEdit(
+        val keyword: String?,
+        val description: String?,
+    ) : Screens
+
+    /**
+     * 친구 목록 화면
+     */
     @Serializable
     data class FriendsList(
+        val userId: Long,
+    ) : Screens
+
+    /** 사용자 프로필 */
+    @Serializable
+    data class UserProfile(
         val userId: Long,
     ) : Screens
 }

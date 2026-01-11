@@ -26,8 +26,16 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 
+/**
+ * 키워드 카드 뷰
+ *
+ * @param modifier [Modifier]
+ * @param keyword 키워드 명
+ * @param description 키워드 내용
+ * @param onClick 키워드 클릭 시 콜백
+ */
 @Composable
-fun KeywordCard(
+fun KeywordCardView(
     modifier: Modifier = Modifier,
     keyword: String,
     description: String,
@@ -83,7 +91,7 @@ fun KeywordCard(
 @Composable
 private fun KeywordCardPreview() {
     PeekrAppTheme {
-        KeywordCard(
+        KeywordCardView(
             modifier = Modifier.fillMaxWidth(),
             keyword = "Keyword",
             description = "description, description, description, description",

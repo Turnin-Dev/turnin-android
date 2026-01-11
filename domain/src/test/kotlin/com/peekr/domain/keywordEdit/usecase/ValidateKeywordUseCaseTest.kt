@@ -1,10 +1,10 @@
-package com.peekr.domain.profile.usecase.my
+package com.peekr.domain.keywordEdit.usecase
 
 import com.peekr.core.domain.common.validation.ValidationErrorType
 import com.peekr.core.domain.common.validation.ValidationResult
 import com.peekr.core.domain.model.KeywordName
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Test
 
 class ValidateKeywordUseCaseTest {
@@ -16,7 +16,7 @@ class ValidateKeywordUseCaseTest {
         val result = usecase(VALID_KEYWORD)
 
         // then
-        assertTrue(result is ValidationResult.Valid)
+        Assert.assertTrue(result is ValidationResult.Valid)
     }
 
     @Test
@@ -26,7 +26,7 @@ class ValidateKeywordUseCaseTest {
 
         // then
         val valid = result as ValidationResult.Invalid
-        assertTrue(valid.error is ValidationErrorType.Common.Empty)
+        Assert.assertTrue(valid.error is ValidationErrorType.Common.Empty)
     }
 
     @Test
@@ -36,7 +36,7 @@ class ValidateKeywordUseCaseTest {
 
         // then
         val valid = result as ValidationResult.Invalid
-        assertTrue(valid.error is ValidationErrorType.Common.TooShortOrLong)
+        Assert.assertTrue(valid.error is ValidationErrorType.Common.TooShortOrLong)
     }
 
     companion object {

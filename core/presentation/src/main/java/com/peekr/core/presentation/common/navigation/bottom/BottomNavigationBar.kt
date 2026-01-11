@@ -17,9 +17,13 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -64,6 +68,23 @@ fun BottomNavigationBar(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var selectedTab by rememberSaveable {
+        mutableStateOf(SubGraph.BottomNav.Home::class.qualifiedName ?: "")
+    }
+
+    // selectedTab 동기화
+    LaunchedEffect(currentDestination?.route) {
+        currentDestination?.route?.let { route ->
+            bottomNavItems.forEach { item ->
+                if (currentDestination.hierarchy.any {
+                        it.route == item.route::class.qualifiedName
+                    }
+                ) {
+                    selectedTab = item.route::class.qualifiedName ?: ""
+                }
+            }
+        }
+    }
 
     NavigationBar(
         modifier = modifier
@@ -93,7 +114,15 @@ fun BottomNavigationBar(
 //                            } == true
 
                             // 2) new mechanism
-                            currentDestination?.hasRoute(item.route::class) == true
+//                            currentDestination?.hasRoute(item.route::class)==true
+
+                            // 3) new mechanism 2
+//                            currentDestination?.hierarchy?.any { dest ->
+//                                dest.hasRoute(item.route::class)
+//                            }==true
+
+                            // 4) state mechanism
+                            selectedTab == item.route::class.qualifiedName
                         }
                     }
 
@@ -101,7 +130,14 @@ fun BottomNavigationBar(
                         modifier = Modifier
                             .weight(1f)
                             .clickableSingle {
-                                onItemClickWithOptions(navController, item.route)
+                                item.route::class.qualifiedName?.let { newTab ->
+                                    navigateWithOption(
+                                        navController = navController,
+                                        currentRoute = item.route,
+                                        selectedTab = selectedTab,
+                                    )
+                                    selectedTab = newTab
+                                }
                             }
                             .padding(vertical = ItemVerticalSpacingDp),
                         icon = item.icon,
@@ -156,23 +192,36 @@ private fun Item(
 }
 
 /**
- * 선택한 화면으로 이동하게 해주는 함수
+ * 조건에 따라 navigate를 수행한다.
  *
- * 1. popUpTo(it) { saveState = true }:
- * 첫 번째 화면만 스택에 쌓이게 하고 백버튼 클릭 시 첫 번째 화면으로 이동한다.
- * 2. launchSingleTop: true 일 때 화면 인스턴스가 하나만 만들어진다.
- * 3. restoreState: true 일 때 버튼을 재 클릭 했을 때 이전 상태가 남아있게 한다.
+ * @param navController 네비게이션 컨트롤러
+ * @param currentRoute 현재 라우트
+ * @param selectedTab 선택된 탭
  */
-private fun onItemClickWithOptions(
+private fun navigateWithOption(
     navController: NavHostController,
-    route: SubGraph,
+    currentRoute: SubGraph,
+    selectedTab: String,
 ) {
-    navController.navigate(route) {
-        navController.graph.findStartDestination().route?.let {
-            popUpTo(it) { saveState = true }
+    // 현재 선택된 탭이 현재 라우트와 같다면 선택된 탭까지 전부 스택에서 제거한다.
+    if (selectedTab == currentRoute::class.qualifiedName) {
+        navController.popBackStack(
+            route = currentRoute::class.qualifiedName ?: return,
+            inclusive = false,
+        )
+    } else {
+        // 현재 선택된 탭과 다르다면 그냥 navigate 수행
+        // 첫 번째 화면만 스택에 쌓이므로 뒤로가기 시 첫 번째 화면으로 이동한다.
+        navController.navigate(currentRoute) {
+            navController.graph.findStartDestination().route?.let {
+                popUpTo(it) {
+                    saveState = true
+                }
+            }
+
+            launchSingleTop = true
+            restoreState = true
         }
-        launchSingleTop = true
-        restoreState = true
     }
 }
 

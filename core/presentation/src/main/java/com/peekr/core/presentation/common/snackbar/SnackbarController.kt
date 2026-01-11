@@ -1,8 +1,7 @@
-package com.peekr.core.presentation.ui.component.snackbar
+package com.peekr.core.presentation.common.snackbar
 
 import com.peekr.core.presentation.ui.util.UiText
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.Flow
 
 data class SnackbarEvent(
     val message: UiText,
@@ -20,13 +19,13 @@ data class SnackbarAction(
  * ### 사용 예시
  *     fun showSnackbar() {
  *         viewModelScope.launch {
- *             SnackbarController.sendEvent(
+ *             snackbarController.sendEvent(
  *                 event = SnackbarEvent(
  *                     message = "Event Message",
  *                     action = SnackbarAction(
  *                         name = "Click me!",
  *                         action = {
- *                             SnackbarController.sendEvent(
+ *                             snackbarController.sendEvent(
  *                                 event = SnackbarEvent("Action Pressed!")
  *                             )
  *                         }
@@ -39,11 +38,8 @@ data class SnackbarAction(
  *  @see SnackbarEvent
  *  @see SnackbarAction
  */
-object SnackbarController {
-    private val _events = Channel<SnackbarEvent>()
-    val events = _events.receiveAsFlow()
+interface SnackbarController {
+    val events: Flow<SnackbarEvent>
 
-    suspend fun sendEvent(event: SnackbarEvent) {
-        _events.send(event)
-    }
+    suspend fun sendEvent(event: SnackbarEvent)
 }
