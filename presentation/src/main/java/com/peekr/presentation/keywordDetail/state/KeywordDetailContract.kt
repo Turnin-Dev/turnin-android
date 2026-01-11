@@ -10,18 +10,21 @@ class KeywordDetailContract {
     /**
      * 키워드 상세정보 모달 UI 상태 클래스
      *
+     * @property myKeyword 내 키워드 여부
      * @property keyword 키워드
      * @property description 키워드 설명
-     * @property myKeyword 내 키워드 여부
      * @property editMode 수정 모드 활성화 여부
      * @property loading 로딩 상태
      * @property loadingDescription 키워드 설명 로딩 상태
      * @property error 에러 상태
      */
     data class UiState(
-        val keyword: String = "",
-        val description: TextFieldValue = TextFieldValue(""),
         val myKeyword: Boolean = false,
+        val keyword: String = "",
+        val description: String = "",
+        val userName: String = "",
+        val profileImageUrl: String? = null,
+        val createdAt: String = "",
         val editMode: Boolean = false,
         val loading: Boolean = false,
         val loadingDescription: Boolean = false,

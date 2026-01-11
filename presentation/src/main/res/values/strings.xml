@@ -40,19 +40,6 @@
     <string name="my_profile_screen_introduce_collapse">접기</string>
     <!-- My Profile Screen (KeywordCardView) -->
     <string name="my_profile_screen_keyword_card">키워드 자세히 보기</string>
-    <!-- My Profile Screen (AddKeywordModal, EditKeywordModal) -->
-    <string name="my_profile_modal_input_keyword_title">키워드</string>
-    <string name="my_profile_modal_input_keyword_title_placeholder">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
-    <string name="my_profile_modal_input_keyword_desc">내용 (선택사항)</string>
-    <string name="my_profile_modal_input_keyword_desc_placeholder">
-        키워드에 관한 내용을 자유롭게 입력해주세요
-    </string>
-    <string name="my_profile_modal_add_keyword_title">키워드 추가</string>
-    <string name="my_profile_modal_add_keyword_btn_accept">추가</string>
-    <string name="my_profile_modal_add_keyword_btn_cancel">취소</string>
-    <string name="my_profile_modal_edit_keyword_btn_edit">키워드 수정</string>
-    <string name="my_profile_modal_edit_keyword_btn_accept">수정</string>
-    <string name="my_profile_add_keyword_modal_content_desc_more">더보기</string>
     <!-- My Profile Screen (Safe Modal) -->
     <string name="my_profile_modal_safe_delete">정말 삭제하시겠습니까?</string>
     <!-- My Profile Screen (Node Option Bottom Modal) -->
@@ -96,6 +83,10 @@
     <!-- KeywordEdit Success -->
     <string name="keyword_edit_success_add_keyword">키워드를 등록했습니다.</string>
 
+    <!-- KeywordDetail -->
+    <!-- KeywordDetailScreen -->
+    <string name="keyword_detail_screen_top_bar_option">더보기</string>
+    <string name="keyword_detail_screen_top_bar_option_2">게시글 신고</string>
     <!-- KeywordDetailModal -->
     <string name="keyword_detail_modal_tab_bar_title_1">내용</string>
     <string name="keyword_detail_modal_tab_bar_title_2">다른 사람들</string>
