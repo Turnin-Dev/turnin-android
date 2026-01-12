@@ -7,8 +7,6 @@ import com.peekr.core.presentation.common.navigation.Screens
 
 fun NavGraphBuilder.keywordDetailNavigation(navController: NavController) {
     dialog<Screens.KeywordDetail> { navBackStackEntry ->
-        KeywordDetailRoute(
-            onCancel = { navController.popBackStack() },
-        )
+        KeywordDetailRoute()
     }
 }

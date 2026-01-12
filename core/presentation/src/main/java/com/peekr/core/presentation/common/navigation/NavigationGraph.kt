@@ -89,7 +89,6 @@ sealed interface Screens {
     data class KeywordDetail(
         val userKeywordId: Long,
         val userId: Long,
-        val keyword: String,
     ) : Screens
 
     /**

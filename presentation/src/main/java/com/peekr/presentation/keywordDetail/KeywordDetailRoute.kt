@@ -10,40 +10,5 @@ import androidx.compose.ui.Modifier
 @Composable
 fun KeywordDetailRoute(
     modifier: Modifier = Modifier,
-    onCancel: () -> Unit,
 ) {
-//    val context = LocalContext.current
-//    val viewModel: KeywordDetailViewModel = hiltViewModel()
-//    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-//    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-//    var isFullScreenError by rememberSaveable { mutableStateOf(false) }
-//    var fullScreenErrorMessage by rememberSaveable { mutableStateOf("") }
-//
-//    ObserveAsEvents(viewModel.effect) {
-//        when (it) {
-//            is KeywordDetailContract.UiEffect.FullScreenError -> {
-//                fullScreenErrorMessage = it.errorMessage.asString(context)
-//                isFullScreenError = true
-//            }
-//
-//            KeywordDetailContract.UiEffect.BackStack -> {
-//                onCancel()
-//            }
-//        }
-//    }
-//
-//    KeywordDetailModal(
-//        modifier = modifier,
-//        sheetState = sheetState,
-//        myKeyword = uiState.myKeyword,
-//        keyword = uiState.keyword,
-//        description = uiState.description,
-//        editMode = uiState.editMode,
-//        loading = uiState.loading,
-//        loadingDescription = uiState.loadingDescription,
-//        fullScreenError = isFullScreenError,
-//        fullScreenErrorMessage = fullScreenErrorMessage,
-//        onUiEvent = viewModel::processEvent,
-//        onForceCancel = onCancel,
-//    )
 }

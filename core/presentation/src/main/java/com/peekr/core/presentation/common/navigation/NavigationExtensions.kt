@@ -13,13 +13,11 @@ fun NavController.navigateToReport(
 fun NavController.navigateToKeywordDetail(
     userKeywordId: Long,
     userId: Long,
-    keyword: String,
 ) {
     navigate(
         Screens.KeywordDetail(
             userKeywordId = userKeywordId,
             userId = userId,
-            keyword = keyword,
         ),
     )
 }

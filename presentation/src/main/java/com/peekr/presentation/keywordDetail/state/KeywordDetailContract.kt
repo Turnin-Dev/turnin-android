@@ -1,6 +1,5 @@
 package com.peekr.presentation.keywordDetail.state
 
-import androidx.compose.ui.text.input.TextFieldValue
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
@@ -13,9 +12,11 @@ class KeywordDetailContract {
      * @property myKeyword 내 키워드 여부
      * @property keyword 키워드
      * @property description 키워드 설명
-     * @property editMode 수정 모드 활성화 여부
-     * @property loading 로딩 상태
-     * @property loadingDescription 키워드 설명 로딩 상태
+     * @property userName 사용자 명
+     * @property userName 사용자 명
+     * @property profileImageUrl 사용자 프로필 사진 URL
+     * @property createdAt 키워드 생성 일자
+     * @property loading 로딩 여부
      * @property error 에러 상태
      */
     data class UiState(
@@ -25,37 +26,11 @@ class KeywordDetailContract {
         val userName: String = "",
         val profileImageUrl: String? = null,
         val createdAt: String = "",
-        val editMode: Boolean = false,
         val loading: Boolean = false,
-        val loadingDescription: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
 
-    sealed interface UiEvent : BaseUiEvent {
-        /** UI 상에서 키워드 설명 수정 시 콜백 이벤트 */
-        data class OnDescriptionChanged(
-            val value: TextFieldValue,
-        ) : UiEvent
+    sealed interface UiEvent : BaseUiEvent
 
-        /** 키워드 설명 수정 완료 시 콜백 이벤트 */
-        data class UpdateDescription(
-            val description: String,
-        ) : UiEvent
-
-        /** 안전 취소 이벤트 */
-        data object SafeCancel : UiEvent
-
-        /** 수정 모드 활성화 */
-        data object EnableEditMode : UiEvent
-    }
-
-    sealed interface UiEffect : BaseUiEffect {
-        /** 치명적인 에러 발생으로 전체화면에 에러를 표시해야한다. */
-        data class FullScreenError(
-            val errorMessage: UiText,
-        ) : UiEffect
-
-        /** 뒤로가기 */
-        data object BackStack : UiEffect
-    }
+    sealed interface UiEffect : BaseUiEffect
 }
