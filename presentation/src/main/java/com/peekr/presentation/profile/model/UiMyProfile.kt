@@ -1,7 +1,5 @@
 package com.peekr.presentation.profile.model
 
-import com.peekr.core.presentation.ui.model.UiUserKeyword
-import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.model.MyProfile
 
 /**
@@ -14,7 +12,6 @@ import com.peekr.domain.profile.model.MyProfile
  * @property introduce 소개 글
  * @property friendsCount 친구 수
  * @property lastLoginAt 마지막 로그인 일시
- * @property keywords 키워드 리스트
  * @property active 사용자 활성화 여부
  */
 data class UiMyProfile(
@@ -26,7 +23,6 @@ data class UiMyProfile(
     val friendsCount: Long,
     val lastLoginAt: Long,
     val active: Boolean,
-    val keywords: List<UiUserKeyword>,
 )
 
 fun MyProfile.toUiModel(): UiMyProfile =
@@ -39,5 +35,4 @@ fun MyProfile.toUiModel(): UiMyProfile =
         friendsCount = friendsCount,
         lastLoginAt = lastLoginAt,
         active = active,
-        keywords = keywords.toUiModel(),
     )

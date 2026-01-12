@@ -68,6 +68,11 @@ dependencies {
     testImplementation(libs.androidx.paging.common)
     testImplementation(libs.androidx.paging.testing)
 
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)
     testImplementation(libs.junit)

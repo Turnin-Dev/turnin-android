@@ -48,16 +48,21 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
  *
  * @param modifier [Modifier]
  * @param myProfile 프로필 - [UiMyProfile]
+ * @param myKeywords 키워드 - [UiUserKeyword]
+ * @param loading 부분 로딩 여부
  * @param fullScreenLoading 전체 화면 로딩 여부
  * @param error 에러
  * @param onUiEvent UI 이벤트
  * @param onSettingClick 설정 클릭 시
+ * @param onFriendsCountClick 친구 수 클릭 시
  * @param onNavigateToKeywordAddScreen 키워드 추가 화면 이동 콜백
  */
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
     myProfile: UiMyProfile?,
+    myKeywords: List<UiUserKeyword>,
+    loading: Boolean,
     fullScreenLoading: Boolean,
     error: UiText?,
     onUiEvent: (MyProfileContract.UiEvent) -> Unit,
@@ -98,21 +103,25 @@ fun MyProfileScreen(
                 } ?: ProfileSkeleton()
             },
             keywordsTitle = {
-                myProfile?.let {
+                if (loading) {
+                    KeywordsTitleSkeleton()
+                } else {
                     KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        count = myProfile.keywords.count(),
+                        count = myKeywords.count(),
                     )
-                } ?: KeywordsTitleSkeleton()
+                }
             },
             keywords = {
-                myProfile?.let {
+                if (loading) {
+                    keywordItemsSkeleton()
+                } else {
                     keywordItemsView(
-                        keywords = myProfile.keywords,
+                        keywords = myKeywords,
                         onClick = { uiUserKeyword ->
                         },
                     )
-                } ?: keywordItemsSkeleton()
+                }
             },
         )
 
@@ -294,8 +303,9 @@ private fun MyProfileScreenPreview() {
                 friendsCount = 86,
                 lastLoginAt = 1000L,
                 active = true,
-                keywords = UiUserKeyword.samples,
             ),
+            myKeywords = UiUserKeyword.samples,
+            loading = false,
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
@@ -313,6 +323,8 @@ private fun SkeletonPreview() {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             myProfile = null,
+            myKeywords = UiUserKeyword.samples,
+            loading = false,
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},

@@ -2,6 +2,9 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.entity.toDomainModel
+import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
@@ -22,12 +25,19 @@ import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryImpl @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
+    private val myProfileDao: MyProfileDao,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserRepository {
     private val tag = this::class.java.simpleName
@@ -53,17 +63,30 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getMyProfile(): Flow<Result<CoreMyProfile, CommonErrorType>> =
-        safeResultFlow<CoreMyProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+    override fun getMyProfile(): Flow<CoreMyProfile?> = dataStoreManager
+        .getLongData(DataStoreKey.User.UserId)
+        .flatMapLatest { userId ->
+            if (userId == null) {
+                flowOf(null)
+            } else {
+                myProfileDao.getByUserId(userId).map { it.toDomainModel() }
+            }
+        }
+        .flowOn(ioDispatcher)
+
+    override fun getMyProfileRefresh(): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = userNetworkDataSource.getMyProfile()) {
                 is NetworkResult.Success -> {
-                    AppLogger.d(tag, "My profile loaded successful")
-                    emit(Result.Success(result.data.toDomainModel()))
+                    AppLogger.d(tag, "My profile refresh successful")
+                    val myProfile = result.data.toDomainModel()
+                    myProfileDao.upsert(myProfile.toEntity())
+                    emit(Result.Success(Unit))
                 }
 
                 is NetworkResult.Error -> {
-                    AppLogger.d(tag, "My profile loaded failure")
+                    AppLogger.d(tag, "My profile refresh failure")
                     val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
                 }

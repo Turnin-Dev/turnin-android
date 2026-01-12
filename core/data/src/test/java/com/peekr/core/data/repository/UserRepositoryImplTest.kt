@@ -1,5 +1,8 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.entity.MyProfileEntity
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
@@ -22,9 +25,12 @@ import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -36,8 +42,10 @@ import org.junit.Test
 class UserRepositoryImplTest {
     private val dataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
+    private val myProfileDao: MyProfileDao = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository: UserRepository = UserRepositoryImpl(dataSource, dataStoreManager, dispatcher)
+    private val repository: UserRepository =
+        UserRepositoryImpl(dataSource, dataStoreManager, myProfileDao, dispatcher)
 
     @Test
     fun `사용자 조회 - 성공 테스트`() = runTest {
@@ -101,22 +109,38 @@ class UserRepositoryImplTest {
     fun `나의 프로필 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getMyProfile()
-        } returns NetworkResult.Success(TestMyProfileResponse)
+            dataStoreManager.getLongData(any())
+        } returns flowOf(TestMyUserId.value)
+        coEvery {
+            myProfileDao.getByUserId(any())
+        } returns flowOf(TestMyProfileEntity)
 
         // when
         val result = repository.getMyProfile().last()
 
         // then
-        assertTrue(result is Result.Success)
-        assertEquals(
-            TestMyProfileResponse.toDomainModel(),
-            (result as Result.Success).data,
-        )
+        assertEquals(TestMyProfileEntity.toDomainModel(), result)
     }
 
     @Test
-    fun `나의 프로필 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `나의 프로필 새로고침 - 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getMyProfile()
+        } returns NetworkResult.Success(TestMyProfileResponse)
+        coEvery {
+            myProfileDao.upsert(any())
+        } just Runs
+
+        // when
+        val result = repository.getMyProfileRefresh().last()
+
+        // then
+        assertTrue(result is Result.Success)
+    }
+
+    @Test
+    fun `나의 프로필 새로고침 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -124,7 +148,7 @@ class UserRepositoryImplTest {
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getMyProfile().last()
+        val result = repository.getMyProfileRefresh().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -135,13 +159,13 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `나의 프로필 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `나의 프로필 새로고침 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery { dataSource.getMyProfile() } throws exception
 
         // when
-        val result = repository.getMyProfile().last()
+        val result = repository.getMyProfileRefresh().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -361,6 +385,16 @@ class UserRepositoryImplTest {
             friendsCount = 51,
         )
         private val TestMyProfileResponse = MyProfileResponse(
+            userId = TestMyUserId.value,
+            displayId = "id",
+            name = "name",
+            profileImageUrl = "",
+            introduce = "hello",
+            lastLoginAt = 1000L,
+            active = true,
+            friendsCount = 51,
+        )
+        private val TestMyProfileEntity = MyProfileEntity(
             userId = TestMyUserId.value,
             displayId = "id",
             name = "name",

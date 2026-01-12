@@ -7,6 +7,9 @@ sealed interface CommonErrorType : BaseError {
     enum class Local : CommonErrorType {
         /** 데이터를 쓰는 과정에서 발생한 에러 */
         WritingDataFailed,
+
+        /** 있어야 할 값이 비어있는 경우 */
+        Empty,
     }
 
     /** 네트워크에서 발생한 에러 타입 */
