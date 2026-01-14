@@ -8,13 +8,11 @@ import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
-import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.MyProfile
 import com.peekr.domain.profile.usecase.MyProfileUseCases
@@ -50,7 +48,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         } returns flowOf(TestMyProfile)
         every {
             usecases.getMyKeywords()
-        } returns flowOf(Result.Success(TestUserKeywords))
+        } returns flowOf(TestUserKeywordDetails)
         every {
             usecases.refreshMyProfile()
         } returns flowOf(Result.Success(Unit))
@@ -66,7 +64,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             assertions = listOf(
                 MyProfileContract.UiState(
                     myProfile = TestMyProfile.toUiModel(),
-                    myKeywords = TestUserKeywords.keywords.toUiModel(),
+                    myKeywords = TestUserKeywordDetails.map { it.toUiModel() },
                 ),
             ),
         )
@@ -92,7 +90,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             assertions = listOf(
                 MyProfileContract.UiState(
                     myProfile = null,
-                    myKeywords = TestUserKeywords.keywords.toUiModel(),
+                    myKeywords = TestUserKeywordDetails.map { it.toUiModel() },
                 ),
             ),
         )
@@ -110,17 +108,15 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
 
     companion object {
         private val TestMyUserId = UserId(1L)
-        private val TestUserKeywords = UserKeywords(
-            listOf(
-                UserKeyword(
-                    id = UserKeywordId(1L),
-                    keywordId = KeywordId(1L),
-                    keyword = KeywordName("key"),
-                    userId = TestMyUserId,
-                    description = KeywordDescription("hello"),
-                    createdAt = 1000,
-                    updatedAt = 1000,
-                ),
+        private val TestUserKeywordDetails = listOf(
+            UserKeywordDetail(
+                userKeywordId = UserKeywordId(1L),
+                keywordId = KeywordId(1L),
+                keywordName = KeywordName("key"),
+                description = KeywordDescription("hello"),
+                userInfo = null,
+                createdAt = 1000,
+                updatedAt = 1000,
             ),
         )
         private val TestMyProfile = MyProfile(

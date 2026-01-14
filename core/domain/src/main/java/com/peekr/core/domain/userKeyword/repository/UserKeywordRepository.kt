@@ -36,6 +36,7 @@ interface UserKeywordRepository {
     /**
      * 사용자 키워드 설명 조회
      */
+    @Deprecated("삭제 예정 - 설명만 별도로 조회하는 기능은 필요 없을 것으로 예상된다.")
     fun getDescription(
         userKeywordId: UserKeywordId,
     ): Flow<Result<KeywordDescription, CommonErrorType>>

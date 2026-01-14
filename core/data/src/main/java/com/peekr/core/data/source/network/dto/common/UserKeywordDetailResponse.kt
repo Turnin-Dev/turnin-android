@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.dto.common
 
+import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
@@ -28,7 +29,7 @@ data class UserInfoResponse(
  *
  * @property userKeywordId 사용자 키워드 ID
  * @property keywordId 키워드 ID
- * @property keyword 키워드
+ * @property keywordName 키워드 명
  * @property description 키워드 내용
  * @property userInfo 사용자 정보 [UserInfoResponse]
  * @property createdAt 키워드 생성 일자
@@ -38,7 +39,7 @@ data class UserInfoResponse(
 data class UserKeywordDetailResponse(
     val userKeywordId: Long,
     val keywordId: Long,
-    val keyword: String,
+    val keywordName: String,
     val description: String,
     val userInfo: UserInfoResponse?,
     val createdAt: Long,
@@ -56,8 +57,8 @@ fun UserKeywordDetailResponse.toDomainModel(): UserKeywordDetail =
     UserKeywordDetail(
         userKeywordId = UserKeywordId(userKeywordId),
         keywordId = KeywordId(keywordId),
-        keyword = KeywordName(keyword),
-        description = description,
+        keywordName = KeywordName(this@toDomainModel.keywordName),
+        description = KeywordDescription(description),
         userInfo = userInfo?.toDomainModel(),
         createdAt = createdAt,
         updatedAt = updatedAt,

@@ -6,6 +6,7 @@ import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
 import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.common.UserInfoResponse
@@ -42,6 +43,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,6 +55,13 @@ class UserRepositoryImplTest {
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: UserRepository =
         UserRepositoryImpl(dataSource, dataStoreManager, myProfileDao, myKeywordDetailDao, dispatcher)
+
+    @Before
+    fun setUp() {
+        coEvery {
+            dataStoreManager.getLongData(DataStoreKey.User.UserId)
+        } returns flowOf(TestUserId.value)
+    }
 
     @Test
     fun `사용자 조회 - 성공 테스트`() = runTest {
@@ -300,6 +309,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } returns NetworkResult.Success(Unit)
+        coEvery {
+            myProfileDao.updateProfile(any(), any(), any(), any(), any())
+        } just Runs
 
         // when
         val result = repository.updateUser(TestUserPatch).last()
@@ -315,6 +327,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myProfileDao.updateProfile(any(), any(), any(), any(), any())
+        } just Runs
 
         // when
         val result = repository.updateUser(TestUserPatch).last()
@@ -334,6 +349,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } throws exception
+        coEvery {
+            myProfileDao.updateProfile(any(), any(), any(), any(), any())
+        } just Runs
 
         // when
         val result = repository.updateUser(TestUserPatch).last()
@@ -354,6 +372,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } returns NetworkResult.Success(Unit)
+        coEvery {
+            myProfileDao.updateIntroduce(any(), any())
+        } just Runs
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
@@ -370,6 +391,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myProfileDao.updateIntroduce(any(), any())
+        } just Runs
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
@@ -390,6 +414,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } throws exception
+        coEvery {
+            myProfileDao.updateIntroduce(any(), any())
+        } just Runs
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
@@ -468,7 +495,7 @@ class UserRepositoryImplTest {
         private val TestMyKeywordDetailEntity = MyKeywordDetailEntity(
             userKeywordId = 1L,
             keywordId = 1L,
-            keyword = "keyword",
+            keywordName = "keyword",
             description = "description",
             createdAt = 1000L,
             updatedAt = 1000L,
@@ -476,7 +503,7 @@ class UserRepositoryImplTest {
         private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
             userKeywordId = 1L,
             keywordId = 1L,
-            keyword = "keyword",
+            keywordName = "keyword",
             description = "description",
             userInfo = UserInfoResponse(
                 userId = TestUserId.value,

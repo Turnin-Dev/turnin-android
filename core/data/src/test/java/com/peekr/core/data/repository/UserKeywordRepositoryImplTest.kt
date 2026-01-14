@@ -1,5 +1,6 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
 import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
@@ -21,7 +22,9 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
@@ -34,8 +37,9 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserKeywordRepositoryImplTest {
     private val dataSource: UserKeywordNetworkDataSource = mockk()
+    private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository = UserKeywordRepositoryImpl(dataSource, dispatcher)
+    private val repository = UserKeywordRepositoryImpl(dataSource, myKeywordDetailDao, dispatcher)
 
     @Test
     fun `사용자 키워드 리스트 조회 - 성공 테스트`() = runTest {
@@ -159,6 +163,9 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             dataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Success(TestUserKeywordResponse)
+        coEvery {
+            myKeywordDetailDao.upsert(any())
+        } just Runs
 
         // when
         val result = repository.createUserKeyword(TestCreateUserKeyword).last()
@@ -178,6 +185,9 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             dataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myKeywordDetailDao.upsert(any())
+        } just Runs
 
         // when
         val result = repository.createUserKeyword(TestCreateUserKeyword).last()
@@ -197,6 +207,9 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             dataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } throws exception
+        coEvery {
+            myKeywordDetailDao.upsert(any())
+        } just Runs
 
         // when
         val result = repository.createUserKeyword(TestCreateUserKeyword).last()
@@ -220,6 +233,9 @@ class UserKeywordRepositoryImplTest {
                 patchDescriptionRequest = TestPatchDescriptionRequest,
             )
         } returns NetworkResult.Success(TestPatchDescriptionResponse)
+        coEvery {
+            myKeywordDetailDao.updateDescription(any(), any())
+        } just Runs
 
         // when
         val result = repository
@@ -246,6 +262,9 @@ class UserKeywordRepositoryImplTest {
                 patchDescriptionRequest = TestPatchDescriptionRequest,
             )
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myKeywordDetailDao.updateDescription(any(), any())
+        } just Runs
 
         // when
         val result = repository
@@ -272,6 +291,9 @@ class UserKeywordRepositoryImplTest {
                 patchDescriptionRequest = TestPatchDescriptionRequest,
             )
         } throws exception
+        coEvery {
+            myKeywordDetailDao.updateDescription(any(), any())
+        } just Runs
 
         // when
         val result = repository
@@ -296,6 +318,9 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Success(Unit)
+        coEvery {
+            myKeywordDetailDao.deleteById(any())
+        } just Runs
 
         // when
         val result = repository.deleteUserKeyword(userKeywordId = TestUserKeywordId).last()
@@ -311,6 +336,9 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myKeywordDetailDao.deleteById(any())
+        } just Runs
 
         // when
         val result = repository.deleteUserKeyword(userKeywordId = TestUserKeywordId).last()
@@ -330,6 +358,9 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } throws exception
+        coEvery {
+            myKeywordDetailDao.deleteById(any())
+        } just Runs
 
         // when
         val result = repository.deleteUserKeyword(userKeywordId = TestUserKeywordId).last()

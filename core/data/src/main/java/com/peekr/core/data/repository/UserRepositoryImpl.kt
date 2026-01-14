@@ -73,7 +73,9 @@ class UserRepositoryImpl @Inject constructor(
             if (userId == null) {
                 flowOf(null)
             } else {
-                myProfileDao.getByUserId(userId).map { it.toDomainModel() }
+                myProfileDao.getByUserId(userId).map {
+                    it?.toDomainModel()
+                }
             }
         }
         .flowOn(ioDispatcher)
@@ -144,6 +146,7 @@ class UserRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.map { it.toDomainModel() }))
                 }
+
                 is NetworkResult.Error -> {
                     val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
@@ -156,7 +159,20 @@ class UserRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = userNetworkDataSource.updateUser(patch.toDataModel())) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(result.data))
+                    val userId =
+                        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+                    if (userId == null) {
+                        emit(Result.Error(CommonErrorType.Exception.IO))
+                    } else {
+                        myProfileDao.updateProfile(
+                            userId = userId,
+                            displayId = patch.displayId.value,
+                            name = patch.name.value,
+                            profileImageUrl = patch.profileImageUrl,
+                            introduce = patch.introduce.value,
+                        )
+                        emit(Result.Success(result.data))
+                    }
                 }
 
                 is NetworkResult.Error -> {
@@ -172,7 +188,17 @@ class UserRepositoryImpl @Inject constructor(
             val introducePatchRequest = IntroducePatchRequest(introduce.value)
             when (val result = userNetworkDataSource.updateIntroduce(introducePatchRequest)) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(result.data))
+                    val userId =
+                        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+                    if (userId == null) {
+                        emit(Result.Error(CommonErrorType.Exception.IO))
+                    } else {
+                        myProfileDao.updateIntroduce(
+                            userId = userId,
+                            introduce = introduce.value,
+                        )
+                        emit(Result.Success(result.data))
+                    }
                 }
 
                 is NetworkResult.Error -> {

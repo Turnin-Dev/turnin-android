@@ -15,11 +15,9 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
+import com.peekr.presentation.profile.model.UiKeywordDetail
 
 /**
  * [LazyListScope]범위 내에 있는 키워드 아이템 영역
@@ -28,12 +26,12 @@ import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
  * @param onClick 키워드 클릭 시 콜백
  */
 fun LazyListScope.keywordItemsView(
-    keywords: List<UiUserKeyword>,
-    onClick: (UiUserKeyword) -> Unit,
+    keywords: List<UiKeywordDetail>,
+    onClick: (UiKeywordDetail) -> Unit,
 ) {
     items(
         count = keywords.size,
-        key = { keywords[it].id.value },
+        key = { keywords[it].userKeywordId },
     ) { index ->
         val keyword = keywords[index]
 
@@ -86,10 +84,9 @@ private fun KeywordItemsSkeletonPreview() {
 }
 
 private val LargeKeywordList = List(20) {
-    UiUserKeyword(
-        id = UserKeywordId((it + 1).toLong()),
-        userId = UserId(1L),
-        keywordId = KeywordId((it + 1).toLong()),
+    UiKeywordDetail(
+        userKeywordId = (it + 1).toLong(),
+        keywordId = (it + 1).toLong(),
         keywordName = "Label ${it + 1}",
         description = "Description ${it + 1}",
         createdAt = 0L,

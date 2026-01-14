@@ -33,9 +33,9 @@ import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
+import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiUserProfile
 import com.peekr.presentation.profile.state.UserProfileContract
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
@@ -341,7 +341,7 @@ private fun UserProfileScreenPreview() {
                 lastLoginAt = 1000L,
                 active = true,
                 friendStatus = FriendStatus.NOTHING,
-                keywords = UiUserKeyword.samples,
+                keywords = UiKeywordDetail.samples,
             ),
             onUiEvent = {},
             onBackPressed = {},

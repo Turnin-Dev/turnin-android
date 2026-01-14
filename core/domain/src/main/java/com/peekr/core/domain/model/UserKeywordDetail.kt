@@ -18,7 +18,7 @@ data class UserInfo(
  *
  * @property userKeywordId 사용자 키워드 ID
  * @property keywordId 키워드 ID
- * @property keyword 키워드
+ * @property keywordName 키워드 명
  * @property description 키워드 내용
  * @property userInfo 사용자 정보 [UserInfo]
  * @property createdAt 키워드 생성 일자
@@ -27,8 +27,8 @@ data class UserInfo(
 data class UserKeywordDetail(
     val userKeywordId: UserKeywordId,
     val keywordId: KeywordId,
-    val keyword: KeywordName,
-    val description: String,
+    val keywordName: KeywordName,
+    val description: KeywordDescription,
     val userInfo: UserInfo?,
     val createdAt: Long,
     val updatedAt: Long,

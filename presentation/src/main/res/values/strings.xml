@@ -61,11 +61,9 @@
     <!-- Profile Common Error -->
     <string name="profile_error_my_user_id_not_found">사용자의 정보 조회에 실패했습니다. 다시 시도 및 재로그인 해주세요.</string>
     <string name="profile_error_unexpected">알 수 없는 오류가 발생했습니다. 다시 시도 해주세요.</string>
-    <string name="profile_error_update_user_keyword_offset_failed">
-        키워드 위치를 저장하는 도중 오류가 발생했습니다. 취소 후 다시 위치를 저장해주세요.
-    </string>
     <string name="profile_error_not_selected_user_keyword_id">키워드가 선택되지 않았어요. 다시 선택해주세요.</string>
     <string name="profile_error_profile_load_failed">프로필을 불러오지 못했어요. 다시 시도해주세요.</string>
+    <string name="profile_error_keywords_load_failed">키워드 목록을 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="profile_error_update_friend_status_failed">잠시 후 다시 시도해주세요.</string>
     <string name="profile_error_already_friends_or_requested">이미 친구거나 이미 요청된 상태입니다.</string>
     <string name="profile_error_already_processed">이미 처리된 요청입니다.</string>

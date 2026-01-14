@@ -33,6 +33,7 @@ import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
+import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
@@ -61,7 +62,7 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
     myProfile: UiMyProfile?,
-    myKeywords: List<UiUserKeyword>,
+    myKeywords: List<UiKeywordDetail>,
     loading: Boolean,
     fullScreenLoading: Boolean,
     error: UiText?,
@@ -304,7 +305,7 @@ private fun MyProfileScreenPreview() {
                 lastLoginAt = 1000L,
                 active = true,
             ),
-            myKeywords = UiUserKeyword.samples,
+            myKeywords = UiKeywordDetail.samples,
             loading = false,
             fullScreenLoading = false,
             error = null,
@@ -323,7 +324,7 @@ private fun SkeletonPreview() {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             myProfile = null,
-            myKeywords = UiUserKeyword.samples,
+            myKeywords = UiKeywordDetail.samples,
             loading = false,
             fullScreenLoading = false,
             error = null,

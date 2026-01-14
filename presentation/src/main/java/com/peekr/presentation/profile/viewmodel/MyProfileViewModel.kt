@@ -26,9 +26,11 @@ class MyProfileViewModel @Inject constructor(
         MyProfileContract.UiState()
 
     override suspend fun loadInitialData() {
+        // 각각 viewModelScope 내에서 병렬 수행
         observeMyProfile()
-        refreshMyProfile()
-        getMyKeywords()
+        refreshMyProfile(false)
+        observeMyKeywords()
+        refreshMyKeywords(false)
     }
 
     override suspend fun handleEvent(event: MyProfileContract.UiEvent) {
@@ -37,12 +39,12 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 나의 프로필 조회 (로컬 데이터 구독)
+     */
     private fun observeMyProfile() {
         usecases.getMyProfile()
             .onEach { myProfile ->
-                if (myProfile == null) {
-                    showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
-                }
                 updateState {
                     this.copy(myProfile = myProfile?.toUiModel())
                 }
@@ -50,13 +52,33 @@ class MyProfileViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun refreshMyProfile() {
+    /**
+     * 나의 키워드 리스트 조회 (로컬 데이터 구독)
+     */
+    private fun observeMyKeywords() {
+        usecases.getMyKeywords()
+            .onEach { myKeywords ->
+                updateState {
+                    this.copy(myKeywords = myKeywords.map { it.toUiModel() })
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    /**
+     * 나의 프로필 새로고침 (서버에서 조회 후 로컬 데이터 업데이트)
+     *
+     * @param activeLoading 로딩 활성화 여부
+     */
+    private fun refreshMyProfile(activeLoading: Boolean) {
         usecases.refreshMyProfile()
             .onEach { result ->
                 when (result) {
                     Result.Loading -> {
-                        updateState {
-                            this.copy(loading = true)
+                        if (activeLoading) {
+                            updateState {
+                                this.copy(loading = true)
+                            }
                         }
                     }
 
@@ -83,17 +105,18 @@ class MyProfileViewModel @Inject constructor(
     }
 
     /**
-     * 나의 키워드를 조회한다.
+     * 나의 키워드 리스트 새로고침 (서버에서 조회 후 로컬 데이터 업데이트)
+     *
+     * @param activeLoading 로딩 활성화 여부
      */
-    private fun getMyKeywords() {
-        usecases.getMyKeywords().onEach { result ->
+    private fun refreshMyKeywords(activeLoading: Boolean) {
+        usecases.refreshMyKeywords().onEach { result ->
             when (result) {
                 Result.Loading -> {
-                    updateState {
-                        this.copy(
-                            loading = true,
-                            error = null,
-                        )
+                    if (activeLoading) {
+                        updateState {
+                            this.copy(loading = true)
+                        }
                     }
                 }
 
@@ -104,14 +127,14 @@ class MyProfileViewModel @Inject constructor(
                             error = result.error.asUiText(),
                         )
                     }
-                    showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
+                    showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
                 }
 
                 is Result.Success -> {
                     updateState {
                         this.copy(
                             loading = false,
-                            myKeywords = result.data.keywords.toUiModel(),
+                            error = null,
                         )
                     }
                 }
