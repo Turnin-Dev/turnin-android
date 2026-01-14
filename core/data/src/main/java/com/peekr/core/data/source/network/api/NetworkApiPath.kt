@@ -37,11 +37,10 @@ object NetworkApiPath {
     object User {
         const val ROUTE = "$BASE/user"
         const val INTRODUCE = "$ROUTE/introduce"
-
-        object Profile {
-            const val ROUTE = "${User.ROUTE}/profile"
-            const val ME = "$ROUTE/me"
-        }
+        const val MY_PROFILE = "$ROUTE/me/profile"
+        const val USER_PROFILE = "$ROUTE/{userId}/profile"
+        const val MY_KEYWORDS = "$ROUTE/me/keywords"
+        const val USER_KEYWORDS = "$ROUTE/{userId}/keywords"
     }
 
     object Report {

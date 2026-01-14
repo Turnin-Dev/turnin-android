@@ -3,8 +3,8 @@ package com.peekr.core.data.source.local.di
 import android.content.Context
 import androidx.room.Room
 import com.peekr.core.data.source.local.database.PeekrDatabase
+import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
-import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,6 @@ class DatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context,
-        moshi: Moshi,
     ): PeekrDatabase = Room.databaseBuilder(context, PeekrDatabase::class.java, "peekr.db")
         .build()
 
@@ -27,4 +26,9 @@ class DatabaseModule {
     @Singleton
     fun provideMyProfileDao(database: PeekrDatabase): MyProfileDao =
         database.myProfileDao()
+
+    @Provides
+    @Singleton
+    fun provideMyKeywordDetailDto(database: PeekrDatabase): MyKeywordDetailDao =
+        database.myKeywordDetailDto()
 }

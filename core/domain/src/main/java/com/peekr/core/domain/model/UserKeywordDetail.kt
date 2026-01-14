@@ -1,10 +1,4 @@
-package com.peekr.core.domain.userKeyword.model
-
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordName
-import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
+package com.peekr.core.domain.model
 
 /**
  * 사용자 키워드 상세 정보 모델의 사용자 정보 부분

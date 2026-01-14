@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.datasource
 
+import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -32,6 +33,18 @@ interface UserNetworkDataSource {
      * @return [UserProfileResponse]
      */
     suspend fun getUserProfile(userId: UserId): NetworkResult<UserProfileResponse>
+
+    /**
+     * 나의 키워드 상세 정보 리스트 조회
+     */
+    suspend fun getMyKeywords(): NetworkResult<List<UserKeywordDetailResponse>>
+
+    /**
+     * 사용자의 키워드 상세 정보 리스트 조회
+     *
+     * @param userId 사용자 ID
+     */
+    suspend fun getUserKeywords(userId: Long): NetworkResult<List<UserKeywordDetailResponse>>
 
     /**
      * 사용자 수정

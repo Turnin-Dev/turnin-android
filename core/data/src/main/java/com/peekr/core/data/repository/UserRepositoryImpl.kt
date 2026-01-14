@@ -2,12 +2,14 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
 import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
+import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.toDataModel
 import com.peekr.core.data.source.network.dto.user.response.toDomainModel
@@ -18,6 +20,7 @@ import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.user.model.CoreMyProfile
 import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.model.User
@@ -38,6 +41,7 @@ class UserRepositoryImpl @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
     private val myProfileDao: MyProfileDao,
+    private val myKeywordDetailDao: MyKeywordDetailDao,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserRepository {
     private val tag = this::class.java.simpleName
@@ -101,6 +105,45 @@ class UserRepositoryImpl @Inject constructor(
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
+                is NetworkResult.Error -> {
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun getMyKeywords(): Flow<List<UserKeywordDetail>> =
+        myKeywordDetailDao.getAll().map { it.map { it.toDomainModel() } }
+
+    override fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+            when (val result = userNetworkDataSource.getMyKeywords()) {
+                is NetworkResult.Success -> {
+                    AppLogger.d(tag, "My keywords refresh successful")
+                    val myKeywords = result.data.map { it.toDomainModel() }
+                    myKeywordDetailDao.upsertAll(myKeywords.map { it.toEntity() })
+                    emit(Result.Success(Unit))
+                }
+
+                is NetworkResult.Error -> {
+                    AppLogger.d(tag, "My keywords refresh failure")
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>> =
+        safeResultFlow<List<UserKeywordDetail>, CommonErrorType>(
+            ioDispatcher,
+            { CommonErrorType.Unexpected(it) },
+        ) {
+            emit(Result.Loading)
+            when (val result = userNetworkDataSource.getUserKeywords(userId.value)) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.map { it.toDomainModel() }))
+                }
                 is NetworkResult.Error -> {
                     val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))

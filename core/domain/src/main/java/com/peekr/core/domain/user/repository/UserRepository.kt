@@ -4,6 +4,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.user.model.CoreMyProfile
 import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.model.User
@@ -42,6 +43,23 @@ interface UserRepository {
      * @return [CoreUserProfile]
      */
     fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>>
+
+    /**
+     * 나의 키워드 상세 정보 리스트를 로컬에서 조회한다.
+     */
+    fun getMyKeywords(): Flow<List<UserKeywordDetail>>
+
+    /**
+     * 나의 키워드 상세 정보 리스트를 조회해서 로컬 데이터에 업데이트한다.
+     */
+    fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 사용자의 키워드 상세 정보 리스트 조회
+     *
+     * @param userId 사용자 ID
+     */
+    fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>>
 
     /**
      * 사용자 수정

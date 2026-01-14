@@ -4,11 +4,11 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import kotlinx.coroutines.flow.Flow
 

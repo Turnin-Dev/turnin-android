@@ -1,6 +1,7 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse

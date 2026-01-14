@@ -2,6 +2,7 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.toDataModel
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
@@ -11,11 +12,11 @@ import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import javax.inject.Inject
