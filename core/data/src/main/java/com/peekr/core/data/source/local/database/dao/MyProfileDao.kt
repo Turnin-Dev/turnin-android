@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MyProfileDao {
-    @Query("SELECT * FROM MyProfileEntity where :userId = userId")
+    @Query("SELECT * FROM MyProfileEntity where userId = :userId")
     fun getByUserId(userId: Long): Flow<MyProfileEntity>
 
     @Upsert

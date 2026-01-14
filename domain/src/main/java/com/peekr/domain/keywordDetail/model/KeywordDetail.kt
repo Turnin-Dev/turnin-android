@@ -1,10 +1,13 @@
-package com.peekr.core.data.source.local.database.entity
+package com.peekr.domain.keywordDetail.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordName
+import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 
 /**
- * 키워드 상세 정보 엔티티
+ * 키워드 상세 정보 모델
  *
  * @property userKeywordId 사용자 키워드 ID
  * @property keywordId 키워드 ID
@@ -16,15 +19,13 @@ import androidx.room.PrimaryKey
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
  */
-@Entity
-data class KeywordDetailEntity(
-    @PrimaryKey
-    val userKeywordId: Long,
-    val keywordId: Long,
-    val keyword: String,
+data class KeywordDetail(
+    val userKeywordId: UserKeywordId,
+    val keywordId: KeywordId,
+    val keyword: KeywordName,
     val description: String,
-    val userId: Long,
-    val userName: String,
+    val userId: UserId,
+    val userName: Name,
     val profileImageUrl: String?,
     val createdAt: Long,
     val updatedAt: Long,

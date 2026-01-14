@@ -6,6 +6,8 @@ import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeyw
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.UserInfoResponse
+import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
@@ -408,6 +410,45 @@ class UserKeywordDataSourceImplTest {
         assertEquals(404, error.status)
     }
 
+    @Test
+    fun `사용자 키워드 상세 정보 조회(사용자 정보 포함) - 성공 테스트`() = runTest {
+        // given
+        val expectedResponse = testRule.encodeToJson(TestUserKeywordDetailResponse)
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(expectedResponse)
+            },
+        )
+
+        // when
+        val response = dataSource.getDetail(TestUserKeywordId, true)
+
+        // then
+        val success = response as NetworkResult.Success
+        assertEquals(TestUserKeywordDetailResponse, success.data)
+    }
+
+    @Test
+    fun `사용자 키워드 상세 정보 조회(사용자 정보 미포함) - 성공 테스트`() = runTest {
+        // given
+        val expectedResponse = TestUserKeywordDetailResponse.copy(userInfo = null)
+        val json = testRule.encodeToJson(expectedResponse)
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(json)
+            },
+        )
+
+        // when
+        val response = dataSource.getDetail(TestUserKeywordId, false)
+
+        // then
+        val success = response as NetworkResult.Success
+        assertEquals(expectedResponse, success.data)
+    }
+
     companion object {
         private val TestUserId = UserId(1L)
         private val TestUserKeywordId = UserKeywordId(1L)
@@ -444,6 +485,19 @@ class UserKeywordDataSourceImplTest {
         )
         private val TestDescriptionResponse = DescriptionResponse(
             description = "hello",
+        )
+        private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
+            userKeywordId = TestUserKeywordId.value,
+            keywordId = TestKeywordId.value,
+            keyword = "keyword",
+            description = "description",
+            userInfo = UserInfoResponse(
+                userId = TestUserId.value,
+                userName = "name",
+                profileImageUrl = null,
+            ),
+            createdAt = 0L,
+            updatedAt = 0L,
         )
     }
 }

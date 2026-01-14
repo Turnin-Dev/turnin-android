@@ -11,6 +11,9 @@ interface KeywordDetailDao {
     @Query("SELECT * FROM KeywordDetailEntity")
     fun getAll(): Flow<List<KeywordDetailEntity>>
 
+    @Query("SELECT * FROM KeywordDetailEntity WHERE userKeywordId = :userKeywordId")
+    fun getById(userKeywordId: Long): Flow<KeywordDetailEntity?>
+
     @Upsert
     suspend fun upsertAll(keywordDetails: List<KeywordDetailEntity>)
 
