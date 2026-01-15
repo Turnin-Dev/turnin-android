@@ -115,7 +115,9 @@ class UserRepositoryImpl @Inject constructor(
         }
 
     override fun getMyKeywords(): Flow<List<UserKeywordDetail>> =
-        myKeywordDetailDao.getAll().map { it.map { it.toDomainModel() } }
+        myKeywordDetailDao.getAll()
+            .map { it.map { it.toDomainModel() } }
+            .flowOn(ioDispatcher)
 
     override fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

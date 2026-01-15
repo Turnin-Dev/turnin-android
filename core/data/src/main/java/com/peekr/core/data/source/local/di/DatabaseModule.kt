@@ -14,12 +14,13 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DatabaseModule {
+object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context,
-    ): PeekrDatabase = Room.databaseBuilder(context, PeekrDatabase::class.java, "peekr.db")
+    ): PeekrDatabase = Room
+        .databaseBuilder(context, PeekrDatabase::class.java, "peekr.db")
         .build()
 
     @Provides
