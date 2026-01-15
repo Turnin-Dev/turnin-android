@@ -21,6 +21,7 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.MyProfileContract
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -52,12 +53,15 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         every {
             usecases.refreshMyProfile()
         } returns flowOf(Result.Success(Unit))
+        every {
+            usecases.refreshMyKeywords()
+        } returns flowOf(Result.Success(Unit))
 
         viewModel = MyProfileViewModel(snackbarController, usecases)
     }
 
     @Test
-    fun `초기 데이터 로드 - 성공 시 나의 프로필을 정상적으로 가져온다`() {
+    fun `초기 데이터 로드 성공 시 나의 프로필과 키워드 리스트를 정상적으로 가져온다`() {
         testState(
             viewModel = viewModel,
             intents = listOf(),
@@ -71,16 +75,16 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
     }
 
     @Test
-    fun `초기 데이터 로드 - 실패 시 에러 스낵바를 표시한다`() = runTest {
+    fun `나의 프로필을 로컬에서 조회 시 예외가 발생하는 경우 에러 발생 후 나의 키워드 리스트는 정상적으로 업데이트 된다`() = runTest {
         // given
         every {
             usecases.getMyProfile()
-        } returns flowOf(null)
+        } returns flow { throw Exception() }
         viewModel = MyProfileViewModel(snackbarController, usecases)
 
-        val snackEvents = mutableListOf<SnackbarEvent>()
+        val snackbarList = mutableListOf<SnackbarEvent>()
         val snackbarJob = launch {
-            snackbarController.events.toList(snackEvents)
+            snackbarController.events.toList(snackbarList)
         }
 
         // when, then
@@ -89,18 +93,46 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             intents = listOf(),
             assertions = listOf(
                 MyProfileContract.UiState(
-                    myProfile = null,
                     myKeywords = TestUserKeywordDetails.map { it.toUiModel() },
                 ),
             ),
         )
 
-        // then
-        assertTrue(snackEvents.isNotEmpty())
-        assertEquals(
-            ProfileErrorType.ProfileLoadFailed.asUiText(),
-            snackEvents.last().message,
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(ProfileErrorType.ProfileLoadFailed.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    @Test
+    fun `나의 키워드 리스트를 로컬에서 조회 시 예외가 발생하는 경우 에러 발생 후 나의 프로필은 정상적으로 업데이트 된다`() = runTest {
+        // given
+        every {
+            usecases.getMyKeywords()
+        } returns flow { throw Exception() }
+        viewModel = MyProfileViewModel(snackbarController, usecases)
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = listOf(),
+            assertions = listOf(
+                MyProfileContract.UiState(
+                    myProfile = TestMyProfile.toUiModel(),
+                ),
+            ),
         )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(ProfileErrorType.KeywordsLoadFailed.asUiText(), snackbarList.last().message)
 
         // clean up
         snackbarJob.cancel()
