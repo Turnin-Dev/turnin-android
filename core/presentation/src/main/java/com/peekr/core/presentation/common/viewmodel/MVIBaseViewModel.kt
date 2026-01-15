@@ -24,7 +24,13 @@ interface BaseUiEffect
 abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect : BaseUiEffect> : ViewModel() {
     // ------------------------------ Init ------------------------------
 
-    /** 초기 데이터 로드 시 사용한다. */
+    /**
+     * 초기 데이터 로드 시 사용한다.
+     *
+     * 이 함수에서는 가벼운 작업을 수행하는 것을 권장한다.
+     *
+     * 비교적 무거운 작업은 직접 뷰모델 클래스의 init 블록 내부에서 수행하는 것을 권장한다.
+     */
     protected open suspend fun loadInitialData() {}
 
     // ------------------------------ UI State ------------------------------

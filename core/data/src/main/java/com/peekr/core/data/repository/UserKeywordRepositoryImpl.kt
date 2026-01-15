@@ -1,9 +1,12 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.toDataModel
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
+import com.peekr.core.data.source.network.dto.userKeyword.response.toEntity
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
@@ -11,6 +14,7 @@ import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
@@ -23,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource,
+    private val myKeywordDetailDao: MyKeywordDetailDao,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
     override fun getUserKeywords(userId: UserId): Flow<Result<UserKeywords, CommonErrorType>> =
@@ -33,6 +38,25 @@ class UserKeywordRepositoryImpl @Inject constructor(
             emit(Result.Loading)
 
             when (val result = userKeywordNetworkDataSource.getUserKeywords(userId)) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun getDetail(
+        userKeywordId: UserKeywordId,
+        withUserInfo: Boolean,
+    ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
+        safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+
+            when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId, withUserInfo)) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -74,6 +98,8 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
             when (val result = userKeywordNetworkDataSource.createUserKeyword(create.toDataModel())) {
                 is NetworkResult.Success -> {
+                    val entity = result.data.toEntity()
+                    myKeywordDetailDao.upsert(entity)
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -101,6 +127,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 )
             ) {
                 is NetworkResult.Success -> {
+                    myKeywordDetailDao.updateDescription(
+                        userKeywordId = userKeywordId.value,
+                        description = patchDescription.description.value,
+                    )
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -122,6 +152,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
             when (val result = userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId)) {
                 is NetworkResult.Success -> {
+                    myKeywordDetailDao.deleteById(userKeywordId.value)
                     emit(Result.Success(Unit))
                 }
 

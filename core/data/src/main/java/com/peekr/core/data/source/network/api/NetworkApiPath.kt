@@ -25,8 +25,8 @@ object NetworkApiPath {
 
     object UserKeyword {
         const val ROUTE = "$BASE/user-keyword"
-        const val PATCH_OFFSET = "$ROUTE/offset"
         const val DESCRIPTION = "$ROUTE/description"
+        const val DETAIL = "$ROUTE/{userKeywordId}/detail"
     }
 
     object File {
@@ -37,11 +37,10 @@ object NetworkApiPath {
     object User {
         const val ROUTE = "$BASE/user"
         const val INTRODUCE = "$ROUTE/introduce"
-
-        object Profile {
-            const val ROUTE = "${User.ROUTE}/profile"
-            const val ME = "$ROUTE/me"
-        }
+        const val MY_PROFILE = "$ROUTE/me/profile"
+        const val USER_PROFILE = "$ROUTE/{userId}/profile"
+        const val MY_KEYWORDS = "$ROUTE/me/keywords"
+        const val USER_KEYWORDS = "$ROUTE/{userId}/keywords"
     }
 
     object Report {

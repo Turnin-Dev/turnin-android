@@ -1,7 +1,17 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
+import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
+import com.peekr.core.data.source.local.database.entity.MyProfileEntity
+import com.peekr.core.data.source.local.database.entity.toDomainModel
+import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
+import com.peekr.core.data.source.network.dto.common.UserInfoResponse
+import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
+import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -22,22 +32,36 @@ import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryImplTest {
     private val dataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
+    private val myProfileDao: MyProfileDao = mockk()
+    private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository: UserRepository = UserRepositoryImpl(dataSource, dataStoreManager, dispatcher)
+    private val repository: UserRepository =
+        UserRepositoryImpl(dataSource, dataStoreManager, myProfileDao, myKeywordDetailDao, dispatcher)
+
+    @Before
+    fun setUp() {
+        coEvery {
+            dataStoreManager.getLongData(DataStoreKey.User.UserId)
+        } returns flowOf(TestUserId.value)
+    }
 
     @Test
     fun `사용자 조회 - 성공 테스트`() = runTest {
@@ -101,22 +125,38 @@ class UserRepositoryImplTest {
     fun `나의 프로필 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getMyProfile()
-        } returns NetworkResult.Success(TestMyProfileResponse)
+            dataStoreManager.getLongData(any())
+        } returns flowOf(TestMyUserId.value)
+        coEvery {
+            myProfileDao.getByUserId(any())
+        } returns flowOf(TestMyProfileEntity)
 
         // when
         val result = repository.getMyProfile().last()
 
         // then
-        assertTrue(result is Result.Success)
-        assertEquals(
-            TestMyProfileResponse.toDomainModel(),
-            (result as Result.Success).data,
-        )
+        assertEquals(TestMyProfileEntity.toDomainModel(), result)
     }
 
     @Test
-    fun `나의 프로필 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `나의 프로필 새로고침 - 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getMyProfile()
+        } returns NetworkResult.Success(TestMyProfileResponse)
+        coEvery {
+            myProfileDao.upsert(any())
+        } just Runs
+
+        // when
+        val result = repository.getMyProfileRefresh().last()
+
+        // then
+        assertTrue(result is Result.Success)
+    }
+
+    @Test
+    fun `나의 프로필 새로고침 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -124,7 +164,7 @@ class UserRepositoryImplTest {
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.getMyProfile().last()
+        val result = repository.getMyProfileRefresh().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -135,13 +175,13 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `나의 프로필 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `나의 프로필 새로고침 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery { dataSource.getMyProfile() } throws exception
 
         // when
-        val result = repository.getMyProfile().last()
+        val result = repository.getMyProfileRefresh().last()
 
         // then
         assertTrue(result is Result.Error)
@@ -210,11 +250,68 @@ class UserRepositoryImplTest {
     }
 
     @Test
+    fun `나의 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
+        // given
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestMyKeywordDetailEntity }
+        coEvery {
+            myKeywordDetailDao.getAll()
+        } returns flowOf(expectedList)
+
+        // when
+        val result = repository.getMyKeywords().last()
+
+        // then
+        assertEquals(expectedCount, result.size)
+        assertEquals(expectedList, result.map { it.toEntity() })
+    }
+
+    @Test
+    fun `나의 키워드 상세 정보 리스트 새로고침 - 성공 테스트`() = runTest {
+        // given
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
+        coEvery {
+            dataSource.getMyKeywords()
+        } returns NetworkResult.Success(expectedList)
+        coEvery {
+            myKeywordDetailDao.upsertAll(any())
+        } just Runs
+
+        // when
+        val result = repository.getMyKeywordsRefresh().last()
+
+        // then
+        assertTrue(result is Result.Success)
+    }
+
+    @Test
+    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
+        // given
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
+        coEvery {
+            dataSource.getUserKeywords(any())
+        } returns NetworkResult.Success(expectedList)
+
+        // when
+        val result = repository.getUserKeywords(TestUserId).last()
+
+        // then
+        val success = result as Result.Success
+        assertEquals(expectedCount, success.data.size)
+        assertEquals(expectedList.map { it.toDomainModel() }, success.data)
+    }
+
+    @Test
     fun `사용자 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } returns NetworkResult.Success(Unit)
+        coEvery {
+            myProfileDao.updateProfile(any(), any(), any(), any(), any())
+        } just Runs
 
         // when
         val result = repository.updateUser(TestUserPatch).last()
@@ -230,6 +327,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myProfileDao.updateProfile(any(), any(), any(), any(), any())
+        } just Runs
 
         // when
         val result = repository.updateUser(TestUserPatch).last()
@@ -249,6 +349,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateUser(TestUserPatchRequest)
         } throws exception
+        coEvery {
+            myProfileDao.updateProfile(any(), any(), any(), any(), any())
+        } just Runs
 
         // when
         val result = repository.updateUser(TestUserPatch).last()
@@ -269,6 +372,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } returns NetworkResult.Success(Unit)
+        coEvery {
+            myProfileDao.updateIntroduce(any(), any())
+        } just Runs
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
@@ -285,6 +391,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } returns NetworkResult.Error(expectedError)
+        coEvery {
+            myProfileDao.updateIntroduce(any(), any())
+        } just Runs
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
@@ -305,6 +414,9 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.updateIntroduce(TestIntroducePatchRequest)
         } throws exception
+        coEvery {
+            myProfileDao.updateIntroduce(any(), any())
+        } just Runs
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
@@ -369,6 +481,37 @@ class UserRepositoryImplTest {
             lastLoginAt = 1000L,
             active = true,
             friendsCount = 51,
+        )
+        private val TestMyProfileEntity = MyProfileEntity(
+            userId = TestMyUserId.value,
+            displayId = "id",
+            name = "name",
+            profileImageUrl = "",
+            introduce = "hello",
+            lastLoginAt = 1000L,
+            active = true,
+            friendsCount = 51,
+        )
+        private val TestMyKeywordDetailEntity = MyKeywordDetailEntity(
+            userKeywordId = 1L,
+            keywordId = 1L,
+            keywordName = "keyword",
+            description = "description",
+            createdAt = 1000L,
+            updatedAt = 1000L,
+        )
+        private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
+            userKeywordId = 1L,
+            keywordId = 1L,
+            keywordName = "keyword",
+            description = "description",
+            userInfo = UserInfoResponse(
+                userId = TestUserId.value,
+                userName = "name",
+                profileImageUrl = null,
+            ),
+            createdAt = 1000L,
+            updatedAt = 1000L,
         )
     }
 }

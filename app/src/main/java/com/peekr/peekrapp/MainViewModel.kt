@@ -27,6 +27,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             if (BuildConfig.DEBUG) {
                 // TODO: In debug mode
+                testLoggedIn()
                 _loggedIn.update { true }
                 _isLoading.update { false }
             } else {
@@ -36,6 +37,11 @@ class MainViewModel @Inject constructor(
                 _isLoading.update { false }
             }
         }
+    }
+
+    // TODO: 테스트 로그인 정보
+    private suspend fun testLoggedIn() {
+        dataStoreManager.saveLongData(DataStoreKey.User.UserId, 1L)
     }
 
     /**

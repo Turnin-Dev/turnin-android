@@ -12,6 +12,11 @@ android {
     namespace = "com.peekr.core.data"
 
     defaultConfig {
+        // Enable room auto-migrations
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
         buildConfigField("String", "PEEKR_DATA_STORE", properties.getProperty("PEEKR_DATA_STORE"))
         buildConfigField("String", "PEEKR_MOCK_SERVER_URL", properties.getProperty("PEEKR_MOCK_SERVER_URL"))
@@ -67,6 +72,11 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     testImplementation(libs.androidx.paging.common)
     testImplementation(libs.androidx.paging.testing)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)

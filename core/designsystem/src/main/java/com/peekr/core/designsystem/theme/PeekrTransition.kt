@@ -84,10 +84,10 @@ object PeekrTransitionObject {
     private val transition = PeekrTransition()
     val fadeIn = transition.fadeIn
     val fadeOut = transition.fadeOut
-    val enterTransition: (PeekrTransitionDirection) -> EnterTransition = {
+    val slideIn: (PeekrTransitionDirection) -> EnterTransition = {
         transition.slideInTransition(it)
     }
-    val exitTransition: (PeekrTransitionDirection) -> ExitTransition = {
+    val slideOut: (PeekrTransitionDirection) -> ExitTransition = {
         transition.slideOutTransition(it)
     }
 }

@@ -4,23 +4,19 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.profile.error.ProfileErrorType
-import com.peekr.domain.profile.model.MyProfilePatch
-import com.peekr.domain.profile.model.toUserPatch
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-/** 프로필 수정 */
-class UpdateProfileUseCase @Inject constructor(
+/**
+ * 나의 키워드 리스트 새로고침
+ *
+ * @see invoke
+ */
+class RefreshMyKeywordsUseCase @Inject constructor(
     private val userRepository: UserRepository,
 ) {
-    /**
-     * 프로필을 수정한다.
-     *
-     * @param patch [MyProfilePatch] 프로필 수정 패치
-     */
-    operator fun invoke(patch: MyProfilePatch): Flow<Result<Unit, ProfileErrorType>> =
-        userRepository
-            .updateUser(patch.toUserPatch())
+    operator fun invoke(): Flow<Result<Unit, ProfileErrorType>> =
+        userRepository.getMyKeywordsRefresh()
             .mapError { commonError ->
                 ProfileErrorType.CommonError(commonError)
             }

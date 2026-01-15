@@ -1,70 +1,53 @@
 package com.peekr.domain.profile.usecase.my
 
-import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.KeywordDescription
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.model.CoreMyProfile
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywords
-import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class GetMyProfileUseCaseTest {
     private val userRepository: UserRepository = mockk()
-    private val userKeywordRepository: UserKeywordRepository = mockk()
-    private val usecase = GetMyProfileUseCase(userRepository, userKeywordRepository)
-
-    @Before
-    fun setUp() {
-        every {
-            userRepository.getMyProfile()
-        } returns flowOf(Result.Success(TestCoreMyProfile))
-        every {
-            userKeywordRepository.getUserKeywords(TestMyUserId)
-        } returns flowOf(Result.Success(TestUserKeywords))
-        coEvery {
-            userRepository.getUserId()
-        } returns TestMyUserId
-    }
+    private val usecase = GetMyProfileUseCase(userRepository)
 
     @Test
     fun `나의 프로필 조회 성공 테스트`() = runTest {
+        // given
+        every {
+            userRepository.getMyProfile()
+        } returns flowOf(TestCoreMyProfile)
+
         // when
         val result = usecase().last()
+        assertNotNull(result)
+        val actual = CoreMyProfile(
+            userId = result!!.userId,
+            displayId = result.displayId,
+            name = result.name,
+            profileImageUrl = result.profileImageUrl,
+            introduce = result.introduce,
+            lastLoginAt = result.lastLoginAt,
+            friendsCount = result.friendsCount,
+            active = result.active,
+        )
 
         // then
-        val success = result as Result.Success
-        assertEquals(TestUserKeywords.keywords, success.data.keywords)
-        assertEquals(TestCoreMyProfile.displayId, success.data.displayId)
+        assertEquals(TestMyUserId, actual.userId)
+        assertEquals(TestCoreMyProfile.displayId, actual.displayId)
+        assertEquals(TestCoreMyProfile.name, actual.name)
     }
 
     companion object {
         private val TestMyUserId = UserId(1L)
-        private val TestUserKeyword = UserKeyword(
-            id = UserKeywordId(1L),
-            keywordId = KeywordId(1L),
-            keyword = KeywordName("key"),
-            userId = UserId(1L),
-            description = KeywordDescription("hello"),
-            createdAt = 1000,
-            updatedAt = 1000,
-        )
-        private val TestUserKeywords = UserKeywords(listOf(TestUserKeyword))
         private val TestCoreMyProfile = CoreMyProfile(
             userId = TestMyUserId,
             displayId = DisplayId("did"),

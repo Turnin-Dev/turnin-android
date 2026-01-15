@@ -8,11 +8,11 @@ sealed interface ProfileErrorType : BaseError {
     /** 나의 사용자 ID 조회 실패 에러 */
     data object MyUserIdNotFound : ProfileErrorType
 
-    /** 사용자 키워드 오프셋 업데이트 실패 에러 */
-    data object UpdateUserKeywordOffsetFailed : ProfileErrorType
-
     /** 프로필 로드 실패 에러 */
     data object ProfileLoadFailed : ProfileErrorType
+
+    /** 키워드 리스트 로드 실패 에러 */
+    data object KeywordsLoadFailed : ProfileErrorType
 
     /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
     data class Unexpected(val cause: Throwable?) : ProfileErrorType

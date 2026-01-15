@@ -4,7 +4,6 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.userKeyword.model.UserKeyword
 
 /**
  * 나의 프로필
@@ -16,7 +15,6 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
  * @property introduce 소개 글
  * @property friendsCount 친구 수
  * @property lastLoginAt 마지막 로그인 일시
- * @property keywords 키워드 리스트
  * @property active 사용자 활성화 여부
  */
 data class MyProfile(
@@ -27,6 +25,5 @@ data class MyProfile(
     val introduce: Introduce,
     val friendsCount: Long,
     val lastLoginAt: Long,
-    val keywords: List<UserKeyword>,
     val active: Boolean,
 )

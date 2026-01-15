@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.datasource
 
+import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
@@ -15,9 +16,21 @@ interface UserKeywordNetworkDataSource {
     /**
      * 사용자 키워드 리스트 조회
      */
+    @Deprecated("삭제 예정 - 사용자 키워드 상세 정보 리스트 조회를 대신 사용한다.")
     suspend fun getUserKeywords(
         userId: UserId,
     ): NetworkResult<UserKeywordsResponse>
+
+    /**
+     * 사용자 키워드 상세 정보 조회
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     * @param withUserInfo 사용자 정보 포함 여부
+     */
+    suspend fun getDetail(
+        userKeywordId: UserKeywordId,
+        withUserInfo: Boolean,
+    ): NetworkResult<UserKeywordDetailResponse>
 
     /**
      * 사용자 키워드 설명 조회

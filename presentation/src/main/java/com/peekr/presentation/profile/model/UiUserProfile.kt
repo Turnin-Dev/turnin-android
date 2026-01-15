@@ -1,8 +1,6 @@
 package com.peekr.presentation.profile.model
 
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.presentation.ui.model.UiUserKeyword
-import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.model.UserProfile
 
 /**
@@ -26,11 +24,12 @@ data class UiUserProfile(
     val introduce: String,
     val friendsCount: Long,
     val lastLoginAt: Long,
-    val keywords: List<UiUserKeyword>,
+    val keywords: List<UiKeywordDetail>,
     val friendStatus: FriendStatus,
     val active: Boolean,
 )
 
+// TODO: keywords 채워야 함
 fun UserProfile.toUiModel(): UiUserProfile =
     UiUserProfile(
         userId = userId.value,
@@ -42,5 +41,5 @@ fun UserProfile.toUiModel(): UiUserProfile =
         lastLoginAt = lastLoginAt,
         active = active,
         friendStatus = friendStatus,
-        keywords = keywords.toUiModel(),
+        keywords = emptyList(),
     )

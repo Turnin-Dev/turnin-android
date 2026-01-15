@@ -25,6 +25,7 @@ data class PeekrTypography(
     val body2: TextStyle = TextStyle(),
     val body3Normal: TextStyle = TextStyle(),
     val body3Many: TextStyle = TextStyle(),
+    val body3Content: TextStyle = TextStyle(),
     val body4: TextStyle = TextStyle(),
     val body5: TextStyle = TextStyle(),
     val label1: TextStyle = TextStyle(),
@@ -135,6 +136,17 @@ fun body3Normal(): TextStyle = TextStyle(
 
 @Composable
 fun body3Many(): TextStyle = TextStyle(
+    fontSize = 14.sp,
+    lineHeight = 20.3.sp,
+    letterSpacing = -(0.01).em,
+    fontWeight = FontWeight.Normal,
+    fontFamily = pretendard,
+    lineHeightStyle = lineHeightStyle,
+    platformStyle = platformTextStyle,
+)
+
+@Composable
+fun body3Content(): TextStyle = TextStyle(
     fontSize = 14.sp,
     lineHeight = 20.3.sp,
     letterSpacing = -(0.01).em,

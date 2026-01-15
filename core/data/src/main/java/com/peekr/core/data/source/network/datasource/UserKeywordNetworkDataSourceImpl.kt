@@ -1,6 +1,7 @@
 package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.api.UserKeywordApi
+import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
@@ -19,6 +20,12 @@ class UserKeywordNetworkDataSourceImpl @Inject constructor(
 ) : UserKeywordNetworkDataSource {
     override suspend fun getUserKeywords(userId: UserId): NetworkResult<UserKeywordsResponse> =
         networkCall { userKeywordApi.getUserKeywords(userId.value) }
+
+    override suspend fun getDetail(
+        userKeywordId: UserKeywordId,
+        withUserInfo: Boolean,
+    ): NetworkResult<UserKeywordDetailResponse> =
+        networkCall { userKeywordApi.getDetail(userKeywordId.value, withUserInfo) }
 
     override suspend fun getDescription(
         userKeywordId: UserKeywordId,
