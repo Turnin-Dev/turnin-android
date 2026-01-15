@@ -15,14 +15,18 @@ class MyProfileContract {
      * 나의 프로필 상태 클래스
      *
      * @param myProfile UI용 나의 프로필
+     * @param myProfileError 나의 프로필 에러 메시지
      * @param myKeywords UI용 나의 키워드
+     * @param myKeywordsError 나의 키워드 에러 메시지
      * @param loading 부분 로딩 여부
      * @param fullScreenLoading 전체 화면 로딩 여부
      * @param error 에러 메시지
      */
     data class UiState(
         val myProfile: UiMyProfile? = null,
+        val myProfileError: UiText? = null,
         val myKeywords: List<UiKeywordDetail> = emptyList(),
+        val myKeywordsError: UiText? = null,
         val loading: Boolean = false,
         val fullScreenLoading: Boolean = false,
         val error: UiText? = null,

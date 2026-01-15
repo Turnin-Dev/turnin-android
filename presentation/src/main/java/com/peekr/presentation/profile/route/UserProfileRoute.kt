@@ -67,7 +67,8 @@ internal fun UserProfileRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        userProfile = uiState.userProfile,
+        userProfile = uiState.profile,
+        userKeywords = uiState.keywords,
         onUiEvent = viewModel::processEvent,
         onBackPressed = onBackPressed,
     )

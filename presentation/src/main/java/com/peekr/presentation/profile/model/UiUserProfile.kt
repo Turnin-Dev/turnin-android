@@ -12,7 +12,6 @@ import com.peekr.domain.profile.model.UserProfile
  * @property introduce 소개 글
  * @property friendsCount 친구 수
  * @property lastLoginAt 마지막 로그인 일시
- * @property keywords 키워드 리스트
  * @property friendStatus 친구 관계 상태 (내 프로필이 아닌 경우에만 null이 아님)
  * @property active 사용자 활성화 여부
  */
@@ -24,12 +23,10 @@ data class UiUserProfile(
     val introduce: String,
     val friendsCount: Long,
     val lastLoginAt: Long,
-    val keywords: List<UiKeywordDetail>,
     val friendStatus: FriendStatus,
     val active: Boolean,
 )
 
-// TODO: keywords 채워야 함
 fun UserProfile.toUiModel(): UiUserProfile =
     UiUserProfile(
         userId = userId.value,
@@ -41,5 +38,4 @@ fun UserProfile.toUiModel(): UiUserProfile =
         lastLoginAt = lastLoginAt,
         active = active,
         friendStatus = friendStatus,
-        keywords = emptyList(),
     )

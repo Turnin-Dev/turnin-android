@@ -5,16 +5,29 @@ import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
 import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiUserProfile
 
 /**
  * 사용자 프로필 UI 계약
  */
 class UserProfileContract {
+    /**
+     * 사용자 프로필 UI 상태
+     *
+     * @property profile 사용자 프로필
+     * @property profileError 사용자 프로필 에러 메시지
+     * @property keywords 사용자 키워드 리스트
+     * @property keywordsError 사용자 키워드 리스트 에러 메시지
+     * @property loading 로딩 여부
+     * @property error 전체 에러 메시지
+     */
     data class UiState(
-        val userProfile: UiUserProfile? = null,
+        val profile: UiUserProfile? = null,
+        val profileError: UiText? = null,
+        val keywords: List<UiKeywordDetail> = emptyList(),
+        val keywordsError: UiText? = null,
         val loading: Boolean = false,
-        val error: UiText? = null,
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {

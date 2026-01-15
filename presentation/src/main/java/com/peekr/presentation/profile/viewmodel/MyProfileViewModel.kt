@@ -1,6 +1,7 @@
 package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
@@ -13,6 +14,7 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.MyProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -23,6 +25,8 @@ class MyProfileViewModel @Inject constructor(
     private val snackbarController: SnackbarController,
     private val usecases: MyProfileUseCases,
 ) : MVIBaseViewModel<MyProfileContract.UiState, MyProfileContract.UiEvent, MyProfileContract.UiEffect>() {
+    private val tag = this::class.java.simpleName
+
     override fun createInitialState(): MyProfileContract.UiState =
         MyProfileContract.UiState()
 
@@ -52,6 +56,10 @@ class MyProfileViewModel @Inject constructor(
                     this.copy(myProfile = myProfile)
                 }
             }
+            .catch { e ->
+                AppLogger.e(tag, e, "getMyProfile() failed. (cause: ${e.message})")
+                showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
+            }
             .launchIn(viewModelScope)
     }
 
@@ -66,6 +74,10 @@ class MyProfileViewModel @Inject constructor(
                 updateState {
                     this.copy(myKeywords = myKeywords)
                 }
+            }
+            .catch { e ->
+                AppLogger.e(tag, e, "getMyKeywords() failed. (cause: ${e.message})")
+                showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
             }
             .launchIn(viewModelScope)
     }
@@ -91,7 +103,7 @@ class MyProfileViewModel @Inject constructor(
                         updateState {
                             this.copy(
                                 loading = false,
-                                error = result.error.asUiText(),
+                                myProfileError = result.error.asUiText(),
                             )
                         }
                         showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
@@ -101,7 +113,7 @@ class MyProfileViewModel @Inject constructor(
                         updateState {
                             this.copy(
                                 loading = false,
-                                error = null,
+                                myProfileError = null,
                             )
                         }
                     }
@@ -129,7 +141,7 @@ class MyProfileViewModel @Inject constructor(
                     updateState {
                         this.copy(
                             loading = false,
-                            error = result.error.asUiText(),
+                            myKeywordsError = result.error.asUiText(),
                         )
                     }
                     showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
@@ -139,7 +151,7 @@ class MyProfileViewModel @Inject constructor(
                     updateState {
                         this.copy(
                             loading = false,
-                            error = null,
+                            myKeywordsError = null,
                         )
                     }
                 }

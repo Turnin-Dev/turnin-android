@@ -49,7 +49,8 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
 @Composable
 fun UserProfileScreen(
     modifier: Modifier = Modifier,
-    userProfile: UiUserProfile? = null,
+    userProfile: UiUserProfile?,
+    userKeywords: List<UiKeywordDetail>,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
 ) {
@@ -97,14 +98,14 @@ fun UserProfileScreen(
                 userProfile?.let {
                     KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        count = userProfile.keywords.count(),
+                        count = userKeywords.count(),
                     )
                 } ?: KeywordsTitleSkeleton()
             },
             keywords = {
                 userProfile?.let {
                     keywordItemsView(
-                        keywords = userProfile.keywords,
+                        keywords = userKeywords,
                         onClick = { uiUserKeyword ->
                         },
                     )
@@ -341,8 +342,8 @@ private fun UserProfileScreenPreview() {
                 lastLoginAt = 1000L,
                 active = true,
                 friendStatus = FriendStatus.NOTHING,
-                keywords = UiKeywordDetail.samples,
             ),
+            userKeywords = UiKeywordDetail.samples,
             onUiEvent = {},
             onBackPressed = {},
         )
