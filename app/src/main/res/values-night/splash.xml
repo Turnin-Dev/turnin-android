@@ -4,6 +4,6 @@
     <style name="Theme.Peekr.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.Peekr</item>
-        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenBackground">#1A1A1A</item>
     </style>
 </resources>
