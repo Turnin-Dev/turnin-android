@@ -15,10 +15,10 @@ interface MyKeywordDetailDao {
     fun getById(userKeywordId: Long): Flow<MyKeywordDetailEntity?>
 
     @Upsert
-    suspend fun upsertAll(keywordDetails: List<MyKeywordDetailEntity>)
+    suspend fun upsertAll(myKeywordDetails: List<MyKeywordDetailEntity>)
 
     @Upsert
-    suspend fun upsert(keywordDetail: MyKeywordDetailEntity)
+    suspend fun upsert(myKeywordDetail: MyKeywordDetailEntity)
 
     @Query("UPDATE MyKeywordDetailEntity SET description = :description WHERE userKeywordId = :userKeywordId")
     suspend fun updateDescription(

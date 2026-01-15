@@ -3,7 +3,6 @@ package com.peekr.presentation.keywordDetail.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +10,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class KeywordDetailViewModel @Inject constructor(
-    private val getDescriptionUseCase: GetDescriptionUseCase,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<KeywordDetailContract.UiState, KeywordDetailContract.UiEvent, KeywordDetailContract.UiEffect>() {
     private val currentUserKeywordId: Long by lazy {
