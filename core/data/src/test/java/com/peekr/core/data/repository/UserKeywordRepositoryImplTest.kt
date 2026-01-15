@@ -1,7 +1,12 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
+import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
+import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
+import com.peekr.core.data.source.network.dto.common.UserInfoResponse
+import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
@@ -27,6 +32,7 @@ import io.mockk.coEvery
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -36,74 +42,76 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserKeywordRepositoryImplTest {
-    private val dataSource: UserKeywordNetworkDataSource = mockk()
+    private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource = mockk()
+    private val userNetworkDataSource: UserNetworkDataSource = mockk()
     private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository = UserKeywordRepositoryImpl(dataSource, myKeywordDetailDao, dispatcher)
+    private val repository = UserKeywordRepositoryImpl(
+        userKeywordNetworkDataSource,
+        userNetworkDataSource,
+        myKeywordDetailDao,
+        dispatcher,
+    )
 
     @Test
-    fun `사용자 키워드 리스트 조회 - 성공 테스트`() = runTest {
+    fun `나의 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
         // given
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestMyKeywordDetailEntity }
         coEvery {
-            dataSource.getUserKeywords(TestUserId)
-        } returns NetworkResult.Success(TestUserKeywordsResponse)
+            myKeywordDetailDao.getAll()
+        } returns flowOf(expectedList)
 
         // when
-        val result = repository.getUserKeywords(TestUserId).last()
+        val result = repository.getMyKeywords().last()
+
+        // then
+        assertEquals(expectedCount, result.size)
+        assertEquals(expectedList, result.map { it.toEntity() })
+    }
+
+    @Test
+    fun `나의 키워드 상세 정보 리스트 새로고침 - 성공 테스트`() = runTest {
+        // given
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
+        coEvery {
+            userNetworkDataSource.getMyKeywords()
+        } returns NetworkResult.Success(expectedList)
+        coEvery {
+            myKeywordDetailDao.upsertAll(any())
+        } just Runs
+
+        // when
+        val result = repository.getMyKeywordsRefresh().last()
 
         // then
         assertTrue(result is Result.Success)
-        assertEquals(
-            TestUserKeywordsResponse.toDomainModel(),
-            (result as Result.Success).data,
-        )
     }
 
     @Test
-    fun `사용자 키워드 리스트 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
         // given
-        val expectedError = NetworkErrorType.Unexpected(null)
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
         coEvery {
-            dataSource.getUserKeywords(TestUserId)
-        } returns NetworkResult.Error(expectedError)
+            userNetworkDataSource.getUserKeywords(any())
+        } returns NetworkResult.Success(expectedList)
 
         // when
         val result = repository.getUserKeywords(TestUserId).last()
 
         // then
-        assertTrue(result is Result.Error)
-        assertEquals(
-            expectedError.toCommonErrorType(),
-            (result as Result.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 리스트 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
-        // given
-        val exception = Exception("error!")
-        coEvery {
-            dataSource.getUserKeywords(TestUserId)
-        } throws exception
-
-        // when
-        val result = repository.getUserKeywords(TestUserId).last()
-
-        // then
-        assertTrue(result is Result.Error)
-        if (result is Result.Error && result.error is CommonErrorType.Unexpected) {
-            assertEquals(
-                CommonErrorType.Unexpected(exception).cause?.message,
-                (result.error as CommonErrorType.Unexpected).cause?.message,
-            )
-        }
+        val success = result as Result.Success
+        assertEquals(expectedCount, success.data.size)
+        assertEquals(expectedList.map { it.toDomainModel() }, success.data)
     }
 
     @Test
     fun `사용자 키워드 설명 조회 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getDescription(TestUserKeywordId)
+            userKeywordNetworkDataSource.getDescription(TestUserKeywordId)
         } returns NetworkResult.Success(TestDescriptionResponse)
 
         // when
@@ -122,7 +130,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.getDescription(TestUserKeywordId)
+            userKeywordNetworkDataSource.getDescription(TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)
 
         // when
@@ -141,7 +149,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.getDescription(TestUserKeywordId)
+            userKeywordNetworkDataSource.getDescription(TestUserKeywordId)
         } throws exception
 
         // when
@@ -161,7 +169,7 @@ class UserKeywordRepositoryImplTest {
     fun `사용자 키워드 생성 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.createUserKeyword(TestCreateUserKeywordRequest)
+            userKeywordNetworkDataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Success(TestUserKeywordResponse)
         coEvery {
             myKeywordDetailDao.upsert(any())
@@ -183,7 +191,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.createUserKeyword(TestCreateUserKeywordRequest)
+            userKeywordNetworkDataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Error(expectedError)
         coEvery {
             myKeywordDetailDao.upsert(any())
@@ -205,7 +213,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.createUserKeyword(TestCreateUserKeywordRequest)
+            userKeywordNetworkDataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } throws exception
         coEvery {
             myKeywordDetailDao.upsert(any())
@@ -228,7 +236,7 @@ class UserKeywordRepositoryImplTest {
     fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.patchDescription(
+            userKeywordNetworkDataSource.patchDescription(
                 userKeywordId = TestUserKeywordId,
                 patchDescriptionRequest = TestPatchDescriptionRequest,
             )
@@ -257,7 +265,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.patchDescription(
+            userKeywordNetworkDataSource.patchDescription(
                 userKeywordId = TestUserKeywordId,
                 patchDescriptionRequest = TestPatchDescriptionRequest,
             )
@@ -286,7 +294,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.patchDescription(
+            userKeywordNetworkDataSource.patchDescription(
                 userKeywordId = TestUserKeywordId,
                 patchDescriptionRequest = TestPatchDescriptionRequest,
             )
@@ -316,7 +324,7 @@ class UserKeywordRepositoryImplTest {
     fun `사용자 키워드 삭제 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
+            userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Success(Unit)
         coEvery {
             myKeywordDetailDao.deleteById(any())
@@ -334,7 +342,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
+            userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)
         coEvery {
             myKeywordDetailDao.deleteById(any())
@@ -356,7 +364,7 @@ class UserKeywordRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            dataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
+            userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } throws exception
         coEvery {
             myKeywordDetailDao.deleteById(any())
@@ -412,6 +420,27 @@ class UserKeywordRepositoryImplTest {
         )
         private val TestDescriptionResponse = DescriptionResponse(
             description = TestPatchDescription.description.value,
+        )
+        private val TestMyKeywordDetailEntity = MyKeywordDetailEntity(
+            userKeywordId = 1L,
+            keywordId = 1L,
+            keywordName = "keyword",
+            description = "description",
+            createdAt = 1000L,
+            updatedAt = 1000L,
+        )
+        private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
+            userKeywordId = 1L,
+            keywordId = 1L,
+            keywordName = "keyword",
+            description = "description",
+            userInfo = UserInfoResponse(
+                userId = TestUserId.value,
+                userName = "name",
+                profileImageUrl = null,
+            ),
+            createdAt = 1000L,
+            updatedAt = 1000L,
         )
     }
 }

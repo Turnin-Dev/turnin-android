@@ -2,15 +2,11 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
-import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
 import com.peekr.core.data.source.local.database.entity.toDomainModel
-import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
-import com.peekr.core.data.source.network.dto.common.UserInfoResponse
-import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
@@ -54,7 +50,7 @@ class UserRepositoryImplTest {
     private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: UserRepository =
-        UserRepositoryImpl(dataSource, dataStoreManager, myProfileDao, myKeywordDetailDao, dispatcher)
+        UserRepositoryImpl(dataSource, dataStoreManager, myProfileDao, dispatcher)
 
     @Before
     fun setUp() {
@@ -250,60 +246,6 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `나의 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
-        // given
-        val expectedCount = 2
-        val expectedList = List(expectedCount) { TestMyKeywordDetailEntity }
-        coEvery {
-            myKeywordDetailDao.getAll()
-        } returns flowOf(expectedList)
-
-        // when
-        val result = repository.getMyKeywords().last()
-
-        // then
-        assertEquals(expectedCount, result.size)
-        assertEquals(expectedList, result.map { it.toEntity() })
-    }
-
-    @Test
-    fun `나의 키워드 상세 정보 리스트 새로고침 - 성공 테스트`() = runTest {
-        // given
-        val expectedCount = 2
-        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
-        coEvery {
-            dataSource.getMyKeywords()
-        } returns NetworkResult.Success(expectedList)
-        coEvery {
-            myKeywordDetailDao.upsertAll(any())
-        } just Runs
-
-        // when
-        val result = repository.getMyKeywordsRefresh().last()
-
-        // then
-        assertTrue(result is Result.Success)
-    }
-
-    @Test
-    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
-        // given
-        val expectedCount = 2
-        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
-        coEvery {
-            dataSource.getUserKeywords(any())
-        } returns NetworkResult.Success(expectedList)
-
-        // when
-        val result = repository.getUserKeywords(TestUserId).last()
-
-        // then
-        val success = result as Result.Success
-        assertEquals(expectedCount, success.data.size)
-        assertEquals(expectedList.map { it.toDomainModel() }, success.data)
-    }
-
-    @Test
     fun `사용자 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
@@ -491,27 +433,6 @@ class UserRepositoryImplTest {
             lastLoginAt = 1000L,
             active = true,
             friendsCount = 51,
-        )
-        private val TestMyKeywordDetailEntity = MyKeywordDetailEntity(
-            userKeywordId = 1L,
-            keywordId = 1L,
-            keywordName = "keyword",
-            description = "description",
-            createdAt = 1000L,
-            updatedAt = 1000L,
-        )
-        private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
-            userKeywordId = 1L,
-            keywordId = 1L,
-            keywordName = "keyword",
-            description = "description",
-            userInfo = UserInfoResponse(
-                userId = TestUserId.value,
-                userName = "name",
-                profileImageUrl = null,
-            ),
-            createdAt = 1000L,
-            updatedAt = 1000L,
         )
     }
 }

@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
-import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 
 /**
  * 나의 키워드 상세 정보 엔티티

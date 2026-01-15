@@ -1,6 +1,6 @@
 package com.peekr.presentation.profile.model
 
-import com.peekr.core.domain.model.UserKeywordDetail
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 
 /**
  * UI용 나의 키워드 상세 정보

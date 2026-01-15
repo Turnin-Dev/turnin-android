@@ -43,7 +43,7 @@ class GetUserProfileUseCase @Inject constructor(
                     lastLoginAt = userProfile.data.lastLoginAt,
                     active = userProfile.data.active,
                     friendStatus = userProfile.data.friendStatus,
-                    keywords = userKeywords.data.keywords,
+                    keywords = emptyList(),
                 )
                 Result.Success(myProfile)
             }.mapError { commonError ->

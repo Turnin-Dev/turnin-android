@@ -5,9 +5,9 @@ import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserInfo
-import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.UserInfo
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.squareup.moshi.JsonClass
 
 /**

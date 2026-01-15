@@ -1,7 +1,7 @@
 package com.peekr.domain.profile.usecase.my
 
-import com.peekr.core.domain.model.UserKeywordDetail
-import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
+import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.Flow
  * @see invoke
  */
 class GetMyKeywordsUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**
      * 나의 사용자 키워드를 조회한다.
      */
     operator fun invoke(): Flow<List<UserKeywordDetail>> =
-        userRepository.getMyKeywords()
+        userKeywordRepository.getMyKeywords()
 }
