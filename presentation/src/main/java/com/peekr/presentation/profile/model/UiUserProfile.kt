@@ -29,6 +29,7 @@ data class UiUserProfile(
     val active: Boolean,
 )
 
+// TODO: keywords 채워야 함
 fun UserProfile.toUiModel(): UiUserProfile =
     UiUserProfile(
         userId = userId.value,

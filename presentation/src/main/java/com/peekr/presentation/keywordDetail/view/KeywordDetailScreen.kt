@@ -31,6 +31,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
+import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -159,7 +160,7 @@ private fun TopBar(
                 )
             } else {
                 PeekrIconButton(
-                    icon = PeekrIcons.Default.Normal.More,
+                    icon = PeekrIcons.Outlined.Normal.Report,
                     iconSize = PeekrIconSize.Small,
                     contentDescription = stringResource(R.string.keyword_detail_screen_top_bar_option_2),
                     onClick = onReportClick,

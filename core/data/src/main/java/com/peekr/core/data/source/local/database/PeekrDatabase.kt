@@ -14,5 +14,5 @@ import com.peekr.core.data.source.local.database.entity.MyProfileEntity
 abstract class PeekrDatabase : RoomDatabase() {
     abstract fun myProfileDao(): MyProfileDao
 
-    abstract fun myKeywordDetailDto(): MyKeywordDetailDao
+    abstract fun myKeywordDetailDao(): MyKeywordDetailDao
 }

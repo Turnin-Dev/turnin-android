@@ -13,7 +13,6 @@ class KeywordDetailContract {
      * @property keyword 키워드
      * @property description 키워드 설명
      * @property userName 사용자 명
-     * @property userName 사용자 명
      * @property profileImageUrl 사용자 프로필 사진 URL
      * @property createdAt 키워드 생성 일자
      * @property loading 로딩 여부

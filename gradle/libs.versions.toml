@@ -45,7 +45,7 @@ androidTools = "31.7.2"
 desugar_jdk_libs = "2.1.5"
 splashScreen = "1.2.0"
 paging = "3.3.2"
-room = "2.6.1"
+room = "2.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

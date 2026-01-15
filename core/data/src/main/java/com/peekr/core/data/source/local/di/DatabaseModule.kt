@@ -30,6 +30,6 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideMyKeywordDetailDto(database: PeekrDatabase): MyKeywordDetailDao =
-        database.myKeywordDetailDto()
+    fun provideMyKeywordDetailDao(database: PeekrDatabase): MyKeywordDetailDao =
+        database.myKeywordDetailDao()
 }

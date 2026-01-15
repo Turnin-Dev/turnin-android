@@ -10,6 +10,9 @@ sealed interface CommonErrorType : BaseError {
 
         /** 있어야 할 값이 비어있는 경우 */
         Empty,
+
+        /** 로컬에 저장된 사용자 ID를 찾을 수 없는 경우 */
+        UserIdNotFound,
     }
 
     /** 네트워크에서 발생한 에러 타입 */

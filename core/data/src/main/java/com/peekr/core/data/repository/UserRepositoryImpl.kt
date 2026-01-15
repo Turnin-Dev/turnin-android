@@ -159,13 +159,13 @@ class UserRepositoryImpl @Inject constructor(
     override fun updateUser(patch: UserPatch): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
-            when (val result = userNetworkDataSource.updateUser(patch.toDataModel())) {
-                is NetworkResult.Success -> {
-                    val userId =
-                        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-                    if (userId == null) {
-                        emit(Result.Error(CommonErrorType.Exception.IO))
-                    } else {
+            val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+            if (userId == null) {
+                AppLogger.e(tag, "User ID not found in local DataStore.")
+                emit(Result.Error(CommonErrorType.Local.UserIdNotFound))
+            } else {
+                when (val result = userNetworkDataSource.updateUser(patch.toDataModel())) {
+                    is NetworkResult.Success -> {
                         myProfileDao.updateProfile(
                             userId = userId,
                             displayId = patch.displayId.value,
@@ -175,11 +175,11 @@ class UserRepositoryImpl @Inject constructor(
                         )
                         emit(Result.Success(result.data))
                     }
-                }
 
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    is NetworkResult.Error -> {
+                        val error = result.error.toCommonErrorType()
+                        emit(Result.Error(error = error, message = result.message))
+                    }
                 }
             }
         }
@@ -188,24 +188,24 @@ class UserRepositoryImpl @Inject constructor(
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             val introducePatchRequest = IntroducePatchRequest(introduce.value)
-            when (val result = userNetworkDataSource.updateIntroduce(introducePatchRequest)) {
-                is NetworkResult.Success -> {
-                    val userId =
-                        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-                    if (userId == null) {
-                        emit(Result.Error(CommonErrorType.Exception.IO))
-                    } else {
+            val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+            if (userId == null) {
+                AppLogger.e(tag, "User ID not found in local DataStore.")
+                emit(Result.Error(CommonErrorType.Local.UserIdNotFound))
+            } else {
+                when (val result = userNetworkDataSource.updateIntroduce(introducePatchRequest)) {
+                    is NetworkResult.Success -> {
                         myProfileDao.updateIntroduce(
                             userId = userId,
                             introduce = introduce.value,
                         )
                         emit(Result.Success(result.data))
                     }
-                }
 
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    is NetworkResult.Error -> {
+                        val error = result.error.toCommonErrorType()
+                        emit(Result.Error(error = error, message = result.message))
+                    }
                 }
             }
         }
