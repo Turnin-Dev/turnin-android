@@ -12,7 +12,7 @@ class LruMemoryCacheTest {
     @Test
     fun `캐시에 값을 저장하고 조회할 수 있다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null, name = "test")
 
         // when
         cache["key1"] = "value1"
@@ -24,7 +24,7 @@ class LruMemoryCacheTest {
     @Test
     fun `존재하지 않는 키 조회 시 null을 반환한다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null, name = "test")
 
         // when
         val result = cache["key1"]
@@ -39,6 +39,7 @@ class LruMemoryCacheTest {
         val cache = LruMemoryCache<String, String>(
             maxSize = 10,
             ttl = 100.milliseconds,
+            name = "test",
         )
         cache["key1"] = "value1"
 
@@ -53,7 +54,7 @@ class LruMemoryCacheTest {
     @Test
     fun `TTL 옵션이 null이면 데이터가 만료되지 않는다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null, name = "test")
         cache["key1"] = "value1"
 
         // when
@@ -67,7 +68,7 @@ class LruMemoryCacheTest {
     @Test
     fun `remove 호출 시 해당 키의 값을 반환하고 삭제한다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null, name = "test")
         cache["key1"] = "value1"
 
         // when
@@ -81,7 +82,7 @@ class LruMemoryCacheTest {
     @Test
     fun `clear 호출 시 모든 캐시가 삭제된다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null, name = "test")
         cache["key1"] = "value1"
         cache["key2"] = "value2"
         cache["key3"] = "value3"
@@ -99,7 +100,7 @@ class LruMemoryCacheTest {
     @Test
     fun `maxSize를 초과하면 가장 오래된 항목이 제거된다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 3, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 3, ttl = null, name = "test")
 
         // when: key4 저장 시 maxSize를 초과
         cache["key1"] = "value1"
@@ -118,7 +119,7 @@ class LruMemoryCacheTest {
     @Test
     fun `같은 키에 새 값을 저장하면 기존 값을 덮어쓴다`() = runTest {
         // given
-        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null)
+        val cache = LruMemoryCache<String, String>(maxSize = 10, ttl = null, name = "test")
         cache["key1"] = "oldValue"
 
         // when
