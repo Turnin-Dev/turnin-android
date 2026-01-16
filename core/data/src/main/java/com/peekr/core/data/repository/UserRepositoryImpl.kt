@@ -7,6 +7,7 @@ import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.toDataModel
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.map
 class UserRepositoryImpl @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
+    private val memoryCache: MemoryCache<Long, CoreUserProfile>,
     private val myProfileDao: MyProfileDao,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserRepository {
@@ -97,15 +99,22 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>> =
         safeResultFlow<CoreUserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            emit(Result.Loading)
-            when (val result = userNetworkDataSource.getUserProfile(userId)) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
-                }
+            val cachedProfile = memoryCache[userId.value]
+            if (cachedProfile != null) {
+                emit(Result.Success(cachedProfile))
+            } else {
+                emit(Result.Loading)
+                when (val result = userNetworkDataSource.getUserProfile(userId)) {
+                    is NetworkResult.Success -> {
+                        val profile = result.data.toDomainModel()
+                        memoryCache[userId.value] = profile
+                        emit(Result.Success(profile))
+                    }
 
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    is NetworkResult.Error -> {
+                        val error = result.error.toCommonErrorType()
+                        emit(Result.Error(error = error, message = result.message))
+                    }
                 }
             }
         }

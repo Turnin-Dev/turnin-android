@@ -3,6 +3,7 @@ package com.peekr.core.data.repository
 import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
 import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.common.UserInfoResponse
@@ -27,6 +28,7 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.just
@@ -45,13 +47,49 @@ class UserKeywordRepositoryImplTest {
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource = mockk()
     private val userNetworkDataSource: UserNetworkDataSource = mockk()
     private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
+    private val memoryCache: MemoryCache<Long, List<UserKeywordDetail>> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository = UserKeywordRepositoryImpl(
         userKeywordNetworkDataSource,
         userNetworkDataSource,
         myKeywordDetailDao,
+        memoryCache,
         dispatcher,
     )
+
+    @Test
+    fun `키워드 상세 정보 조회 - 성공 테스트(캐시 X)`() = runTest {
+        // given
+        coEvery {
+            userKeywordNetworkDataSource.getDetail(TestUserKeywordId, any())
+        } returns NetworkResult.Success(TestUserKeywordDetailResponse)
+        coEvery { memoryCache[TestUserId.value] } returns null
+
+        // when
+        val result = repository.getDetail(TestUserId, TestUserKeywordId, false).last()
+
+        // then
+        val success = result as Result.Success
+        assertEquals(TestUserKeywordDetailResponse.toDomainModel(), success.data)
+    }
+
+    @Test
+    fun `키워드 상세 정보 조회 - 성공 테스트(캐시 O)`() = runTest {
+        // given
+        coEvery {
+            userKeywordNetworkDataSource.getDetail(TestUserKeywordId, any())
+        } returns NetworkResult.Success(TestUserKeywordDetailResponse)
+        coEvery {
+            memoryCache[TestUserId.value]
+        } returns listOf(TestUserKeywordDetailResponse.toDomainModel())
+
+        // when
+        val result = repository.getDetail(TestUserId, TestUserKeywordId, false).last()
+
+        // then
+        val success = result as Result.Success
+        assertEquals(TestUserKeywordDetailResponse.toDomainModel(), success.data)
+    }
 
     @Test
     fun `나의 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
@@ -90,13 +128,36 @@ class UserKeywordRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
+    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트(메모리 캐시 X)`() = runTest {
         // given
         val expectedCount = 2
         val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
         coEvery {
             userNetworkDataSource.getUserKeywords(any())
         } returns NetworkResult.Success(expectedList)
+        coEvery { memoryCache[TestUserId.value] } returns null
+        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+
+        // when
+        val result = repository.getUserKeywords(TestUserId).last()
+
+        // then
+        val success = result as Result.Success
+        assertEquals(expectedCount, success.data.size)
+        assertEquals(expectedList.map { it.toDomainModel() }, success.data)
+    }
+
+    @Test
+    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트(메모리 캐시 O)`() = runTest {
+        // given
+        val expectedCount = 2
+        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
+        coEvery {
+            userNetworkDataSource.getUserKeywords(any())
+        } returns NetworkResult.Success(expectedList)
+        coEvery {
+            memoryCache[TestUserId.value]
+        } returns expectedList.map { it.toDomainModel() }
 
         // when
         val result = repository.getUserKeywords(TestUserId).last()

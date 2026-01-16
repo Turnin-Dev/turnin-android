@@ -16,10 +16,12 @@ interface UserKeywordRepository {
     /**
      * 사용자 키워드 상세 정보 조회
      *
+     * @param userId 사용자 ID
      * @param userKeywordId 사용자 키워드 ID
      * @param withUserInfo 사용자 정보 포함 여부
      */
     fun getDetail(
+        userId: UserId,
         userKeywordId: UserKeywordId,
         withUserInfo: Boolean,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>>

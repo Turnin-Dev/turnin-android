@@ -5,6 +5,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.common.toDomainModel
@@ -34,25 +35,33 @@ class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource,
     private val userNetworkDataSource: UserNetworkDataSource,
     private val myKeywordDetailDao: MyKeywordDetailDao,
+    private val memoryCache: MemoryCache<Long, List<UserKeywordDetail>>,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
     private val tag = this::class.java.simpleName
 
     override fun getDetail(
+        userId: UserId,
         userKeywordId: UserKeywordId,
         withUserInfo: Boolean,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
         safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            emit(Result.Loading)
+            val cachedKeyword = memoryCache[userId.value]
+                ?.find { it.userKeywordId == userKeywordId }
 
-            when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId, withUserInfo)) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
-                }
+            if (cachedKeyword != null) {
+                emit(Result.Success(cachedKeyword))
+            } else {
+                emit(Result.Loading)
+                when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId, withUserInfo)) {
+                    is NetworkResult.Success -> {
+                        emit(Result.Success(result.data.toDomainModel()))
+                    }
 
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    is NetworkResult.Error -> {
+                        val error = result.error.toCommonErrorType()
+                        emit(Result.Error(error = error, message = result.message))
+                    }
                 }
             }
         }
@@ -86,15 +95,23 @@ class UserKeywordRepositoryImpl @Inject constructor(
             ioDispatcher,
             { CommonErrorType.Unexpected(it) },
         ) {
-            emit(Result.Loading)
-            when (val result = userNetworkDataSource.getUserKeywords(userId.value)) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.map { it.toDomainModel() }))
-                }
+            // 만약, 사용자 키워드 리스트 개수에 대한 제한이 없다면 메모리 캐시 대신 로컬 DB를 통해 페이징을 진행해야 한다.
+            val cachedDetails = memoryCache[userId.value]
+            if (cachedDetails != null) {
+                emit(Result.Success(cachedDetails))
+            } else {
+                emit(Result.Loading)
+                when (val result = userNetworkDataSource.getUserKeywords(userId.value)) {
+                    is NetworkResult.Success -> {
+                        val keywords = result.data.map { it.toDomainModel() }
+                        memoryCache[userId.value] = keywords
+                        emit(Result.Success(keywords))
+                    }
 
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    is NetworkResult.Error -> {
+                        val error = result.error.toCommonErrorType()
+                        emit(Result.Error(error = error, message = result.message))
+                    }
                 }
             }
         }
