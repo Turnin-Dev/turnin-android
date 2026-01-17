@@ -1,7 +1,5 @@
 package com.peekr.core.presentation.ui.model
 
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 
 /**
@@ -15,8 +13,8 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
  * @property updatedAt 키워드 수정 일자
  */
 data class UiUserKeyword(
-    val id: UserKeywordId,
-    val keywordId: KeywordId,
+    val id: Long,
+    val keywordId: Long,
     val keywordName: String,
     val description: String,
     val createdAt: Long,
@@ -25,8 +23,8 @@ data class UiUserKeyword(
     companion object {
         val samples = List(5) {
             UiUserKeyword(
-                id = UserKeywordId((it + 1).toLong()),
-                keywordId = KeywordId((it + 1).toLong()),
+                id = (it + 1).toLong(),
+                keywordId = (it + 1).toLong(),
                 keywordName = "Label ${it + 1}",
                 description = "Description ${it + 1}",
                 createdAt = 0L,
@@ -38,8 +36,8 @@ data class UiUserKeyword(
 
 fun UserKeyword.toUiModel(): UiUserKeyword =
     UiUserKeyword(
-        id = id,
-        keywordId = keywordId,
+        id = id.value,
+        keywordId = keywordId.value,
         keywordName = keyword.value,
         description = description.value,
         createdAt = createdAt,

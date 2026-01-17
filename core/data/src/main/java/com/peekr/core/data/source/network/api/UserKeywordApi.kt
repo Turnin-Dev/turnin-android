@@ -20,12 +20,10 @@ interface UserKeywordApi {
      * 사용자 키워드 상세 정보 조회
      *
      * @param userKeywordId 사용자 키워드 ID
-     * @param withUserInfo 사용자 정보 포함 여부
      */
     @GET(NetworkApiPath.UserKeyword.DETAIL)
     suspend fun getDetail(
         @Path("userKeywordId") userKeywordId: Long,
-        @Query("withUserInfo") withUserInfo: Boolean,
     ): Response<UserKeywordDetailResponse>
 
     /** 사용자 키워드 설명 조회 */

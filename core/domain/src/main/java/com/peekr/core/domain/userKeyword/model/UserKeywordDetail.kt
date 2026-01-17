@@ -36,7 +36,17 @@ data class UserKeywordDetail(
     val keywordId: KeywordId,
     val keywordName: KeywordName,
     val description: KeywordDescription,
-    val userInfo: UserInfo?,
+    val userInfo: UserInfo,
     val createdAt: Long,
     val updatedAt: Long,
 )
+
+fun UserKeywordDetail.toNonDetail(): UserKeyword =
+    UserKeyword(
+        id = userKeywordId,
+        keywordId = keywordId,
+        keyword = keywordName,
+        description = description,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

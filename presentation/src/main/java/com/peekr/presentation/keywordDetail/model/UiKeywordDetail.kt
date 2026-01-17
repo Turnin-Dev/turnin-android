@@ -5,6 +5,7 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.domain.keywordDetail.model.KeywordDetail
 
 /**
  * UI용 키워드 상세 정보 모델
@@ -31,7 +32,15 @@ data class UiKeywordDetail(
     val updatedAt: Long,
 )
 
-// TODO: 지금 UiKeywordDetail이 중복되고 있으며,
-//  UserKeywordDetail, KeywordDetail 등이 오남용 되고 있음,
-//  결정적으로 가장 큰 문제는 UserKeywordDetail의 'userInfo' nullable 필드라고 생각.
-// fun KeywordDetail.toDomainModel(): UiKeywordDetail
+fun KeywordDetail.toDomainModel(): UiKeywordDetail =
+    UiKeywordDetail(
+        userKeywordId = userKeywordId,
+        keywordId = keywordId,
+        keyword = keyword,
+        description = description.value,
+        userId = userId,
+        userName = userName,
+        profileImageUrl = profileImageUrl,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

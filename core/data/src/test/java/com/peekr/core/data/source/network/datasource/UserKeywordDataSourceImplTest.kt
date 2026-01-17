@@ -40,88 +40,6 @@ class UserKeywordDataSourceImplTest {
     }
 
     @Test
-    fun `사용자 키워드 리스트 조회 - 성공 테스트`() = runTest {
-        // given
-        val expectedResponse = testRule.encodeToJson(TestUserKeywordsResponse)
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(expectedResponse)
-            },
-        )
-
-        // when
-        val response = dataSource.getUserKeywords(TestUserId)
-
-        // then
-        assertTrue(response is NetworkResult.Success)
-        assertEquals(
-            (response as NetworkResult.Success).data,
-            TestUserKeywordsResponse,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 리스트 조회 - 잘못된 응답 바디로 응답 시 알려진 예외를 반환한다`() = runTest {
-        // given
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(TestInvalidJson)
-            },
-        )
-
-        // when
-        val response = dataSource.getUserKeywords(TestUserId)
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Exception.JsonData,
-            (response as NetworkResult.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 리스트 조회 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
-        // given
-        val mockApi: UserKeywordApi = mockk()
-        val exception = Exception()
-        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getUserKeywords(TestUserId.value) } throws exception
-
-        // when
-        val response = dataSource.getUserKeywords(TestUserId)
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Unexpected(exception),
-            (response as NetworkResult.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 리스트 조회 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
-        // given
-        val expectedResponse = testRule.encodeToJson(TestUserKeywordsResponse)
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(404)
-                setBody(expectedResponse)
-            },
-        )
-
-        // when
-        val response = dataSource.getUserKeywords(TestUserId)
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
-        assertEquals(404, error.status)
-    }
-
-    @Test
     fun `사용자 키워드 설명 조회 - 성공 테스트`() = runTest {
         // given
         val expectedResponse = testRule.encodeToJson(TestDescriptionResponse)
@@ -422,31 +340,11 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.getDetail(TestUserKeywordId, true)
+        val response = dataSource.getDetail(TestUserKeywordId)
 
         // then
         val success = response as NetworkResult.Success
         assertEquals(TestUserKeywordDetailResponse, success.data)
-    }
-
-    @Test
-    fun `사용자 키워드 상세 정보 조회(사용자 정보 미포함) - 성공 테스트`() = runTest {
-        // given
-        val expectedResponse = TestUserKeywordDetailResponse.copy(userInfo = null)
-        val json = testRule.encodeToJson(expectedResponse)
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(json)
-            },
-        )
-
-        // when
-        val response = dataSource.getDetail(TestUserKeywordId, false)
-
-        // then
-        val success = response as NetworkResult.Success
-        assertEquals(expectedResponse, success.data)
     }
 
     companion object {
@@ -464,7 +362,6 @@ class UserKeywordDataSourceImplTest {
             id = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
             keyword = TEST_KEYWORD_NAME,
-            userId = TestUserId.value,
             description = "description",
             createdAt = 1000,
             updatedAt = 1000,

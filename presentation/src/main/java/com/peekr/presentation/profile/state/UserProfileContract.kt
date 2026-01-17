@@ -4,8 +4,8 @@ import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
+import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiUserProfile
 
 /**
@@ -25,7 +25,7 @@ class UserProfileContract {
     data class UiState(
         val profile: UiUserProfile? = null,
         val profileError: UiText? = null,
-        val keywords: List<UiKeywordDetail> = emptyList(),
+        val keywords: List<UiUserKeyword> = emptyList(),
         val keywordsError: UiText? = null,
         val loading: Boolean = false,
     ) : BaseUiState

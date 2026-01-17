@@ -9,6 +9,7 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserInfo
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
+import com.peekr.core.domain.userKeyword.model.toNonDetail
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -37,7 +38,7 @@ class GetUserKeywordsUseCaseTest {
         // then
         val success = result as Result.Success
         assertEquals(expectedCount, success.data.size)
-        assertEquals(expectedList, success.data)
+        assertEquals(expectedList.map { it.toNonDetail() }, success.data)
     }
 
     companion object {

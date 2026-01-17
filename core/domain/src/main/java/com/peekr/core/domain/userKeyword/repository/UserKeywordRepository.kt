@@ -14,22 +14,20 @@ import kotlinx.coroutines.flow.Flow
 /** 사용자 키워드 리포지토리 */
 interface UserKeywordRepository {
     /**
-     * 사용자 키워드 상세 정보 조회
+     * 사용자 키워드 상세 정보 조회 (사용자 정보 없이 조회)
      *
      * @param userId 사용자 ID
      * @param userKeywordId 사용자 키워드 ID
-     * @param withUserInfo 사용자 정보 포함 여부
      */
     fun getDetail(
         userId: UserId,
         userKeywordId: UserKeywordId,
-        withUserInfo: Boolean,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>>
 
     /**
-     * 나의 키워드 상세 정보 리스트를 로컬에서 조회한다.
+     * 나의 키워드 리스트를 로컬에서 조회한다.
      */
-    fun getMyKeywords(): Flow<List<UserKeywordDetail>>
+    fun getMyKeywords(): Flow<List<UserKeyword>>
 
     /**
      * 나의 키워드 상세 정보 리스트를 조회해서 로컬 데이터에 업데이트한다.

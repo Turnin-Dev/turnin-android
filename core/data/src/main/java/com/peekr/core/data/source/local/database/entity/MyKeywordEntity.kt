@@ -6,6 +6,7 @@ import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 
 /**
@@ -19,7 +20,7 @@ import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
  * @property updatedAt 키워드 수정 일자
  */
 @Entity
-data class MyKeywordDetailEntity(
+data class MyKeywordEntity(
     @PrimaryKey
     val userKeywordId: Long,
     val keywordId: Long,
@@ -29,19 +30,18 @@ data class MyKeywordDetailEntity(
     val updatedAt: Long,
 )
 
-fun MyKeywordDetailEntity.toDomainModel(): UserKeywordDetail =
-    UserKeywordDetail(
-        userKeywordId = UserKeywordId(userKeywordId),
+fun MyKeywordEntity.toDomainModel(): UserKeyword =
+    UserKeyword(
+        id = UserKeywordId(userKeywordId),
         keywordId = KeywordId(keywordId),
-        keywordName = KeywordName(keywordName),
+        keyword = KeywordName(keywordName),
         description = KeywordDescription(description),
         createdAt = createdAt,
         updatedAt = updatedAt,
-        userInfo = null,
     )
 
-fun UserKeywordDetail.toEntity(): MyKeywordDetailEntity =
-    MyKeywordDetailEntity(
+fun UserKeywordDetail.toEntity(): MyKeywordEntity =
+    MyKeywordEntity(
         userKeywordId = userKeywordId.value,
         keywordId = keywordId.value,
         keywordName = keywordName.value,

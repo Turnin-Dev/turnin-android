@@ -33,9 +33,9 @@ import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiUserProfile
 import com.peekr.presentation.profile.state.UserProfileContract
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
@@ -50,7 +50,7 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
 fun UserProfileScreen(
     modifier: Modifier = Modifier,
     userProfile: UiUserProfile?,
-    userKeywords: List<UiKeywordDetail>,
+    userKeywords: List<UiUserKeyword>,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
 ) {
@@ -343,7 +343,7 @@ private fun UserProfileScreenPreview() {
                 active = true,
                 friendStatus = FriendStatus.NOTHING,
             ),
-            userKeywords = UiKeywordDetail.samples,
+            userKeywords = UiUserKeyword.samples,
             onUiEvent = {},
             onBackPressed = {},
         )

@@ -1,8 +1,8 @@
 package com.peekr.core.data.repository
 
-import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
-import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
-import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.database.dao.MyKeywordDao
+import com.peekr.core.data.source.local.database.entity.MyKeywordEntity
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
@@ -46,13 +46,13 @@ import org.junit.Test
 class UserKeywordRepositoryImplTest {
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource = mockk()
     private val userNetworkDataSource: UserNetworkDataSource = mockk()
-    private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
+    private val myKeywordDao: MyKeywordDao = mockk()
     private val memoryCache: MemoryCache<Long, List<UserKeywordDetail>> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository = UserKeywordRepositoryImpl(
         userKeywordNetworkDataSource,
         userNetworkDataSource,
-        myKeywordDetailDao,
+        myKeywordDao,
         memoryCache,
         dispatcher,
     )
@@ -61,12 +61,12 @@ class UserKeywordRepositoryImplTest {
     fun `키워드 상세 정보 조회 - 성공 테스트(캐시 X)`() = runTest {
         // given
         coEvery {
-            userKeywordNetworkDataSource.getDetail(TestUserKeywordId, any())
+            userKeywordNetworkDataSource.getDetail(TestUserKeywordId)
         } returns NetworkResult.Success(TestUserKeywordDetailResponse)
         coEvery { memoryCache[TestUserId.value] } returns null
 
         // when
-        val result = repository.getDetail(TestUserId, TestUserKeywordId, false).last()
+        val result = repository.getDetail(TestUserId, TestUserKeywordId).last()
 
         // then
         val success = result as Result.Success
@@ -77,14 +77,14 @@ class UserKeywordRepositoryImplTest {
     fun `키워드 상세 정보 조회 - 성공 테스트(캐시 O)`() = runTest {
         // given
         coEvery {
-            userKeywordNetworkDataSource.getDetail(TestUserKeywordId, any())
+            userKeywordNetworkDataSource.getDetail(TestUserKeywordId)
         } returns NetworkResult.Success(TestUserKeywordDetailResponse)
         coEvery {
             memoryCache[TestUserId.value]
         } returns listOf(TestUserKeywordDetailResponse.toDomainModel())
 
         // when
-        val result = repository.getDetail(TestUserId, TestUserKeywordId, false).last()
+        val result = repository.getDetail(TestUserId, TestUserKeywordId).last()
 
         // then
         val success = result as Result.Success
@@ -95,9 +95,9 @@ class UserKeywordRepositoryImplTest {
     fun `나의 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
         // given
         val expectedCount = 2
-        val expectedList = List(expectedCount) { TestMyKeywordDetailEntity }
+        val expectedList = List(expectedCount) { TestMyKeywordEntity }
         coEvery {
-            myKeywordDetailDao.getAll()
+            myKeywordDao.getAll()
         } returns flowOf(expectedList)
 
         // when
@@ -105,7 +105,7 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertEquals(expectedCount, result.size)
-        assertEquals(expectedList, result.map { it.toEntity() })
+        assertEquals(expectedList.map { it.toDomainModel() }, result)
     }
 
     @Test
@@ -117,7 +117,7 @@ class UserKeywordRepositoryImplTest {
             userNetworkDataSource.getMyKeywords()
         } returns NetworkResult.Success(expectedList)
         coEvery {
-            myKeywordDetailDao.upsertAll(any())
+            myKeywordDao.upsertAll(any())
         } just Runs
 
         // when
@@ -233,7 +233,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Success(TestUserKeywordResponse)
         coEvery {
-            myKeywordDetailDao.upsert(any())
+            myKeywordDao.upsert(any())
         } just Runs
 
         // when
@@ -255,7 +255,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } returns NetworkResult.Error(expectedError)
         coEvery {
-            myKeywordDetailDao.upsert(any())
+            myKeywordDao.upsert(any())
         } just Runs
 
         // when
@@ -277,7 +277,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.createUserKeyword(TestCreateUserKeywordRequest)
         } throws exception
         coEvery {
-            myKeywordDetailDao.upsert(any())
+            myKeywordDao.upsert(any())
         } just Runs
 
         // when
@@ -303,7 +303,7 @@ class UserKeywordRepositoryImplTest {
             )
         } returns NetworkResult.Success(TestPatchDescriptionResponse)
         coEvery {
-            myKeywordDetailDao.updateDescription(any(), any())
+            myKeywordDao.updateDescription(any(), any())
         } just Runs
 
         // when
@@ -332,7 +332,7 @@ class UserKeywordRepositoryImplTest {
             )
         } returns NetworkResult.Error(expectedError)
         coEvery {
-            myKeywordDetailDao.updateDescription(any(), any())
+            myKeywordDao.updateDescription(any(), any())
         } just Runs
 
         // when
@@ -361,7 +361,7 @@ class UserKeywordRepositoryImplTest {
             )
         } throws exception
         coEvery {
-            myKeywordDetailDao.updateDescription(any(), any())
+            myKeywordDao.updateDescription(any(), any())
         } just Runs
 
         // when
@@ -388,7 +388,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Success(Unit)
         coEvery {
-            myKeywordDetailDao.deleteById(any())
+            myKeywordDao.deleteById(any())
         } just Runs
 
         // when
@@ -406,7 +406,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } returns NetworkResult.Error(expectedError)
         coEvery {
-            myKeywordDetailDao.deleteById(any())
+            myKeywordDao.deleteById(any())
         } just Runs
 
         // when
@@ -428,7 +428,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId = TestUserKeywordId)
         } throws exception
         coEvery {
-            myKeywordDetailDao.deleteById(any())
+            myKeywordDao.deleteById(any())
         } just Runs
 
         // when
@@ -481,7 +481,7 @@ class UserKeywordRepositoryImplTest {
         private val TestDescriptionResponse = DescriptionResponse(
             description = TestPatchDescription.description.value,
         )
-        private val TestMyKeywordDetailEntity = MyKeywordDetailEntity(
+        private val TestMyKeywordEntity = MyKeywordEntity(
             userKeywordId = 1L,
             keywordId = 1L,
             keywordName = "keyword",

@@ -1,9 +1,11 @@
 package com.peekr.domain.profile.usecase.user
 
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.mapSuccess
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
+import com.peekr.core.domain.userKeyword.model.UserKeyword
+import com.peekr.core.domain.userKeyword.model.toNonDetail
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
 import javax.inject.Inject
@@ -24,11 +26,14 @@ class GetUserKeywordsUseCase @Inject constructor(
      *
      * @param userId 조회할 사용자 ID
      */
-    operator fun invoke(userId: Long): Flow<Result<List<UserKeywordDetail>, ProfileErrorType>> =
+    operator fun invoke(userId: Long): Flow<Result<List<UserKeyword>, ProfileErrorType>> =
         flow {
             val userIdVO = UserId(userId)
             emitAll(
                 userKeywordRepository.getUserKeywords(userIdVO)
+                    .mapSuccess {
+                        it.map { it.toNonDetail() }
+                    }
                     .mapError { commonError ->
                         ProfileErrorType.CommonError(commonError)
                     },

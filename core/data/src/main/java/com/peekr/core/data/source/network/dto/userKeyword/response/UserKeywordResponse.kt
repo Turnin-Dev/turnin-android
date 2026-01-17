@@ -1,6 +1,6 @@
 package com.peekr.core.data.source.network.dto.userKeyword.response
 
-import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
+import com.peekr.core.data.source.local.database.entity.MyKeywordEntity
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
@@ -40,8 +40,8 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
         updatedAt = updatedAt,
     )
 
-fun UserKeywordResponse.toEntity(): MyKeywordDetailEntity =
-    MyKeywordDetailEntity(
+fun UserKeywordResponse.toEntity(): MyKeywordEntity =
+    MyKeywordEntity(
         userKeywordId = id,
         keywordId = keywordId,
         keywordName = keyword,

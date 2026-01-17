@@ -2,7 +2,7 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
+import com.peekr.core.data.source.local.database.dao.MyKeywordDao
 import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.memory.MemoryCache
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.map
 class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource,
     private val userNetworkDataSource: UserNetworkDataSource,
-    private val myKeywordDetailDao: MyKeywordDetailDao,
+    private val myKeywordDao: MyKeywordDao,
     private val memoryCache: MemoryCache<Long, List<UserKeywordDetail>>,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
@@ -43,17 +43,21 @@ class UserKeywordRepositoryImpl @Inject constructor(
     override fun getDetail(
         userId: UserId,
         userKeywordId: UserKeywordId,
-        withUserInfo: Boolean,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
         safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            // 1. 메모리 캐시 확인 (있으면 즉시 반환)
+
+            // 2. 로컬 DB 확인 (페이징을 진행했었다면 DB에 데이터 존재), 메모리 캐시로 승격(저장)
+
+            // 3. 네트워크 호출 후 메모리 캐시에 저장
+
             val cachedKeyword = memoryCache[userId.value]
                 ?.find { it.userKeywordId == userKeywordId }
-
             if (cachedKeyword != null) {
                 emit(Result.Success(cachedKeyword))
             } else {
                 emit(Result.Loading)
-                when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId, withUserInfo)) {
+                when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId)) {
                     is NetworkResult.Success -> {
                         emit(Result.Success(result.data.toDomainModel()))
                     }
@@ -66,8 +70,8 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getMyKeywords(): Flow<List<UserKeywordDetail>> =
-        myKeywordDetailDao.getAll()
+    override fun getMyKeywords(): Flow<List<UserKeyword>> =
+        myKeywordDao.getAll()
             .map { it.map { it.toDomainModel() } }
             .flowOn(ioDispatcher)
 
@@ -78,7 +82,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     AppLogger.d(tag, "My keywords refresh successful")
                     val myKeywords = result.data.map { it.toDomainModel() }
-                    myKeywordDetailDao.upsertAll(myKeywords.map { it.toEntity() })
+                    myKeywordDao.upsertAll(myKeywords.map { it.toEntity() })
                     emit(Result.Success(Unit))
                 }
 
@@ -95,7 +99,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
             ioDispatcher,
             { CommonErrorType.Unexpected(it) },
         ) {
-            // 만약, 사용자 키워드 리스트 개수에 대한 제한이 없다면 메모리 캐시 대신 로컬 DB를 통해 페이징을 진행해야 한다.
+            // 만약, 사용자 키워드 리스트 개수 제한이 없다면 메모리 캐시 대신 로컬 DB를 통해 페이징을 진행해야 한다.
             val cachedDetails = memoryCache[userId.value]
             if (cachedDetails != null) {
                 emit(Result.Success(cachedDetails))
@@ -147,7 +151,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
             when (val result = userKeywordNetworkDataSource.createUserKeyword(create.toDataModel())) {
                 is NetworkResult.Success -> {
                     val entity = result.data.toEntity()
-                    myKeywordDetailDao.upsert(entity)
+                    myKeywordDao.upsert(entity)
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -175,7 +179,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 )
             ) {
                 is NetworkResult.Success -> {
-                    myKeywordDetailDao.updateDescription(
+                    myKeywordDao.updateDescription(
                         userKeywordId = userKeywordId.value,
                         description = patchDescription.description.value,
                     )
@@ -200,7 +204,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
             when (val result = userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId)) {
                 is NetworkResult.Success -> {
-                    myKeywordDetailDao.deleteById(userKeywordId.value)
+                    myKeywordDao.deleteById(userKeywordId.value)
                     emit(Result.Success(Unit))
                 }
 

@@ -6,6 +6,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.MyProfileUseCases

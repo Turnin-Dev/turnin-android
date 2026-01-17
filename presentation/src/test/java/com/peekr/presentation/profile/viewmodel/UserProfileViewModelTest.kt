@@ -11,11 +11,11 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.userKeyword.model.UserInfo
-import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
+import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
+import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.UserProfile
 import com.peekr.domain.profile.usecase.UserProfileUseCases
@@ -54,7 +54,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         } returns flowOf(Result.Success(TestUserProfile))
         every {
             usecases.getUserKeywords(TestUserId.value)
-        } returns flowOf(Result.Success(TestUserKeywordDetails))
+        } returns flowOf(Result.Success(TestUserKeywords))
 
         FriendStatus.entries.forEach {
             every {
@@ -79,7 +79,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
                 UserProfileContract.UiState(),
                 UserProfileContract.UiState(
                     profile = TestUserProfile.toUiModel(),
-                    keywords = TestUserKeywordDetails.map { it.toUiModel() },
+                    keywords = TestUserKeywords.map { it.toUiModel() },
                 ),
             ),
         )
@@ -106,7 +106,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             assertions = listOf(
                 UserProfileContract.UiState(
                     profileError = expectedError.asUiText(),
-                    keywords = TestUserKeywordDetails.map { it.toUiModel() },
+                    keywords = TestUserKeywords.map { it.toUiModel() },
                 ),
             ),
         )
@@ -169,7 +169,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
                             profile = TestUserProfile.toUiModel().copy(
                                 friendStatus = status.toggle(),
                             ),
-                            keywords = TestUserKeywordDetails.map { it.toUiModel() },
+                            keywords = TestUserKeywords.map { it.toUiModel() },
                         ),
                     ),
                 )
@@ -206,7 +206,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
                     profile = TestUserProfile.toUiModel().copy(
                         friendStatus = FriendStatus.NOTHING,
                     ),
-                    keywords = TestUserKeywordDetails.map { it.toUiModel() },
+                    keywords = TestUserKeywords.map { it.toUiModel() },
                 ),
             ),
         )
@@ -228,17 +228,12 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             active = true,
             friendStatus = FriendStatus.NOTHING,
         )
-        private val TestUserKeywordDetails = listOf(
-            UserKeywordDetail(
-                userKeywordId = UserKeywordId(1L),
+        private val TestUserKeywords = listOf(
+            UserKeyword(
+                id = UserKeywordId(1L),
                 keywordId = KeywordId(1L),
-                keywordName = KeywordName("key"),
+                keyword = KeywordName("key"),
                 description = KeywordDescription("hello"),
-                userInfo = UserInfo(
-                    userId = TestUserId,
-                    userName = Name("name"),
-                    profileImageUrl = null,
-                ),
                 createdAt = 1000,
                 updatedAt = 1000,
             ),

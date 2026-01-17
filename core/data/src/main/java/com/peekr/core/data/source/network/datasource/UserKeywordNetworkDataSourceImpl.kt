@@ -18,9 +18,8 @@ class UserKeywordNetworkDataSourceImpl @Inject constructor(
 ) : UserKeywordNetworkDataSource {
     override suspend fun getDetail(
         userKeywordId: UserKeywordId,
-        withUserInfo: Boolean,
     ): NetworkResult<UserKeywordDetailResponse> =
-        networkCall { userKeywordApi.getDetail(userKeywordId.value, withUserInfo) }
+        networkCall { userKeywordApi.getDetail(userKeywordId.value) }
 
     override suspend fun getDescription(
         userKeywordId: UserKeywordId,

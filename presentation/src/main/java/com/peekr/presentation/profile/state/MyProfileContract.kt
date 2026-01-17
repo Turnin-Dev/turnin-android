@@ -3,8 +3,8 @@ package com.peekr.presentation.profile.state
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
+import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiMyProfile
 
 /**
@@ -25,7 +25,7 @@ class MyProfileContract {
     data class UiState(
         val myProfile: UiMyProfile? = null,
         val myProfileError: UiText? = null,
-        val myKeywords: List<UiKeywordDetail> = emptyList(),
+        val myKeywords: List<UiUserKeyword> = emptyList(),
         val myKeywordsError: UiText? = null,
         val loading: Boolean = false,
         val fullScreenLoading: Boolean = false,

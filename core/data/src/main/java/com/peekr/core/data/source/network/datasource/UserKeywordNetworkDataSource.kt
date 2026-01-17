@@ -15,11 +15,9 @@ interface UserKeywordNetworkDataSource {
      * 사용자 키워드 상세 정보 조회
      *
      * @param userKeywordId 사용자 키워드 ID
-     * @param withUserInfo 사용자 정보 포함 여부
      */
     suspend fun getDetail(
         userKeywordId: UserKeywordId,
-        withUserInfo: Boolean,
     ): NetworkResult<UserKeywordDetailResponse>
 
     /**
