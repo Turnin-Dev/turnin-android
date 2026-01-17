@@ -3,7 +3,6 @@ package com.peekr.core.domain.userKeyword.model
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 
 /**
@@ -12,14 +11,12 @@ import com.peekr.core.domain.model.UserKeywordId
  * @property id 사용자 키워드 ID
  * @property keywordId 키워드 ID
  * @property keyword 키워드 명
- * @property userId 사용자 ID
  * @property description 키워드 설명
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
  */
 data class UserKeyword(
     val id: UserKeywordId,
-    val userId: UserId,
     val keywordId: KeywordId,
     val keyword: KeywordName,
     val description: KeywordDescription,

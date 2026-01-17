@@ -7,20 +7,15 @@ import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescripti
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import com.peekr.core.data.source.network.util.networkCallWithoutResponse
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import javax.inject.Inject
 
 class UserKeywordNetworkDataSourceImpl @Inject constructor(
     private val userKeywordApi: UserKeywordApi,
 ) : UserKeywordNetworkDataSource {
-    override suspend fun getUserKeywords(userId: UserId): NetworkResult<UserKeywordsResponse> =
-        networkCall { userKeywordApi.getUserKeywords(userId.value) }
-
     override suspend fun getDetail(
         userKeywordId: UserKeywordId,
         withUserInfo: Boolean,

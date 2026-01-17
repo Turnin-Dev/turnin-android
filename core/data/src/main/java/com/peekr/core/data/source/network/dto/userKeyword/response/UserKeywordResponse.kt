@@ -4,7 +4,6 @@ import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
 import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.squareup.moshi.Json
@@ -16,14 +15,12 @@ import com.squareup.moshi.JsonClass
  * @property id 사용자 키워드 ID
  * @property keywordId 키워드 ID
  * @property keyword 키워드 명
- * @property userId 사용자 ID
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
  */
 @JsonClass(generateAdapter = true)
 data class UserKeywordResponse(
     val id: Long,
-    val userId: Long,
     val keywordId: Long,
     @Json(name = "keywordName")
     val keyword: String,
@@ -38,7 +35,6 @@ fun UserKeywordResponse.toDomainModel(): UserKeyword =
         id = UserKeywordId(id),
         keywordId = KeywordId(keywordId),
         keyword = KeywordName(keyword),
-        userId = UserId(userId),
         description = KeywordDescription(description ?: ""),
         createdAt = createdAt,
         updatedAt = updatedAt,

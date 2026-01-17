@@ -6,21 +6,11 @@ import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescripti
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 
 /** UserKeyword 네트워크 데이터 소스 */
 interface UserKeywordNetworkDataSource {
-    /**
-     * 사용자 키워드 리스트 조회
-     */
-    @Deprecated("삭제 예정 - 사용자 키워드 상세 정보 리스트 조회를 대신 사용한다.")
-    suspend fun getUserKeywords(
-        userId: UserId,
-    ): NetworkResult<UserKeywordsResponse>
-
     /**
      * 사용자 키워드 상세 정보 조회
      *
