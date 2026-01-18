@@ -68,8 +68,7 @@ internal fun UserProfileRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        userProfile = uiState.profile,
-        userKeywords = uiState.keywords,
+        uiState = uiState,
         onUiEvent = viewModel::processEvent,
         onNavigateToKeywordDetail = { userId, userKeywordId ->
             navigateToKeywordDetail(userId, userKeywordId)

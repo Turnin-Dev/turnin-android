@@ -77,13 +77,13 @@ class UserProfileViewModel @Inject constructor(
             when (result) {
                 Result.Loading -> {
                     updateState {
-                        this.copy(loading = true, profileError = null)
+                        this.copy(profileLoading = true)
                     }
                 }
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(loading = false, profileError = result.error.asUiText())
+                        this.copy(profileLoading = false)
                     }
                     showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
                 }
@@ -91,8 +91,7 @@ class UserProfileViewModel @Inject constructor(
                 is Result.Success -> {
                     updateState {
                         this.copy(
-                            loading = false,
-                            profileError = null,
+                            profileLoading = false,
                             profile = result.data.toUiModel(),
                         )
                     }
@@ -106,13 +105,13 @@ class UserProfileViewModel @Inject constructor(
             when (result) {
                 Result.Loading -> {
                     updateState {
-                        this.copy(loading = true)
+                        this.copy(keywordsLoading = true)
                     }
                 }
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(loading = false, keywordsError = result.error.asUiText())
+                        this.copy(keywordsLoading = false)
                     }
                     showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
                 }
@@ -120,8 +119,7 @@ class UserProfileViewModel @Inject constructor(
                 is Result.Success -> {
                     updateState {
                         this.copy(
-                            loading = false,
-                            keywordsError = null,
+                            keywordsLoading = false,
                             keywords = result.data.map { it.toUiModel() },
                         )
                     }
@@ -167,9 +165,6 @@ class UserProfileViewModel @Inject constructor(
                 }
 
                 is Result.Success -> {
-                    updateState {
-                        this.copy(loading = false)
-                    }
                     if (result.data != friendStatus.toggle()) {
                         // 4) 친구 상태 결과 값과 달라도 롤백
                         updateState {

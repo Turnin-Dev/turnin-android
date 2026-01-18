@@ -16,18 +16,17 @@ class UserProfileContract {
      * 사용자 프로필 UI 상태
      *
      * @property profile 사용자 프로필
-     * @property profileError 사용자 프로필 에러 메시지
+     * @property profileLoading 사용자 로딩
      * @property keywords 사용자 키워드 리스트
-     * @property keywordsError 사용자 키워드 리스트 에러 메시지
-     * @property loading 로딩 여부
-     * @property error 전체 에러 메시지
+     * @property keywordsLoading 사용자 키워드 리스트 로딩
+     * @property error 공통 에러 메시지
      */
     data class UiState(
         val profile: UiUserProfile? = null,
-        val profileError: UiText? = null,
+        val profileLoading: Boolean = false,
         val keywords: List<UiUserKeyword> = emptyList(),
-        val keywordsError: UiText? = null,
-        val loading: Boolean = false,
+        val keywordsLoading: Boolean = false,
+        val error: UiText? = null,
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {

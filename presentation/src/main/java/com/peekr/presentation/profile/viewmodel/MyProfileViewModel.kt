@@ -18,7 +18,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
@@ -51,10 +50,9 @@ class MyProfileViewModel @Inject constructor(
     private fun observeMyProfile() {
         usecases.getMyProfile()
             .distinctUntilChanged()
-            .map { it?.toUiModel() }
             .onEach { myProfile ->
                 updateState {
-                    this.copy(myProfile = myProfile)
+                    this.copy(myProfile = myProfile?.toUiModel())
                 }
             }
             .catch { e ->
@@ -70,10 +68,9 @@ class MyProfileViewModel @Inject constructor(
     private fun observeMyKeywords() {
         usecases.getMyKeywords()
             .distinctUntilChanged()
-            .map { it.map { it.toUiModel() } }
             .onEach { myKeywords ->
                 updateState {
-                    this.copy(myKeywords = myKeywords)
+                    this.copy(myKeywords = myKeywords.toUiModel())
                 }
             }
             .catch { e ->
@@ -95,27 +92,21 @@ class MyProfileViewModel @Inject constructor(
                     Result.Loading -> {
                         if (activeLoading) {
                             updateState {
-                                this.copy(loading = true)
+                                this.copy(myProfileLoading = true)
                             }
                         }
                     }
 
                     is Result.Error -> {
                         updateState {
-                            this.copy(
-                                loading = false,
-                                myProfileError = result.error.asUiText(),
-                            )
+                            this.copy(myProfileLoading = false)
                         }
                         showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
                     }
 
                     is Result.Success -> {
                         updateState {
-                            this.copy(
-                                loading = false,
-                                myProfileError = null,
-                            )
+                            this.copy(myProfileLoading = false)
                         }
                     }
                 }
@@ -133,27 +124,21 @@ class MyProfileViewModel @Inject constructor(
                 Result.Loading -> {
                     if (activeLoading) {
                         updateState {
-                            this.copy(loading = true)
+                            this.copy(myKeywordsLoading = true)
                         }
                     }
                 }
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(
-                            loading = false,
-                            myKeywordsError = result.error.asUiText(),
-                        )
+                        this.copy(myKeywordsLoading = false)
                     }
                     showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
                 }
 
                 is Result.Success -> {
                     updateState {
-                        this.copy(
-                            loading = false,
-                            myKeywordsError = null,
-                        )
+                        this.copy(myKeywordsLoading = false)
                     }
                 }
             }

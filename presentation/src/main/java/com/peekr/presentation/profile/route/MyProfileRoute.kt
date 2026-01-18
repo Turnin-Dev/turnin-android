@@ -27,11 +27,7 @@ internal fun MyProfileRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        myProfile = uiState.myProfile,
-        myKeywords = uiState.myKeywords,
-        loading = uiState.loading,
-        fullScreenLoading = uiState.fullScreenLoading,
-        error = uiState.error,
+        uiState = uiState,
         onUiEvent = viewModel::processEvent,
         onNavigateToKeywordAdd = onNavigateToKeywordAddScreen,
         onSettingClick = onSettingClick,
