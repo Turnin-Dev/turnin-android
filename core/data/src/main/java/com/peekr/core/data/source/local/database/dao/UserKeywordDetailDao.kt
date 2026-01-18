@@ -12,7 +12,7 @@ interface UserKeywordDetailDao {
     fun getAll(): Flow<List<UserKeywordDetailEntity>>
 
     @Query("SELECT * FROM UserKeywordDetailEntity WHERE userKeywordId = :userKeywordId")
-    fun getById(userKeywordId: Long): UserKeywordDetailEntity?
+    suspend fun getById(userKeywordId: Long): UserKeywordDetailEntity?
 
     @Upsert
     suspend fun upsertAll(userKeywordDetails: List<UserKeywordDetailEntity>)
