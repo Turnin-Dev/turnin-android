@@ -52,6 +52,7 @@ fun UserProfileScreen(
     userProfile: UiUserProfile?,
     userKeywords: List<UiUserKeyword>,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
 ) {
     Box(modifier) {
@@ -107,6 +108,7 @@ fun UserProfileScreen(
                     keywordItemsView(
                         keywords = userKeywords,
                         onClick = { uiUserKeyword ->
+                            onNavigateToKeywordDetail(it.userId, uiUserKeyword.id)
                         },
                     )
                 } ?: keywordItemsSkeleton()
@@ -345,6 +347,7 @@ private fun UserProfileScreenPreview() {
             ),
             userKeywords = UiUserKeyword.samples,
             onUiEvent = {},
+            onNavigateToKeywordDetail = { _, _ -> },
             onBackPressed = {},
         )
     }

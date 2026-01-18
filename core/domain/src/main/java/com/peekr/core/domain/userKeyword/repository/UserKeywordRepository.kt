@@ -14,12 +14,35 @@ import kotlinx.coroutines.flow.Flow
 /** 사용자 키워드 리포지토리 */
 interface UserKeywordRepository {
     /**
-     * 사용자 키워드 상세 정보 조회 (사용자 정보 없이 조회)
+     * 나의 키워드 상세 정보를 로컬 DB에서 조회한다.
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     *
+     * @return 데이터가 존재하면 [UserKeywordDetail]를 반환하고,
+     * 없으면 `null`을 반환하므로 별도의 조회가 필요하다.
+     */
+    fun getMyDetailFromLocal(
+        userKeywordId: UserKeywordId,
+    ): Flow<UserKeywordDetail?>
+
+    /**
+     * 사용자 키워드 상세 정보 조회
      *
      * @param userId 사용자 ID
      * @param userKeywordId 사용자 키워드 ID
      */
     fun getDetail(
+        userId: UserId,
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<UserKeywordDetail, CommonErrorType>>
+
+    /**
+     * 사용자 키워드 상세 정보 조회 새로고침 (무조건 네트워크에서 조회)
+     *
+     * @param userId 사용자 ID
+     * @param userKeywordId 사용자 키워드 ID
+     */
+    fun getDetailRefresh(
         userId: UserId,
         userKeywordId: UserKeywordId,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>>

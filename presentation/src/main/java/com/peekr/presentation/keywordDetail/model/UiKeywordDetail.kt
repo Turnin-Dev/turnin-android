@@ -1,10 +1,5 @@
 package com.peekr.presentation.keywordDetail.model
 
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.KeywordName
-import com.peekr.core.domain.model.Name
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.domain.keywordDetail.model.KeywordDetail
 
 /**
@@ -21,25 +16,25 @@ import com.peekr.domain.keywordDetail.model.KeywordDetail
  * @property updatedAt 키워드 수정 일자
  */
 data class UiKeywordDetail(
-    val userKeywordId: UserKeywordId,
-    val keywordId: KeywordId,
-    val keyword: KeywordName,
+    val userKeywordId: Long,
+    val keywordId: Long,
+    val keyword: String,
     val description: String,
-    val userId: UserId,
-    val userName: Name,
+    val userId: Long,
+    val userName: String,
     val profileImageUrl: String?,
     val createdAt: Long,
     val updatedAt: Long,
 )
 
-fun KeywordDetail.toDomainModel(): UiKeywordDetail =
+fun KeywordDetail.toUiModel(): UiKeywordDetail =
     UiKeywordDetail(
-        userKeywordId = userKeywordId,
-        keywordId = keywordId,
-        keyword = keyword,
+        userKeywordId = userKeywordId.value,
+        keywordId = keywordId.value,
+        keyword = keyword.value,
         description = description.value,
-        userId = userId,
-        userName = userName,
+        userId = userId.value,
+        userName = userName.value,
         profileImageUrl = profileImageUrl,
         createdAt = createdAt,
         updatedAt = updatedAt,

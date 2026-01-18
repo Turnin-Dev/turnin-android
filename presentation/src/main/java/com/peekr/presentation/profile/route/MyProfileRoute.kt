@@ -18,6 +18,7 @@ internal fun MyProfileRoute(
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
     onNavigateToKeywordAddScreen: () -> Unit,
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
 ) {
     val viewModel: MyProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -32,8 +33,9 @@ internal fun MyProfileRoute(
         fullScreenLoading = uiState.fullScreenLoading,
         error = uiState.error,
         onUiEvent = viewModel::processEvent,
-        onNavigateToKeywordAddScreen = onNavigateToKeywordAddScreen,
+        onNavigateToKeywordAdd = onNavigateToKeywordAddScreen,
         onSettingClick = onSettingClick,
         onFriendsCountClick = onFriendsCountClick,
+        onNavigateToKeywordDetail = onNavigateToKeywordDetail,
     )
 }

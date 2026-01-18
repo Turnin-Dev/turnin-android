@@ -55,7 +55,8 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
  * @param onUiEvent UI 이벤트
  * @param onSettingClick 설정 클릭 시
  * @param onFriendsCountClick 친구 수 클릭 시
- * @param onNavigateToKeywordAddScreen 키워드 추가 화면 이동 콜백
+ * @param onNavigateToKeywordAdd 키워드 추가 화면 이동 콜백
+ * @param onNavigateToKeywordDetail 키워드 상세 화면 이동 콜백
  */
 @Composable
 fun MyProfileScreen(
@@ -68,7 +69,8 @@ fun MyProfileScreen(
     onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
-    onNavigateToKeywordAddScreen: () -> Unit,
+    onNavigateToKeywordAdd: () -> Unit,
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -119,6 +121,9 @@ fun MyProfileScreen(
                     keywordItemsView(
                         keywords = myKeywords,
                         onClick = { uiUserKeyword ->
+                            myProfile?.let {
+                                onNavigateToKeywordDetail(myProfile.userId, uiUserKeyword.id)
+                            }
                         },
                     )
                 }
@@ -133,7 +138,7 @@ fun MyProfileScreen(
                     .size(FabSize),
                 icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
-                onClick = onNavigateToKeywordAddScreen,
+                onClick = onNavigateToKeywordAdd,
             )
         }
 
@@ -309,9 +314,10 @@ private fun MyProfileScreenPreview() {
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
-            onNavigateToKeywordAddScreen = {},
+            onNavigateToKeywordAdd = {},
             onSettingClick = {},
             onFriendsCountClick = {},
+            onNavigateToKeywordDetail = { _, _ -> },
         )
     }
 }
@@ -328,9 +334,10 @@ private fun SkeletonPreview() {
             fullScreenLoading = false,
             error = null,
             onUiEvent = {},
-            onNavigateToKeywordAddScreen = {},
+            onNavigateToKeywordAdd = {},
             onSettingClick = {},
             onFriendsCountClick = {},
+            onNavigateToKeywordDetail = { _, _ -> },
         )
     }
 }

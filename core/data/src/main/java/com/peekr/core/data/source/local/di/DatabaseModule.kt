@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.peekr.core.data.source.local.database.PeekrDatabase
 import com.peekr.core.data.source.local.database.dao.MyKeywordDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.dao.UserKeywordDetailDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +33,9 @@ object DatabaseModule {
     @Singleton
     fun provideMyKeywordDao(database: PeekrDatabase): MyKeywordDao =
         database.myKeywordDao()
+
+    @Provides
+    @Singleton
+    fun provideUserKeywordDetailDao(database: PeekrDatabase): UserKeywordDetailDao =
+        database.userKeywordDetailDao()
 }

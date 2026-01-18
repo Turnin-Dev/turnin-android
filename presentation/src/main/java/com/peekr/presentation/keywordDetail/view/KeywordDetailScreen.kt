@@ -35,6 +35,7 @@ import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
+import com.peekr.presentation.keywordDetail.model.UiKeywordDetail
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 
 /**
@@ -105,16 +106,19 @@ fun KeywordDetailScreen(
             )
         },
         contents = {
-            Contents(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
-                userName = uiState.userName,
-                profileImageUrl = uiState.profileImageUrl,
-                createdAt = uiState.createdAt,
-                keyword = uiState.keyword,
-                description = uiState.description,
-            )
+            uiState.keywordDetail?.let {
+                // TODO: 시간은 따로 계산해야함
+                Contents(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
+                    userName = uiState.keywordDetail.userName,
+                    profileImageUrl = uiState.keywordDetail.profileImageUrl,
+                    createdAt = "createdAt",
+                    keyword = uiState.keywordDetail.keyword,
+                    description = uiState.keywordDetail.description,
+                )
+            }
         },
         comments = {
             Box(
@@ -345,14 +349,20 @@ private fun KeywordDetailScreenPreview() {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(
-                userName = "Username",
-                createdAt = "2026.01.10",
-                profileImageUrl = null,
-                keyword = "키워드 텍스트",
-                description = "대통령은 국무총리·국무위원·행정각부의 장 기타 법률이 정하는 공사의 직을 겸할 수 없다." +
-                    "감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다.\n" +
-                    "국가는 지역간의 균형있는 발전을 위하여 지역경제를 육성할 의무를 진다. 국가는 건전한 소비행위를 계도하고" +
-                    "생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다.",
+                keywordDetail = UiKeywordDetail(
+                    userKeywordId = 1L,
+                    keywordId = 1L,
+                    keyword = "키워드 텍스트",
+                    description = "대통령은 국무총리·국무위원·행정각부의 장 기타 법률이 정하는 공사의 직을 겸할 수 없다." +
+                        "감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다.\n" +
+                        "국가는 지역간의 균형있는 발전을 위하여 지역경제를 육성할 의무를 진다. 국가는 건전한 소비행위를 계도하고" +
+                        "생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다.",
+                    userId = 1L,
+                    userName = "Username",
+                    profileImageUrl = null,
+                    createdAt = 1000L,
+                    updatedAt = 1000L,
+                ),
             ),
         )
     }

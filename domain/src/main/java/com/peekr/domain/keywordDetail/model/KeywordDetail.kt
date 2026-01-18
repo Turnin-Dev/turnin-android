@@ -6,6 +6,7 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 
 /**
  * 키워드 상세 정보 모델
@@ -31,3 +32,16 @@ data class KeywordDetail(
     val createdAt: Long,
     val updatedAt: Long,
 )
+
+fun UserKeywordDetail.toKeywordDetail(): KeywordDetail =
+    KeywordDetail(
+        userKeywordId = userKeywordId,
+        keywordId = keywordId,
+        keyword = keywordName,
+        description = description,
+        userId = userInfo.userId,
+        userName = userInfo.userName,
+        profileImageUrl = userInfo.profileImageUrl,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 internal fun UserProfileRoute(
     onBackPressed: () -> Unit,
     navigateToReport: (Long) -> Unit,
+    navigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
 ) {
     val viewModel: UserProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -70,6 +71,9 @@ internal fun UserProfileRoute(
         userProfile = uiState.profile,
         userKeywords = uiState.keywords,
         onUiEvent = viewModel::processEvent,
+        onNavigateToKeywordDetail = { userId, userKeywordId ->
+            navigateToKeywordDetail(userId, userKeywordId)
+        },
         onBackPressed = onBackPressed,
     )
 }

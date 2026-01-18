@@ -1,5 +1,7 @@
 package com.peekr.core.data.source.local.memory
 
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import dagger.Module
@@ -23,7 +25,16 @@ object MemoryCacheModule {
 
     @Provides
     @Singleton
-    fun provideUserKeywordDetailsMemoryCache(): MemoryCache<Long, List<UserKeywordDetail>> =
+    fun provideUserKeywordDetailListMemoryCache(): MemoryCache<UserId, List<UserKeywordDetail>> =
+        LruMemoryCache(
+            maxSize = 10,
+            ttl = 5.minutes,
+            name = "UserKeywordDetailList",
+        )
+
+    @Provides
+    @Singleton
+    fun provideUserKeywordDetailMemoryCache(): MemoryCache<UserKeywordId, UserKeywordDetail> =
         LruMemoryCache(
             maxSize = 50,
             ttl = 5.minutes,
