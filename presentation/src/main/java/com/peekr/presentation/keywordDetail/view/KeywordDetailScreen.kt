@@ -292,13 +292,13 @@ private fun KeywordContents(
         Text(
             text = keyword,
             style = PeekrTheme.typography.headline1,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = PeekrTheme.colorScheme.textNormal,
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = description,
-            style = PeekrTheme.typography.body3Many,
+            style = PeekrTheme.typography.body3Content,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textNormal,
             textAlign = TextAlign.Start,
