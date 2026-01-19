@@ -7,7 +7,6 @@ import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
-import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -284,7 +283,7 @@ class UserRepositoryImplTest {
         } just Runs
 
         // when
-        val result = repository.updateUser(TestUserPatch).last()
+        val result = repository.updateMyProfile(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -302,7 +301,7 @@ class UserRepositoryImplTest {
         } just Runs
 
         // when
-        val result = repository.updateUser(TestUserPatch).last()
+        val result = repository.updateMyProfile(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -324,7 +323,7 @@ class UserRepositoryImplTest {
         } just Runs
 
         // when
-        val result = repository.updateUser(TestUserPatch).last()
+        val result = repository.updateMyProfile(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -348,7 +347,7 @@ class UserRepositoryImplTest {
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
-        val result = repository.updateIntroduce(introduce).last()
+        val result = repository.updateMyIntroduce(introduce).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -367,7 +366,7 @@ class UserRepositoryImplTest {
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
-        val result = repository.updateIntroduce(introduce).last()
+        val result = repository.updateMyIntroduce(introduce).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -390,7 +389,7 @@ class UserRepositoryImplTest {
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
-        val result = repository.updateIntroduce(introduce).last()
+        val result = repository.updateMyIntroduce(introduce).last()
 
         // then
         assertTrue(result is Result.Error)

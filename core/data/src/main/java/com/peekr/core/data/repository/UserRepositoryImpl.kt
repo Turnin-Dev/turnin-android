@@ -119,7 +119,7 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun updateUser(patch: UserPatch): Flow<Result<Unit, CommonErrorType>> =
+    override fun updateMyProfile(patch: UserPatch): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
@@ -147,7 +147,7 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun updateIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>> =
+    override fun updateMyIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             val introducePatchRequest = IntroducePatchRequest(introduce.value)

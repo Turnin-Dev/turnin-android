@@ -1,5 +1,6 @@
 package com.peekr.presentation.keywordDetail.model
 
+import com.peekr.core.common.util.toRelativeTime
 import com.peekr.domain.keywordDetail.model.KeywordDetail
 
 /**
@@ -23,8 +24,8 @@ data class UiKeywordDetail(
     val userId: Long,
     val userName: String,
     val profileImageUrl: String?,
-    val createdAt: Long,
-    val updatedAt: Long,
+    val createdAt: String,
+    val updatedAt: String,
 )
 
 fun KeywordDetail.toUiModel(): UiKeywordDetail =
@@ -36,6 +37,6 @@ fun KeywordDetail.toUiModel(): UiKeywordDetail =
         userId = userId.value,
         userName = userName.value,
         profileImageUrl = profileImageUrl,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
+        createdAt = createdAt.toRelativeTime(),
+        updatedAt = updatedAt.toRelativeTime(),
     )

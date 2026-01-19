@@ -105,7 +105,6 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             intents = listOf(),
             assertions = listOf(
                 UserProfileContract.UiState(
-                    profileError = expectedError.asUiText(),
                     keywords = TestUserKeywords.map { it.toUiModel() },
                 ),
             ),
@@ -139,7 +138,6 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             intents = listOf(),
             assertions = listOf(
                 UserProfileContract.UiState(
-                    keywordsError = expectedError.asUiText(),
                     profile = TestUserProfile.toUiModel(),
                 ),
             ),

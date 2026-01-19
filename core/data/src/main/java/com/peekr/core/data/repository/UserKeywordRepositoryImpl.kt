@@ -114,7 +114,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     val networkDomainKeyword = result.data.toDomainModel()
                     memoryCache[userKeywordId] = networkDomainKeyword
-                    emit(Result.Success(result.data.toDomainModel()))
+                    emit(Result.Success(networkDomainKeyword))
                 }
 
                 is NetworkResult.Error -> {

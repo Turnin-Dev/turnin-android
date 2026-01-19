@@ -117,14 +117,13 @@ fun KeywordDetailScreen(
                 ContentsSkeleton()
             } else {
                 uiState.keywordDetail?.let {
-                    // TODO: 시간은 따로 계산해야함
                     Contents(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp),
                         userName = uiState.keywordDetail.userName,
                         profileImageUrl = uiState.keywordDetail.profileImageUrl,
-                        createdAt = "createdAt",
+                        createdAt = uiState.keywordDetail.createdAt,
                         keyword = uiState.keywordDetail.keyword,
                         description = uiState.keywordDetail.description,
                     )
@@ -426,8 +425,8 @@ private fun KeywordDetailScreenPreview() {
                     userId = 1L,
                     userName = "Username",
                     profileImageUrl = null,
-                    createdAt = 1000L,
-                    updatedAt = 1000L,
+                    createdAt = "2026.01.01",
+                    updatedAt = "2026.01.01",
                 ),
             ),
         )

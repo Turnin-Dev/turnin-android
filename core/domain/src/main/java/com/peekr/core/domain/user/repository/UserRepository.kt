@@ -44,16 +44,16 @@ interface UserRepository {
     fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>>
 
     /**
-     * 사용자 수정
+     * 나의 프로필 수정
      *
      * @param patch 사용자 수정 요청
      */
-    fun updateUser(patch: UserPatch): Flow<Result<Unit, CommonErrorType>>
+    fun updateMyProfile(patch: UserPatch): Flow<Result<Unit, CommonErrorType>>
 
     /**
-     * 사용자 소개글 수정
+     * 나의 소개글 수정
      *
      * @param introduce 소개글
      */
-    fun updateIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>>
+    fun updateMyIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>>
 }
