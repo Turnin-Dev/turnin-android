@@ -37,6 +37,6 @@ fun KeywordDetail.toUiModel(): UiKeywordDetail =
         userId = userId.value,
         userName = userName.value,
         profileImageUrl = profileImageUrl,
-        createdAt = createdAt.toRelativeTime(),
-        updatedAt = updatedAt.toRelativeTime(),
+        createdAt = createdAt.toRelativeTime(false),
+        updatedAt = updatedAt.toRelativeTime(false),
     )

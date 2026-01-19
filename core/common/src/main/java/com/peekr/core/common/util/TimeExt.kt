@@ -35,8 +35,8 @@ import java.time.ZoneId
 //    }
 // }
 
-fun Long.toRelativeTime(isMillis: Boolean = true): String {
-    val receivedTime = if (isMillis) this * 1000 else this
+fun Long.toRelativeTime(isMillis: Boolean): String {
+    val receivedTime = if (isMillis) this else this * 1000
     val now = System.currentTimeMillis()
     val diffMillis = now - receivedTime
 
@@ -53,7 +53,7 @@ fun Long.toRelativeTime(isMillis: Boolean = true): String {
         else -> {
             // 일주일이 지나면 날짜를 표시 (사용자의 로컬 시간대로 변환)
             val localDateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(this),
+                Instant.ofEpochMilli(receivedTime),
                 ZoneId.systemDefault(),
             )
             val year = localDateTime.year
