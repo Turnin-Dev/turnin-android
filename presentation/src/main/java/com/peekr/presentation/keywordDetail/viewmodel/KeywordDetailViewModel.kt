@@ -1,17 +1,29 @@
 package com.peekr.presentation.keywordDetail.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.user.usecase.GetUserIdUseCase
+import com.peekr.core.presentation.common.snackbar.SnackbarController
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.domain.keywordDetail.usecase.GetDescriptionUseCase
+import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
+import com.peekr.domain.keywordDetail.usecase.KeywordDetailUseCases
 import com.peekr.presentation.R
+import com.peekr.presentation.keywordDetail.error.asUiText
+import com.peekr.presentation.keywordDetail.model.toUiModel
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class KeywordDetailViewModel @Inject constructor(
-    private val getDescriptionUseCase: GetDescriptionUseCase,
+    private val usecase: KeywordDetailUseCases,
+    private val getUserIdUseCase: GetUserIdUseCase,
+    private val snackbarController: SnackbarController,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<KeywordDetailContract.UiState, KeywordDetailContract.UiEvent, KeywordDetailContract.UiEffect>() {
     private val currentUserKeywordId: Long by lazy {
@@ -29,6 +41,8 @@ class KeywordDetailViewModel @Inject constructor(
         // initNavArgumentData 가 실패할 경우(false를 반환할 경우)
         // 에러 처리를 하고 프로필 로드 기능을 중단한다(다른 기능이 실행될 수 없다).
         if (!initResult) return
+        checkMyKeyword()
+        loadKeywordDetail()
     }
 
     private fun initNavArgumentData(): Boolean = runCatching {
@@ -48,5 +62,57 @@ class KeywordDetailViewModel @Inject constructor(
         when (event) {
             else -> {}
         }
+    }
+
+    /**
+     * 나의 키워드 여부를 확인한다
+     *
+     * @return 나의 키워드라면 true, 아니라면 false, 아예 ID를 찾을 수 없다면 `null`을 반환한다
+     */
+    private suspend fun checkMyKeyword() {
+        val userId = getUserIdUseCase()
+        if (userId == null) {
+            showSnackBar(KeywordDetailErrorType.UserIdNotFound.asUiText())
+        } else {
+            updateState {
+                this.copy(myKeyword = userId.value == currentUserId)
+            }
+        }
+    }
+
+    private fun loadKeywordDetail() {
+        usecase.getKeywordDetail(currentUserId, currentUserKeywordId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = result.error.asUiText(),
+                        )
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                            keywordDetail = result.data.toUiModel(),
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private suspend fun showSnackBar(message: UiText) {
+        snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

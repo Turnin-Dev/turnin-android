@@ -1,5 +1,6 @@
 package com.peekr.presentation.profile.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.Arrow2Right
 import com.peekr.core.designsystem.util.icon.Cancel
 import com.peekr.core.designsystem.util.icon.Check
@@ -33,9 +35,9 @@ import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiUserProfile
 import com.peekr.presentation.profile.state.UserProfileContract
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
@@ -46,69 +48,94 @@ import com.peekr.presentation.profile.view.common.ProfileScreenTokens
 import com.peekr.presentation.profile.view.common.keywordItemsSkeleton
 import com.peekr.presentation.profile.view.common.keywordItemsView
 
+/**
+ * 사용자 프로필 화면
+ *
+ * @param modifier [Modifier]
+ * @param uiState UI 상태
+ * @param onUiEvent UI 이벤트
+ * @param onNavigateToKeywordDetail 키워드 상세 화면 이동 콜백
+ * @param onBackPressed 뒤로가기 클릭 시 콜백
+ */
 @Composable
 fun UserProfileScreen(
     modifier: Modifier = Modifier,
-    userProfile: UiUserProfile? = null,
+    uiState: UserProfileContract.UiState,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
 ) {
     Box(modifier) {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                userProfile?.let {
-                    TopBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                        title = userProfile.displayId,
-                        onReportClick = {
-                            onUiEvent(
-                                UserProfileContract.UiEvent.OnReport,
-                            )
-                        },
-                        onBackPressed = onBackPressed,
-                    )
-                } ?: TopBarSkeleton()
+                if (uiState.profileLoading) {
+                    TopBarSkeleton()
+                } else {
+                    uiState.profile?.let {
+                        TopBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                            title = uiState.profile.displayId,
+                            onReportClick = {
+                                onUiEvent(
+                                    UserProfileContract.UiEvent.OnReport,
+                                )
+                            },
+                            onBackPressed = onBackPressed,
+                        )
+                    }
+                }
             },
             profile = {
-                userProfile?.let {
-                    Profile(
-                        modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = userProfile.profileImageUrl,
-                        name = userProfile.name,
-                        friendsCount = userProfile.friendsCount,
-                        introduce = userProfile.introduce,
-                        friendStatus = userProfile.friendStatus,
-                        onProfileImageClick = {},
-                        onFriendsCountClick = {},
-                        onFriendsButtonClick = { currentFriendshipStatus ->
-                            onUiEvent(
-                                UserProfileContract.UiEvent.OnFriendButtonClick(
-                                    friendStatus = currentFriendshipStatus,
-                                ),
-                            )
-                        },
-                    )
-                } ?: ProfileSkeleton()
+                if (uiState.profileLoading) {
+                    ProfileSkeleton()
+                } else {
+                    uiState.profile?.let {
+                        Profile(
+                            modifier = Modifier.fillMaxWidth(),
+                            profileImageUrl = it.profileImageUrl,
+                            name = it.name,
+                            friendsCount = it.friendsCount,
+                            introduce = it.introduce,
+                            friendStatus = it.friendStatus,
+                            onProfileImageClick = {},
+                            onFriendsCountClick = {},
+                            onFriendsButtonClick = { currentFriendshipStatus ->
+                                onUiEvent(
+                                    UserProfileContract.UiEvent.OnFriendButtonClick(
+                                        friendStatus = currentFriendshipStatus,
+                                    ),
+                                )
+                            },
+                        )
+                    }
+                }
             },
             keywordsTitle = {
-                userProfile?.let {
+                if (uiState.keywordsLoading) {
+                    KeywordsTitleSkeleton()
+                } else {
                     KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        count = userProfile.keywords.count(),
+                        count = uiState.keywords.count(),
                     )
-                } ?: KeywordsTitleSkeleton()
+                }
             },
             keywords = {
-                userProfile?.let {
+                if (uiState.keywordsLoading) {
+                    keywordItemsSkeleton()
+                } else {
                     keywordItemsView(
-                        keywords = userProfile.keywords,
+                        keywords = uiState.keywords,
                         onClick = { uiUserKeyword ->
+                            uiState.profile?.let {
+                                onNavigateToKeywordDetail(it.userId, uiUserKeyword.id)
+                            }
                         },
                     )
-                } ?: keywordItemsSkeleton()
+                }
             },
         )
     }
@@ -327,23 +354,28 @@ private fun ProfilePreview() {
 private fun UserProfileScreenPreview() {
     PeekrAppTheme {
         UserProfileScreen(
-            modifier = Modifier.fillMaxSize(),
-            userProfile = UiUserProfile(
-                userId = 1L,
-                displayId = "Honggd123",
-                name = "홍길동",
-                profileImageUrl = null,
-                introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                    "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
-                    "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                    "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                friendsCount = 86,
-                lastLoginAt = 1000L,
-                active = true,
-                friendStatus = FriendStatus.NOTHING,
-                keywords = UiKeywordDetail.samples,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PeekrTheme.colorScheme.backgroundNormal),
+            uiState = UserProfileContract.UiState(
+                profile = UiUserProfile(
+                    userId = 1L,
+                    displayId = "Honggd123",
+                    name = "홍길동",
+                    profileImageUrl = null,
+                    introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
+                        "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+                    friendsCount = 86,
+                    lastLoginAt = 1000L,
+                    active = true,
+                    friendStatus = FriendStatus.NOTHING,
+                ),
+                keywords = UiUserKeyword.samples,
             ),
             onUiEvent = {},
+            onNavigateToKeywordDetail = { _, _ -> },
             onBackPressed = {},
         )
     }

@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.network.dto.userKeyword.response
 
-import com.peekr.core.domain.userKeyword.model.UserKeywords
 import com.squareup.moshi.JsonClass
 
 /**
@@ -12,8 +11,3 @@ import com.squareup.moshi.JsonClass
 data class UserKeywordsResponse(
     val keywords: List<UserKeywordResponse>,
 )
-
-fun UserKeywordsResponse.toDomainModel(): UserKeywords =
-    UserKeywords(
-        keywords = this.keywords.map { it.toDomainModel() },
-    )

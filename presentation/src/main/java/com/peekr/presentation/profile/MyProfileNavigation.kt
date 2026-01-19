@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
 import com.peekr.presentation.profile.route.MyProfileRoute
 
 fun NavGraphBuilder.myProfileNavigation(
@@ -26,6 +27,9 @@ fun NavGraphBuilder.myProfileNavigation(
             },
             onNavigateToKeywordAddScreen = {
                 appNavController.navigate(Screens.KeywordEdit(null, null))
+            },
+            onNavigateToKeywordDetail = { userId, userKeywordId ->
+                appNavController.navigateToKeywordDetail(userId, userKeywordId)
             },
         )
     }

@@ -1,8 +1,17 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
-import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
+import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.source.local.database.dao.MyKeywordDao
+import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.dao.UserKeywordDetailDao
+import com.peekr.core.data.source.local.database.entity.toDomainModel
+import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.datastore.DataStoreKey
+import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.toDataModel
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
@@ -13,33 +22,99 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordName
+import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.UserInfo
 import com.peekr.core.domain.userKeyword.model.UserKeyword
-import com.peekr.core.domain.userKeyword.model.UserKeywords
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 class UserKeywordRepositoryImpl @Inject constructor(
     private val userKeywordNetworkDataSource: UserKeywordNetworkDataSource,
-    private val myKeywordDetailDao: MyKeywordDetailDao,
+    private val userNetworkDataSource: UserNetworkDataSource,
+    private val myKeywordDao: MyKeywordDao,
+    private val myProfileDao: MyProfileDao,
+    private val userKeywordDetailDao: UserKeywordDetailDao,
+    private val memoryListCache: MemoryCache<UserId, List<UserKeywordDetail>>,
+    private val memoryCache: MemoryCache<UserKeywordId, UserKeywordDetail>,
+    private val dataStoreManager: DataStoreManager,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
-    override fun getUserKeywords(userId: UserId): Flow<Result<UserKeywords, CommonErrorType>> =
-        safeResultFlow<UserKeywords, CommonErrorType>(
-            dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
-        ) {
+    private val tag = this::class.java.simpleName
+
+    override fun getMyDetailFromLocal(
+        userKeywordId: UserKeywordId,
+    ): Flow<UserKeywordDetail?> = flow {
+        val myUserId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
+        if (myUserId == null) {
+            emit(null)
+            return@flow
+        }
+
+        val myProfile = myProfileDao.getByUserId(myUserId).first()
+        val myKeyword = myKeywordDao.getById(userKeywordId.value).first()
+
+        if (myProfile != null && myKeyword != null) {
+            val userKeywordDetail = UserKeywordDetail(
+                userKeywordId = UserKeywordId(myKeyword.userKeywordId),
+                keywordId = KeywordId(myKeyword.keywordId),
+                keywordName = KeywordName(myKeyword.keywordName),
+                description = KeywordDescription(myKeyword.description),
+                userInfo = UserInfo(
+                    userId = UserId(myProfile.userId),
+                    userName = Name(myProfile.name),
+                    profileImageUrl = myProfile.profileImageUrl,
+                ),
+                createdAt = myKeyword.createdAt,
+                updatedAt = myKeyword.updatedAt,
+            )
+            emit(userKeywordDetail)
+        } else {
+            emit(null)
+        }
+    }
+
+    override fun getDetail(
+        userId: UserId,
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
+        safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            // 1. 메모리 캐시 확인 (있으면 즉시 반환)
+            val cachedKeyword = memoryCache[userKeywordId]
+            if (cachedKeyword != null) {
+                emit(Result.Success(cachedKeyword))
+                return@safeResultFlow
+            }
+
             emit(Result.Loading)
 
-            when (val result = userKeywordNetworkDataSource.getUserKeywords(userId)) {
+            // 2. 로컬 DB 확인 (페이징을 진행했었다면 DB에 데이터 존재), 메모리 캐시로 승격
+            val localKeyword = userKeywordDetailDao.getById(userKeywordId.value)
+            if (localKeyword != null) {
+                val localDomainKeyword = localKeyword.toDomainModel()
+                memoryCache[userKeywordId] = localDomainKeyword
+                emit(Result.Success(localDomainKeyword))
+                return@safeResultFlow
+            }
+
+            // 3. 네트워크 호출 후 메모리 캐시에 저장
+            when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId)) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
+                    val networkDomainKeyword = result.data.toDomainModel()
+                    memoryCache[userKeywordId] = networkDomainKeyword
+                    emit(Result.Success(networkDomainKeyword))
                 }
 
                 is NetworkResult.Error -> {
@@ -49,21 +124,89 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getDetail(
+    override fun getDetailRefresh(
+        userId: UserId,
         userKeywordId: UserKeywordId,
-        withUserInfo: Boolean,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
         safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            emit(Result.Loading)
+            val myUserId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
+            if (myUserId == null) {
+                emit(Result.Error(CommonErrorType.Local.UserIdNotFound))
+                return@safeResultFlow
+            }
 
-            when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId, withUserInfo)) {
+            when (val result = userKeywordNetworkDataSource.getDetail(userKeywordId)) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
+                    val networkDomainKeyword = result.data.toDomainModel()
+                    if (myUserId == userId.value) {
+                        // 내 키워드라면 DB에 업데이트
+                        myKeywordDao.upsert(networkDomainKeyword.toEntity())
+                    } else {
+                        // 타인의 키워드라면 메모리 캐시에 업데이트
+                        memoryCache[userKeywordId] = networkDomainKeyword
+                    }
+                    emit(Result.Success(networkDomainKeyword))
                 }
 
                 is NetworkResult.Error -> {
                     val error = result.error.toCommonErrorType()
                     emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun getMyKeywords(): Flow<List<UserKeyword>> =
+        myKeywordDao.getAll()
+            .map { it.map { it.toDomainModel() } }
+            .flowOn(ioDispatcher)
+
+    override fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+            when (val result = userNetworkDataSource.getMyKeywords()) {
+                is NetworkResult.Success -> {
+                    AppLogger.d(tag, "My keywords refresh successful")
+                    val myKeywords = result.data.map { it.toDomainModel() }
+                    myKeywordDao.upsertAll(myKeywords.map { it.toEntity() })
+                    emit(Result.Success(Unit))
+                }
+
+                is NetworkResult.Error -> {
+                    AppLogger.d(tag, "My keywords refresh failure")
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>> =
+        safeResultFlow<List<UserKeywordDetail>, CommonErrorType>(
+            ioDispatcher,
+            { CommonErrorType.Unexpected(it) },
+        ) {
+            // 만약, 사용자 키워드 리스트 개수 제한이 없다면 메모리 캐시 대신 로컬 DB를 통해 페이징을 진행해야 한다.
+
+            // 1. 메모리 리스트 캐시에서 조회 (있다면 즉시 반환)
+            val cachedDetails = memoryListCache[userId]
+            if (cachedDetails != null) {
+                emit(Result.Success(cachedDetails))
+            } else {
+                emit(Result.Loading)
+
+                // 2. 네트워크 조회
+                when (val result = userNetworkDataSource.getUserKeywords(userId.value)) {
+                    is NetworkResult.Success -> {
+                        val keywords = result.data.map { it.toDomainModel() }
+                        // 3. 메모리 캐시에 저장 (리스트, 단 건 전부 저장)
+                        memoryListCache[userId] = keywords
+                        keywords.forEach { memoryCache[it.userKeywordId] = it }
+                        emit(Result.Success(keywords))
+                    }
+
+                    is NetworkResult.Error -> {
+                        val error = result.error.toCommonErrorType()
+                        emit(Result.Error(error = error, message = result.message))
+                    }
                 }
             }
         }
@@ -99,7 +242,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
             when (val result = userKeywordNetworkDataSource.createUserKeyword(create.toDataModel())) {
                 is NetworkResult.Success -> {
                     val entity = result.data.toEntity()
-                    myKeywordDetailDao.upsert(entity)
+                    myKeywordDao.upsert(entity)
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -127,7 +270,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 )
             ) {
                 is NetworkResult.Success -> {
-                    myKeywordDetailDao.updateDescription(
+                    myKeywordDao.updateDescription(
                         userKeywordId = userKeywordId.value,
                         description = patchDescription.description.value,
                     )
@@ -152,7 +295,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
             when (val result = userKeywordNetworkDataSource.deleteUserKeyword(userKeywordId)) {
                 is NetworkResult.Success -> {
-                    myKeywordDetailDao.deleteById(userKeywordId.value)
+                    myKeywordDao.deleteById(userKeywordId.value)
                     emit(Result.Success(Unit))
                 }
 

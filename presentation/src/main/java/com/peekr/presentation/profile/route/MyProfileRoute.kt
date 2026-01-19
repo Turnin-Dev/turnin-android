@@ -18,6 +18,7 @@ internal fun MyProfileRoute(
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
     onNavigateToKeywordAddScreen: () -> Unit,
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
 ) {
     val viewModel: MyProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -26,14 +27,11 @@ internal fun MyProfileRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        myProfile = uiState.myProfile,
-        myKeywords = uiState.myKeywords,
-        loading = uiState.loading,
-        fullScreenLoading = uiState.fullScreenLoading,
-        error = uiState.error,
+        uiState = uiState,
         onUiEvent = viewModel::processEvent,
-        onNavigateToKeywordAddScreen = onNavigateToKeywordAddScreen,
+        onNavigateToKeywordAdd = onNavigateToKeywordAddScreen,
         onSettingClick = onSettingClick,
         onFriendsCountClick = onFriendsCountClick,
+        onNavigateToKeywordDetail = onNavigateToKeywordDetail,
     )
 }

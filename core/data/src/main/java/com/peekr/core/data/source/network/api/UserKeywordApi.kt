@@ -6,7 +6,6 @@ import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescripti
 import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
-import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -17,23 +16,14 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserKeywordApi {
-    /** 사용자 키워드 리스트 조회 */
-    @Deprecated("삭제 예정 - 사용자 키워드 상세 정보 리스트 조회를 대신 사용한다.")
-    @GET(NetworkApiPath.UserKeyword.ROUTE)
-    suspend fun getUserKeywords(
-        @Query("userId") userId: Long,
-    ): Response<UserKeywordsResponse>
-
     /**
      * 사용자 키워드 상세 정보 조회
      *
      * @param userKeywordId 사용자 키워드 ID
-     * @param withUserInfo 사용자 정보 포함 여부
      */
     @GET(NetworkApiPath.UserKeyword.DETAIL)
     suspend fun getDetail(
         @Path("userKeywordId") userKeywordId: Long,
-        @Query("withUserInfo") withUserInfo: Boolean,
     ): Response<UserKeywordDetailResponse>
 
     /** 사용자 키워드 설명 조회 */

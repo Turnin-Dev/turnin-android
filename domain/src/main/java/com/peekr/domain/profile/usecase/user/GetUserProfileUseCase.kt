@@ -1,12 +1,10 @@
 package com.peekr.domain.profile.usecase.user
 
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.common.coroutine.combineWithResult
-import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.common.coroutine.mapSuccess
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.UserProfile
 import javax.inject.Inject
@@ -19,7 +17,6 @@ import kotlinx.coroutines.flow.flow
  */
 class GetUserProfileUseCase @Inject constructor(
     private val userRepository: UserRepository,
-    private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**
      * 사용자 프로필을 조회한다.
@@ -29,29 +26,23 @@ class GetUserProfileUseCase @Inject constructor(
     operator fun invoke(userId: Long): Flow<Result<UserProfile, ProfileErrorType>> = flow {
         val userIdVO = UserId(userId)
         emitAll(
-            combineWithResult(
-                userRepository.getUserProfile(userIdVO),
-                userKeywordRepository.getUserKeywords(userIdVO),
-            ) { userProfile, userKeywords ->
-                val myProfile = UserProfile(
-                    userId = userProfile.data.userId,
-                    displayId = userProfile.data.displayId,
-                    name = userProfile.data.name,
-                    profileImageUrl = userProfile.data.profileImageUrl,
-                    introduce = userProfile.data.introduce,
-                    friendsCount = userProfile.data.friendsCount,
-                    lastLoginAt = userProfile.data.lastLoginAt,
-                    active = userProfile.data.active,
-                    friendStatus = userProfile.data.friendStatus,
-                    keywords = userKeywords.data.keywords,
-                )
-                Result.Success(myProfile)
-            }.mapError { commonError ->
-                when (commonError) {
-                    is CommonErrorType -> ProfileErrorType.CommonError(commonError)
-                    else -> ProfileErrorType.Unexpected(null)
+            userRepository.getUserProfile(userIdVO)
+                .mapSuccess { coreUserProfile ->
+                    UserProfile(
+                        userId = coreUserProfile.userId,
+                        displayId = coreUserProfile.displayId,
+                        name = coreUserProfile.name,
+                        profileImageUrl = coreUserProfile.profileImageUrl,
+                        introduce = coreUserProfile.introduce,
+                        friendsCount = coreUserProfile.friendsCount,
+                        friendStatus = coreUserProfile.friendStatus,
+                        lastLoginAt = coreUserProfile.lastLoginAt,
+                        active = coreUserProfile.active,
+                    )
                 }
-            },
+                .mapError { commonError ->
+                    ProfileErrorType.CommonError(commonError)
+                },
         )
     }
 }

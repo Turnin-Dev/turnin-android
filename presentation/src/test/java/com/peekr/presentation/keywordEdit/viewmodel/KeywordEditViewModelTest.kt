@@ -175,7 +175,6 @@ class KeywordEditViewModelTest : MVIBaseViewModelTest<
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
             keyword = KeywordName("key"),
-            userId = TestMyUserId,
             description = KeywordDescription("hello"),
             createdAt = 1000,
             updatedAt = 1000,

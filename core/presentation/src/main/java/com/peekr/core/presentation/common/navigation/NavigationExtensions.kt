@@ -11,8 +11,8 @@ fun NavController.navigateToReport(
 
 // ------------------------------ KeywordDetail ------------------------------
 fun NavController.navigateToKeywordDetail(
-    userKeywordId: Long,
     userId: Long,
+    userKeywordId: Long,
 ) {
     navigate(
         Screens.KeywordDetail(

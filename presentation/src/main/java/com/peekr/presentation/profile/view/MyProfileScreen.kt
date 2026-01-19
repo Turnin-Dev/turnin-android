@@ -31,9 +31,7 @@ import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
-import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
-import com.peekr.presentation.profile.model.UiKeywordDetail
 import com.peekr.presentation.profile.model.UiMyProfile
 import com.peekr.presentation.profile.state.MyProfileContract
 import com.peekr.presentation.profile.view.common.KeywordsTitleSkeleton
@@ -48,28 +46,22 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
  * 나의 프로필 화면
  *
  * @param modifier [Modifier]
- * @param myProfile 프로필 - [UiMyProfile]
- * @param myKeywords 키워드 - [UiUserKeyword]
- * @param loading 부분 로딩 여부
- * @param fullScreenLoading 전체 화면 로딩 여부
- * @param error 에러
+ * @param uiState UI 상태
  * @param onUiEvent UI 이벤트
  * @param onSettingClick 설정 클릭 시
  * @param onFriendsCountClick 친구 수 클릭 시
- * @param onNavigateToKeywordAddScreen 키워드 추가 화면 이동 콜백
+ * @param onNavigateToKeywordAdd 키워드 추가 화면 이동 콜백
+ * @param onNavigateToKeywordDetail 키워드 상세 화면 이동 콜백
  */
 @Composable
 fun MyProfileScreen(
     modifier: Modifier = Modifier,
-    myProfile: UiMyProfile?,
-    myKeywords: List<UiKeywordDetail>,
-    loading: Boolean,
-    fullScreenLoading: Boolean,
-    error: UiText?,
+    uiState: MyProfileContract.UiState,
     onUiEvent: (MyProfileContract.UiEvent) -> Unit,
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
-    onNavigateToKeywordAddScreen: () -> Unit,
+    onNavigateToKeywordAdd: () -> Unit,
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -77,56 +69,67 @@ fun MyProfileScreen(
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             topBar = {
-                myProfile?.let {
-                    TopBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                start = ScreenTokens.HorizontalPadding,
-                                end = ScreenTokens.HorizontalPaddingWithTouchTarget,
-                            ),
-                        title = myProfile.displayId,
-                        onSettingClick = onSettingClick,
-                    )
-                } ?: TopBarSkeleton()
+                if (uiState.myProfileLoading) {
+                    TopBarSkeleton()
+                } else {
+                    uiState.myProfile?.let {
+                        TopBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = ScreenTokens.HorizontalPadding,
+                                    end = ScreenTokens.HorizontalPaddingWithTouchTarget,
+                                ),
+                            title = it.displayId,
+                            onSettingClick = onSettingClick,
+                        )
+                    }
+                }
             },
             profile = {
-                myProfile?.let {
-                    Profile(
-                        modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = myProfile.profileImageUrl,
-                        name = myProfile.name,
-                        friendsCount = myProfile.friendsCount,
-                        introduce = myProfile.introduce,
-                        onProfileImageClick = {},
-                        onFriendsCountClick = { onFriendsCountClick(myProfile.userId) },
-                    )
-                } ?: ProfileSkeleton()
+                if (uiState.myProfileLoading) {
+                    ProfileSkeleton()
+                } else {
+                    uiState.myProfile?.let {
+                        Profile(
+                            modifier = Modifier.fillMaxWidth(),
+                            profileImageUrl = it.profileImageUrl,
+                            name = it.name,
+                            friendsCount = it.friendsCount,
+                            introduce = it.introduce,
+                            onProfileImageClick = {},
+                            onFriendsCountClick = { onFriendsCountClick(it.userId) },
+                        )
+                    }
+                }
             },
             keywordsTitle = {
-                if (loading) {
+                if (uiState.myKeywordsLoading) {
                     KeywordsTitleSkeleton()
                 } else {
                     KeywordsTitleView(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        count = myKeywords.count(),
+                        count = uiState.myKeywords.count(),
                     )
                 }
             },
             keywords = {
-                if (loading) {
+                if (uiState.myKeywordsLoading) {
                     keywordItemsSkeleton()
                 } else {
                     keywordItemsView(
-                        keywords = myKeywords,
+                        keywords = uiState.myKeywords,
                         onClick = { uiUserKeyword ->
+                            uiState.myProfile?.let {
+                                onNavigateToKeywordDetail(it.userId, uiUserKeyword.id)
+                            }
                         },
                     )
                 }
             },
         )
 
-        myProfile?.let {
+        uiState.myProfile?.let {
             PeekrFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -134,11 +137,11 @@ fun MyProfileScreen(
                     .size(FabSize),
                 icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
-                onClick = onNavigateToKeywordAddScreen,
+                onClick = onNavigateToKeywordAdd,
             )
         }
 
-        if (fullScreenLoading) {
+        if (uiState.fullScreenLoading) {
             PeekrLoadingScreen()
         }
     }
@@ -292,27 +295,27 @@ private fun MyProfileScreenPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            myProfile = UiMyProfile(
-                userId = 1L,
-                displayId = "Honggd123",
-                name = "홍길동",
-                profileImageUrl = null,
-                introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                    "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
-                    "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                    "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                friendsCount = 86,
-                lastLoginAt = 1000L,
-                active = true,
+            uiState = MyProfileContract.UiState(
+                myProfile = UiMyProfile(
+                    userId = 1L,
+                    displayId = "Honggd123",
+                    name = "홍길동",
+                    profileImageUrl = null,
+                    introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
+                        "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+                    friendsCount = 86,
+                    lastLoginAt = 1000L,
+                    active = true,
+                ),
+                myKeywords = UiUserKeyword.samples,
             ),
-            myKeywords = UiKeywordDetail.samples,
-            loading = false,
-            fullScreenLoading = false,
-            error = null,
             onUiEvent = {},
-            onNavigateToKeywordAddScreen = {},
+            onNavigateToKeywordAdd = {},
             onSettingClick = {},
             onFriendsCountClick = {},
+            onNavigateToKeywordDetail = { _, _ -> },
         )
     }
 }
@@ -323,15 +326,27 @@ private fun SkeletonPreview() {
     PeekrAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
-            myProfile = null,
-            myKeywords = UiKeywordDetail.samples,
-            loading = false,
-            fullScreenLoading = false,
-            error = null,
+            uiState = MyProfileContract.UiState(
+                myProfile = UiMyProfile(
+                    userId = 1L,
+                    displayId = "Honggd123",
+                    name = "홍길동",
+                    profileImageUrl = null,
+                    introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
+                        "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+                    friendsCount = 86,
+                    lastLoginAt = 1000L,
+                    active = true,
+                ),
+                myKeywords = UiUserKeyword.samples,
+            ),
             onUiEvent = {},
-            onNavigateToKeywordAddScreen = {},
+            onNavigateToKeywordAdd = {},
             onSettingClick = {},
             onFriendsCountClick = {},
+            onNavigateToKeywordDetail = { _, _ -> },
         )
     }
 }

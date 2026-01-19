@@ -55,7 +55,8 @@ fun BottomNavigation(
             )
 
             userProfileNavigation(
-                navController = bottomNavController,
+                bottomNavController = bottomNavController,
+                appNavController = appNavController,
             )
 
             reportNavigation(

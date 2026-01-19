@@ -2,7 +2,7 @@ package com.peekr.domain.profile.usecase.my
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.mapError
-import com.peekr.core.domain.user.repository.UserRepository
+import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.profile.error.ProfileErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.Flow
  * @see invoke
  */
 class RefreshMyKeywordsUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userKeywordRepository: UserKeywordRepository,
 ) {
     operator fun invoke(): Flow<Result<Unit, ProfileErrorType>> =
-        userRepository.getMyKeywordsRefresh()
+        userKeywordRepository.getMyKeywordsRefresh()
             .mapError { commonError ->
                 ProfileErrorType.CommonError(commonError)
             }

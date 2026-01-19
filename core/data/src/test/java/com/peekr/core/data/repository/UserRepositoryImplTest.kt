@@ -1,17 +1,12 @@
 package com.peekr.core.data.repository
 
-import com.peekr.core.data.source.local.database.dao.MyKeywordDetailDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
-import com.peekr.core.data.source.local.database.entity.MyKeywordDetailEntity
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
 import com.peekr.core.data.source.local.database.entity.toDomainModel
-import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
-import com.peekr.core.data.source.network.dto.common.UserInfoResponse
-import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
-import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -30,6 +25,7 @@ import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.Role
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import io.mockk.Runs
@@ -51,10 +47,10 @@ class UserRepositoryImplTest {
     private val dataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
     private val myProfileDao: MyProfileDao = mockk()
-    private val myKeywordDetailDao: MyKeywordDetailDao = mockk()
+    private val memoryCache: MemoryCache<Long, CoreUserProfile> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: UserRepository =
-        UserRepositoryImpl(dataSource, dataStoreManager, myProfileDao, myKeywordDetailDao, dispatcher)
+        UserRepositoryImpl(dataSource, dataStoreManager, memoryCache, myProfileDao, dispatcher)
 
     @Before
     fun setUp() {
@@ -194,11 +190,34 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 프로필 조회 - 성공 테스트`() = runTest {
+    fun `사용자 프로필 조회 - 성공 테스트(캐시가 존재하지 않는 경우 네트워크에서 조회를 한다)`() = runTest {
         // given
         coEvery {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Success(TestUserProfileResponse)
+        coEvery { memoryCache[TestUserId.value] } returns null
+        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+
+        // when
+        val result = repository.getUserProfile(TestUserId).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(
+            TestUserProfileResponse.toDomainModel(),
+            (result as Result.Success).data,
+        )
+    }
+
+    @Test
+    fun `사용자 프로필 조회 - 성공 테스트(캐시가 존재하는 경우 캐시 데이터를 조회한다)`() = runTest {
+        // given
+        coEvery {
+            dataSource.getUserProfile(TestUserId)
+        } returns NetworkResult.Success(TestUserProfileResponse)
+        coEvery {
+            memoryCache[TestUserId.value]
+        } returns TestUserProfileResponse.toDomainModel()
 
         // when
         val result = repository.getUserProfile(TestUserId).last()
@@ -218,6 +237,8 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Error(expectedError)
+        coEvery { memoryCache[TestUserId.value] } returns null
+        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
 
         // when
         val result = repository.getUserProfile(TestUserId).last()
@@ -235,6 +256,8 @@ class UserRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery { dataSource.getUserProfile(TestUserId) } throws exception
+        coEvery { memoryCache[TestUserId.value] } returns null
+        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
 
         // when
         val result = repository.getUserProfile(TestUserId).last()
@@ -250,60 +273,6 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun `나의 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
-        // given
-        val expectedCount = 2
-        val expectedList = List(expectedCount) { TestMyKeywordDetailEntity }
-        coEvery {
-            myKeywordDetailDao.getAll()
-        } returns flowOf(expectedList)
-
-        // when
-        val result = repository.getMyKeywords().last()
-
-        // then
-        assertEquals(expectedCount, result.size)
-        assertEquals(expectedList, result.map { it.toEntity() })
-    }
-
-    @Test
-    fun `나의 키워드 상세 정보 리스트 새로고침 - 성공 테스트`() = runTest {
-        // given
-        val expectedCount = 2
-        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
-        coEvery {
-            dataSource.getMyKeywords()
-        } returns NetworkResult.Success(expectedList)
-        coEvery {
-            myKeywordDetailDao.upsertAll(any())
-        } just Runs
-
-        // when
-        val result = repository.getMyKeywordsRefresh().last()
-
-        // then
-        assertTrue(result is Result.Success)
-    }
-
-    @Test
-    fun `사용자 키워드 상세 정보 리스트 조회 - 성공 테스트`() = runTest {
-        // given
-        val expectedCount = 2
-        val expectedList = List(expectedCount) { TestUserKeywordDetailResponse }
-        coEvery {
-            dataSource.getUserKeywords(any())
-        } returns NetworkResult.Success(expectedList)
-
-        // when
-        val result = repository.getUserKeywords(TestUserId).last()
-
-        // then
-        val success = result as Result.Success
-        assertEquals(expectedCount, success.data.size)
-        assertEquals(expectedList.map { it.toDomainModel() }, success.data)
-    }
-
-    @Test
     fun `사용자 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
@@ -314,7 +283,7 @@ class UserRepositoryImplTest {
         } just Runs
 
         // when
-        val result = repository.updateUser(TestUserPatch).last()
+        val result = repository.updateMyProfile(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -332,7 +301,7 @@ class UserRepositoryImplTest {
         } just Runs
 
         // when
-        val result = repository.updateUser(TestUserPatch).last()
+        val result = repository.updateMyProfile(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -354,7 +323,7 @@ class UserRepositoryImplTest {
         } just Runs
 
         // when
-        val result = repository.updateUser(TestUserPatch).last()
+        val result = repository.updateMyProfile(TestUserPatch).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -378,7 +347,7 @@ class UserRepositoryImplTest {
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
-        val result = repository.updateIntroduce(introduce).last()
+        val result = repository.updateMyIntroduce(introduce).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -397,7 +366,7 @@ class UserRepositoryImplTest {
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
-        val result = repository.updateIntroduce(introduce).last()
+        val result = repository.updateMyIntroduce(introduce).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -420,7 +389,7 @@ class UserRepositoryImplTest {
 
         // when
         val introduce = Introduce(TestIntroducePatchRequest.introduce)
-        val result = repository.updateIntroduce(introduce).last()
+        val result = repository.updateMyIntroduce(introduce).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -491,27 +460,6 @@ class UserRepositoryImplTest {
             lastLoginAt = 1000L,
             active = true,
             friendsCount = 51,
-        )
-        private val TestMyKeywordDetailEntity = MyKeywordDetailEntity(
-            userKeywordId = 1L,
-            keywordId = 1L,
-            keywordName = "keyword",
-            description = "description",
-            createdAt = 1000L,
-            updatedAt = 1000L,
-        )
-        private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
-            userKeywordId = 1L,
-            keywordId = 1L,
-            keywordName = "keyword",
-            description = "description",
-            userInfo = UserInfoResponse(
-                userId = TestUserId.value,
-                userName = "name",
-                profileImageUrl = null,
-            ),
-            createdAt = 1000L,
-            updatedAt = 1000L,
         )
     }
 }

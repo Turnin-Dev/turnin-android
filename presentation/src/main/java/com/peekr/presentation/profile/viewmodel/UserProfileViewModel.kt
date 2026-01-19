@@ -7,6 +7,7 @@ import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.UserProfileUseCases
@@ -60,6 +61,7 @@ class UserProfileViewModel @Inject constructor(
         // 에러 처리를 하고 프로필 로드 기능을 중단한다(다른 기능이 실행될 수 없다).
         if (!initResult) return
         getUserProfile()
+        getUserKeywords()
     }
 
     private suspend fun initNavArgumentData(): Boolean = runCatching {
@@ -70,18 +72,18 @@ class UserProfileViewModel @Inject constructor(
         }
         .isSuccess
 
-    private suspend fun getUserProfile() {
-        usecases.getUserProfile(currentUserId).collect { result ->
+    private fun getUserProfile() {
+        usecases.getUserProfile(currentUserId).onEach { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {
-                        this.copy(loading = true, error = null)
+                        this.copy(profileLoading = true)
                     }
                 }
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(loading = false, error = result.error.asUiText())
+                        this.copy(profileLoading = false)
                     }
                     showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
                 }
@@ -89,14 +91,41 @@ class UserProfileViewModel @Inject constructor(
                 is Result.Success -> {
                     updateState {
                         this.copy(
-                            loading = false,
-                            error = null,
-                            userProfile = result.data.toUiModel(),
+                            profileLoading = false,
+                            profile = result.data.toUiModel(),
                         )
                     }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getUserKeywords() {
+        usecases.getUserKeywords(currentUserId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(keywordsLoading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(keywordsLoading = false)
+                    }
+                    showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            keywordsLoading = false,
+                            keywords = result.data.map { it.toUiModel() },
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     // 신고
@@ -113,7 +142,7 @@ class UserProfileViewModel @Inject constructor(
         // 1) 친구 상태 즉시 업데이트 (UI 우선 업데이트)
         updateState {
             this.copy(
-                userProfile = this.userProfile?.copy(friendStatus = friendStatus.toggle()),
+                profile = this.profile?.copy(friendStatus = friendStatus.toggle()),
             )
         }
 
@@ -129,24 +158,18 @@ class UserProfileViewModel @Inject constructor(
                     // 3) 실패 시 친구 상태 롤백
                     updateState {
                         this.copy(
-                            userProfile = this.userProfile?.copy(friendStatus = friendStatus),
+                            profile = this.profile?.copy(friendStatus = friendStatus),
                         )
                     }
                     showSnackBar(result.error.asUiText())
                 }
 
                 is Result.Success -> {
-                    updateState {
-                        this.copy(
-                            loading = false,
-                            error = null,
-                        )
-                    }
                     if (result.data != friendStatus.toggle()) {
                         // 4) 친구 상태 결과 값과 달라도 롤백
                         updateState {
                             this.copy(
-                                userProfile = this.userProfile?.copy(friendStatus = friendStatus),
+                                profile = this.profile?.copy(friendStatus = friendStatus),
                             )
                         }
                     }

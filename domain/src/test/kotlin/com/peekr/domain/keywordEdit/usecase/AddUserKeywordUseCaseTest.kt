@@ -68,7 +68,6 @@ class AddUserKeywordUseCaseTest {
             id = UserKeywordId(1L),
             keywordId = KeywordId(1L),
             keyword = TestKeyword,
-            userId = TestUserId,
             description = TestKeywordDescription,
             createdAt = 1000,
             updatedAt = 1000,

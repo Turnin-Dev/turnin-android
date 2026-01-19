@@ -1,7 +1,38 @@
 package com.peekr.presentation.keywordDetail.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
+import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.model.KeywordDescription
+import com.peekr.core.domain.model.KeywordDescription.Companion.invoke
+import com.peekr.core.domain.model.KeywordId
+import com.peekr.core.domain.model.KeywordId.Companion.invoke
+import com.peekr.core.domain.model.KeywordName
+import com.peekr.core.domain.model.KeywordName.Companion.invoke
+import com.peekr.core.domain.model.Name
+import com.peekr.core.domain.model.Name.Companion.invoke
+import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.user.usecase.GetUserIdUseCase
+import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
+import com.peekr.core.presentation.common.snackbar.SnackbarEvent
+import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
+import com.peekr.domain.keywordDetail.model.KeywordDetail
+import com.peekr.domain.keywordDetail.usecase.KeywordDetailUseCases
+import com.peekr.presentation.keywordDetail.error.asUiText
+import com.peekr.presentation.keywordDetail.model.toUiModel
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
 
 class KeywordDetailViewModelTest : MVIBaseViewModelTest<
     KeywordDetailContract.UiState,
@@ -9,130 +40,197 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
     KeywordDetailContract.UiEffect,
     KeywordDetailViewModel,
 >() {
-//    private val checkMyKeywordUseCase: CheckMyKeywordUseCase = mockk()
-//    private val getDescriptionUseCase: GetDescriptionUseCase = mockk()
-//    private val updateDescriptionUseCase: UpdateDescriptionUseCase = mockk()
-//    private lateinit var savedStateHandle: SavedStateHandle
-//    private lateinit var viewModel: KeywordDetailViewModel
-//
-//    @Before
-//    fun setUp() {
-//        savedStateHandle = TestSavedStateHandle
-//        every { checkMyKeywordUseCase() } returns flow {
-//            emit(Result.Loading)
-//            emit(Result.Success(TestUserId))
-//        }
-//        every {
-//            getDescriptionUseCase(TestUserKeywordId.value)
-//        } returns flow {
-//            emit(Result.Loading)
-//            emit(Result.Success(TestDescription))
-//        }
-//        every {
-//            updateDescriptionUseCase(TestUserKeywordId.value, TestDescription.value)
-//        } returns flowOf(Result.Success(TestPatchDescription))
-//
-//        viewModel = KeywordDetailViewModel(
-//            checkMyKeywordUseCase = checkMyKeywordUseCase,
-//            getDescriptionUseCase = getDescriptionUseCase,
-//            updateDescriptionUseCase = updateDescriptionUseCase,
-//            savedStateHandle = savedStateHandle,
-//        )
-//    }
-//
-//    @Test
-//    fun `초기 데이터 준비 성공 테스트`() {
-//        testState(
-//            viewModel = viewModel,
-//            assertAllState = true,
-//            intents = emptyList(),
-//            assertions = listOf(
-//                KeywordDetailContract.UiState(),
-//                TestInitialUiState,
-//            ),
-//        )
-//    }
-//
-//    @Test
-//    fun `초기 데이터 준비 실패 테스트 - NavArgs 값 중 존재하지 않는 값이 있을 때 에러를 발생시킨다`() {
-//        savedStateHandle = SavedStateHandle()
-//        viewModel = KeywordDetailViewModel(
-//            checkMyKeywordUseCase = checkMyKeywordUseCase,
-//            getDescriptionUseCase = getDescriptionUseCase,
-//            updateDescriptionUseCase = updateDescriptionUseCase,
-//            savedStateHandle = savedStateHandle,
-//        )
-//
-//        testEffect(
-//            viewModel = viewModel,
-//            assertTypeOnly = true,
-//            intents = emptyList(),
-//            assertions = listOf(
-//                KeywordDetailContract.UiEffect.FullScreenError(UiText.DynamicString("")),
-//            ),
-//        )
-//    }
-//
-//    @Test
-//    fun `키워드 설명 수정에 성공하면 로딩, 에러, 수정 모드 상태를 false로 변환한다`() {
-//        testState(
-//            viewModel = viewModel,
-//            intents = listOf(
-//                KeywordDetailContract.UiEvent.UpdateDescription(TestDescription.value),
-//            ),
-//            assertions = listOf(
-//                TestInitialUiState.copy(
-//                    loading = false,
-//                    error = null,
-//                    editMode = false,
-//                ),
-//            ),
-//        )
-//    }
-//
-//    @Test
-//    fun `키워드 설명 수정에 실패하면 에러가 발생한다`() {
-//        val expectedError = KeywordDetailErrorType.Unexpected(null)
-//        every {
-//            updateDescriptionUseCase(TestUserKeywordId.value, TestDescription.value)
-//        } returns flowOf(Result.Error(expectedError))
-//
-//        testState(
-//            viewModel = viewModel,
-//            assertAllState = true,
-//            intents = listOf(
-//                KeywordDetailContract.UiEvent.UpdateDescription(TestDescription.value),
-//            ),
-//            assertions = listOf(
-//                KeywordDetailContract.UiState(),
-//                TestInitialUiState,
-//                TestInitialUiState.copy(
-//                    error = expectedError.asUiText(),
-//                ),
-//            ),
-//        )
-//    }
-//
-//    companion object {
-//        private const val TEST_KEYWORD = "sample"
-//        private val TestUserId = UserId(1L)
-//        private val TestUserKeywordId = UserKeywordId(1L)
-//        private val TestDescription = KeywordDescription("sample")
-//        private val TestPatchDescription = PatchDescription(TestDescription)
-//        private val TestSavedStateHandle = SavedStateHandle(
-//            mapOf(
-//                "userKeywordId" to TestUserKeywordId.value,
-//                "userId" to TestUserId.value,
-//                "keyword" to TEST_KEYWORD,
-//            ),
-//        )
-//        private val TestInitialUiState = KeywordDetailContract.UiState(
-//            keyword = TEST_KEYWORD,
-//            description = TextFieldValue(
-//                text = TestDescription.value,
-//                selection = TextRange(TestDescription.value.length),
-//            ),
-//            myKeyword = true,
-//        )
-//    }
+    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var viewModel: KeywordDetailViewModel
+    private val getUserIdUseCase: GetUserIdUseCase = mockk()
+    private val usecase: KeywordDetailUseCases = mockk()
+    private val snackbarController = FakeSnackbarController()
+
+    @Before
+    fun setUp() {
+        // 현재 사용자 ID는 나의 사용자 ID로 고정 해놓고 테스트 진행
+        coEvery { getUserIdUseCase() } returns TestUserId
+    }
+
+    // ------------------------------ 나의 키워드인 경우 ------------------------------
+
+    @Test
+    fun `나의 키워드인 경우 - 초기 데이터인 키워드 상세 정보를 정상적으로 조회한다`() {
+        // given
+        every {
+            usecase.getKeywordDetail(TestUserId.value, TestUserKeywordId.value)
+        } returns flowOf(Result.Success(TestKeywordDetail))
+        savedStateHandle = TestSavedStateHandle
+        viewModel = KeywordDetailViewModel(
+            usecase = usecase,
+            getUserIdUseCase = getUserIdUseCase,
+            snackbarController = snackbarController,
+            savedStateHandle = savedStateHandle,
+        )
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = emptyList(),
+            assertions = listOf(
+                KeywordDetailContract.UiState(
+                    myKeyword = true,
+                    keywordDetail = TestKeywordDetail.toUiModel(),
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `나의 키워드인 경우 - 초기 데이터 조회 시 에러가 발생하면 정상적으로 에러를 표시한다`() = runTest {
+        // given
+        val expectedError = KeywordDetailErrorType.UserIdNotFound
+        every {
+            usecase.getKeywordDetail(TestUserId.value, TestUserKeywordId.value)
+        } returns flowOf(Result.Error(expectedError))
+        savedStateHandle = TestSavedStateHandle
+        viewModel = KeywordDetailViewModel(
+            usecase = usecase,
+            getUserIdUseCase = getUserIdUseCase,
+            snackbarController = snackbarController,
+            savedStateHandle = savedStateHandle,
+        )
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = emptyList(),
+            assertions = listOf(
+                KeywordDetailContract.UiState(
+                    myKeyword = true,
+                    error = expectedError.asUiText(),
+                ),
+            ),
+        )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(expectedError.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    // ------------------------------ 사용자 키워드인 경우 ------------------------------
+
+    @Test
+    fun `사용자 키워드인 경우 - 초기 데이터인 키워드 상세 정보를 정상적으로 조회한다`() {
+        // given
+        every {
+            usecase.getKeywordDetail(TestOtherUserId.value, TestOtherUserKeywordId.value)
+        } returns flowOf(Result.Success(TestOtherKeywordDetail))
+        savedStateHandle = TestOtherSavedStateHandle
+        viewModel = KeywordDetailViewModel(
+            usecase = usecase,
+            getUserIdUseCase = getUserIdUseCase,
+            snackbarController = snackbarController,
+            savedStateHandle = savedStateHandle,
+        )
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = emptyList(),
+            assertions = listOf(
+                KeywordDetailContract.UiState(
+                    myKeyword = false,
+                    keywordDetail = TestOtherKeywordDetail.toUiModel(),
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `사용자 키워드인 경우 - 초기 데이터 조회 시 에러가 발생하면 정상적으로 에러를 표시한다`() = runTest {
+        // given
+        val expectedError = KeywordDetailErrorType.UserIdNotFound
+        every {
+            usecase.getKeywordDetail(TestOtherUserId.value, TestOtherUserKeywordId.value)
+        } returns flowOf(Result.Error(expectedError))
+        savedStateHandle = TestOtherSavedStateHandle
+        viewModel = KeywordDetailViewModel(
+            usecase = usecase,
+            getUserIdUseCase = getUserIdUseCase,
+            snackbarController = snackbarController,
+            savedStateHandle = savedStateHandle,
+        )
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = emptyList(),
+            assertions = listOf(
+                KeywordDetailContract.UiState(
+                    myKeyword = false,
+                    error = expectedError.asUiText(),
+                ),
+            ),
+        )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(expectedError.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    companion object {
+        // ------------------------------ 나의 키워드 테스트 데이터 ------------------------------
+        private val TestUserId = UserId(1L)
+        private val TestUserKeywordId = UserKeywordId(1L)
+        private val TestSavedStateHandle = SavedStateHandle(
+            mapOf(
+                "userId" to TestUserId.value,
+                "userKeywordId" to TestUserKeywordId.value,
+            ),
+        )
+        private val TestKeywordDetail = KeywordDetail(
+            userKeywordId = TestUserKeywordId,
+            keywordId = KeywordId(1L),
+            keyword = KeywordName("k_name"),
+            description = KeywordDescription("desc"),
+            userId = TestUserId,
+            userName = Name("name"),
+            profileImageUrl = null,
+            createdAt = 0L,
+            updatedAt = 0L,
+        )
+
+        // ------------------------------ 사용자 키워드 테스트 데이터 ------------------------------
+        private val TestOtherUserId = UserId(100L)
+        private val TestOtherUserKeywordId = UserKeywordId(100L)
+        private val TestOtherSavedStateHandle = SavedStateHandle(
+            mapOf(
+                "userId" to TestOtherUserId.value,
+                "userKeywordId" to TestOtherUserKeywordId.value,
+            ),
+        )
+        private val TestOtherKeywordDetail = KeywordDetail(
+            userKeywordId = TestOtherUserKeywordId,
+            keywordId = KeywordId(1L),
+            keyword = KeywordName("k_name"),
+            description = KeywordDescription("desc"),
+            userId = TestOtherUserId,
+            userName = Name("name"),
+            profileImageUrl = null,
+            createdAt = 0L,
+            updatedAt = 0L,
+        )
+    }
 }

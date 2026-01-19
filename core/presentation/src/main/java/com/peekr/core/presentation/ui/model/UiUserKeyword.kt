@@ -1,8 +1,5 @@
 package com.peekr.core.presentation.ui.model
 
-import com.peekr.core.domain.model.KeywordId
-import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 
 /**
@@ -11,14 +8,13 @@ import com.peekr.core.domain.userKeyword.model.UserKeyword
  * @property id 사용자 키워드 ID
  * @property keywordId 키워드 ID
  * @property keywordName 키워드 명
- * @property userId 사용자 ID
+ * @property description 키워드 내용
  * @property createdAt 키워드 생성 일자
  * @property updatedAt 키워드 수정 일자
  */
 data class UiUserKeyword(
-    val id: UserKeywordId,
-    val userId: UserId,
-    val keywordId: KeywordId,
+    val id: Long,
+    val keywordId: Long,
     val keywordName: String,
     val description: String,
     val createdAt: Long,
@@ -27,9 +23,8 @@ data class UiUserKeyword(
     companion object {
         val samples = List(5) {
             UiUserKeyword(
-                id = UserKeywordId((it + 1).toLong()),
-                userId = UserId(1L),
-                keywordId = KeywordId((it + 1).toLong()),
+                id = (it + 1).toLong(),
+                keywordId = (it + 1).toLong(),
                 keywordName = "Label ${it + 1}",
                 description = "Description ${it + 1}",
                 createdAt = 0L,
@@ -41,9 +36,8 @@ data class UiUserKeyword(
 
 fun UserKeyword.toUiModel(): UiUserKeyword =
     UiUserKeyword(
-        id = id,
-        userId = userId,
-        keywordId = keywordId,
+        id = id.value,
+        keywordId = keywordId.value,
         keywordName = keyword.value,
         description = description.value,
         createdAt = createdAt,

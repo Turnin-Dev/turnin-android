@@ -1,10 +1,12 @@
 package com.peekr.presentation.profile.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.ui.model.toUiModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.usecase.MyProfileUseCases
@@ -13,9 +15,9 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.MyProfileContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
@@ -23,6 +25,8 @@ class MyProfileViewModel @Inject constructor(
     private val snackbarController: SnackbarController,
     private val usecases: MyProfileUseCases,
 ) : MVIBaseViewModel<MyProfileContract.UiState, MyProfileContract.UiEvent, MyProfileContract.UiEffect>() {
+    private val tag = this::class.java.simpleName
+
     override fun createInitialState(): MyProfileContract.UiState =
         MyProfileContract.UiState()
 
@@ -46,11 +50,14 @@ class MyProfileViewModel @Inject constructor(
     private fun observeMyProfile() {
         usecases.getMyProfile()
             .distinctUntilChanged()
-            .map { it?.toUiModel() }
             .onEach { myProfile ->
                 updateState {
-                    this.copy(myProfile = myProfile)
+                    this.copy(myProfile = myProfile?.toUiModel())
                 }
+            }
+            .catch { e ->
+                AppLogger.e(tag, e, "getMyProfile() failed. (cause: ${e.message})")
+                showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
             }
             .launchIn(viewModelScope)
     }
@@ -61,11 +68,14 @@ class MyProfileViewModel @Inject constructor(
     private fun observeMyKeywords() {
         usecases.getMyKeywords()
             .distinctUntilChanged()
-            .map { it.map { it.toUiModel() } }
             .onEach { myKeywords ->
                 updateState {
-                    this.copy(myKeywords = myKeywords)
+                    this.copy(myKeywords = myKeywords.toUiModel())
                 }
+            }
+            .catch { e ->
+                AppLogger.e(tag, e, "getMyKeywords() failed. (cause: ${e.message})")
+                showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
             }
             .launchIn(viewModelScope)
     }
@@ -82,27 +92,21 @@ class MyProfileViewModel @Inject constructor(
                     Result.Loading -> {
                         if (activeLoading) {
                             updateState {
-                                this.copy(loading = true)
+                                this.copy(myProfileLoading = true)
                             }
                         }
                     }
 
                     is Result.Error -> {
                         updateState {
-                            this.copy(
-                                loading = false,
-                                error = result.error.asUiText(),
-                            )
+                            this.copy(myProfileLoading = false)
                         }
                         showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
                     }
 
                     is Result.Success -> {
                         updateState {
-                            this.copy(
-                                loading = false,
-                                error = null,
-                            )
+                            this.copy(myProfileLoading = false)
                         }
                     }
                 }
@@ -120,27 +124,21 @@ class MyProfileViewModel @Inject constructor(
                 Result.Loading -> {
                     if (activeLoading) {
                         updateState {
-                            this.copy(loading = true)
+                            this.copy(myKeywordsLoading = true)
                         }
                     }
                 }
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(
-                            loading = false,
-                            error = result.error.asUiText(),
-                        )
+                        this.copy(myKeywordsLoading = false)
                     }
                     showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
                 }
 
                 is Result.Success -> {
                     updateState {
-                        this.copy(
-                            loading = false,
-                            error = null,
-                        )
+                        this.copy(myKeywordsLoading = false)
                     }
                 }
             }

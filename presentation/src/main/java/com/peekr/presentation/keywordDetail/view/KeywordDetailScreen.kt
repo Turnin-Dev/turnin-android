@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -35,6 +38,7 @@ import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
+import com.peekr.presentation.keywordDetail.model.UiKeywordDetail
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 
 /**
@@ -94,27 +98,37 @@ fun KeywordDetailScreen(
     KeywordDetailScreenFrame(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                myKeyword = uiState.myKeyword,
-                onMoreClick = {},
-                onReportClick = {},
-                onBackPressed = {},
-            )
+            if (uiState.loading) {
+                TopBarSkeleton()
+            } else {
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                    myKeyword = uiState.myKeyword,
+                    onMoreClick = {},
+                    onReportClick = {},
+                    onBackPressed = {},
+                )
+            }
         },
         contents = {
-            Contents(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
-                userName = uiState.userName,
-                profileImageUrl = uiState.profileImageUrl,
-                createdAt = uiState.createdAt,
-                keyword = uiState.keyword,
-                description = uiState.description,
-            )
+            if (uiState.loading) {
+                ContentsSkeleton()
+            } else {
+                uiState.keywordDetail?.let {
+                    Contents(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
+                        userName = uiState.keywordDetail.userName,
+                        profileImageUrl = uiState.keywordDetail.profileImageUrl,
+                        createdAt = uiState.keywordDetail.createdAt,
+                        keyword = uiState.keywordDetail.keyword,
+                        description = uiState.keywordDetail.description,
+                    )
+                }
+            }
         },
         comments = {
             Box(
@@ -160,7 +174,7 @@ private fun TopBar(
                 )
             } else {
                 PeekrIconButton(
-                    icon = PeekrIcons.Outlined.Normal.Report,
+                    icon = PeekrIcons.Filled.Normal.Report,
                     iconSize = PeekrIconSize.Small,
                     contentDescription = stringResource(R.string.keyword_detail_screen_top_bar_option_2),
                     onClick = onReportClick,
@@ -236,7 +250,7 @@ private fun UserInfo(
             contentDescription = userName,
         )
         Column(
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.Start,
         ) {
             // 사용자 명
@@ -289,6 +303,61 @@ private fun KeywordContents(
             color = PeekrTheme.colorScheme.textNormal,
             textAlign = TextAlign.Start,
         )
+    }
+}
+
+// ------------------------------ Skeleton ------------------------------
+
+@Composable
+private fun TopBarSkeleton() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 60.dp)
+            .padding(horizontal = ScreenTokens.HorizontalPadding),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SkeletonBox(Modifier.size(22.dp), CircleShape)
+        SkeletonBox(Modifier.size(22.dp), CircleShape)
+    }
+}
+
+@Composable
+private fun ContentsSkeleton() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SkeletonBox(Modifier.size(UserAvatarSize), CircleShape)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                SkeletonBox(Modifier.size(87.dp, 16.dp))
+                SkeletonBox(Modifier.size(53.dp, 14.dp))
+            }
+        }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.Start,
+        ) {
+            SkeletonBox(Modifier.size(170.dp, 24.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                SkeletonBox(Modifier.size(208.dp, 18.dp))
+                SkeletonBox(Modifier.size(230.dp, 18.dp))
+                SkeletonBox(Modifier.size(296.dp, 18.dp))
+                SkeletonBox(Modifier.size(246.dp, 18.dp))
+            }
+        }
     }
 }
 
@@ -345,15 +414,32 @@ private fun KeywordDetailScreenPreview() {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(
-                userName = "Username",
-                createdAt = "2026.01.10",
-                profileImageUrl = null,
-                keyword = "키워드 텍스트",
-                description = "대통령은 국무총리·국무위원·행정각부의 장 기타 법률이 정하는 공사의 직을 겸할 수 없다." +
-                    "감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다.\n" +
-                    "국가는 지역간의 균형있는 발전을 위하여 지역경제를 육성할 의무를 진다. 국가는 건전한 소비행위를 계도하고" +
-                    "생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다.",
+                keywordDetail = UiKeywordDetail(
+                    userKeywordId = 1L,
+                    keywordId = 1L,
+                    keyword = "키워드 텍스트",
+                    description = "대통령은 국무총리·국무위원·행정각부의 장 기타 법률이 정하는 공사의 직을 겸할 수 없다." +
+                        "감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다.\n" +
+                        "국가는 지역간의 균형있는 발전을 위하여 지역경제를 육성할 의무를 진다. 국가는 건전한 소비행위를 계도하고" +
+                        "생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다.",
+                    userId = 1L,
+                    userName = "Username",
+                    profileImageUrl = null,
+                    createdAt = "2026.01.01",
+                    updatedAt = "2026.01.01",
+                ),
             ),
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun SkeletonPreview() {
+    PeekrAppTheme {
+        KeywordDetailScreen(
+            modifier = Modifier.fillMaxSize(),
+            uiState = KeywordDetailContract.UiState(loading = true),
         )
     }
 }

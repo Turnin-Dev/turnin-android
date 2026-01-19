@@ -5,9 +5,9 @@ import com.peekr.core.domain.model.KeywordId
 import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserInfo
-import com.peekr.core.domain.model.UserKeywordDetail
 import com.peekr.core.domain.model.UserKeywordId
+import com.peekr.core.domain.userKeyword.model.UserInfo
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.squareup.moshi.JsonClass
 
 /**
@@ -41,7 +41,7 @@ data class UserKeywordDetailResponse(
     val keywordId: Long,
     val keywordName: String,
     val description: String,
-    val userInfo: UserInfoResponse?,
+    val userInfo: UserInfoResponse,
     val createdAt: Long,
     val updatedAt: Long,
 )
@@ -57,9 +57,9 @@ fun UserKeywordDetailResponse.toDomainModel(): UserKeywordDetail =
     UserKeywordDetail(
         userKeywordId = UserKeywordId(userKeywordId),
         keywordId = KeywordId(keywordId),
-        keywordName = KeywordName(this@toDomainModel.keywordName),
+        keywordName = KeywordName(keywordName),
         description = KeywordDescription(description),
-        userInfo = userInfo?.toDomainModel(),
+        userInfo = userInfo.toDomainModel(),
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
