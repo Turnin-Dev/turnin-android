@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.model.UiKeywordDetail
@@ -52,34 +55,46 @@ import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 @Composable
 private fun KeywordDetailScreenFrame(
     modifier: Modifier = Modifier,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     topBar: @Composable ColumnScope.() -> Unit,
     contents: @Composable ColumnScope.() -> Unit,
     comments: @Composable ColumnScope.() -> Unit,
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
+
     Column(modifier = modifier) {
         // 탑바
         topBar()
 
-        // 컨텐츠, 댓글
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = ScreenTokens.HorizontalPadding)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(30.dp),
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
+            state = pullToRefreshState,
+            isRefreshing = isRefreshing,
+            onRefresh = { onRefresh() },
+            indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
         ) {
-            // 컨텐츠
-            contents()
+            // 컨텐츠, 댓글
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = ScreenTokens.HorizontalPadding)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(30.dp),
+            ) {
+                // 컨텐츠
+                contents()
 
-            // 구분선
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 0.35.dp,
-                color = PeekrTheme.colorScheme.lineDivider,
-            )
+                // 구분선
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 0.35.dp,
+                    color = PeekrTheme.colorScheme.lineDivider,
+                )
 
-            // 댓글
-            comments()
+                // 댓글
+                comments()
+            }
         }
     }
 }
@@ -94,9 +109,12 @@ private fun KeywordDetailScreenFrame(
 fun KeywordDetailScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordDetailContract.UiState,
+    onUIEvent: (KeywordDetailContract.UiEvent) -> Unit,
 ) {
     KeywordDetailScreenFrame(
         modifier = modifier.fillMaxSize(),
+        isRefreshing = uiState.loading,
+        onRefresh = { onUIEvent(KeywordDetailContract.UiEvent.Refresh) },
         topBar = {
             if (uiState.loading) {
                 TopBarSkeleton()
@@ -429,6 +447,7 @@ private fun KeywordDetailScreenPreview() {
                     updatedAt = "2026.01.01",
                 ),
             ),
+            onUIEvent = {},
         )
     }
 }
@@ -440,6 +459,7 @@ private fun SkeletonPreview() {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(loading = true),
+            onUIEvent = {},
         )
     }
 }

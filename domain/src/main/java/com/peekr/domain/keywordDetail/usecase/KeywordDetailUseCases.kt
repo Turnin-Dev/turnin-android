@@ -5,4 +5,6 @@ import javax.inject.Inject
 class KeywordDetailUseCases @Inject constructor(
     /** @see GetKeywordDetailUseCase */
     val getKeywordDetail: GetKeywordDetailUseCase,
+    /** @see RefreshKeywordDetailUseCase */
+    val refreshKeywordDetail: RefreshKeywordDetailUseCase,
 )

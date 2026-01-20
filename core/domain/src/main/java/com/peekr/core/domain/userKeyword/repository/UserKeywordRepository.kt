@@ -61,8 +61,12 @@ interface UserKeywordRepository {
      * 사용자의 키워드 상세 정보 리스트 조회
      *
      * @param userId 사용자 ID
+     * @param forceRefresh 강제 새로고침 (캐시를 무효화하고 데이터를 새롭게 받아온다.)
      */
-    fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>>
+    fun getUserKeywords(
+        userId: UserId,
+        forceRefresh: Boolean = false,
+    ): Flow<Result<List<UserKeywordDetail>, CommonErrorType>>
 
     /**
      * 사용자 키워드 설명 조회

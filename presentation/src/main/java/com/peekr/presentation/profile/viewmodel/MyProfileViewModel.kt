@@ -40,7 +40,10 @@ class MyProfileViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: MyProfileContract.UiEvent) {
         when (event) {
-            else -> {}
+            MyProfileContract.UiEvent.Refresh -> {
+                refreshMyProfile(true)
+                refreshMyKeywords(true)
+            }
         }
     }
 

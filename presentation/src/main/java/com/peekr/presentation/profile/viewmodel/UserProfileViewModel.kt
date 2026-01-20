@@ -52,6 +52,11 @@ class UserProfileViewModel @Inject constructor(
             UserProfileContract.UiEvent.DeleteFriend -> {
                 updateFriendStatus(FriendStatus.FRIENDS)
             }
+
+            UserProfileContract.UiEvent.Refresh -> {
+                getUserProfile(true)
+                getUserKeywords(true)
+            }
         }
     }
 
@@ -60,8 +65,8 @@ class UserProfileViewModel @Inject constructor(
         // initNavArgumentData 가 실패할 경우(false를 반환할 경우)
         // 에러 처리를 하고 프로필 로드 기능을 중단한다(다른 기능이 실행될 수 없다).
         if (!initResult) return
-        getUserProfile()
-        getUserKeywords()
+        getUserProfile(false)
+        getUserKeywords(false)
     }
 
     private suspend fun initNavArgumentData(): Boolean = runCatching {
@@ -72,8 +77,8 @@ class UserProfileViewModel @Inject constructor(
         }
         .isSuccess
 
-    private fun getUserProfile() {
-        usecases.getUserProfile(currentUserId).onEach { result ->
+    private fun getUserProfile(forceRefresh: Boolean) {
+        usecases.getUserProfile(currentUserId, forceRefresh).onEach { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {
@@ -100,8 +105,8 @@ class UserProfileViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun getUserKeywords() {
-        usecases.getUserKeywords(currentUserId).onEach { result ->
+    private fun getUserKeywords(forceRefresh: Boolean) {
+        usecases.getUserKeywords(currentUserId, forceRefresh).onEach { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {

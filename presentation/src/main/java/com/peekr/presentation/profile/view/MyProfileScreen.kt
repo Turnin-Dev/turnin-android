@@ -68,6 +68,8 @@ fun MyProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
+            loading = uiState.loading,
+            onRefresh = { onUiEvent(MyProfileContract.UiEvent.Refresh) },
             topBar = {
                 if (uiState.myProfileLoading) {
                     TopBarSkeleton()
@@ -141,7 +143,7 @@ fun MyProfileScreen(
             )
         }
 
-        if (uiState.fullScreenLoading) {
+        if (uiState.loading) {
             PeekrLoadingScreen()
         }
     }

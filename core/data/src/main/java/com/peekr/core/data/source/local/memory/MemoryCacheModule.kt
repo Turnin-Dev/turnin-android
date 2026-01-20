@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.local.memory
 
-import com.peekr.core.data.BuildConfig
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.model.CoreUserProfile
@@ -11,7 +10,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -21,11 +19,7 @@ object MemoryCacheModule {
     fun provideCoreUserProfileMemoryCache(): MemoryCache<Long, CoreUserProfile> =
         LruMemoryCache(
             maxSize = 10,
-            ttl = if (!BuildConfig.DEBUG) {
-                3.minutes
-            } else {
-                0.seconds
-            },
+            ttl = 3.minutes,
             name = "CoreUserProfile",
         )
 
@@ -34,11 +28,7 @@ object MemoryCacheModule {
     fun provideUserKeywordDetailListMemoryCache(): MemoryCache<UserId, List<UserKeywordDetail>> =
         LruMemoryCache(
             maxSize = 10,
-            ttl = if (!BuildConfig.DEBUG) {
-                5.minutes
-            } else {
-                0.seconds
-            },
+            ttl = 5.minutes,
             name = "UserKeywordDetailList",
         )
 
@@ -47,11 +37,7 @@ object MemoryCacheModule {
     fun provideUserKeywordDetailMemoryCache(): MemoryCache<UserKeywordId, UserKeywordDetail> =
         LruMemoryCache(
             maxSize = 50,
-            ttl = if (!BuildConfig.DEBUG) {
-                5.minutes
-            } else {
-                0.seconds
-            },
+            ttl = 5.minutes,
             name = "UserKeywordDetail",
         )
 }

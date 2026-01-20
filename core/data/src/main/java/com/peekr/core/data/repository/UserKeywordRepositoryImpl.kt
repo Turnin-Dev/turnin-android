@@ -129,6 +129,8 @@ class UserKeywordRepositoryImpl @Inject constructor(
         userKeywordId: UserKeywordId,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
         safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+
             val myUserId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
             if (myUserId == null) {
                 emit(Result.Error(CommonErrorType.Local.UserIdNotFound))
@@ -179,7 +181,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>> =
+    override fun getUserKeywords(
+        userId: UserId,
+        forceRefresh: Boolean,
+    ): Flow<Result<List<UserKeywordDetail>, CommonErrorType>> =
         safeResultFlow<List<UserKeywordDetail>, CommonErrorType>(
             ioDispatcher,
             { CommonErrorType.Unexpected(it) },
@@ -187,7 +192,9 @@ class UserKeywordRepositoryImpl @Inject constructor(
             // 만약, 사용자 키워드 리스트 개수 제한이 없다면 메모리 캐시 대신 로컬 DB를 통해 페이징을 진행해야 한다.
 
             // 1. 메모리 리스트 캐시에서 조회 (있다면 즉시 반환)
-            val cachedDetails = memoryListCache[userId]
+            // 단, forceRefresh가 true면 강제로 null 반환
+            val cachedDetails = if (!forceRefresh) memoryListCache[userId] else null
+
             if (cachedDetails != null) {
                 emit(Result.Success(cachedDetails))
             } else {

@@ -46,6 +46,11 @@ class UserProfileContract {
          * 친구 삭제 이벤트
          */
         data object DeleteFriend : UiEvent
+
+        /***
+         * (프로필, 키워드 리스트) 새로고침 이벤트
+         */
+        data object Refresh : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {

@@ -20,5 +20,6 @@ fun KeywordDetailRoute() {
     KeywordDetailScreen(
         modifier = Modifier.fillMaxSize(),
         uiState = uiState,
+        onUIEvent = viewModel::processEvent,
     )
 }

@@ -60,7 +60,9 @@ class KeywordDetailViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: KeywordDetailContract.UiEvent) {
         when (event) {
-            else -> {}
+            KeywordDetailContract.UiEvent.Refresh -> {
+                refreshKeywordDetail()
+            }
         }
     }
 
@@ -91,10 +93,36 @@ class KeywordDetailViewModel @Inject constructor(
 
                 is Result.Error -> {
                     updateState {
+                        this.copy(loading = false)
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
                         this.copy(
                             loading = false,
-                            error = result.error.asUiText(),
+                            error = null,
+                            keywordDetail = result.data.toUiModel(),
                         )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun refreshKeywordDetail() {
+        usecase.refreshKeywordDetail(currentUserId, currentUserKeywordId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(loading = false)
                     }
                     showSnackBar(result.error.asUiText())
                 }

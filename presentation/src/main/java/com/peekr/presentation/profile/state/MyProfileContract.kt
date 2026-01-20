@@ -18,7 +18,7 @@ class MyProfileContract {
      * @param myProfileLoading 나의 프로필 로딩
      * @param myKeywords 나의 키워드
      * @param myKeywordsLoading 나의 키워드 로딩
-     * @param fullScreenLoading 전체 화면 로딩
+     * @param loading 공통 로딩
      * @param error 공통 에러 메시지
      */
     data class UiState(
@@ -26,11 +26,14 @@ class MyProfileContract {
         val myProfileLoading: Boolean = false,
         val myKeywords: List<UiUserKeyword> = emptyList(),
         val myKeywordsLoading: Boolean = false,
-        val fullScreenLoading: Boolean = false,
+        val loading: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
 
-    sealed interface UiEvent : BaseUiEvent
+    sealed interface UiEvent : BaseUiEvent {
+        /** 프로필 새로고침 이벤트 */
+        data object Refresh : UiEvent
+    }
 
     sealed interface UiEffect : BaseUiEffect
 }

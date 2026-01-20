@@ -38,10 +38,14 @@ interface UserRepository {
      * 사용자 프로필 조회
      *
      * @param userId 사용자 ID
+     * @param forceRefresh 강제 새로고침 (캐시를 무효화하고 데이터를 새롭게 받아온다.)
      *
      * @return [CoreUserProfile]
      */
-    fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>>
+    fun getUserProfile(
+        userId: UserId,
+        forceRefresh: Boolean = false,
+    ): Flow<Result<CoreUserProfile, CommonErrorType>>
 
     /**
      * 나의 프로필 수정

@@ -22,7 +22,10 @@ class KeywordDetailContract {
         val error: UiText? = null,
     ) : BaseUiState
 
-    sealed interface UiEvent : BaseUiEvent
+    sealed interface UiEvent : BaseUiEvent {
+        /** 키워드 상세정보 새로고침 */
+        data object Refresh : UiEvent
+    }
 
     sealed interface UiEffect : BaseUiEffect
 }
