@@ -210,6 +210,102 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         )
     }
 
+    @Test
+    fun `새로고침 시 프로필, 키워드 리스트가 업데이트된다`() {
+        // given
+        every {
+            usecases.getUserProfile(TestUserId.value, true)
+        } returns flowOf(Result.Success(TestNewUserProfile))
+        every {
+            usecases.getUserKeywords(TestUserId.value, true)
+        } returns flowOf(Result.Success(TestNewUserKeywords))
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = listOf(UserProfileContract.UiEvent.Refresh),
+            assertions = listOf(
+                UserProfileContract.UiState(
+                    profile = TestNewUserProfile.toUiModel(),
+                    keywords = TestNewUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `사용자 프로필 새로고침 시 에러가 발생하는 경우 스낵바 에러가 표시된다`() = runTest {
+        // given
+        every {
+            usecases.getUserProfile(TestUserId.value, true)
+        } returns flowOf(Result.Error(ProfileErrorType.Unexpected(null)))
+        every {
+            usecases.getUserKeywords(TestUserId.value, true)
+        } returns flowOf(Result.Success(TestNewUserKeywords))
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then: 프로필은 기존 프로필 데이터인 상태이다.
+        testState(
+            viewModel = viewModel,
+            intents = listOf(UserProfileContract.UiEvent.Refresh),
+            assertions = listOf(
+                UserProfileContract.UiState(
+                    profile = TestUserProfile.toUiModel(),
+                    keywords = TestNewUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(ProfileErrorType.ProfileLoadFailed.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    @Test
+    fun `키워드 리스트 새로고침 시 에러가 발생하는 경우 스낵바 에러가 표시된다`() = runTest {
+        // given
+        every {
+            usecases.getUserProfile(TestUserId.value, true)
+        } returns flowOf(Result.Success(TestNewUserProfile))
+        every {
+            usecases.getUserKeywords(TestUserId.value, true)
+        } returns flowOf(Result.Error(ProfileErrorType.Unexpected(null)))
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then: 키워드 리스트는 기존 키워드 리스트 데이터인 상태이다.
+        testState(
+            viewModel = viewModel,
+            intents = listOf(UserProfileContract.UiEvent.Refresh),
+            assertions = listOf(
+                UserProfileContract.UiState(
+                    profile = TestNewUserProfile.toUiModel(),
+                    keywords = TestUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(ProfileErrorType.KeywordsLoadFailed.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
     companion object {
         private val TestUserId = UserId(1L)
         private val TestSavedStateHandle = SavedStateHandle(
@@ -232,6 +328,27 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
                 keywordId = KeywordId(1L),
                 keyword = KeywordName("key"),
                 description = KeywordDescription("hello"),
+                createdAt = 1000,
+                updatedAt = 1000,
+            ),
+        )
+        private val TestNewUserProfile = UserProfile(
+            userId = TestUserId,
+            displayId = DisplayId("did"),
+            name = Name("name"),
+            profileImageUrl = null,
+            introduce = Introduce("newIntroduce"),
+            lastLoginAt = 1000L,
+            friendsCount = 50L,
+            active = true,
+            friendStatus = FriendStatus.NOTHING,
+        )
+        private val TestNewUserKeywords = listOf(
+            UserKeyword(
+                id = UserKeywordId(1L),
+                keywordId = KeywordId(1L),
+                keyword = KeywordName("key"),
+                description = KeywordDescription("newIntroduce"),
                 createdAt = 1000,
                 updatedAt = 1000,
             ),
