@@ -48,6 +48,8 @@ import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
  * 키워드 상세 화면 프레임
  *
  * @param modifier [Modifier]
+ * @param isRefreshing 새로고침 여부
+ * @param onRefresh 새로고침 콜백
  * @param topBar 탑바 영역
  * @param contents 컨텐츠 영역(사용자 정보, 키워드, 내용 등)
  * @param comments 댓글 영역
@@ -104,17 +106,18 @@ private fun KeywordDetailScreenFrame(
  *
  * @param modifier [Modifier]
  * @param uiState UI 상태
+ * @param onUiEvent UI 이벤트
  */
 @Composable
 fun KeywordDetailScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordDetailContract.UiState,
-    onUIEvent: (KeywordDetailContract.UiEvent) -> Unit,
+    onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
 ) {
     KeywordDetailScreenFrame(
         modifier = modifier.fillMaxSize(),
         isRefreshing = uiState.loading,
-        onRefresh = { onUIEvent(KeywordDetailContract.UiEvent.Refresh) },
+        onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.Refresh) },
         topBar = {
             if (uiState.loading) {
                 TopBarSkeleton()
@@ -447,7 +450,7 @@ private fun KeywordDetailScreenPreview() {
                     updatedAt = "2026.01.01",
                 ),
             ),
-            onUIEvent = {},
+            onUiEvent = {},
         )
     }
 }
@@ -459,7 +462,7 @@ private fun SkeletonPreview() {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(loading = true),
-            onUIEvent = {},
+            onUiEvent = {},
         )
     }
 }

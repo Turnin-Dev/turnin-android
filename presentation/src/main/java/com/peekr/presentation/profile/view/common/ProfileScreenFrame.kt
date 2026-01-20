@@ -35,6 +35,9 @@ import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
  * 키워드 리스트 영역([keywords])은 [LazyListScope] 범위이고 필수 패딩을 직접 적용해줘야 한다.
  *
  * @param modifier [Modifier]
+ * @param isRefreshing 새로고침 여부
+ * @param onRefresh 새로고침 콜백
+ * @param modifier [Modifier]
  * @param topBar 탑바 영역
  * @param profile 프로필 영역
  * @param keywordsTitle 키워드 타이틀 텍스트
@@ -43,7 +46,7 @@ import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 @Composable
 fun ProfileScreenFrame(
     modifier: Modifier = Modifier,
-    loading: Boolean = false,
+    isRefreshing: Boolean = false,
     onRefresh: () -> Unit,
     topBar: @Composable ColumnScope.() -> Unit,
     profile: @Composable ColumnScope.() -> Unit,
@@ -60,9 +63,9 @@ fun ProfileScreenFrame(
         PullToRefreshBox(
             modifier = Modifier.fillMaxSize(),
             state = pullToRefreshState,
-            isRefreshing = loading,
+            isRefreshing = isRefreshing,
             onRefresh = { onRefresh() },
-            indicator = { PeekrIndicator(loading, pullToRefreshState) },
+            indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -125,7 +128,7 @@ private fun ProfileScreenFramePreview() {
     PeekrAppTheme {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
-            loading = false,
+            isRefreshing = false,
             onRefresh = {},
             topBar = {
                 Box(
