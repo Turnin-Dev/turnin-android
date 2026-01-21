@@ -16,6 +16,7 @@ import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.keywordEdit.keywordEditNavigation
 import com.peekr.presentation.login.loginNavigation
 import com.peekr.presentation.register.registerNavigation
+import com.peekr.presentation.report.reportNavigation
 
 /**
  * Peekr의 앱 네비게이션
@@ -64,6 +65,10 @@ fun AppNavigation(
             keywordDetailNavigation(appNavController)
 
             keywordEditNavigation(appNavController)
+
+            reportNavigation(
+                navController = appNavController,
+            )
 
             composable<Screens.TempMain> {
                 Box(

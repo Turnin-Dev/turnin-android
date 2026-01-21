@@ -106,13 +106,14 @@
     <string name="input_report_reason_modal_btn_report">신고하기</string>
     <string name="report_result_modal_btn_ok">확인</string>
     <string name="report_result_modal_btn_finish">완료</string>
-    <string name="report_result_modal_duplicate_report">이미 해당 사용자에 대한 신고가 접수되었어요.\n내부 정책에 따라 조치가 진행 중입니다.\n신고해주셔서 감사합니다.</string>
     <string name="report_result_modal_success_title">신고 완료</string>
     <string name="report_result_modal_success">해당 신고는 검토 후 서비스 내부 정책에 따라 처리됨을 알려드립니다.\n더 나은 서비스를 위하여 해당 내용을 신중히 검토하겠습니다.\n감사합니다.</string>
     <!-- Report Error -->
     <string name="report_error_user_id_not_found">오류가 발생했습니다. 신고를 다시 진행해주세요.</string>
     <string name="report_error_not_selected_report_reason">이전 단계에서 신고 사유를 다시 선택해 주세요.</string>
     <string name="report_error_not_selected_reporter_id">오류가 발생했습니다.\n신고할 사용자의 프로필 화면에서 다시 신고를 진행해주세요.</string>
+    <string name="report_error_missing_report_target">신고 대상이 없습니다.</string>
+    <string name="report_error_already_reported">이미 해당 내용에 대한 신고 접수가 된 상태입니다.\n내부 정책에 따라 조치가 진행 중입니다.\n감사합니다.</string>
     <string name="report_error_unexpected">신고 과정에서 오류가 발생했습니다. 다시 신고를 진행해주세요.</string>
 
     <!-- Friend -->

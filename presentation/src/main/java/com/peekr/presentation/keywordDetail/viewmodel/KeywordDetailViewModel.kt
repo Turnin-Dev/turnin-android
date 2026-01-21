@@ -60,8 +60,17 @@ class KeywordDetailViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: KeywordDetailContract.UiEvent) {
         when (event) {
-            KeywordDetailContract.UiEvent.Refresh -> {
+            KeywordDetailContract.UiEvent.OnRefresh -> {
                 refreshKeywordDetail()
+            }
+
+            KeywordDetailContract.UiEvent.OnReport -> {
+                sendEffect {
+                    KeywordDetailContract.UiEffect.NavigateToReport(
+                        userId = currentUserId,
+                        userKeywordId = currentUserKeywordId,
+                    )
+                }
             }
         }
     }

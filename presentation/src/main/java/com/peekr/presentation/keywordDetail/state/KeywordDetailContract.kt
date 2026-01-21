@@ -23,9 +23,18 @@ class KeywordDetailContract {
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
-        /** 키워드 상세정보 새로고침 */
-        data object Refresh : UiEvent
+        /** 키워드 상세정보 새로고침 이벤트 */
+        data object OnRefresh : UiEvent
+
+        /** 키워드 신고 이벤트 */
+        data object OnReport : UiEvent
     }
 
-    sealed interface UiEffect : BaseUiEffect
+    sealed interface UiEffect : BaseUiEffect {
+        /** 신고 화면 이동 이펙트 */
+        data class NavigateToReport(
+            val userId: Long?,
+            val userKeywordId: Long?,
+        ) : UiEffect
+    }
 }

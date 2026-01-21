@@ -16,7 +16,6 @@ import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.home.main.HomeMainScreen
 import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
-import com.peekr.presentation.report.reportNavigation
 
 @Composable
 fun BottomNavigation(
@@ -57,10 +56,6 @@ fun BottomNavigation(
             userProfileNavigation(
                 bottomNavController = bottomNavController,
                 appNavController = appNavController,
-            )
-
-            reportNavigation(
-                navController = bottomNavController,
             )
 
             friendsListScreen(

@@ -183,6 +183,7 @@ class ReportNetworkDataSourceImplTest {
         private val TestReportRequest = ReportRequest(
             reporterId = 1L,
             reportedId = 2L,
+            reportedUserKeywordId = null,
             reasonId = 1L,
             customReason = "reason",
         )

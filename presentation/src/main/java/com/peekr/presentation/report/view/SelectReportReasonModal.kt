@@ -4,13 +4,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.modal.ModalContentToken
@@ -20,6 +23,7 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.domain.report.model.ReportReasonId
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.report.model.UiReportReason
 
 /**
@@ -29,6 +33,7 @@ import com.peekr.presentation.report.model.UiReportReason
  * @param sheetState [SheetState]
  * @param reportReasons 신고 사유 목록
  * @param loading 신고 사유 목록 로딩 여부
+ * @param error 에러 메시지
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
  * @param onCancel 모달 취소 시
  * @param onReportReasonsClick 신고 사유 클릭 시
@@ -40,6 +45,7 @@ fun SelectReportReasonModal(
     sheetState: SheetState,
     reportReasons: List<UiReportReason>,
     loading: Boolean,
+    error: UiText?,
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
     onReportReasonsClick: (UiReportReason) -> Unit,
@@ -58,14 +64,27 @@ fun SelectReportReasonModal(
             )
         }
 
-        if (loading && reportReasons.isEmpty()) {
-            ModalContentSkeleton(contentModifier)
-        } else {
-            PeekrModalBottomSheetContent(
-                modifier = contentModifier.fillMaxWidth(),
-                onCancel = onCancel,
-                *reasonTokens.toTypedArray(),
-            )
+        when {
+            loading && reportReasons.isEmpty() -> {
+                ModalContentSkeleton(contentModifier)
+            }
+
+            error != null -> {
+                Error(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 270.dp),
+                    error = error.asString(),
+                )
+            }
+
+            else -> {
+                PeekrModalBottomSheetContent(
+                    modifier = contentModifier.fillMaxWidth(),
+                    onCancel = onCancel,
+                    *reasonTokens.toTypedArray(),
+                )
+            }
         }
     }
 }
@@ -86,6 +105,27 @@ private fun ModalContentSkeleton(modifier: Modifier = Modifier) {
                 SkeletonBox(Modifier.size(width.dp, 18.dp))
             }
         }
+    }
+}
+
+/**
+ * 에러 화면
+ */
+@Composable
+private fun Error(
+    modifier: Modifier = Modifier,
+    error: String,
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = error,
+            style = PeekrTheme.typography.body4,
+            fontWeight = FontWeight.Normal,
+            color = PeekrTheme.colorScheme.textNormal,
+        )
     }
 }
 
@@ -116,6 +156,7 @@ private fun SelectReportReasonModalPreview() {
                 ),
             ),
             loading = false,
+            error = null,
             onDismissRequest = {},
             onCancel = {},
             onReportReasonsClick = {},
@@ -134,6 +175,26 @@ private fun SkeletonPreview() {
             sheetState = sheetState,
             reportReasons = emptyList(),
             loading = true,
+            error = null,
+            onDismissRequest = {},
+            onCancel = {},
+            onReportReasonsClick = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@PreviewLightDark
+@Composable
+private fun ErrorPreview() {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    PeekrAppTheme {
+        SelectReportReasonModal(
+            sheetState = sheetState,
+            reportReasons = emptyList(),
+            loading = false,
+            error = UiText.DynamicString("잠시 오류가 발생했어요. 다시 시도해주세요."),
             onDismissRequest = {},
             onCancel = {},
             onReportReasonsClick = {},

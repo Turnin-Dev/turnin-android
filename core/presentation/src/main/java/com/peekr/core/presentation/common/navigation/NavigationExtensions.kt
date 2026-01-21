@@ -4,9 +4,10 @@ import androidx.navigation.NavController
 
 // ------------------------------ Report ------------------------------
 fun NavController.navigateToReport(
-    reportedId: Long,
+    reportedId: Long?,
+    reportedUserKeywordId: Long?,
 ) {
-    navigate(SubGraph.Report.Root(reportedId))
+    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId))
 }
 
 // ------------------------------ KeywordDetail ------------------------------

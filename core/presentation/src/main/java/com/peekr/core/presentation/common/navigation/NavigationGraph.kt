@@ -58,7 +58,8 @@ sealed interface SubGraph {
     sealed interface Report : SubGraph {
         @Serializable
         data class Root(
-            val userId: Long,
+            val userId: Long?,
+            val userKeywordId: Long?,
         ) : Report
 
         @Serializable

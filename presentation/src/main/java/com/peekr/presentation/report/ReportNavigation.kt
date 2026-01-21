@@ -75,6 +75,7 @@ fun NavGraphBuilder.reportNavigation(
                 sheetState = sheetState,
                 reportReasons = uiState.reportReasons,
                 loading = uiState.loading,
+                error = uiState.error,
                 onDismissRequest = { navController.popBackStack() },
                 onCancel = { navController.popBackStack() },
                 onReportReasonsClick = { reportReason ->
@@ -136,20 +137,18 @@ fun NavGraphBuilder.reportNavigation(
             val sheetState = rememberModalBottomSheetState()
             val scope = rememberCoroutineScope()
 
-            uiState.reportResult?.let { isSuccess ->
-                ReportResultModal(
-                    sheetState = sheetState,
-                    isSuccess = isSuccess,
-                    onDismissRequest = { navController.popBackStack() },
-                    onFinishClick = {
-                        exitReportNavigation(
-                            scope = scope,
-                            sheetState = sheetState,
-                            navController = navController,
-                        )
-                    },
-                )
-            }
+            ReportResultModal(
+                sheetState = sheetState,
+                error = uiState.error,
+                onDismissRequest = { navController.popBackStack() },
+                onFinishClick = {
+                    exitReportNavigation(
+                        scope = scope,
+                        sheetState = sheetState,
+                        navController = navController,
+                    )
+                },
+            )
         }
     }
 }

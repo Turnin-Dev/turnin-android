@@ -2,7 +2,9 @@ package com.peekr.domain.report.usecase
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.report.model.Report
 import com.peekr.core.domain.report.model.ReportReasonId
 import com.peekr.core.domain.report.repository.ReportRepository
@@ -12,7 +14,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 /**
  * 사용자 신고
@@ -27,43 +28,52 @@ class ReportUseCase @Inject constructor(
      * 사용자를 신고한다.
      *
      * @param reportedId 신고할 사용자 ID
+     * @param reportedUserKeywordId 신고할 사용자 키워드 ID
      * @param reasonId 신고 사유 ID
      * @param customReason 기타 신고 사유
-     *
-     * @return 신고 성공 시 `true`를 반환하고 중복 신고 시에는 `false`를 반환한다. 그 외에 에러는 [Result.Error]로 반환된다.
      */
     operator fun invoke(
-        reportedId: Long,
+        reportedId: Long?,
+        reportedUserKeywordId: Long?,
         reasonId: ReportReasonId,
         customReason: String?,
-    ): Flow<Result<Boolean, ReportErrorType>> = flow {
-        userRepository.getUserId()?.let { reporterId ->
-            val reportedId = UserId(reportedId)
-            val report = Report(
-                reporterId = reporterId,
-                reportedId = reportedId,
-                reasonId = reasonId,
-                customReason = customReason,
-            )
+    ): Flow<Result<Unit, ReportErrorType>> = flow {
+        // 1) 신고 대상 체크
+        if (reportedId == null && reportedUserKeywordId == null) {
+            emit(Result.Error(ReportErrorType.MissingReportTarget))
+            return@flow
+        }
 
-            emitAll(
-                reportRepository
-                    .createReport(report)
-                    .map { result ->
-                        when (result) {
-                            Result.Loading -> Result.Loading
-                            is Result.Success -> Result.Success(true)
-                            is Result.Error -> {
-                                // 에러 중 Conflict 에러는 중복 신고 시 발생하는 에러이므로 false로 반환
-                                if (result.error is CommonErrorType.Network.Conflict) {
-                                    Result.Success(false)
-                                } else {
-                                    Result.Error(ReportErrorType.CommonError(result.error))
-                                }
-                            }
-                        }
-                    },
-            )
-        } ?: emit(Result.Error(ReportErrorType.UserIdNotFound))
+        // 2) 데이터 준비
+        val reportedIdVO = reportedId?.let { UserId(it) }
+        val reportedUserKeywordIdVO = reportedUserKeywordId?.let { UserKeywordId(it) }
+        val reporterIdVO = userRepository.getUserId()
+
+        if (reporterIdVO == null) {
+            emit(Result.Error(ReportErrorType.UserIdNotFound))
+            return@flow
+        }
+
+        // 3) 신고 모델 생성
+        val report = Report(
+            reporterId = reporterIdVO,
+            reportedId = reportedIdVO,
+            reportedUserKeywordId = reportedUserKeywordIdVO,
+            reasonId = reasonId,
+            customReason = customReason,
+        )
+
+        // 4) 신고 수행
+        emitAll(
+            reportRepository
+                .createReport(report)
+                .mapError { commonError ->
+                    when (commonError) {
+                        is CommonErrorType.Network.BadRequest -> ReportErrorType.MissingReportTarget
+                        is CommonErrorType.Network.Conflict -> ReportErrorType.AlreadyReported
+                        else -> ReportErrorType.CommonError(commonError)
+                    }
+                },
+        )
     }
 }

@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -30,7 +29,7 @@ class ReportUseCaseTest {
     }
 
     @Test
-    fun `신고 성공 시 true를 반환한다`() = runTest {
+    fun `신고를 정상적으로 수행한다`() = runTest {
         // given
         every {
             reportRepository.createReport(any())
@@ -39,17 +38,32 @@ class ReportUseCaseTest {
         // when
         val result = usecase(
             reportedId = TEST_REPORTED_ID,
+            reportedUserKeywordId = null,
             reasonId = TestReportReasonId,
             customReason = null,
         ).last()
 
         // then
-        val success = result as Result.Success
-        assertTrue(success.data)
+        assertTrue(result is Result.Success)
     }
 
     @Test
-    fun `중복 신고 시 false를 반환한다`() = runTest {
+    fun `신고 대상이 모두 비어있으면 정의된 에러를 반환한다`() = runTest {
+        // when
+        val result = usecase(
+            reportedId = null,
+            reportedUserKeywordId = null,
+            reasonId = TestReportReasonId,
+            customReason = null,
+        ).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(ReportErrorType.MissingReportTarget, error.error)
+    }
+
+    @Test
+    fun `중복 신고 시 정의된 에러를 반환한다`() = runTest {
         // given
         every {
             reportRepository.createReport(any())
@@ -58,13 +72,14 @@ class ReportUseCaseTest {
         // when
         val result = usecase(
             reportedId = TEST_REPORTED_ID,
+            reportedUserKeywordId = null,
             reasonId = TestReportReasonId,
             customReason = null,
         ).last()
 
         // then
-        val success = result as Result.Success
-        assertFalse(success.data)
+        val error = result as Result.Error
+        assertEquals(ReportErrorType.AlreadyReported, error.error)
     }
 
     @Test
@@ -75,16 +90,14 @@ class ReportUseCaseTest {
         // when
         val result = usecase(
             reportedId = TEST_REPORTED_ID,
+            reportedUserKeywordId = null,
             reasonId = TestReportReasonId,
             customReason = null,
         ).last()
 
         // then
         val error = result as Result.Error
-        assertEquals(
-            ReportErrorType.UserIdNotFound,
-            error.error,
-        )
+        assertEquals(ReportErrorType.UserIdNotFound, error.error)
     }
 
     companion object {

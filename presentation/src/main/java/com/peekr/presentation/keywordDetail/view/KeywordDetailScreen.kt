@@ -113,11 +113,12 @@ fun KeywordDetailScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordDetailContract.UiState,
     onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     KeywordDetailScreenFrame(
         modifier = modifier.fillMaxSize(),
         isRefreshing = uiState.loading,
-        onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.Refresh) },
+        onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.OnRefresh) },
         topBar = {
             if (uiState.loading) {
                 TopBarSkeleton()
@@ -128,8 +129,8 @@ fun KeywordDetailScreen(
                         .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                     myKeyword = uiState.myKeyword,
                     onMoreClick = {},
-                    onReportClick = {},
-                    onBackPressed = {},
+                    onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
+                    onBackPressed = onBackPressed,
                 )
             }
         },
@@ -451,6 +452,7 @@ private fun KeywordDetailScreenPreview() {
                 ),
             ),
             onUiEvent = {},
+            onBackPressed = {},
         )
     }
 }
@@ -463,6 +465,7 @@ private fun SkeletonPreview() {
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(loading = true),
             onUiEvent = {},
+            onBackPressed = {},
         )
     }
 }

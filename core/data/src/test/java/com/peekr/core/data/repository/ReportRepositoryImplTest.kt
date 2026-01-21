@@ -158,6 +158,7 @@ class ReportRepositoryImplTest {
         private val TestReport = Report(
             reporterId = UserId(1L),
             reportedId = UserId(2L),
+            reportedUserKeywordId = null,
             reasonId = ReportReasonId(1L),
             customReason = "reason",
         )
