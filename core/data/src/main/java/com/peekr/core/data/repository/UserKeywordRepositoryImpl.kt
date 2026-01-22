@@ -169,6 +169,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     AppLogger.d(tag, "My keywords refresh successful")
                     val myKeywords = result.data.map { it.toDomainModel() }
+                    myKeywordDao.deleteAll()
                     myKeywordDao.upsertAll(myKeywords.map { it.toEntity() })
                     emit(Result.Success(Unit))
                 }
