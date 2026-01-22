@@ -16,7 +16,6 @@ import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
@@ -544,9 +543,6 @@ class UserKeywordRepositoryImplTest {
             description = TestPatchDescription.description.value,
         )
         private val TestPatchDescriptionResponse = PatchDescriptionResponse(
-            description = TestPatchDescription.description.value,
-        )
-        private val TestDescriptionResponse = DescriptionResponse(
             description = TestPatchDescription.description.value,
         )
         private val TestMyKeywordEntity = MyKeywordEntity(

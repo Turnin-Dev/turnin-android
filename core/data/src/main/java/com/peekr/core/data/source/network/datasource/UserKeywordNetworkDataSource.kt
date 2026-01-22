@@ -3,7 +3,6 @@ package com.peekr.core.data.source.network.datasource
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -19,15 +18,6 @@ interface UserKeywordNetworkDataSource {
     suspend fun getDetail(
         userKeywordId: UserKeywordId,
     ): NetworkResult<UserKeywordDetailResponse>
-
-    /**
-     * 사용자 키워드 설명 조회
-     *
-     * @param userKeywordId 사용자 키워드 ID
-     */
-    suspend fun getDescription(
-        userKeywordId: UserKeywordId,
-    ): NetworkResult<DescriptionResponse>
 
     /**
      * 사용자 키워드 생성

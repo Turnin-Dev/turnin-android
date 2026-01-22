@@ -6,7 +6,6 @@ import com.peekr.core.data.source.network.dto.common.UserInfoResponse
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.DescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
@@ -37,88 +36,6 @@ class UserKeywordDataSourceImplTest {
     @Before
     fun setUp() {
         dataSource = UserKeywordNetworkDataSourceImpl(userKeywordApi)
-    }
-
-    @Test
-    fun `사용자 키워드 설명 조회 - 성공 테스트`() = runTest {
-        // given
-        val expectedResponse = testRule.encodeToJson(TestDescriptionResponse)
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(expectedResponse)
-            },
-        )
-
-        // when
-        val response = dataSource.getDescription(TestUserKeywordId)
-
-        // then
-        assertTrue(response is NetworkResult.Success)
-        assertEquals(
-            TestDescriptionResponse,
-            (response as NetworkResult.Success).data,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 설명 조회 - 잘못된 응답 바디로 응답 시 알려진 예외를 반환한다`() = runTest {
-        // given
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(TestInvalidJson)
-            },
-        )
-
-        // when
-        val response = dataSource.getDescription(TestUserKeywordId)
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Exception.JsonData,
-            (response as NetworkResult.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 설명 조회 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
-        // given
-        val mockApi: UserKeywordApi = mockk()
-        val exception = Exception()
-        dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getDescription(TestUserKeywordId.value) } throws exception
-
-        // when
-        val response = dataSource.getDescription(TestUserKeywordId)
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        assertEquals(
-            NetworkErrorType.Unexpected(exception),
-            (response as NetworkResult.Error).error,
-        )
-    }
-
-    @Test
-    fun `사용자 키워드 설명 조회 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
-        // given
-        val expectedResponse = testRule.encodeToJson(TestUserKeywordsResponse)
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(404)
-                setBody(expectedResponse)
-            },
-        )
-
-        // when
-        val response = dataSource.getDescription(TestUserKeywordId)
-
-        // then
-        assertTrue(response is NetworkResult.Error)
-        val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
-        assertEquals(404, error.status)
     }
 
     @Test
@@ -378,9 +295,6 @@ class UserKeywordDataSourceImplTest {
             description = "hello",
         )
         private val TestPatchDescriptionResponse = PatchDescriptionResponse(
-            description = "hello",
-        )
-        private val TestDescriptionResponse = DescriptionResponse(
             description = "hello",
         )
         private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(

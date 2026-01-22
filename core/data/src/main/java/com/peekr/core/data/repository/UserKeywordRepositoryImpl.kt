@@ -218,27 +218,6 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getDescription(
-        userKeywordId: UserKeywordId,
-    ): Flow<Result<KeywordDescription, CommonErrorType>> =
-        safeResultFlow<KeywordDescription, CommonErrorType>(
-            dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
-        ) {
-            emit(Result.Loading)
-
-            when (val result = userKeywordNetworkDataSource.getDescription(userKeywordId)) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
-                }
-
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
-                }
-            }
-        }
-
     override fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, CommonErrorType>> =
         safeResultFlow<UserKeyword, CommonErrorType>(
             dispatcher = ioDispatcher,
