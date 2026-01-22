@@ -260,4 +260,66 @@ abstract class MVIBaseViewModelTest<
         // Clean up
         effectCollectionJob.cancel()
     }
+
+    /**
+     * UI 상태, 일회성 이벤트 동시 테스트 함수
+     *
+     * @param viewModel 테스트 할 뷰모델
+     * @param assertAllState 검증에 모든 상태 포함 여부
+     * @param assertEffectTypeOnly 타입 검증만 실시할 지에 대한 여부
+     * @param intents 수행할 인텐트 (= 이벤트)
+     * @param assertionStates 검증할 UI 상태[State] 리스트
+     * @param assertionEffects 검증할 [Effect]의 리스트
+     */
+    protected fun testAll(
+        viewModel: ViewModel,
+        assertAllState: Boolean = false,
+        assertEffectTypeOnly: Boolean = false,
+        intents: List<Event>,
+        assertionStates: List<State>,
+        assertionEffects: List<Effect>,
+    ): Unit = runTest {
+        // Set ViewModal States, Effects
+        val states = mutableListOf<State>()
+        val effects = mutableListOf<Effect>()
+        val stateCollectionJob =
+            viewModel.viewModelScope.launch {
+                viewModel.uiState.toList(states)
+            }
+        val effectsCollectionJob =
+            viewModel.viewModelScope.launch {
+                viewModel.effect.toList(effects)
+            }
+
+        // Send intent
+        intents.forEach { intent -> viewModel.processEvent(intent) }
+
+        advanceUntilIdle()
+
+        // States assertion
+        if (assertAllState) {
+            assertEquals(assertionStates.size, states.size)
+            assertionStates.zip(states) { assertion, state ->
+                assertEquals(assertion, state)
+            }
+        } else {
+            assertEquals(assertionStates.last(), states.last())
+        }
+
+        // Effects Assertion
+        assertEquals(assertionEffects.size, effects.size)
+        assertionEffects.zip(effects) { assertion, effect ->
+            if (assertEffectTypeOnly) {
+                val assertionClass: KClass<out Effect> = assertion::class
+                val effectClass: KClass<out Effect> = effect::class
+                assertEquals(assertionClass, effectClass)
+            } else {
+                assertEquals(assertion, effect)
+            }
+        }
+
+        // Clean up
+        stateCollectionJob.cancel()
+        effectsCollectionJob.cancel()
+    }
 }
