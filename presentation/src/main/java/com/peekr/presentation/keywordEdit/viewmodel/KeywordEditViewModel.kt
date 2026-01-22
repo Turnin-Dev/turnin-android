@@ -1,5 +1,6 @@
 package com.peekr.presentation.keywordEdit.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.common.error.asUiText
@@ -9,12 +10,14 @@ import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.keywordEdit.usecase.AddUserKeywordUseCase
+import com.peekr.domain.keywordEdit.usecase.GetMyKeywordUseCase
 import com.peekr.domain.keywordEdit.usecase.ValidateKeywordUseCase
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordEdit.error.asUiText
 import com.peekr.presentation.keywordEdit.state.KeywordEditContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -22,9 +25,14 @@ import kotlinx.coroutines.flow.onEach
 class KeywordEditViewModel @Inject constructor(
     private val snackbarController: SnackbarController,
     private val addUserKeywordUseCase: AddUserKeywordUseCase,
+    private val getMyKeywordUseCase: GetMyKeywordUseCase,
     private val validateKeywordUseCase: ValidateKeywordUseCase,
-//    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<KeywordEditContract.UiState, KeywordEditContract.UiEvent, KeywordEditContract.UiEffect>() {
+    private val userKeywordId: Long? by lazy {
+        savedStateHandle.get<Long>("userKeywordId")
+    }
+
     override fun createInitialState(): KeywordEditContract.UiState =
         KeywordEditContract.UiState()
 
@@ -59,6 +67,24 @@ class KeywordEditViewModel @Inject constructor(
 
             KeywordEditContract.UiEvent.CloseScreen -> {
                 sendEffect { KeywordEditContract.UiEffect.CloseScreen }
+            }
+        }
+    }
+
+    override suspend fun loadInitialData() {
+        loadUserKeyword(userKeywordId)
+    }
+
+    private suspend fun loadUserKeyword(userKeywordId: Long?) {
+        userKeywordId?.let {
+            val userKeywordDetail = getMyKeywordUseCase(it).firstOrNull()
+            userKeywordDetail?.let {
+                updateState {
+                    this.copy(
+                        keyword = this.keyword.copy(value = it.keywordName.value),
+                        description = it.description.value,
+                    )
+                }
             }
         }
     }

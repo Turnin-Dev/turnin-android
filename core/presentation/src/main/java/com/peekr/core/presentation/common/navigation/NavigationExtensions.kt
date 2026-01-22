@@ -10,6 +10,11 @@ fun NavController.navigateToReport(
     navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId))
 }
 
+// ------------------------------ KeywordEdit ------------------------------
+fun NavController.navigateToKeywordEdit(userKeywordId: Long?) {
+    navigate(Screens.KeywordEdit(userKeywordId))
+}
+
 // ------------------------------ KeywordDetail ------------------------------
 fun NavController.navigateToKeywordDetail(
     userId: Long,

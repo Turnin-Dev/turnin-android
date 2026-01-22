@@ -85,6 +85,9 @@ sealed interface Screens {
 
     /**
      * 키워드 상세 화면
+     *
+     * @property userKeywordId 사용자 키워드 ID
+     * @property userId 사용자 ID
      */
     @Serializable
     data class KeywordDetail(
@@ -94,22 +97,29 @@ sealed interface Screens {
 
     /**
      * 키워드 수정 화면
+     *
+     * @property userKeywordId 사용자 키워드 ID
      */
     @Serializable
     data class KeywordEdit(
-        val keyword: String?,
-        val description: String?,
+        val userKeywordId: Long?,
     ) : Screens
 
     /**
      * 친구 목록 화면
+     *
+     * @property userId 사용자 ID
      */
     @Serializable
     data class FriendsList(
         val userId: Long,
     ) : Screens
 
-    /** 사용자 프로필 */
+    /**
+     * 사용자 프로필
+     *
+     * @property userId 사용자 ID
+     */
     @Serializable
     data class UserProfile(
         val userId: Long,

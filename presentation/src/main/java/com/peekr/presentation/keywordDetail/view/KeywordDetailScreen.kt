@@ -107,12 +107,15 @@ private fun KeywordDetailScreenFrame(
  * @param modifier [Modifier]
  * @param uiState UI 상태
  * @param onUiEvent UI 이벤트
+ * @param onMoreClick 더보기 클릭 시 콜백
+ * @param onBackPressed 뒤로가기 클릭 시 콜백
  */
 @Composable
 fun KeywordDetailScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordDetailContract.UiState,
     onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
+    onMoreClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     KeywordDetailScreenFrame(
@@ -128,7 +131,7 @@ fun KeywordDetailScreen(
                         .fillMaxWidth()
                         .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                     myKeyword = uiState.myKeyword,
-                    onMoreClick = {},
+                    onMoreClick = onMoreClick,
                     onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
                     onBackPressed = onBackPressed,
                 )
@@ -452,6 +455,7 @@ private fun KeywordDetailScreenPreview() {
                 ),
             ),
             onUiEvent = {},
+            onMoreClick = {},
             onBackPressed = {},
         )
     }
@@ -465,6 +469,7 @@ private fun SkeletonPreview() {
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(loading = true),
             onUiEvent = {},
+            onMoreClick = {},
             onBackPressed = {},
         )
     }
