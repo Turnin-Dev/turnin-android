@@ -20,9 +20,17 @@ interface MyKeywordDao {
     @Upsert
     suspend fun upsert(myKeywordDetail: MyKeywordEntity)
 
-    @Query("UPDATE MyKeywordEntity SET description = :description WHERE userKeywordId = :userKeywordId")
-    suspend fun updateDescription(
+    @Query(
+        """
+        UPDATE MyKeywordEntity
+        SET keywordName = :keywordName,
+            description = :description
+        WHERE userKeywordId = :userKeywordId
+    """,
+    )
+    suspend fun update(
         userKeywordId: Long,
+        keywordName: String,
         description: String,
     )
 

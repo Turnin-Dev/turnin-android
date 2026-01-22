@@ -3,8 +3,7 @@ package com.peekr.core.data.source.network.datasource
 import com.peekr.core.data.source.network.api.UserKeywordApi
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
@@ -25,12 +24,11 @@ class UserKeywordNetworkDataSourceImpl @Inject constructor(
     ): NetworkResult<UserKeywordResponse> =
         networkCall { userKeywordApi.createUserKeyword(createUserKeywordRequest) }
 
-    override suspend fun patchDescription(
-        userKeywordId: UserKeywordId,
-        patchDescriptionRequest: PatchDescriptionRequest,
-    ): NetworkResult<PatchDescriptionResponse> =
-        networkCall {
-            userKeywordApi.patchDescription(userKeywordId.value, patchDescriptionRequest)
+    override suspend fun patch(
+        patchUserKeywordRequest: PatchUserKeywordRequest,
+    ): NetworkResult<Unit> =
+        networkCallWithoutResponse {
+            userKeywordApi.patch(patchUserKeywordRequest)
         }
 
     override suspend fun deleteUserKeyword(

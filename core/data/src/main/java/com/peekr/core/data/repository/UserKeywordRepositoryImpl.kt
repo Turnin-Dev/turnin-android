@@ -28,7 +28,7 @@ import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserInfo
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
@@ -239,28 +239,23 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun patchDescription(
-        userKeywordId: UserKeywordId,
-        patchDescription: PatchDescription,
-    ): Flow<Result<PatchDescription, CommonErrorType>> =
-        safeResultFlow<PatchDescription, CommonErrorType>(
+    override fun update(
+        patchUserKeyword: PatchUserKeyword,
+    ): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(
             dispatcher = ioDispatcher,
             unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
-            when (
-                val result = userKeywordNetworkDataSource.patchDescription(
-                    userKeywordId,
-                    patchDescription.toDataModel(),
-                )
-            ) {
+            when (val result = userKeywordNetworkDataSource.patch(patchUserKeyword.toDataModel())) {
                 is NetworkResult.Success -> {
-                    myKeywordDao.updateDescription(
-                        userKeywordId = userKeywordId.value,
-                        description = patchDescription.description.value,
+                    myKeywordDao.update(
+                        userKeywordId = patchUserKeyword.userKeywordId.value,
+                        keywordName = patchUserKeyword.keywordName.value,
+                        description = patchUserKeyword.description.value,
                     )
-                    emit(Result.Success(result.data.toDomainModel()))
+                    emit(Result.Success(Unit))
                 }
 
                 is NetworkResult.Error -> {

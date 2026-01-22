@@ -5,8 +5,7 @@ import com.peekr.core.data.source.network.api.UserKeywordApi
 import com.peekr.core.data.source.network.dto.common.UserInfoResponse
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordsResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
@@ -121,45 +120,33 @@ class UserKeywordDataSourceImplTest {
     }
 
     @Test
-    fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
+    fun `사용자 키워드 수정 - 성공 테스트`() = runTest {
         // given
-        val expectedResponse = testRule.encodeToJson(TestPatchDescriptionResponse)
         testRule.server.enqueue(
             MockResponse().apply {
                 setResponseCode(200)
-                setBody(expectedResponse)
             },
         )
 
         // when
-        val response = dataSource.patchDescription(
-            userKeywordId = TestUserKeywordId,
-            patchDescriptionRequest = TestPatchDescriptionRequest,
-        )
+        val response = dataSource.patch(TestPatchUserKeywordRequest)
 
         // then
-        val success = response as NetworkResult.Success
-        assertEquals(success.data.description, TestPatchDescriptionResponse.description)
+        assertTrue(response is NetworkResult.Success)
     }
 
     @Test
-    fun `사용자 키워드 설명 수정 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 수정 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
         // given
         val mockApi: UserKeywordApi = mockk()
         val exception = Exception()
         dataSource = UserKeywordNetworkDataSourceImpl(mockApi)
         coEvery {
-            mockApi.patchDescription(
-                userKeywordId = TestUserKeywordId.value,
-                patchDescriptionRequest = TestPatchDescriptionRequest,
-            )
+            mockApi.patch(patchUserKeywordRequest = TestPatchUserKeywordRequest)
         } throws exception
 
         // when
-        val response = dataSource.patchDescription(
-            userKeywordId = TestUserKeywordId,
-            patchDescriptionRequest = TestPatchDescriptionRequest,
-        )
+        val response = dataSource.patch(TestPatchUserKeywordRequest)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -170,7 +157,7 @@ class UserKeywordDataSourceImplTest {
     }
 
     @Test
-    fun `사용자 키워드 설명 수정 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 수정 - HTTP 상태코드 404 응답 시 NotFound 에러를 반환한다`() = runTest {
         // given
         testRule.server.enqueue(
             MockResponse().apply {
@@ -179,10 +166,7 @@ class UserKeywordDataSourceImplTest {
         )
 
         // when
-        val response = dataSource.patchDescription(
-            userKeywordId = TestUserKeywordId,
-            patchDescriptionRequest = TestPatchDescriptionRequest,
-        )
+        val response = dataSource.patch(TestPatchUserKeywordRequest)
 
         // then
         assertTrue(response is NetworkResult.Error)
@@ -291,12 +275,6 @@ class UserKeywordDataSourceImplTest {
             keyword = TEST_KEYWORD_NAME,
             description = "sample",
         )
-        private val TestPatchDescriptionRequest = PatchDescriptionRequest(
-            description = "hello",
-        )
-        private val TestPatchDescriptionResponse = PatchDescriptionResponse(
-            description = "hello",
-        )
         private val TestUserKeywordDetailResponse = UserKeywordDetailResponse(
             userKeywordId = TestUserKeywordId.value,
             keywordId = TestKeywordId.value,
@@ -309,6 +287,11 @@ class UserKeywordDataSourceImplTest {
             ),
             createdAt = 0L,
             updatedAt = 0L,
+        )
+        private val TestPatchUserKeywordRequest = PatchUserKeywordRequest(
+            userKeywordId = 1L,
+            keywordName = "newKeyword",
+            description = "newDescription",
         )
     }
 }

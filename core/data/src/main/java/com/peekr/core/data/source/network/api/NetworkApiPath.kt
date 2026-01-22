@@ -25,7 +25,6 @@ object NetworkApiPath {
 
     object UserKeyword {
         const val ROUTE = "$BASE/user-keyword"
-        const val DESCRIPTION = "$ROUTE/description"
         const val DETAIL = "$ROUTE/{userKeywordId}/detail"
     }
 

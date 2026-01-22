@@ -2,8 +2,7 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.request.PatchUserKeywordRequest
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.model.UserKeywordId
@@ -29,15 +28,13 @@ interface UserKeywordNetworkDataSource {
     ): NetworkResult<UserKeywordResponse>
 
     /**
-     * 사용자 키워드 설명 수정
+     * 사용자 키워드 수정
      *
-     * @param userKeywordId 사용자 키워드 ID,
-     * @param patchDescriptionRequest 사용자 키워드 설명 수정 요청 바디
+     * @param patchUserKeywordRequest 사용자 키워드 수정 요청 바디
      */
-    suspend fun patchDescription(
-        userKeywordId: UserKeywordId,
-        patchDescriptionRequest: PatchDescriptionRequest,
-    ): NetworkResult<PatchDescriptionResponse>
+    suspend fun patch(
+        patchUserKeywordRequest: PatchUserKeywordRequest,
+    ): NetworkResult<Unit>
 
     /**
      * 사용자 키워드 삭제

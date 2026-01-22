@@ -15,8 +15,7 @@ import com.peekr.core.data.source.network.dto.common.UserInfoResponse
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
 import com.peekr.core.data.source.network.dto.common.toDomainModel
 import com.peekr.core.data.source.network.dto.userKeyword.request.CreateUserKeywordRequest
-import com.peekr.core.data.source.network.dto.userKeyword.request.PatchDescriptionRequest
-import com.peekr.core.data.source.network.dto.userKeyword.response.PatchDescriptionResponse
+import com.peekr.core.data.source.network.dto.userKeyword.request.toDataModel
 import com.peekr.core.data.source.network.dto.userKeyword.response.UserKeywordResponse
 import com.peekr.core.data.source.network.dto.userKeyword.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
@@ -30,7 +29,7 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -359,56 +358,38 @@ class UserKeywordRepositoryImplTest {
         }
     }
 
-    // ------------------------------ patchDescription() ------------------------------
+    // ------------------------------ update() ------------------------------
 
     @Test
-    fun `사용자 키워드 설명 수정 - 성공 테스트`() = runTest {
+    fun `사용자 키워드 수정 - 성공 테스트`() = runTest {
         // given
         coEvery {
-            userKeywordNetworkDataSource.patchDescription(
-                userKeywordId = TestUserKeywordId,
-                patchDescriptionRequest = TestPatchDescriptionRequest,
-            )
-        } returns NetworkResult.Success(TestPatchDescriptionResponse)
+            userKeywordNetworkDataSource.patch(TestPatchUserKeyword.toDataModel())
+        } returns NetworkResult.Success(Unit)
         coEvery {
-            myKeywordDao.updateDescription(any(), any())
+            myKeywordDao.update(any(), any(), any())
         } just Runs
 
         // when
-        val result = repository
-            .patchDescription(
-                userKeywordId = TestUserKeywordId,
-                patchDescription = TestPatchDescription,
-            ).last()
+        val result = repository.update(TestPatchUserKeyword).last()
 
         // then
         assertTrue(result is Result.Success)
-        assertEquals(
-            TestPatchDescription,
-            (result as Result.Success).data,
-        )
     }
 
     @Test
-    fun `사용자 키워드 설명 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            userKeywordNetworkDataSource.patchDescription(
-                userKeywordId = TestUserKeywordId,
-                patchDescriptionRequest = TestPatchDescriptionRequest,
-            )
+            userKeywordNetworkDataSource.patch(TestPatchUserKeyword.toDataModel())
         } returns NetworkResult.Error(expectedError)
         coEvery {
-            myKeywordDao.updateDescription(any(), any())
+            myKeywordDao.update(any(), any(), any())
         } just Runs
 
         // when
-        val result = repository
-            .patchDescription(
-                userKeywordId = TestUserKeywordId,
-                patchDescription = TestPatchDescription,
-            ).last()
+        val result = repository.update(TestPatchUserKeyword).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -419,25 +400,18 @@ class UserKeywordRepositoryImplTest {
     }
 
     @Test
-    fun `사용자 키워드 설명 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `사용자 키워드 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery {
-            userKeywordNetworkDataSource.patchDescription(
-                userKeywordId = TestUserKeywordId,
-                patchDescriptionRequest = TestPatchDescriptionRequest,
-            )
+            userKeywordNetworkDataSource.patch(TestPatchUserKeyword.toDataModel())
         } throws exception
         coEvery {
-            myKeywordDao.updateDescription(any(), any())
+            myKeywordDao.update(any(), any(), any())
         } just Runs
 
         // when
-        val result = repository
-            .patchDescription(
-                userKeywordId = TestUserKeywordId,
-                patchDescription = TestPatchDescription,
-            ).last()
+        val result = repository.update(TestPatchUserKeyword).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -538,13 +512,6 @@ class UserKeywordRepositoryImplTest {
             keyword = TestKeyword,
             description = TestKeywordDescription,
         )
-        private val TestPatchDescription = PatchDescription(KeywordDescription("hello"))
-        private val TestPatchDescriptionRequest = PatchDescriptionRequest(
-            description = TestPatchDescription.description.value,
-        )
-        private val TestPatchDescriptionResponse = PatchDescriptionResponse(
-            description = TestPatchDescription.description.value,
-        )
         private val TestMyKeywordEntity = MyKeywordEntity(
             userKeywordId = 1L,
             keywordId = 1L,
@@ -586,6 +553,11 @@ class UserKeywordRepositoryImplTest {
             lastLoginAt = 1000L,
             friendsCount = 10,
             active = true,
+        )
+        private val TestPatchUserKeyword = PatchUserKeyword(
+            userKeywordId = UserKeywordId(1L),
+            keywordName = KeywordName("newKeyword"),
+            description = KeywordDescription("newDescription"),
         )
     }
 }
