@@ -83,20 +83,16 @@
     <string name="keyword_detail_screen_top_bar_option">더보기</string>
     <string name="keyword_detail_screen_top_bar_option_2">게시글 신고</string>
     <string name="keyword_detail_screen_error_load_failed">데이터 로드에 실패했습니다. 다시 시도해주세요.</string>
-    <!-- MyKeywordOptionModal -->
-    <string name="my_keyword_option_modal_edit">수정</string>
-    <string name="my_keyword_option_modal_delete">삭제</string>
-    <!-- KeywordDetailModal -->
-    <string name="keyword_detail_modal_tab_bar_title_1">내용</string>
-    <string name="keyword_detail_modal_tab_bar_title_2">다른 사람들</string>
-    <string name="keyword_detail_modal_desc_cancel">취소</string>
-    <string name="keyword_detail_modal_desc_edit">수정</string>
-    <string name="keyword_detail_modal_desc_edit_accept">수정 완료</string>
-    <string name="keyword_detail_modal_desc_if_empty">아직 내용을 작성하지 않았어요.</string>
-    <!-- KeywordDetailModal Error -->
-    <string name="keyword_detail_modal_error_nav_arg_null">초기 데이터 로드에 실패했습니다. 다시 시도해주세요.</string>
-    <string name="keyword_detail_modal_error_unexpected">키워드 조회에 문제가 발생했습니다. 다시 시도해주세요.</string>
-    <string name="keyword_detail_modal_error_user_id_not_found">사용자를 찾지 못했습니다.</string>
+    <!-- Option Modal -->
+    <string name="keyword_detail_option_modal_edit">수정</string>
+    <string name="keyword_detail_option_modal_delete">삭제</string>
+    <!-- Safe Delete Modal -->
+    <string name="keyword_detail_safe_delete_modal_title">키워드를 삭제하시겠습니까?</string>
+    <!-- KeywordDetail Error -->
+    <string name="keyword_detail_error_unexpected">키워드 조회에 문제가 발생했습니다. 다시 시도해주세요.</string>
+    <string name="keyword_detail_error_user_id_not_found">사용자를 찾지 못했습니다.</string>
+    <!-- KeywordDetail Success -->
+    <string name="keyword_detail_success_delete_keyword">키워드를 삭제했습니다.</string>
 
     <!-- Report -->
     <string name="report_block_modal_report">신고</string>

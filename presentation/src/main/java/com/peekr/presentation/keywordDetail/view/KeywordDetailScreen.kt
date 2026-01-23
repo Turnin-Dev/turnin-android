@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
@@ -118,55 +119,61 @@ fun KeywordDetailScreen(
     onMoreClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    KeywordDetailScreenFrame(
-        modifier = modifier.fillMaxSize(),
-        isRefreshing = uiState.loading,
-        onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.OnRefresh) },
-        topBar = {
-            if (uiState.loading) {
-                TopBarSkeleton()
-            } else {
-                TopBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                    myKeyword = uiState.myKeyword,
-                    onMoreClick = onMoreClick,
-                    onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
-                    onBackPressed = onBackPressed,
-                )
-            }
-        },
-        contents = {
-            if (uiState.loading) {
-                ContentsSkeleton()
-            } else {
-                uiState.keywordDetail?.let {
-                    Contents(
+    Box(modifier) {
+        KeywordDetailScreenFrame(
+            modifier = Modifier.fillMaxSize(),
+            isRefreshing = uiState.loading,
+            onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.OnRefresh) },
+            topBar = {
+                if (uiState.loading) {
+                    TopBarSkeleton()
+                } else {
+                    TopBar(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                        userName = uiState.keywordDetail.userName,
-                        profileImageUrl = uiState.keywordDetail.profileImageUrl,
-                        createdAt = uiState.keywordDetail.createdAt,
-                        keyword = uiState.keywordDetail.keyword,
-                        description = uiState.keywordDetail.description,
+                            .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                        myKeyword = uiState.myKeyword,
+                        onMoreClick = onMoreClick,
+                        onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
+                        onBackPressed = onBackPressed,
                     )
                 }
-            }
-        },
-        comments = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(500.dp)
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.TopCenter,
-            ) {
-                Text("댓글 영역")
-            }
-        },
-    )
+            },
+            contents = {
+                if (uiState.loading) {
+                    ContentsSkeleton()
+                } else {
+                    uiState.keywordDetail?.let {
+                        Contents(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp),
+                            userName = uiState.keywordDetail.userName,
+                            profileImageUrl = uiState.keywordDetail.profileImageUrl,
+                            createdAt = uiState.keywordDetail.createdAt,
+                            keyword = uiState.keywordDetail.keyword,
+                            description = uiState.keywordDetail.description,
+                        )
+                    }
+                }
+            },
+            comments = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)
+                        .background(Color.LightGray),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    Text("댓글 영역")
+                }
+            },
+        )
+
+        if (uiState.fullScreenLoading) {
+            PeekrLoadingScreen()
+        }
+    }
 }
 
 /**

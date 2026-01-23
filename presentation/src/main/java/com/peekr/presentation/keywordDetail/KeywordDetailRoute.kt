@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.presentation.common.util.ObserveAsEvents
+import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 import com.peekr.presentation.keywordDetail.view.KeywordDetailScreen
 import com.peekr.presentation.keywordDetail.view.MyKeywordOptionModal
+import com.peekr.presentation.keywordDetail.view.modal.SafeDeleteModal
 import com.peekr.presentation.keywordDetail.viewmodel.KeywordDetailViewModel
 import kotlinx.coroutines.launch
 
@@ -28,7 +30,8 @@ fun KeywordDetailRoute(
 ) {
     val viewModel: KeywordDetailViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var myKeywordOptionModal by remember { mutableStateOf(false) }
+    var isOptionModalOpen by remember { mutableStateOf(false) }
+    var isDeleteModalOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -37,32 +40,51 @@ fun KeywordDetailRoute(
             is KeywordDetailContract.UiEffect.NavigateToReport -> {
                 onNavigateToReport(it.userId, it.userKeywordId)
             }
+
+            KeywordDetailContract.UiEffect.CloseScreen -> {
+                onBackPressed()
+            }
         }
     }
 
-    if (myKeywordOptionModal) {
+    if (isOptionModalOpen) {
         MyKeywordOptionModal(
             sheetState = sheetState,
-            onDismissRequest = { myKeywordOptionModal = false },
+            onDismissRequest = { isOptionModalOpen = false },
             onEdit = {
-                myKeywordOptionModal = false
+                isOptionModalOpen = false
                 onNavigateToKeywordEdit(uiState.keywordDetail?.userKeywordId)
             },
-            onDelete = {},
+            onDelete = {
+                isDeleteModalOpen = true
+                isOptionModalOpen = false
+            },
             onCancel = {
                 coroutineScope.launch {
                     sheetState.hide()
-                    myKeywordOptionModal = false
+                    isOptionModalOpen = false
                 }
             },
         )
     }
 
+    SafeDeleteModal(
+        isOpen = isDeleteModalOpen,
+        title = R.string.keyword_detail_safe_delete_modal_title,
+        onAcceptClick = {
+            viewModel.processEvent(KeywordDetailContract.UiEvent.OnDelete)
+            isDeleteModalOpen = false
+        },
+        onCancelClick = {
+            isDeleteModalOpen = false
+        },
+    )
+
     KeywordDetailScreen(
         modifier = Modifier.fillMaxSize(),
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
-        onMoreClick = { myKeywordOptionModal = true },
+        onMoreClick = { isOptionModalOpen = true },
         onBackPressed = onBackPressed,
     )
 }

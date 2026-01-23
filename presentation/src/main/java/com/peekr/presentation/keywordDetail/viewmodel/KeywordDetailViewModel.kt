@@ -72,6 +72,10 @@ class KeywordDetailViewModel @Inject constructor(
                     )
                 }
             }
+
+            KeywordDetailContract.UiEvent.OnDelete -> {
+                deleteKeyword()
+            }
         }
     }
 
@@ -143,6 +147,35 @@ class KeywordDetailViewModel @Inject constructor(
                             error = null,
                             keywordDetail = result.data.toUiModel(),
                         )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteKeyword() {
+        usecase.deleteKeyword(currentUserKeywordId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(fullScreenLoading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(fullScreenLoading = false)
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(fullScreenLoading = false)
+                    }
+                    showSnackBar(UiText.StringResource(R.string.keyword_detail_success_delete_keyword))
+                    sendEffect {
+                        KeywordDetailContract.UiEffect.CloseScreen
                     }
                 }
             }

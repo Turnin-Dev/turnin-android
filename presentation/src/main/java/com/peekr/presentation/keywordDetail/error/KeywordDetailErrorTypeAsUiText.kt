@@ -7,7 +7,7 @@ import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.presentation.R
 
 internal fun KeywordDetailErrorType.asUiText(): UiText = when (this) {
-    is KeywordDetailErrorType.Unexpected -> StringResource(R.string.keyword_detail_modal_error_unexpected)
+    is KeywordDetailErrorType.Unexpected -> StringResource(R.string.keyword_detail_error_unexpected)
     is KeywordDetailErrorType.CommonError -> this.error.asUiText()
-    KeywordDetailErrorType.UserIdNotFound -> StringResource(R.string.keyword_detail_modal_error_user_id_not_found)
+    KeywordDetailErrorType.UserIdNotFound -> StringResource(R.string.keyword_detail_error_user_id_not_found)
 }

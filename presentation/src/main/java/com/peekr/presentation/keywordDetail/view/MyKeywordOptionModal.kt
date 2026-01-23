@@ -48,12 +48,12 @@ fun MyKeywordOptionModal(
             modifier = contentModifier.fillMaxWidth(),
             onCancel = onCancel,
             ModalContentToken(
-                stringResource(R.string.my_keyword_option_modal_edit),
+                stringResource(R.string.keyword_detail_option_modal_edit),
                 PeekrTheme.colorScheme.textNormal,
                 onEdit,
             ),
             ModalContentToken(
-                stringResource(R.string.my_keyword_option_modal_delete),
+                stringResource(R.string.keyword_detail_option_modal_delete),
                 PeekrTheme.colorScheme.statusNegative,
                 onDelete,
             ),
