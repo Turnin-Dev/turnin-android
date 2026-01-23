@@ -7,7 +7,9 @@ fun NavController.navigateToReport(
     reportedId: Long?,
     reportedUserKeywordId: Long?,
 ) {
-    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId))
+    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId)) {
+        launchSingleTop = true
+    }
 }
 
 // ------------------------------ KeywordEdit ------------------------------
