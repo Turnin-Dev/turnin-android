@@ -2,6 +2,11 @@ package com.peekr.core.presentation.common.navigation
 
 import androidx.navigation.NavController
 
+// ------------------------------ UserProfile ------------------------------
+fun NavController.navigateToUserProfile(userId: Long) {
+    navigate(Screens.UserProfile(userId))
+}
+
 // ------------------------------ Report ------------------------------
 fun NavController.navigateToReport(
     reportedId: Long?,
@@ -28,4 +33,9 @@ fun NavController.navigateToKeywordDetail(
             userId = userId,
         ),
     )
+}
+
+// ------------------------------ FriendsList ------------------------------
+fun NavController.navigateToFriendsList(userId: Long) {
+    navigate(Screens.FriendsList(userId))
 }

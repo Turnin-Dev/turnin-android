@@ -43,10 +43,19 @@ import com.peekr.presentation.R
 import com.peekr.presentation.friend.model.UiFriendInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * 친구 목록 화면
+ *
+ * @param modifier [Modifier]
+ * @param friends 친구 목록
+ * @param onFriendClick 친구 클릭 시 콜백
+ * @param onBackPress 뒤로 가기 클릭 시 콜백
+ */
 @Composable
 fun FriendListScreen(
     modifier: Modifier = Modifier,
     friends: LazyPagingItems<UiFriendInfo>,
+    onFriendClick: (UiFriendInfo) -> Unit,
     onBackPress: () -> Unit,
 ) {
     FriendListFrame(
@@ -63,7 +72,7 @@ fun FriendListScreen(
             FriendList(
                 modifier = Modifier.fillMaxSize(),
                 friends = friends,
-                onFriendClick = {},
+                onFriendClick = onFriendClick,
             )
         },
     )
@@ -383,6 +392,7 @@ private fun FriendListScreenPreview() {
         FriendListScreen(
             modifier = Modifier.fillMaxSize(),
             friends = friends,
+            onFriendClick = {},
             onBackPress = {},
         )
     }
