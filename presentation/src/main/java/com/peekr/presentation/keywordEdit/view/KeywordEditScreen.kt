@@ -122,7 +122,7 @@ fun KeywordEditScreen(
                         .fillMaxWidth()
                         .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                     onAddClick = {
-                        onUiEvent(KeywordEditContract.UiEvent.AddKeyword)
+                        onUiEvent(KeywordEditContract.UiEvent.AddOrUpdateKeyword)
                     },
                     onBackPressed = {
                         onUiEvent(KeywordEditContract.UiEvent.SafeBackPressed)

@@ -18,7 +18,7 @@ fun NavGraphBuilder.userProfileNavigation(
                 bottomNavController.popBackStack()
             },
             navigateToReport = { reportedId ->
-                bottomNavController.navigateToReport(reportedId)
+                appNavController.navigateToReport(reportedId, null)
             },
             navigateToKeywordDetail = { userId, userKeywordId ->
                 appNavController.navigateToKeywordDetail(userId, userKeywordId)

@@ -25,12 +25,16 @@ class GetUserKeywordsUseCase @Inject constructor(
      * 사용자 키워드 리스트를 조회한다.
      *
      * @param userId 조회할 사용자 ID
+     * @param forceRefresh 강제 새로고침 (캐시를 무효화하고 데이터를 새롭게 받아온다.)
      */
-    operator fun invoke(userId: Long): Flow<Result<List<UserKeyword>, ProfileErrorType>> =
+    operator fun invoke(
+        userId: Long,
+        forceRefresh: Boolean = false,
+    ): Flow<Result<List<UserKeyword>, ProfileErrorType>> =
         flow {
             val userIdVO = UserId(userId)
             emitAll(
-                userKeywordRepository.getUserKeywords(userIdVO)
+                userKeywordRepository.getUserKeywords(userIdVO, forceRefresh)
                     .mapSuccess {
                         it.map { it.toNonDetail() }
                     }

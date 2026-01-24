@@ -28,7 +28,7 @@ import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserInfo
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
@@ -129,6 +129,8 @@ class UserKeywordRepositoryImpl @Inject constructor(
         userKeywordId: UserKeywordId,
     ): Flow<Result<UserKeywordDetail, CommonErrorType>> =
         safeResultFlow<UserKeywordDetail, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+
             val myUserId = dataStoreManager.getLongData(DataStoreKey.User.UserId).first()
             if (myUserId == null) {
                 emit(Result.Error(CommonErrorType.Local.UserIdNotFound))
@@ -167,6 +169,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     AppLogger.d(tag, "My keywords refresh successful")
                     val myKeywords = result.data.map { it.toDomainModel() }
+                    myKeywordDao.deleteAll()
                     myKeywordDao.upsertAll(myKeywords.map { it.toEntity() })
                     emit(Result.Success(Unit))
                 }
@@ -179,7 +182,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>> =
+    override fun getUserKeywords(
+        userId: UserId,
+        forceRefresh: Boolean,
+    ): Flow<Result<List<UserKeywordDetail>, CommonErrorType>> =
         safeResultFlow<List<UserKeywordDetail>, CommonErrorType>(
             ioDispatcher,
             { CommonErrorType.Unexpected(it) },
@@ -187,7 +193,9 @@ class UserKeywordRepositoryImpl @Inject constructor(
             // 만약, 사용자 키워드 리스트 개수 제한이 없다면 메모리 캐시 대신 로컬 DB를 통해 페이징을 진행해야 한다.
 
             // 1. 메모리 리스트 캐시에서 조회 (있다면 즉시 반환)
-            val cachedDetails = memoryListCache[userId]
+            // 단, forceRefresh가 true면 강제로 null 반환
+            val cachedDetails = if (!forceRefresh) memoryListCache[userId] else null
+
             if (cachedDetails != null) {
                 emit(Result.Success(cachedDetails))
             } else {
@@ -207,27 +215,6 @@ class UserKeywordRepositoryImpl @Inject constructor(
                         val error = result.error.toCommonErrorType()
                         emit(Result.Error(error = error, message = result.message))
                     }
-                }
-            }
-        }
-
-    override fun getDescription(
-        userKeywordId: UserKeywordId,
-    ): Flow<Result<KeywordDescription, CommonErrorType>> =
-        safeResultFlow<KeywordDescription, CommonErrorType>(
-            dispatcher = ioDispatcher,
-            unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
-        ) {
-            emit(Result.Loading)
-
-            when (val result = userKeywordNetworkDataSource.getDescription(userKeywordId)) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
-                }
-
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
                 }
             }
         }
@@ -253,28 +240,23 @@ class UserKeywordRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun patchDescription(
-        userKeywordId: UserKeywordId,
-        patchDescription: PatchDescription,
-    ): Flow<Result<PatchDescription, CommonErrorType>> =
-        safeResultFlow<PatchDescription, CommonErrorType>(
+    override fun update(
+        patchUserKeyword: PatchUserKeyword,
+    ): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(
             dispatcher = ioDispatcher,
             unexpectedErrorMapper = { CommonErrorType.Unexpected(it) },
         ) {
             emit(Result.Loading)
 
-            when (
-                val result = userKeywordNetworkDataSource.patchDescription(
-                    userKeywordId,
-                    patchDescription.toDataModel(),
-                )
-            ) {
+            when (val result = userKeywordNetworkDataSource.patch(patchUserKeyword.toDataModel())) {
                 is NetworkResult.Success -> {
-                    myKeywordDao.updateDescription(
-                        userKeywordId = userKeywordId.value,
-                        description = patchDescription.description.value,
+                    myKeywordDao.update(
+                        userKeywordId = patchUserKeyword.userKeywordId.value,
+                        keywordName = patchUserKeyword.keywordName.value,
+                        description = patchUserKeyword.description.value,
                     )
-                    emit(Result.Success(result.data.toDomainModel()))
+                    emit(Result.Success(Unit))
                 }
 
                 is NetworkResult.Error -> {

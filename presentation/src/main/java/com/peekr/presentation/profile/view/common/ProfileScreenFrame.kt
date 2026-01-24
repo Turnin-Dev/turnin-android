@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 
 /**
  * 프로필 화면 프레임
@@ -31,6 +35,8 @@ import com.peekr.core.designsystem.util.token.ScreenTokens
  * 키워드 리스트 영역([keywords])은 [LazyListScope] 범위이고 필수 패딩을 직접 적용해줘야 한다.
  *
  * @param modifier [Modifier]
+ * @param isRefreshing 새로고침 여부
+ * @param onRefresh 새로고침 콜백
  * @param topBar 탑바 영역
  * @param profile 프로필 영역
  * @param keywordsTitle 키워드 타이틀 텍스트
@@ -39,52 +45,69 @@ import com.peekr.core.designsystem.util.token.ScreenTokens
 @Composable
 fun ProfileScreenFrame(
     modifier: Modifier = Modifier,
+    isRefreshing: Boolean = false,
+    onRefresh: () -> Unit,
     topBar: @Composable ColumnScope.() -> Unit,
     profile: @Composable ColumnScope.() -> Unit,
     keywordsTitle: @Composable BoxScope.() -> Unit,
     keywords: LazyListScope.() -> Unit,
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
+    val lazyListState = rememberLazyListState()
+
     Column(modifier) {
         // TopBar
         topBar()
 
-        LazyColumn(contentPadding = PaddingValues(bottom = 10.dp)) {
-            // Profile
-            item {
-                Column(
-                    Modifier
-                        .padding(
-                            horizontal = ScreenTokens.HorizontalPadding,
-                            vertical = 10.dp,
-                        ),
-                ) {
-                    profile()
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
+            state = pullToRefreshState,
+            isRefreshing = isRefreshing,
+            onRefresh = { onRefresh() },
+            indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState,
+                contentPadding = PaddingValues(bottom = 30.dp),
+                overscrollEffect = null,
+            ) {
+                // Profile
+                item {
+                    Column(
+                        Modifier
+                            .padding(
+                                horizontal = ScreenTokens.HorizontalPadding,
+                                vertical = 10.dp,
+                            ),
+                    ) {
+                        profile()
+                    }
                 }
-            }
 
-            // Divider
-            item {
-                DividerSection(Modifier.fillMaxWidth())
-            }
-
-            // Keywords Title
-            stickyHeader {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(PeekrTheme.colorScheme.backgroundNormal)
-                        .padding(
-                            horizontal = ScreenTokens.HorizontalPadding,
-                            vertical = 10.dp,
-                        ),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    keywordsTitle()
+                // Keywords Title
+                stickyHeader {
+                    Column {
+                        // Divider
+                        DividerSection(Modifier.fillMaxWidth())
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(PeekrTheme.colorScheme.backgroundNormal)
+                                .padding(
+                                    horizontal = ScreenTokens.HorizontalPadding,
+                                    vertical = 10.dp,
+                                ),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            keywordsTitle()
+                        }
+                    }
                 }
-            }
 
-            // Keywords
-            keywords()
+                // Keywords
+                keywords()
+            }
         }
     }
 }
@@ -104,6 +127,8 @@ private fun ProfileScreenFramePreview() {
     PeekrAppTheme {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
+            isRefreshing = false,
+            onRefresh = {},
             topBar = {
                 Box(
                     Modifier

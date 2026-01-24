@@ -97,9 +97,13 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getUserProfile(userId: UserId): Flow<Result<CoreUserProfile, CommonErrorType>> =
+    override fun getUserProfile(
+        userId: UserId,
+        forceRefresh: Boolean,
+    ): Flow<Result<CoreUserProfile, CommonErrorType>> =
         safeResultFlow<CoreUserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            val cachedProfile = memoryCache[userId.value]
+            val cachedProfile = if (!forceRefresh) memoryCache[userId.value] else null
+
             if (cachedProfile != null) {
                 emit(Result.Success(cachedProfile))
             } else {

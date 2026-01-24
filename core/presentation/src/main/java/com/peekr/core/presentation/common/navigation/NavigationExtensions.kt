@@ -2,11 +2,24 @@ package com.peekr.core.presentation.common.navigation
 
 import androidx.navigation.NavController
 
+// ------------------------------ UserProfile ------------------------------
+fun NavController.navigateToUserProfile(userId: Long) {
+    navigate(Screens.UserProfile(userId))
+}
+
 // ------------------------------ Report ------------------------------
 fun NavController.navigateToReport(
-    reportedId: Long,
+    reportedId: Long?,
+    reportedUserKeywordId: Long?,
 ) {
-    navigate(SubGraph.Report.Root(reportedId))
+    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId)) {
+        launchSingleTop = true
+    }
+}
+
+// ------------------------------ KeywordEdit ------------------------------
+fun NavController.navigateToKeywordEdit(userKeywordId: Long?) {
+    navigate(Screens.KeywordEdit(userKeywordId))
 }
 
 // ------------------------------ KeywordDetail ------------------------------
@@ -20,4 +33,9 @@ fun NavController.navigateToKeywordDetail(
             userId = userId,
         ),
     )
+}
+
+// ------------------------------ FriendsList ------------------------------
+fun NavController.navigateToFriendsList(userId: Long) {
+    navigate(Screens.FriendsList(userId))
 }

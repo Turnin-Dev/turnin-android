@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
+import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
@@ -36,6 +39,7 @@ import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.model.UiKeywordDetail
@@ -45,6 +49,8 @@ import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
  * 키워드 상세 화면 프레임
  *
  * @param modifier [Modifier]
+ * @param isRefreshing 새로고침 여부
+ * @param onRefresh 새로고침 콜백
  * @param topBar 탑바 영역
  * @param contents 컨텐츠 영역(사용자 정보, 키워드, 내용 등)
  * @param comments 댓글 영역
@@ -52,34 +58,46 @@ import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
 @Composable
 private fun KeywordDetailScreenFrame(
     modifier: Modifier = Modifier,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     topBar: @Composable ColumnScope.() -> Unit,
     contents: @Composable ColumnScope.() -> Unit,
     comments: @Composable ColumnScope.() -> Unit,
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
+
     Column(modifier = modifier) {
         // 탑바
         topBar()
 
-        // 컨텐츠, 댓글
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = ScreenTokens.HorizontalPadding)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(30.dp),
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
+            state = pullToRefreshState,
+            isRefreshing = isRefreshing,
+            onRefresh = { onRefresh() },
+            indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
         ) {
-            // 컨텐츠
-            contents()
+            // 컨텐츠, 댓글
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = ScreenTokens.HorizontalPadding)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(30.dp),
+            ) {
+                // 컨텐츠
+                contents()
 
-            // 구분선
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 0.35.dp,
-                color = PeekrTheme.colorScheme.lineDivider,
-            )
+                // 구분선
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 0.35.dp,
+                    color = PeekrTheme.colorScheme.lineDivider,
+                )
 
-            // 댓글
-            comments()
+                // 댓글
+                comments()
+            }
         }
     }
 }
@@ -89,59 +107,73 @@ private fun KeywordDetailScreenFrame(
  *
  * @param modifier [Modifier]
  * @param uiState UI 상태
+ * @param onUiEvent UI 이벤트
+ * @param onMoreClick 더보기 클릭 시 콜백
+ * @param onBackPressed 뒤로가기 클릭 시 콜백
  */
 @Composable
 fun KeywordDetailScreen(
     modifier: Modifier = Modifier,
     uiState: KeywordDetailContract.UiState,
+    onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
+    onMoreClick: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
-    KeywordDetailScreenFrame(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            if (uiState.loading) {
-                TopBarSkeleton()
-            } else {
-                TopBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                    myKeyword = uiState.myKeyword,
-                    onMoreClick = {},
-                    onReportClick = {},
-                    onBackPressed = {},
-                )
-            }
-        },
-        contents = {
-            if (uiState.loading) {
-                ContentsSkeleton()
-            } else {
-                uiState.keywordDetail?.let {
-                    Contents(
+    Box(modifier) {
+        KeywordDetailScreenFrame(
+            modifier = Modifier.fillMaxSize(),
+            isRefreshing = uiState.loading,
+            onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.OnRefresh) },
+            topBar = {
+                if (uiState.loading) {
+                    TopBarSkeleton()
+                } else {
+                    TopBar(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                        userName = uiState.keywordDetail.userName,
-                        profileImageUrl = uiState.keywordDetail.profileImageUrl,
-                        createdAt = uiState.keywordDetail.createdAt,
-                        keyword = uiState.keywordDetail.keyword,
-                        description = uiState.keywordDetail.description,
+                            .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                        myKeyword = uiState.myKeyword,
+                        onMoreClick = onMoreClick,
+                        onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
+                        onBackPressed = onBackPressed,
                     )
                 }
-            }
-        },
-        comments = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(500.dp)
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.TopCenter,
-            ) {
-                Text("댓글 영역")
-            }
-        },
-    )
+            },
+            contents = {
+                if (uiState.loading) {
+                    ContentsSkeleton()
+                } else {
+                    uiState.keywordDetail?.let {
+                        Contents(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp),
+                            userName = uiState.keywordDetail.userName,
+                            profileImageUrl = uiState.keywordDetail.profileImageUrl,
+                            createdAt = uiState.keywordDetail.createdAt,
+                            keyword = uiState.keywordDetail.keyword,
+                            description = uiState.keywordDetail.description,
+                        )
+                    }
+                }
+            },
+            comments = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp)
+                        .background(Color.LightGray),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    Text("댓글 영역")
+                }
+            },
+        )
+
+        if (uiState.fullScreenLoading) {
+            PeekrLoadingScreen()
+        }
+    }
 }
 
 /**
@@ -292,13 +324,13 @@ private fun KeywordContents(
         Text(
             text = keyword,
             style = PeekrTheme.typography.headline1,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = PeekrTheme.colorScheme.textNormal,
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = description,
-            style = PeekrTheme.typography.body3Many,
+            style = PeekrTheme.typography.body3Content,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textNormal,
             textAlign = TextAlign.Start,
@@ -429,6 +461,9 @@ private fun KeywordDetailScreenPreview() {
                     updatedAt = "2026.01.01",
                 ),
             ),
+            onUiEvent = {},
+            onMoreClick = {},
+            onBackPressed = {},
         )
     }
 }
@@ -440,6 +475,9 @@ private fun SkeletonPreview() {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(loading = true),
+            onUiEvent = {},
+            onMoreClick = {},
+            onBackPressed = {},
         )
     }
 }

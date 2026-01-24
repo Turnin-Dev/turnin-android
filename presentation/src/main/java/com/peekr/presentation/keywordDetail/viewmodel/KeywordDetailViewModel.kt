@@ -60,7 +60,22 @@ class KeywordDetailViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: KeywordDetailContract.UiEvent) {
         when (event) {
-            else -> {}
+            KeywordDetailContract.UiEvent.OnRefresh -> {
+                refreshKeywordDetail()
+            }
+
+            KeywordDetailContract.UiEvent.OnReport -> {
+                sendEffect {
+                    KeywordDetailContract.UiEffect.NavigateToReport(
+                        userId = currentUserId,
+                        userKeywordId = currentUserKeywordId,
+                    )
+                }
+            }
+
+            KeywordDetailContract.UiEvent.OnDelete -> {
+                deleteKeyword()
+            }
         }
     }
 
@@ -91,10 +106,7 @@ class KeywordDetailViewModel @Inject constructor(
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(
-                            loading = false,
-                            error = result.error.asUiText(),
-                        )
+                        this.copy(loading = false)
                     }
                     showSnackBar(result.error.asUiText())
                 }
@@ -106,6 +118,64 @@ class KeywordDetailViewModel @Inject constructor(
                             error = null,
                             keywordDetail = result.data.toUiModel(),
                         )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun refreshKeywordDetail() {
+        usecase.refreshKeywordDetail(currentUserId, currentUserKeywordId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(loading = false)
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = null,
+                            keywordDetail = result.data.toUiModel(),
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteKeyword() {
+        usecase.deleteKeyword(currentUserKeywordId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(fullScreenLoading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(fullScreenLoading = false)
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(fullScreenLoading = false)
+                    }
+                    showSnackBar(UiText.StringResource(R.string.keyword_detail_success_delete_keyword))
+                    sendEffect {
+                        KeywordDetailContract.UiEffect.CloseScreen
                     }
                 }
             }

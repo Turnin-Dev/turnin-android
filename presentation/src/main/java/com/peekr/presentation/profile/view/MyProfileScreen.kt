@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.button.PeekrIconButton
 import com.peekr.core.designsystem.component.fab.PeekrFab
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
-import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
@@ -68,6 +67,8 @@ fun MyProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
+            isRefreshing = uiState.myProfileLoading || uiState.myKeywordsLoading,
+            onRefresh = { onUiEvent(MyProfileContract.UiEvent.Refresh) },
             topBar = {
                 if (uiState.myProfileLoading) {
                     TopBarSkeleton()
@@ -139,10 +140,6 @@ fun MyProfileScreen(
                 contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
                 onClick = onNavigateToKeywordAdd,
             )
-        }
-
-        if (uiState.fullScreenLoading) {
-            PeekrLoadingScreen()
         }
     }
 }

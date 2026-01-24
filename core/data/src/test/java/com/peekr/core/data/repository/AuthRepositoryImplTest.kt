@@ -1,5 +1,7 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.data.source.local.database.dao.MyKeywordDao
+import com.peekr.core.data.source.local.database.dao.MyProfileDao
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.error.WritingDataException
@@ -38,11 +40,13 @@ import org.junit.Test
 class AuthRepositoryImplTest {
     private val dataSource: AuthNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
+    private val myProfileDao: MyProfileDao = mockk()
+    private val myKeywordDao: MyKeywordDao = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: AuthRepository =
-        AuthRepositoryImpl(dataSource, dataStoreManager, dispatcher)
+        AuthRepositoryImpl(dataSource, dataStoreManager, myProfileDao, myKeywordDao, dispatcher)
 
     @Test
     fun `login() 성공 테스트`() =

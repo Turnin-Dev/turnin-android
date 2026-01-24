@@ -23,6 +23,7 @@ import com.peekr.core.designsystem.component.modal.PeekrModalBottomSheet
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 
 /**
@@ -30,9 +31,8 @@ import com.peekr.presentation.R
  *
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
- * @param isSuccess 신고 성공 여부
+ * @param error 에러 메시지
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
- * @param onCancel 모달 취소 시
  * @param onFinishClick 완료 클릭 시 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +40,7 @@ import com.peekr.presentation.R
 fun ReportResultModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
-    isSuccess: Boolean,
+    error: UiText?,
     onDismissRequest: () -> Unit,
     onFinishClick: () -> Unit,
 ) {
@@ -54,7 +54,7 @@ fun ReportResultModal(
             modifier = contentModifier
                 .fillMaxWidth()
                 .height(ModalContentMinHeight),
-            isSuccess = isSuccess,
+            error = error?.asString(),
             onFinishClick = onFinishClick,
         )
     }
@@ -64,25 +64,25 @@ fun ReportResultModal(
  * 내부 컨텐츠
  *
  * @param modifier [Modifier]
- * @param isSuccess 신고 성공 여부
+ * @param error 에러 메시지
  * @param onFinishClick 완료 클릭 시 콜백
  */
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    isSuccess: Boolean,
+    error: String?,
     onFinishClick: () -> Unit,
 ) {
-    val buttonText = if (isSuccess) {
-        stringResource(R.string.report_result_modal_btn_finish)
-    } else {
+    val buttonText = if (error != null) {
         stringResource(R.string.report_result_modal_btn_ok)
+    } else {
+        stringResource(R.string.report_result_modal_btn_finish)
     }
 
-    val alignment = if (isSuccess) {
-        Alignment.TopCenter
-    } else {
+    val alignment = if (error != null) {
         Alignment.Center
+    } else {
+        Alignment.TopCenter
     }
 
     Column(modifier) {
@@ -90,11 +90,11 @@ private fun Content(
             modifier = Modifier.weight(1f),
             contentAlignment = alignment,
         ) {
-            if (!isSuccess) {
-                // 중복 신고 시
+            if (error != null) {
+                // 에러 발생 시
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.report_result_modal_duplicate_report),
+                    text = error,
                     style = PeekrTheme.typography.body2,
                     fontWeight = FontWeight.Normal,
                     color = PeekrTheme.colorScheme.textNormal,
@@ -143,7 +143,7 @@ private fun ContentIsSuccessPreview() {
     PeekrAppTheme {
         Content(
             modifier = Modifier.height(400.dp),
-            isSuccess = true,
+            error = null,
             onFinishClick = {},
         )
     }
@@ -151,11 +151,11 @@ private fun ContentIsSuccessPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
-private fun ContentIsNotSuccessPreview() {
+private fun ContentIsAlreadyReportedPreview() {
     PeekrAppTheme {
         Content(
             modifier = Modifier.height(400.dp),
-            isSuccess = false,
+            error = UiText.StringResource(R.string.report_error_already_reported).asString(),
             onFinishClick = {},
         )
     }
@@ -170,7 +170,7 @@ private fun ReportResultModalPreview() {
     PeekrAppTheme {
         ReportResultModal(
             sheetState = sheetState,
-            isSuccess = true,
+            error = null,
             onDismissRequest = {},
             onFinishClick = {},
         )

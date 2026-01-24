@@ -231,6 +231,25 @@ class UserRepositoryImplTest {
     }
 
     @Test
+    fun `사용자 프로필 조회 - 새로고침 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getUserProfile(TestUserId)
+        } returns NetworkResult.Success(TestUserProfileResponse)
+        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+
+        // when
+        val result = repository.getUserProfile(TestUserId, forceRefresh = true).last()
+
+        // then
+        assertTrue(result is Result.Success)
+        assertEquals(
+            TestUserProfileResponse.toDomainModel(),
+            (result as Result.Success).data,
+        )
+    }
+
+    @Test
     fun `사용자 프로필 조회 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)

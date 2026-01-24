@@ -64,8 +64,7 @@ abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect
 
     /** Update UiState */
     protected fun updateState(reducer: State.() -> State) {
-        val newState = currentUiState.reducer()
-        _uiState.update { newState }
+        _uiState.update { it.reducer() }
     }
 
     // ------------------------------ UI Event ------------------------------

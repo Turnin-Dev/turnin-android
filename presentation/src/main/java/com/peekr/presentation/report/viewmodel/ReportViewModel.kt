@@ -3,11 +3,7 @@ package com.peekr.presentation.report.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
-import com.peekr.core.presentation.common.snackbar.SnackbarController
-import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.domain.report.error.ReportErrorType
 import com.peekr.domain.report.usecase.GetReportReasonsUseCase
 import com.peekr.domain.report.usecase.ReportUseCase
 import com.peekr.presentation.report.error.asUiText
@@ -18,17 +14,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ReportViewModel @Inject constructor(
-    private val snackbarController: SnackbarController,
     private val reportUseCase: ReportUseCase,
     private val getReportReasonsUseCase: GetReportReasonsUseCase,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<ReportContract.UiState, ReportContract.UiEvent, ReportContract.UiEffect>() {
-    private val reportedId: Long by lazy {
-        requireNotNull(savedStateHandle.get<Long>("userId"))
+    private val reportedId: Long? by lazy {
+        savedStateHandle.get<Long>("userId")
+    }
+
+    private val reportedUserKeywordId: Long? by lazy {
+        savedStateHandle.get<Long>("userKeywordId")
     }
 
     private var selectedReportReason: UiReportReason? = null
@@ -58,57 +56,62 @@ class ReportViewModel @Inject constructor(
     }
 
     // 초기 데이터 로드: 이전 백스택에서 넘어온 인자 값 로드
-    private fun initNavArgumentData(): Boolean = runCatching {
-        reportedId
-    }
-        .onFailure {
-            viewModelScope.launch {
-                showSnackBarAndCloseScreen(ReportErrorType.NotSelectedReportedId.asUiText())
+    private fun initNavArgumentData(): Boolean =
+        if (reportedId == null && reportedUserKeywordId == null) {
+            sendEffect {
+                ReportContract.UiEffect.CloseReportModal
             }
+            false
+        } else {
+            true
         }
-        .isSuccess
 
     // 사용자 신고
     private fun report(customReason: String?) {
-        selectedReportReason?.let {
-            reportUseCase(
-                reportedId = reportedId,
-                reasonId = it.id,
-                customReason = customReason,
-            ).onEach { result ->
-                when (result) {
-                    Result.Loading -> {
-                        updateState {
-                            this.copy(loading = true)
-                        }
-                    }
+        // 신고 사유 미 선택 시 에러 발생
+        if (selectedReportReason == null) {
+            sendEffect {
+                ReportContract.UiEffect.CloseReportModal
+            }
+            return
+        }
 
-                    is Result.Error -> {
-                        updateState {
-                            this.copy(loading = false)
-                        }
-                        showSnackBarAndCloseScreen(result.error.asUiText())
-                    }
-
-                    is Result.Success -> {
-                        updateState {
-                            this.copy(reportResult = result.data)
-                        }
-                        sendEffect {
-                            ReportContract.UiEffect.NavigateToReportResult
-                        }
-                        updateState {
-                            this.copy(loading = false)
-                        }
+        // 신고 수행
+        reportUseCase(
+            reportedId = reportedId,
+            reportedUserKeywordId = reportedUserKeywordId,
+            reasonId = selectedReportReason!!.id,
+            customReason = customReason,
+        ).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(loading = true)
                     }
                 }
-            }.launchIn(viewModelScope)
-        } ?: run {
-            // 신고 사유 미 선택 시 에러 발생
-            viewModelScope.launch {
-                showSnackBarAndCloseScreen(ReportErrorType.NotSelectedReportReason.asUiText())
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(
+                            loading = false,
+                            error = result.error.asUiText(),
+                        )
+                    }
+                    sendEffect {
+                        ReportContract.UiEffect.NavigateToReportResult
+                    }
+                }
+
+                is Result.Success -> {
+                    updateState {
+                        this.copy(loading = false)
+                    }
+                    sendEffect {
+                        ReportContract.UiEffect.NavigateToReportResult
+                    }
+                }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun getReportReasons() {
@@ -122,27 +125,23 @@ class ReportViewModel @Inject constructor(
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(loading = false)
+                        this.copy(
+                            loading = false,
+                            error = result.error.asUiText(),
+                        )
                     }
-                    showSnackBarAndCloseScreen(result.error.asUiText())
                 }
 
                 is Result.Success -> {
                     updateState {
                         this.copy(
                             loading = false,
+                            error = null,
                             reportReasons = result.data.reasons.map { it.toUiModel() },
                         )
                     }
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    private suspend fun showSnackBarAndCloseScreen(message: UiText) {
-        sendEffect {
-            ReportContract.UiEffect.CloseReportModal
-        }
-        snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }

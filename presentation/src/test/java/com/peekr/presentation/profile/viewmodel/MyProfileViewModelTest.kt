@@ -139,6 +139,86 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         snackbarJob.cancel()
     }
 
+    @Test
+    fun `새로고침 시 프로필, 키워드 리스트가 업데이트된다`() {
+        testState(
+            viewModel = viewModel,
+            intents = listOf(MyProfileContract.UiEvent.Refresh),
+            assertions = listOf(
+                MyProfileContract.UiState(
+                    myProfile = TestMyProfile.toUiModel(),
+                    myKeywords = TestUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `나의 프로필 새로고침 시 에러가 발생하는 경우 스낵바 에러가 표시된다`() = runTest {
+        // given
+        val expectedError = ProfileErrorType.Unexpected(null)
+        every {
+            usecases.refreshMyProfile()
+        } returns flowOf(Result.Error(expectedError))
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = listOf(MyProfileContract.UiEvent.Refresh),
+            assertions = listOf(
+                MyProfileContract.UiState(
+                    myProfile = TestMyProfile.toUiModel(),
+                    myKeywords = TestUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(ProfileErrorType.ProfileLoadFailed.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    @Test
+    fun `나의 키워드 새로고침 시 에러가 발생하는 경우 스낵바 에러가 표시된다`() = runTest {
+        // given
+        val expectedError = ProfileErrorType.Unexpected(null)
+        every {
+            usecases.refreshMyKeywords()
+        } returns flowOf(Result.Error(expectedError))
+
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            intents = listOf(MyProfileContract.UiEvent.Refresh),
+            assertions = listOf(
+                MyProfileContract.UiState(
+                    myProfile = TestMyProfile.toUiModel(),
+                    myKeywords = TestUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+
+        // then: 스낵바 이벤트 검증
+        assertTrue(snackbarList.isNotEmpty())
+        assertEquals(ProfileErrorType.KeywordsLoadFailed.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
     companion object {
         private val TestMyUserId = UserId(1L)
         private val TestUserKeywords = listOf(

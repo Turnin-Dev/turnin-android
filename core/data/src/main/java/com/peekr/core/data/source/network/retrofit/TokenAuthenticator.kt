@@ -72,6 +72,7 @@ class TokenAuthenticator(
     }
 
     private suspend fun handleAuthenticationFailure() {
+        AppLogger.d(tag, "Authentication Failure")
         dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
         dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
         dataStoreManager.deleteLongData(DataStoreKey.User.UserId)

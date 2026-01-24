@@ -2,11 +2,10 @@ package com.peekr.core.domain.userKeyword.repository
 
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
-import com.peekr.core.domain.model.KeywordDescription
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
-import com.peekr.core.domain.userKeyword.model.PatchDescription
+import com.peekr.core.domain.userKeyword.model.PatchUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import kotlinx.coroutines.flow.Flow
@@ -61,16 +60,12 @@ interface UserKeywordRepository {
      * 사용자의 키워드 상세 정보 리스트 조회
      *
      * @param userId 사용자 ID
+     * @param forceRefresh 강제 새로고침 (캐시를 무효화하고 데이터를 새롭게 받아온다.)
      */
-    fun getUserKeywords(userId: UserId): Flow<Result<List<UserKeywordDetail>, CommonErrorType>>
-
-    /**
-     * 사용자 키워드 설명 조회
-     */
-    @Deprecated("삭제 예정 - 설명만 별도로 조회하는 기능은 필요 없을 것으로 예상된다.")
-    fun getDescription(
-        userKeywordId: UserKeywordId,
-    ): Flow<Result<KeywordDescription, CommonErrorType>>
+    fun getUserKeywords(
+        userId: UserId,
+        forceRefresh: Boolean = false,
+    ): Flow<Result<List<UserKeywordDetail>, CommonErrorType>>
 
     /**
      * 사용자 키워드 생성
@@ -80,15 +75,13 @@ interface UserKeywordRepository {
     fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, CommonErrorType>>
 
     /**
-     * 사용자 키워드 설명 수정
+     * 사용자 키워드 수정
      *
-     * @param userKeywordId 사용자 키워드 ID
-     * @param patchDescription 사용자 키워드 설명 수정 요청 객체
+     * @param patchUserKeyword 사용자 키워드 수정 요청 모델
      */
-    fun patchDescription(
-        userKeywordId: UserKeywordId,
-        patchDescription: PatchDescription,
-    ): Flow<Result<PatchDescription, CommonErrorType>>
+    fun update(
+        patchUserKeyword: PatchUserKeyword,
+    ): Flow<Result<Unit, CommonErrorType>>
 
     /**
      * 사용자 키워드 삭제

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.domain.auth.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -27,7 +29,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             if (BuildConfig.DEBUG) {
                 // TODO: In debug mode
-                testLoggedIn()
                 _loggedIn.update { true }
                 _isLoading.update { false }
             } else {
@@ -37,11 +38,6 @@ class MainViewModel @Inject constructor(
                 _isLoading.update { false }
             }
         }
-    }
-
-    // TODO: 테스트 로그인 정보
-    private suspend fun testLoggedIn() {
-        dataStoreManager.saveLongData(DataStoreKey.User.UserId, 1L)
     }
 
     /**
@@ -61,5 +57,11 @@ class MainViewModel @Inject constructor(
         ) { userId, accessToken, refreshToken ->
             userId != null && accessToken != null && refreshToken != null
         }.first()
+    }
+
+    fun cleanUp() {
+        viewModelScope.launch {
+            authRepository.cleanUp()
+        }
     }
 }

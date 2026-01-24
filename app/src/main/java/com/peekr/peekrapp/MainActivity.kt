@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val coroutineScope = rememberCoroutineScope()
             val appNavController = rememberNavController()
             val navBackStackEntry by appNavController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
@@ -79,9 +80,14 @@ class MainActivity : ComponentActivity() {
                 ObserveAsEvents(
                     flow = authEventBus.logoutEvent,
                     onEvent = {
-                        appNavController.navigate(SubGraph.Login.Root) {
-                            popUpTo(0) { inclusive = true }
-                            launchSingleTop = true
+                        coroutineScope.launch {
+                            // 자원 정리
+                            mainViewModel.cleanUp()
+                            // 로그인 화면으로 이동
+                            appNavController.navigate(SubGraph.Login.Root) {
+                                popUpTo(0) { inclusive = true }
+                                launchSingleTop = true
+                            }
                         }
                     },
                 )
@@ -89,7 +95,6 @@ class MainActivity : ComponentActivity() {
 
             // ------------------------------ Snackbar ------------------------------
             val context = LocalContext.current
-            val coroutineScope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
             val snackbarBottomPadding = remember {
                 derivedStateOf {
