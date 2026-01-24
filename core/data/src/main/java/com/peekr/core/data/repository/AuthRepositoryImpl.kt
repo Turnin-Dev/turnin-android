@@ -1,6 +1,8 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.data.source.local.database.dao.MyKeywordDao
+import com.peekr.core.data.source.local.database.dao.MyProfileDao
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.error.WritingDataException
@@ -27,6 +29,8 @@ import kotlinx.coroutines.flow.Flow
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkDataSource: AuthNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
+    private val myProfileDao: MyProfileDao,
+    private val myKeywordDao: MyKeywordDao,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
     override fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>> =
@@ -113,4 +117,9 @@ class AuthRepositoryImpl @Inject constructor(
                 message = result.message,
             )
         }
+
+    override suspend fun cleanUp() {
+        myProfileDao.deleteAll()
+        myKeywordDao.deleteAll()
+    }
 }

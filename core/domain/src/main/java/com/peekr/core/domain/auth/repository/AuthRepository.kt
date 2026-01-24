@@ -38,4 +38,11 @@ interface AuthRepository {
         accessToken: String,
         refreshToken: String,
     ): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 자원 정리
+     *
+     * 로컬 데이터를 전부 삭제한다.
+     */
+    suspend fun cleanUp()
 }
