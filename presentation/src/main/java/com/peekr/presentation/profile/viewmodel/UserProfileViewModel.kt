@@ -82,13 +82,19 @@ class UserProfileViewModel @Inject constructor(
             when (result) {
                 Result.Loading -> {
                     updateState {
-                        this.copy(profileLoading = true)
+                        this.copy(
+                            profileLoading = true,
+                            isRefreshing = forceRefresh,
+                        )
                     }
                 }
 
                 is Result.Error -> {
                     updateState {
-                        this.copy(profileLoading = false)
+                        this.copy(
+                            profileLoading = false,
+                            isRefreshing = false,
+                        )
                     }
                     showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
                 }
@@ -97,6 +103,7 @@ class UserProfileViewModel @Inject constructor(
                     updateState {
                         this.copy(
                             profileLoading = false,
+                            isRefreshing = false,
                             profile = result.data.toUiModel(),
                         )
                     }

@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +25,6 @@ import com.peekr.presentation.R
  * @param onAcceptClick 경고 모달에서 확인 클릭 시 수행할 작업
  * @param onCancelClick 경고 모달에서 취소 클릭 시 수행할 작업
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SafeDeleteModal(
     modifier: Modifier = Modifier,

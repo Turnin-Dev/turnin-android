@@ -25,6 +25,7 @@ import com.peekr.core.domain.model.DisplayId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkDataSource: AuthNetworkDataSource,
@@ -118,7 +119,8 @@ class AuthRepositoryImpl @Inject constructor(
             )
         }
 
-    override suspend fun cleanUp() {
+    override suspend fun cleanUp() = withContext(ioDispatcher) {
+        dataStoreManager.clearAll()
         myProfileDao.deleteAll()
         myKeywordDao.deleteAll()
     }

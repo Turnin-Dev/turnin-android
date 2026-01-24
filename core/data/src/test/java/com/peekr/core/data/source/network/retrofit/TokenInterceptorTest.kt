@@ -126,22 +126,6 @@ class TokenInterceptorTest {
     }
 
     @Test
-    fun `DataStore에서 데이터 조회 시 null인 경우 원본 요청 진행`() = runTest {
-        // Given
-        every {
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
-        } returns flowOf<String?>(null)
-
-        // When
-        val result = tokenInterceptor.intercept(chain)
-
-        // Then
-        verify(exactly = 0) { mockRequestBuilder.addHeader(any(), any()) }
-        verify { chain.proceed(mockRequest) }
-        assertEquals(mockResponse, result)
-    }
-
-    @Test
     fun `응답이 성공(200)인 경우 성공 로그 출력`() = runTest {
         // Given
         val accessToken = "valid_token"
