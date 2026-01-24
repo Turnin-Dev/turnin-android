@@ -10,7 +10,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.crypto.CryptoException
 import com.peekr.core.data.crypto.CryptoManager
-import com.peekr.core.data.source.local.error.DecryptException
 import com.peekr.core.data.source.local.error.WritingDataException
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
@@ -106,7 +105,7 @@ class DataStoreManagerImpl(
                     cryptoManager.decryptString(encryptedValue)
                 } catch (e: CryptoException) {
                     AppLogger.e(tag, e, "DataStoreManager에서 복호화 과정 실패")
-                    throw DecryptException("DataStoreManager에서 복호화 과정 실패", e)
+                    null
                 } catch (e: Exception) {
                     AppLogger.e(tag, e, "DataStoreManager에서 복호화 과정 실패(정의된 이 외의 예외 발생)")
                     null

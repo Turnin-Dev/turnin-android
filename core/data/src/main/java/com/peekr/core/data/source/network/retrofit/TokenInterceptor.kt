@@ -5,7 +5,6 @@ import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.BEARER
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -26,7 +25,6 @@ class TokenInterceptor(private val dataStoreManager: DataStoreManager) : Interce
         val accessToken = runBlocking {
             dataStoreManager
                 .getEncryptedStringData(DataStoreKey.Auth.AccessToken)
-                .catch { emit(null) }
                 .first()
         } ?: return chain.proceed(chain.request())
 

@@ -79,6 +79,7 @@ class MainActivity : ComponentActivity() {
                 ObserveAsEvents(
                     flow = authEventBus.logoutEvent,
                     onEvent = {
+                        // TODO: 로컬 데이터 소스 전부 지워야 함.
                         appNavController.navigate(SubGraph.Login.Root) {
                             popUpTo(0) { inclusive = true }
                             launchSingleTop = true
