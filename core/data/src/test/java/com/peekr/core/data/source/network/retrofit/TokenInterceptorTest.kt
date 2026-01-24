@@ -13,7 +13,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkStatic
 import io.mockk.verify
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -127,13 +126,11 @@ class TokenInterceptorTest {
     }
 
     @Test
-    fun `DataStore에서 예외 발생 시 catch로 null 처리하여 원본 요청 진행`() = runTest {
+    fun `DataStore에서 데이터 조회 시 null인 경우 원본 요청 진행`() = runTest {
         // Given
         every {
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
-        } returns flow<String?> {
-            throw RuntimeException("DataStore error")
-        }
+        } returns flowOf<String?>(null)
 
         // When
         val result = tokenInterceptor.intercept(chain)

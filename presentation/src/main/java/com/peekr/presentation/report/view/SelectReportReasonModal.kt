@@ -65,10 +65,6 @@ fun SelectReportReasonModal(
         }
 
         when {
-            loading && reportReasons.isEmpty() -> {
-                ModalContentSkeleton(contentModifier)
-            }
-
             error != null -> {
                 Error(
                     modifier = Modifier
@@ -76,6 +72,10 @@ fun SelectReportReasonModal(
                         .heightIn(min = 270.dp),
                     error = error.asString(),
                 )
+            }
+
+            loading && reportReasons.isEmpty() -> {
+                ModalContentSkeleton(contentModifier)
             }
 
             else -> {

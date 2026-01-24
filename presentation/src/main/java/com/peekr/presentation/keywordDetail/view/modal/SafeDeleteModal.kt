@@ -18,7 +18,7 @@ import com.peekr.core.presentation.ui.component.modal.PeekrSimpleModal
 import com.peekr.presentation.R
 
 /**
- * 키워드 추가 모달에서 작성된 내용이 있는 상태에서 벗어날 때 표시하는 경고 모달
+ * 키워드 안전 삭제 모달
  *
  * @param modifier [Modifier]
  * @param isOpen 모달 활성화 여부

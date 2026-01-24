@@ -194,7 +194,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         }
 
         // when: 키워드 삭제를 진행한다.
-        // then: 로딩 상태 초기화 및 화면을 닫는 일회성 이벤트가 발행된다.
+        // then: 로딩 상태 초기화를 초기화한다.
         testState(
             viewModel = viewModel,
             intents = listOf(

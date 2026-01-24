@@ -19,6 +19,7 @@ class UserProfileContract {
      * @property profileLoading 사용자 로딩
      * @property keywords 사용자 키워드 리스트
      * @property keywordsLoading 사용자 키워드 리스트 로딩
+     * @property isRefreshing 새로고침 여부
      * @property error 공통 에러 메시지
      */
     data class UiState(
@@ -26,6 +27,7 @@ class UserProfileContract {
         val profileLoading: Boolean = false,
         val keywords: List<UiUserKeyword> = emptyList(),
         val keywordsLoading: Boolean = false,
+        val isRefreshing: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState
 

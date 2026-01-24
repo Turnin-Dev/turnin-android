@@ -37,7 +37,6 @@ import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
  * @param modifier [Modifier]
  * @param isRefreshing 새로고침 여부
  * @param onRefresh 새로고침 콜백
- * @param modifier [Modifier]
  * @param topBar 탑바 영역
  * @param profile 프로필 영역
  * @param keywordsTitle 키워드 타이틀 텍스트

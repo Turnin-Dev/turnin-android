@@ -68,7 +68,7 @@ fun UserProfileScreen(
     Box(modifier) {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
-            isRefreshing = uiState.profileLoading || uiState.keywordsLoading,
+            isRefreshing = uiState.isRefreshing,
             onRefresh = { onUiEvent(UserProfileContract.UiEvent.Refresh) },
             topBar = {
                 if (uiState.profileLoading) {

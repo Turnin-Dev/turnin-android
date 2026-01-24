@@ -135,7 +135,7 @@ class DataStoreManagerImplTest {
     }
 
     @Test
-    fun `암호화된 데이터를 가져올 때 - 복호화 실패 시 DecryptException 예외가 발생한다`() = runTest {
+    fun `암호화된 데이터를 가져올 때 - 복호화 실패 시 null을 반환한다`() = runTest {
         // given
         val expectedKey = DataStoreKey.Auth.AccessToken
         val expectedValue = "valid value"
@@ -146,17 +146,14 @@ class DataStoreManagerImplTest {
 
         // when
         dataStoreManager.saveEncryptedStringData(expectedKey, expectedValue)
-        val exception = runCatching {
-            dataStoreManager.getEncryptedStringData(expectedKey).first()
-        }.exceptionOrNull()
+        val result = dataStoreManager.getEncryptedStringData(expectedKey).first()
 
         // then
-        // 예외 발생 후에는 Domain 계층의 예외
-        assertTrue(exception is com.peekr.core.data.source.local.error.DecryptException)
+        assertNull(result)
     }
 
     @Test
-    fun `암호화된 데이터를 가져올 때 - DecryptException를 제외한 예외가 발생한 경우 null을 반환한다`() = runTest {
+    fun `암호화된 데이터를 가져올 때 - 예외가 발생한 경우 null을 반환한다`() = runTest {
         // given
         val expectedKey = DataStoreKey.Auth.AccessToken
         val expectedValue = "valid value"

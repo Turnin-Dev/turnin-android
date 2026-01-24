@@ -234,9 +234,8 @@ class UserKeywordRepositoryImplTest {
         coEvery {
             userNetworkDataSource.getMyKeywords()
         } returns NetworkResult.Success(expectedList)
-        coEvery {
-            myKeywordDao.upsertAll(any())
-        } just Runs
+        coEvery { myKeywordDao.upsertAll(any()) } just Runs
+        coEvery { myKeywordDao.deleteAll() } just Runs
 
         // when
         val result = repository.getMyKeywordsRefresh().last()

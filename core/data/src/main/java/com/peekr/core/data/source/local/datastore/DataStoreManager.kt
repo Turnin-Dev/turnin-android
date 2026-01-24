@@ -83,7 +83,7 @@ interface DataStoreManager {
      * DataStore 에서 키 값을 통해 암호화된 String 타입의 데이터를 가져온다.
      *
      * @param key DataStore 키
-     * @return Flow<String>, 데이터가 없다면 null
+     * @return Flow<String>, 데이터가 없거나 예외가 발생하면 null을 반환한다.
      */
     fun getEncryptedStringData(key: DataStoreKey): Flow<String?>
 
