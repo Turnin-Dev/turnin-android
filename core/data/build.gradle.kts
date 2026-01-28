@@ -76,6 +76,7 @@ dependencies {
     // Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.room.paging)
     ksp(libs.room.compiler)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
