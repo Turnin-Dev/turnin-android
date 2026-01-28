@@ -1,6 +1,6 @@
 package com.peekr.core.data.source.network.dto.feed
 
-import com.peekr.core.data.source.local.database.entity.UserKeywordDetailEntity
+import com.peekr.core.data.source.local.database.entity.FeedEntity
 import com.squareup.moshi.JsonClass
 
 /**
@@ -31,16 +31,16 @@ data class FeedResponse(
     val similarity: Double,
 )
 
-// TODO: 서버에서도 수정일자를 받을 수 있도록 고려
-fun FeedResponse.toUserKeywordDetailEntity(): UserKeywordDetailEntity =
-    UserKeywordDetailEntity(
+fun FeedResponse.toEntity(): FeedEntity =
+    FeedEntity(
         userKeywordId = userKeywordId,
         keywordId = keywordId,
-        keywordName = keyword,
+        keyword = keyword,
         description = description,
         userId = userId,
         userName = userName,
         profileImageUrl = profileImageUrl,
         createdAt = createdAt,
-        updatedAt = 0L,
+        score = score,
+        similarity = similarity,
     )

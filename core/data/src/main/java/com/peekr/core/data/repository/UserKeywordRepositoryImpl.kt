@@ -2,11 +2,11 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.source.local.database.dao.FeedDao
 import com.peekr.core.data.source.local.database.dao.MyKeywordDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
-import com.peekr.core.data.source.local.database.dao.UserKeywordDetailDao
-import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
+import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
@@ -46,7 +46,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val myKeywordDao: MyKeywordDao,
     private val myProfileDao: MyProfileDao,
-    private val userKeywordDetailDao: UserKeywordDetailDao,
+    private val feedDao: FeedDao,
     private val memoryListCache: MemoryCache<UserId, List<UserKeywordDetail>>,
     private val memoryCache: MemoryCache<UserKeywordId, UserKeywordDetail>,
     private val dataStoreManager: DataStoreManager,
@@ -100,10 +100,10 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
             emit(Result.Loading)
 
-            // 2. 로컬 DB 확인 (페이징을 진행했었다면 DB에 데이터 존재), 메모리 캐시로 승격
-            val localKeyword = userKeywordDetailDao.getById(userKeywordId.value)
+            // 2. 로컬 DB 확인 (피드 페이징을 진행했었다면 DB에 데이터 존재), 메모리 캐시로 승격
+            val localKeyword = feedDao.getById(userKeywordId.value)
             if (localKeyword != null) {
-                val localDomainKeyword = localKeyword.toDomainModel()
+                val localDomainKeyword = localKeyword.toUserKeywordDetail()
                 memoryCache[userKeywordId] = localDomainKeyword
                 emit(Result.Success(localDomainKeyword))
                 return@safeResultFlow
@@ -159,7 +159,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
     override fun getMyKeywords(): Flow<List<UserKeyword>> =
         myKeywordDao.getAll()
-            .map { it.map { it.toDomainModel() } }
+            .map { it.map { it.toUserKeywordDetail() } }
             .flowOn(ioDispatcher)
 
     override fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>> =

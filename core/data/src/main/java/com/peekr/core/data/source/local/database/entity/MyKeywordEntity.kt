@@ -30,7 +30,7 @@ data class MyKeywordEntity(
     val updatedAt: Long,
 )
 
-fun MyKeywordEntity.toDomainModel(): UserKeyword =
+fun MyKeywordEntity.toUserKeywordDetail(): UserKeyword =
     UserKeyword(
         id = UserKeywordId(userKeywordId),
         keywordId = KeywordId(keywordId),
