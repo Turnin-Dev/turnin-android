@@ -10,7 +10,6 @@ import com.peekr.core.data.source.local.database.PeekrDatabase
 import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.network.datasource.FeedNetworkDataSource
 import com.peekr.core.domain.feed.model.Feed
-import com.peekr.core.domain.feed.model.FeedCursor
 import com.peekr.core.domain.feed.model.FeedPagingTokens
 import com.peekr.core.domain.feed.repository.FeedRepository
 import javax.inject.Inject
@@ -22,10 +21,7 @@ class FeedRepositoryImpl @Inject constructor(
     private val feedNetworkDataSource: FeedNetworkDataSource,
     private val database: PeekrDatabase,
 ) : FeedRepository {
-    override fun getFeeds(
-        cursor: FeedCursor?,
-        size: Int,
-    ): Flow<PagingData<Feed>> {
+    override fun getFeeds(): Flow<PagingData<Feed>> {
         val pagingSourceFactory = { database.feedDao().getPagingSource() }
         val pageSize = FeedPagingTokens.PAGE_SIZE
 

@@ -1,0 +1,10 @@
+package com.peekr.presentation.home.view
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+@Composable
+fun HomeMainScreen(
+    modifier: Modifier = Modifier,
+) {
+}

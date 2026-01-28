@@ -8,12 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
 import com.peekr.presentation.friend.friendsListScreen
-import com.peekr.presentation.home.main.HomeMainScreen
+import com.peekr.presentation.home.homeNavigation
 import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
 
@@ -35,14 +34,7 @@ fun BottomNavigation(
             navController = bottomNavController,
             startDestination = SubGraph.BottomNav.Home,
         ) {
-            composable<SubGraph.BottomNav.Home> {
-                HomeMainScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    onNavigateToSecond = {
-                        appNavController.navigate(Screens.TempMain)
-                    },
-                )
-            }
+            homeNavigation(bottomNavController)
 
             composable<SubGraph.BottomNav.Discover> {
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
