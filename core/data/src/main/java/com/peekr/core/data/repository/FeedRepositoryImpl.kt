@@ -41,6 +41,10 @@ class FeedRepositoryImpl @Inject constructor(
             pagingSourceFactory = pagingSourceFactory,
         )
             .flow
-            .map { it.map { it.toDomainModel() } }
+            .map { pagingData ->
+                pagingData.map { feedEntity ->
+                    feedEntity.toDomainModel()
+                }
+            }
     }
 }

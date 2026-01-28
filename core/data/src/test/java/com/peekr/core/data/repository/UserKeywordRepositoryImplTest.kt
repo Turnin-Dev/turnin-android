@@ -535,13 +535,14 @@ class UserKeywordRepositoryImplTest {
         private val TestFeedEntity = FeedEntity(
             userKeywordId = TestUserKeywordDetailResponse.userKeywordId,
             keywordId = TestUserKeywordDetailResponse.keywordId,
-            keywordName = TestUserKeywordDetailResponse.keywordName,
+            keyword = TestUserKeywordDetailResponse.keywordName,
             description = TestUserKeywordDetailResponse.description,
             userId = TestUserKeywordDetailResponse.userInfo.userId,
             userName = TestUserKeywordDetailResponse.userInfo.userName,
             profileImageUrl = TestUserKeywordDetailResponse.userInfo.profileImageUrl,
             createdAt = TestUserKeywordDetailResponse.createdAt,
-            updatedAt = TestUserKeywordDetailResponse.updatedAt,
+            score = 50.0,
+            similarity = 0.8,
         )
         private val TestMyProfileEntity = MyProfileEntity(
             userId = TestUserId.value,
