@@ -5,13 +5,12 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.peekr.core.data.source.local.database.entity.FeedEntity
-import com.peekr.core.domain.feed.model.FeedCursor
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FeedDao {
     @Query("SELECT * FROM FeedEntity")
-    fun getPagingSource(): PagingSource<FeedCursor, FeedEntity>
+    fun getPagingSource(): PagingSource<Int, FeedEntity>
 
     @Query("SELECT * FROM FeedEntity")
     fun getAll(): Flow<List<FeedEntity>>

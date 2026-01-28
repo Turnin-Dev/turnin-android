@@ -19,10 +19,10 @@ import com.peekr.core.domain.model.UserKeywordId
 class FeedRemoteMediator(
     private val feedNetworkDataSource: FeedNetworkDataSource,
     private val database: PeekrDatabase,
-) : RemoteMediator<FeedCursor, FeedEntity>() {
+) : RemoteMediator<Int, FeedEntity>() {
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<FeedCursor, FeedEntity>,
+        state: PagingState<Int, FeedEntity>,
     ): MediatorResult {
         return try {
             val cursor: FeedCursor? = when (loadType) {
