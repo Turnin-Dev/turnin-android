@@ -44,7 +44,7 @@ kotlinxSerialization = "1.8.0"
 androidTools = "31.7.2"
 desugar_jdk_libs = "2.1.5"
 splashScreen = "1.2.0"
-paging = "3.3.2"
+paging = "3.3.6"
 room = "2.7.1"
 
 [libraries]
