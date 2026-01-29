@@ -3,9 +3,10 @@ package com.peekr.core.data.source.local.di
 import android.content.Context
 import androidx.room.Room
 import com.peekr.core.data.source.local.database.PeekrDatabase
+import com.peekr.core.data.source.local.database.dao.FeedDao
+import com.peekr.core.data.source.local.database.dao.FeedRemoteKeyDao
 import com.peekr.core.data.source.local.database.dao.MyKeywordDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
-import com.peekr.core.data.source.local.database.dao.UserKeywordDetailDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +37,11 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideUserKeywordDetailDao(database: PeekrDatabase): UserKeywordDetailDao =
-        database.userKeywordDetailDao()
+    fun provideFeedDao(database: PeekrDatabase): FeedDao =
+        database.feedDao()
+
+    @Provides
+    @Singleton
+    fun provideFeedRemoteKeyDao(database: PeekrDatabase): FeedRemoteKeyDao =
+        database.feedRemoteKeyDao()
 }

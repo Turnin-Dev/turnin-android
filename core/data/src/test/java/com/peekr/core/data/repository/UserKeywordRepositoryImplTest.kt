@@ -1,12 +1,12 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.data.source.local.database.dao.FeedDao
 import com.peekr.core.data.source.local.database.dao.MyKeywordDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
-import com.peekr.core.data.source.local.database.dao.UserKeywordDetailDao
+import com.peekr.core.data.source.local.database.entity.FeedEntity
 import com.peekr.core.data.source.local.database.entity.MyKeywordEntity
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
-import com.peekr.core.data.source.local.database.entity.UserKeywordDetailEntity
-import com.peekr.core.data.source.local.database.entity.toDomainModel
+import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
@@ -54,7 +54,7 @@ class UserKeywordRepositoryImplTest {
     private val userNetworkDataSource: UserNetworkDataSource = mockk()
     private val myKeywordDao: MyKeywordDao = mockk()
     private val myProfileDao: MyProfileDao = mockk()
-    private val userKeywordDetailDao: UserKeywordDetailDao = mockk()
+    private val feedDao: FeedDao = mockk()
     private val memoryListCache: MemoryCache<UserId, List<UserKeywordDetail>> = mockk()
     private val memoryCache: MemoryCache<UserKeywordId, UserKeywordDetail> = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
@@ -64,7 +64,7 @@ class UserKeywordRepositoryImplTest {
         userNetworkDataSource = userNetworkDataSource,
         myKeywordDao = myKeywordDao,
         myProfileDao = myProfileDao,
-        userKeywordDetailDao = userKeywordDetailDao,
+        feedDao = feedDao,
         memoryListCache = memoryListCache,
         memoryCache = memoryCache,
         dataStoreManager = dataStoreManager,
@@ -109,7 +109,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.getDetail(TestUserKeywordId)
         } returns NetworkResult.Success(TestUserKeywordDetailResponse)
         every { memoryCache[TestUserKeywordId] } returns null
-        coEvery { userKeywordDetailDao.getById(TestUserKeywordId.value) } returns null
+        coEvery { feedDao.getById(TestUserKeywordId.value) } returns null
         every { memoryCache[TestUserKeywordId] = any() } just Runs
 
         // when
@@ -129,8 +129,8 @@ class UserKeywordRepositoryImplTest {
         every { memoryCache[TestUserKeywordId] } returns null
         every { memoryCache[TestUserKeywordId] = any() } just Runs
         coEvery {
-            userKeywordDetailDao.getById(TestUserKeywordId.value)
-        } returns TestUserKeywordDetailEntity
+            feedDao.getById(TestUserKeywordId.value)
+        } returns TestFeedEntity
 
         // when
         val result = repository.getDetail(TestUserId, TestUserKeywordId).last()
@@ -151,7 +151,7 @@ class UserKeywordRepositoryImplTest {
             userKeywordNetworkDataSource.getDetail(TestUserKeywordId)
         } returns NetworkResult.Success(TestUserKeywordDetailResponse)
         every { memoryCache[TestUserKeywordId] = any() } just Runs
-        coEvery { userKeywordDetailDao.getById(TestUserKeywordId.value) } returns null
+        coEvery { feedDao.getById(TestUserKeywordId.value) } returns null
         every {
             memoryCache[TestUserKeywordId]
         } returns TestUserKeywordDetailResponse.toDomainModel()
@@ -221,7 +221,7 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertEquals(expectedCount, result.size)
-        assertEquals(expectedList.map { it.toDomainModel() }, result)
+        assertEquals(expectedList.map { it.toUserKeywordDetail() }, result)
     }
 
     // ------------------------------ getMyKeywordsRefresh() ------------------------------
@@ -532,16 +532,17 @@ class UserKeywordRepositoryImplTest {
             createdAt = 1000L,
             updatedAt = 1000L,
         )
-        private val TestUserKeywordDetailEntity = UserKeywordDetailEntity(
+        private val TestFeedEntity = FeedEntity(
             userKeywordId = TestUserKeywordDetailResponse.userKeywordId,
             keywordId = TestUserKeywordDetailResponse.keywordId,
-            keywordName = TestUserKeywordDetailResponse.keywordName,
+            keyword = TestUserKeywordDetailResponse.keywordName,
             description = TestUserKeywordDetailResponse.description,
             userId = TestUserKeywordDetailResponse.userInfo.userId,
             userName = TestUserKeywordDetailResponse.userInfo.userName,
             profileImageUrl = TestUserKeywordDetailResponse.userInfo.profileImageUrl,
             createdAt = TestUserKeywordDetailResponse.createdAt,
-            updatedAt = TestUserKeywordDetailResponse.updatedAt,
+            score = 50.0,
+            similarity = 0.8,
         )
         private val TestMyProfileEntity = MyProfileEntity(
             userId = TestUserId.value,

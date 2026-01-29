@@ -56,4 +56,8 @@ object NetworkApiPath {
     object Discover {
         const val ROUTE = "$BASE/discover"
     }
+
+    object Feed {
+        const val ROUTE = "$BASE/feed"
+    }
 }
