@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FeedDao {
-    @Query("SELECT * FROM FeedEntity")
+    @Query("SELECT * FROM FeedEntity ORDER BY score DESC, createdAt DESC, userKeywordId DESC")
     fun getPagingSource(): PagingSource<Int, FeedEntity>
 
-    @Query("SELECT * FROM FeedEntity")
+    @Query("SELECT * FROM FeedEntity ORDER BY score DESC, createdAt DESC, userKeywordId DESC")
     fun getAll(): Flow<List<FeedEntity>>
 
     @Query("SELECT * FROM FeedEntity WHERE userKeywordId = :userKeywordId")

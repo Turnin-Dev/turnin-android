@@ -10,7 +10,7 @@ import com.peekr.core.domain.model.UserKeywordId
  * @property userKeywordId 사용자 키워드 ID
  */
 data class FeedCursor(
-    val score: Double?,
-    val createdAt: Long?,
-    val userKeywordId: UserKeywordId?,
+    val score: Double,
+    val createdAt: Long,
+    val userKeywordId: UserKeywordId,
 )

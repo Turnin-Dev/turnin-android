@@ -15,6 +15,9 @@ import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.feed.model.FeedCursor
 import com.peekr.core.domain.model.UserKeywordId
 
+/**
+ * Feed 페이징 RemoteMediator
+ */
 @OptIn(ExperimentalPagingApi::class)
 class FeedRemoteMediator(
     private val feedNetworkDataSource: FeedNetworkDataSource,
@@ -29,22 +32,15 @@ class FeedRemoteMediator(
                 LoadType.REFRESH -> null
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    // 1) 현재 로드된 마지막 아이템 찾기
-                    val lastItem = state.lastItemOrNull()
-                        ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    // 1) 현재 로드된 데이터가 없다면, 아직 REFRESH 전이거나 로딩 중일 수 있으므로 false로 반환
+                    state.lastItemOrNull()
+                        ?: return MediatorResult.Success(endOfPaginationReached = false)
 
-                    // 2) DB에서 마지막 아이템에 매칭된 리모트 키 조회
-                    val remoteKey = database.feedRemoteKeyDao()
-                        .getById(userKeywordId = lastItem.userKeywordId)
+                    // 2) DB에서 리모트 키 조회
+                    val remoteKey = database.feedRemoteKeyDao().getRemoteKey()
 
-                    // 3) 조회된 커서가 null이면 페이지의 끝
-                    if (remoteKey == null ||
-                        (
-                            remoteKey.cursorScore == null &&
-                                remoteKey.cursorCreatedAt == null &&
-                                remoteKey.cursorUserKeywordId == null
-                        )
-                    ) {
+                    // 3) 조회된 커서가 없으면 페이지의 끝
+                    if (remoteKey == null) {
                         return MediatorResult.Success(endOfPaginationReached = true)
                     }
 
@@ -52,9 +48,7 @@ class FeedRemoteMediator(
                     FeedCursor(
                         score = remoteKey.cursorScore,
                         createdAt = remoteKey.cursorCreatedAt,
-                        userKeywordId = remoteKey.cursorUserKeywordId?.let {
-                            UserKeywordId(it)
-                        },
+                        userKeywordId = UserKeywordId(remoteKey.cursorUserKeywordId),
                     )
                 }
             }
@@ -78,8 +72,9 @@ class FeedRemoteMediator(
 
                 is NetworkResult.Success -> {
                     val data = response.data
+                    val items = data.items
                     val nextCursor = data.nextCursor
-                    val endOfPaginationReached = nextCursor == null
+                    val endOfPaginationReached = items.isEmpty() || nextCursor == null
 
                     database.withTransaction {
                         // Clear cache
@@ -88,19 +83,22 @@ class FeedRemoteMediator(
                             database.feedRemoteKeyDao().deleteAll()
                         }
 
-                        // 데이터 저장
-                        database.feedDao().upsertAll(
-                            data.items.map { it.toEntity() },
-                        )
-                        // 서버에서 받은 nextCursor를 키로 저장
-                        // 다음 APPEND 요청 시 어떤 아이템에서 출발하든 서버가 준 다음 커서를 알 수 있게 함
-                        val remoteKey = FeedRemoteKeyEntity(
-                            lastUserKeywordId = data.items.last().userKeywordId,
-                            cursorScore = nextCursor?.score,
-                            cursorCreatedAt = nextCursor?.createdAt,
-                            cursorUserKeywordId = nextCursor?.userKeywordId,
-                        )
-                        database.feedRemoteKeyDao().upsert(remoteKey)
+                        if (items.isNotEmpty()) {
+                            // 데이터 저장
+                            database.feedDao().upsertAll(
+                                items.map { it.toEntity() },
+                            )
+                            // 서버에서 받은 nextCursor를 키로 저장
+                            // 만약 nextCursor가 null이라면 저장하지 않음
+                            nextCursor?.let {
+                                val remoteKey = FeedRemoteKeyEntity(
+                                    cursorScore = it.score,
+                                    cursorCreatedAt = it.createdAt,
+                                    cursorUserKeywordId = it.userKeywordId,
+                                )
+                                database.feedRemoteKeyDao().upsert(remoteKey)
+                            }
+                        }
                     }
                     MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 }

@@ -41,7 +41,7 @@ data class FeedEntity(
     val similarity: Double,
 )
 
-// TODO: 서버에서도 수정일자를 받을 수 있도록 고려
+// TODO: 서버에서 updatedAt 제공 시 교체 예정
 fun FeedEntity.toUserKeywordDetail(): UserKeywordDetail =
     UserKeywordDetail(
         userKeywordId = UserKeywordId(userKeywordId),
@@ -54,7 +54,7 @@ fun FeedEntity.toUserKeywordDetail(): UserKeywordDetail =
             profileImageUrl = profileImageUrl,
         ),
         createdAt = createdAt,
-        updatedAt = 0L,
+        updatedAt = createdAt,
     )
 
 fun FeedEntity.toDomainModel(): Feed =

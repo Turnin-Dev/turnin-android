@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class FeedCursorResponse(
-    val score: Double?,
-    val createdAt: Long?,
-    val userKeywordId: Long?,
+    val score: Double,
+    val createdAt: Long,
+    val userKeywordId: Long,
 )
