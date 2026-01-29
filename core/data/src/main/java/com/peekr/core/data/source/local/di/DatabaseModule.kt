@@ -22,7 +22,7 @@ object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context,
     ): PeekrDatabase = Room
-        .databaseBuilder(context, PeekrDatabase::class.java, "peekr.db")
+        .databaseBuilder(context, PeekrDatabase::class.java, "peekr_v1.db")
         .build()
 
     @Provides

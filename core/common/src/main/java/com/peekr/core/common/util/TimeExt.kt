@@ -35,6 +35,11 @@ import java.time.ZoneId
 //    }
 // }
 
+/**
+ * [Long] 타입의 시간을 상대 시간의 [String] 타입으로 변환한다.
+ *
+ * @param isMillis 밀리초 여부
+ */
 fun Long.toRelativeTime(isMillis: Boolean): String {
     val receivedTime = if (isMillis) this else this * 1000
     val now = System.currentTimeMillis()

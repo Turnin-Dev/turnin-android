@@ -31,10 +31,10 @@ fun AppNavigation(
         NavHost(
             modifier = modifier,
             navController = appNavController,
-            startDestination = if (!loggedIn) {
-                SubGraph.Login.Root
-            } else {
+            startDestination = if (loggedIn) {
                 SubGraph.BottomNav.Root
+            } else {
+                SubGraph.Login.Root
             },
         ) {
             loginNavigation(

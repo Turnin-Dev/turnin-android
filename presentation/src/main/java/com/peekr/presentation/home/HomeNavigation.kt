@@ -9,6 +9,6 @@ fun NavGraphBuilder.homeNavigation(
     navController: NavHostController,
 ) {
     composable<SubGraph.BottomNav.Home> {
-        // Home Route
+        HomeRoute()
     }
 }
