@@ -20,7 +20,7 @@ data class UiFriendInfo(
     val displayId: String,
     val name: String,
     val profileImageUrl: String?,
-    val respondedAt: Long,
+    val respondedAt: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )
