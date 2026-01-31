@@ -12,6 +12,8 @@
 
     <!-- Home Screen -->
     <string name="home_screen_notification">알림</string>
+    <!-- Home Screen Error-->
+    <string name="home_screen_error_message_default">문제가 발생했어요. 다시 시도해주세요.</string>
 
     <!-- Register Screen -->
     <string name="register_screen_display_id_title">아이디를 입력해주세요.</string>
@@ -118,7 +120,6 @@
     <!-- Friend -->
     <string name="friend_list_top_bar_title">친구</string>
     <string name="friend_list_error_message_default">문제가 발생했어요. 다시 시도해주세요.</string>
-    <string name="friend_list_error_retry">다시 시도</string>
     <!-- Friend Error -->
     <string name="friend_error_user_id_not_found">사용자를 찾을 수 없습니다. 다시 시도해주세요.</string>
     <string name="friend_error_unexpected">친구 목록을 불러오는 과정에서 오류가 발생했습니다. 다시 시도해주세요.</string>

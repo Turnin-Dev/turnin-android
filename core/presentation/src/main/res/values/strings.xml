@@ -79,8 +79,6 @@
     <string name="simple_modal_btn_accept">확인</string>
     <string name="simple_modal_btn_cancel">취소</string>
 
-    <!-- Keyword Network Graph -->
-    <string name="keyword_network_graph_open_user_list">사용자 리스트 활성화 토글</string>
-    <string name="keyword_network_graph_move_to_my_cluster">나에게로 돌아가기</string>
-    <string name="keyword_network_graph_refresh">새로고침</string>
+    <!-- Footer Error -->
+    <string name="footer_error_retry">다시 시도</string>
 </resources>

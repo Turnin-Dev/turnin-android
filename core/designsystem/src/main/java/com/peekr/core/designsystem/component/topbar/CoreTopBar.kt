@@ -22,6 +22,10 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.Arrow1Left
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 
+object PeekrTopBarTokens {
+    val Height = 60.dp
+}
+
 /**
  * 모든 TopBar 의 기본이 되는 Core TopBar
  *
@@ -47,7 +51,7 @@ internal fun CoreTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = TopBarHeight),
+            .heightIn(min = PeekrTopBarTokens.Height),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LeftSection(
@@ -130,6 +134,3 @@ private fun Title(text: String) {
         overflow = TextOverflow.Ellipsis,
     )
 }
-
-// TopBar 높이
-private val TopBarHeight = 60.dp
