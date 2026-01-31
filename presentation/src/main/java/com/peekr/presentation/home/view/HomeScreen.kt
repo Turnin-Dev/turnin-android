@@ -13,13 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -59,6 +56,8 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
+import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
+import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.home.model.UiFeed
@@ -131,7 +130,6 @@ fun HomeScreen(
     onNotificationClick: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    val pullToRefreshState = rememberPullToRefreshState()
     val isRefreshing = remember {
         derivedStateOf {
             feeds.loadState.refresh is LoadState.Loading &&
@@ -170,92 +168,59 @@ fun HomeScreen(
             )
         },
         contents = {
-            PullToRefreshBox(
-                state = pullToRefreshState,
+            RefreshableLazyColumn(
+                modifier = Modifier.fillMaxWidth(),
                 isRefreshing = isRefreshing,
                 onRefresh = { feeds.refresh() },
-                indicator = {
+                indicator = { state ->
                     PeekrIndicator(
                         isRefreshing = isRefreshing,
-                        state = pullToRefreshState,
+                        state = state,
                         modifier = Modifier.offset(y = PeekrTopBarTokens.Height),
                     )
                 },
+                state = lazyListState,
+                contentPadding = PaddingValues(
+                    top = PeekrTopBarTokens.Height,
+                    bottom = 20.dp, // 임시
+                ),
+                overscrollEffect = null,
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    state = lazyListState,
-                    contentPadding = PaddingValues(
-                        top = PeekrTopBarTokens.Height,
-                        bottom = 20.dp, // 임시
-                    ),
-                    overscrollEffect = null,
-                ) {
-                    val refreshState = feeds.loadState.refresh
-                    when {
-                        isRefreshing -> {
-                            items(10) {
-                                FeedSkeleton()
+                pagingItem(
+                    pagingItems = feeds,
+                    key = feeds.itemKey { it.userKeywordId },
+                    skeletonCount = 10,
+                    skeleton = {
+                        FeedSkeleton()
+                    },
+                    initialError = {
+                        FooterError(
+                            modifier = Modifier.fillMaxWidth(),
+                            errorMessage = stringResource(R.string.home_screen_error_message_default),
+                            onRetry = { feeds.retry() },
+                        )
+                    },
+                    footerError = {
+                        FooterError(
+                            modifier = Modifier.fillMaxWidth(),
+                            errorMessage = stringResource(R.string.home_screen_error_message_default),
+                            onRetry = { feeds.retry() },
+                        )
+                    },
+                ) { idx ->
+                    val feed = feeds[idx]
+                    feed?.let {
+                        Column {
+                            if (idx == 0) {
+                                FeedDivider()
                             }
-                        }
-
-                        refreshState is LoadState.Error && feeds.itemCount == 0 -> {
-                            item {
-                                FooterError(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    errorMessage = stringResource(R.string.home_screen_error_message_default),
-                                    onRetry = { feeds.retry() },
-                                )
-                            }
-                        }
-
-                        else -> {
-                            // 피드 목록 표시
-                            items(
-                                count = feeds.itemCount,
-                                key = feeds.itemKey { it.userKeywordId },
-                            ) { idx ->
-                                val feed = feeds[idx]
-                                feed?.let {
-                                    Column {
-                                        if (idx == 0) {
-                                            FeedDivider()
-                                        }
-                                        Feed(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickableSingle { onFeedClick(it) },
-                                            feed = it,
-                                        )
-                                        FeedDivider()
-                                    }
-                                }
-                            }
-
-                            // 상태 별 Footer UI
-                            when (feeds.loadState.append) {
-                                LoadState.Loading -> {
-                                    item {
-                                        FeedSkeleton()
-                                    }
-                                }
-
-                                is LoadState.Error -> {
-                                    item {
-                                        FooterError(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            errorMessage = stringResource(R.string.home_screen_error_message_default),
-                                            onRetry = { feeds.retry() },
-                                        )
-                                    }
-                                }
-
-                                is LoadState.NotLoading -> {
-                                    // 더 이상 로드할 데이터가 없거나 정상 상태 or 마지막 페이지인 상태
-                                    // TODO: 초기에는 데이터가 별로 없을 예정,
-                                    //      적절한 문구 추가 후 친구 추가, 탐색 탭으로의 이동을 유도
-                                }
-                            }
+                            Feed(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickableSingle { onFeedClick(it) },
+                                feed = it,
+                            )
+                            FeedDivider()
                         }
                     }
                 }
