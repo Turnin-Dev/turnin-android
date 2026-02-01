@@ -9,16 +9,13 @@ import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
 import com.peekr.core.presentation.common.navigation.navigateToKeywordEdit
 import com.peekr.presentation.profile.route.MyProfileRoute
 
-fun NavGraphBuilder.myProfileNavigation(
-    appNavController: NavHostController,
-    bottomNavController: NavHostController,
-) {
+fun NavGraphBuilder.myProfileNavigation(appNavController: NavHostController) {
     composable<SubGraph.BottomNav.Profile> {
         MyProfileRoute(
             onSettingClick = {
             },
             onFriendsCountClick = { userId ->
-                bottomNavController.navigateToFriendsList(userId)
+                appNavController.navigateToFriendsList(userId)
             },
             onNavigateToKeywordAddScreen = {
                 appNavController.navigateToKeywordEdit(null)

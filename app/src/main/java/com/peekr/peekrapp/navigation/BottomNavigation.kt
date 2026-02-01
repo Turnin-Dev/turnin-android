@@ -11,10 +11,8 @@ import androidx.navigation.compose.rememberNavController
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.peekr.presentation.discover.main.DiscoverMainScreen
-import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.home.homeNavigation
 import com.peekr.presentation.profile.myProfileNavigation
-import com.peekr.presentation.profile.userProfileNavigation
 
 @Composable
 fun BottomNavigation(
@@ -43,19 +41,7 @@ fun BottomNavigation(
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
             }
 
-            myProfileNavigation(
-                appNavController = appNavController,
-                bottomNavController = bottomNavController,
-            )
-
-            userProfileNavigation(
-                bottomNavController = bottomNavController,
-                appNavController = appNavController,
-            )
-
-            friendsListScreen(
-                navController = bottomNavController,
-            )
+            myProfileNavigation(appNavController)
         }
     }
 }

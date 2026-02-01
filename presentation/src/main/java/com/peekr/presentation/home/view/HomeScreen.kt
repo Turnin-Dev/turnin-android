@@ -55,6 +55,7 @@ import com.peekr.core.designsystem.component.topbar.PeekrTopBarTokens
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Bell
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
@@ -125,6 +126,7 @@ private fun HomeScreenFrame(
  * @param modifier [Modifier]
  * @param feeds 피드 리스트
  * @param onFeedClick 피드 클릭 시 콜백
+ * @param onUserClick 사용자 클릭 시 콜백
  * @param onNotificationClick 알림 클릭 시 콜백
  */
 @Composable
@@ -132,6 +134,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     feeds: LazyPagingItems<UiFeed>,
     onFeedClick: (UiFeed) -> Unit,
+    onUserClick: (Long) -> Unit,
     onNotificationClick: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -240,6 +243,7 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .clickableSingle { onFeedClick(it) },
                                 feed = it,
+                                onUserClick = { onUserClick(it.userId) },
                             )
                             FeedDivider()
                         }
@@ -255,16 +259,20 @@ fun HomeScreen(
  *
  * @param modifier [Modifier]
  * @param feed 피드
+ * @param onUserClick 사용자 클릭 시 콜백
  */
 @Composable
 private fun Feed(
     modifier: Modifier = Modifier,
     feed: UiFeed,
+    onUserClick: () -> Unit,
 ) {
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
         // 사용자 정보 일부, 생성 일자
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickableSingleWithoutRipple { onUserClick() },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -369,6 +377,7 @@ private fun FeedPreview() {
         Feed(
             modifier = Modifier.fillMaxWidth(),
             feed = UiFeed.sample,
+            onUserClick = {},
         )
     }
 }
@@ -393,6 +402,7 @@ private fun HomeScreenPreview() {
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             feeds = feeds,
             onFeedClick = {},
+            onUserClick = {},
             onNotificationClick = {},
         )
     }

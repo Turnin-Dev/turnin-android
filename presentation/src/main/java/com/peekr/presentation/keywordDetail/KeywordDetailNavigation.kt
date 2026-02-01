@@ -6,18 +6,22 @@ import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.navigateToKeywordEdit
 import com.peekr.core.presentation.common.navigation.navigateToReport
+import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 
-fun NavGraphBuilder.keywordDetailNavigation(navController: NavController) {
+fun NavGraphBuilder.keywordDetailNavigation(appNavController: NavController) {
     composable<Screens.KeywordDetail> { navBackStackEntry ->
         KeywordDetailRoute(
             onNavigateToReport = { userId, userKeywordId ->
-                navController.navigateToReport(userId, userKeywordId)
+                appNavController.navigateToReport(userId, userKeywordId)
             },
             onNavigateToKeywordEdit = { userKeywordId ->
-                navController.navigateToKeywordEdit(userKeywordId)
+                appNavController.navigateToKeywordEdit(userKeywordId)
+            },
+            onNavigateToUserProfile = { userId ->
+                appNavController.navigateToUserProfile(userId)
             },
             onBackPressed = {
-                navController.popBackStack()
+                appNavController.popBackStack()
             },
         )
     }

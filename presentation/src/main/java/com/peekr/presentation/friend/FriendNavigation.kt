@@ -14,7 +14,7 @@ import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 import com.peekr.presentation.friend.view.FriendListScreen
 import com.peekr.presentation.friend.viewmodel.FriendListViewModel
 
-fun NavGraphBuilder.friendsListScreen(navController: NavHostController) {
+fun NavGraphBuilder.friendsListScreen(appNavController: NavHostController) {
     composable<Screens.FriendsList> {
         val friendListViewModel: FriendListViewModel = hiltViewModel()
         val friends = friendListViewModel.friendsPagingData.collectAsLazyPagingItems()
@@ -25,10 +25,10 @@ fun NavGraphBuilder.friendsListScreen(navController: NavHostController) {
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             friends = friends,
             onFriendClick = { uiFriendInfo ->
-                navController.navigateToUserProfile(uiFriendInfo.userId)
+                appNavController.navigateToUserProfile(uiFriendInfo.userId)
             },
             onBackPress = {
-                navController.popBackStack()
+                appNavController.popBackStack()
             },
         )
     }

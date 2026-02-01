@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
+import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 
 fun NavGraphBuilder.homeNavigation(
     bottomNavController: NavHostController,
@@ -14,6 +15,9 @@ fun NavGraphBuilder.homeNavigation(
         HomeRoute(
             onNavigateToKeywordDetail = { userId, userKeywordId ->
                 appNavController.navigateToKeywordDetail(userId, userKeywordId)
+            },
+            onNavigateToUserProfile = { userId ->
+                appNavController.navigateToUserProfile(userId)
             },
         )
     }

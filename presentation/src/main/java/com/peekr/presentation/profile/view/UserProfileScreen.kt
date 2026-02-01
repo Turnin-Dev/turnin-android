@@ -63,6 +63,7 @@ fun UserProfileScreen(
     uiState: UserProfileContract.UiState,
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
     onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
+    onNavigateToFriendsList: (userId: Long) -> Unit,
     onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
 ) {
     Box(modifier) {
@@ -103,7 +104,9 @@ fun UserProfileScreen(
                             introduce = it.introduce,
                             friendStatus = it.friendStatus,
                             onProfileImageClick = {},
-                            onFriendsCountClick = {},
+                            onFriendsCountClick = {
+                                onNavigateToFriendsList(it.userId)
+                            },
                             onFriendsButtonClick = { currentFriendshipStatus ->
                                 onUiEvent(
                                     UserProfileContract.UiEvent.OnFriendButtonClick(
@@ -378,6 +381,7 @@ private fun UserProfileScreenPreview() {
             ),
             onUiEvent = {},
             onNavigateToKeywordDetail = { _, _ -> },
+            onNavigateToFriendsList = {},
             onBackPressed = {},
         )
     }

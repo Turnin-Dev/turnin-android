@@ -4,24 +4,27 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.Screens
+import com.peekr.core.presentation.common.navigation.navigateToFriendsList
 import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
 import com.peekr.core.presentation.common.navigation.navigateToReport
 import com.peekr.presentation.profile.route.UserProfileRoute
 
 fun NavGraphBuilder.userProfileNavigation(
-    bottomNavController: NavController,
     appNavController: NavController,
 ) {
     composable<Screens.UserProfile> {
         UserProfileRoute(
             onBackPressed = {
-                bottomNavController.popBackStack()
+                appNavController.popBackStack()
             },
             navigateToReport = { reportedId ->
                 appNavController.navigateToReport(reportedId, null)
             },
             navigateToKeywordDetail = { userId, userKeywordId ->
                 appNavController.navigateToKeywordDetail(userId, userKeywordId)
+            },
+            navigateToFriendsList = { userId ->
+                appNavController.navigateToFriendsList(userId)
             },
         )
     }
