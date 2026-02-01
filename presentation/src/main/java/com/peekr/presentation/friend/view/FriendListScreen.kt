@@ -44,14 +44,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @param modifier [Modifier]
  * @param friends 친구 목록
  * @param onFriendClick 친구 클릭 시 콜백
- * @param onBackPress 뒤로 가기 클릭 시 콜백
+ * @param onBackPressed 뒤로 가기 클릭 시 콜백
  */
 @Composable
 fun FriendListScreen(
     modifier: Modifier = Modifier,
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
-    onBackPress: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     FriendListFrame(
         modifier = modifier,
@@ -60,7 +60,7 @@ fun FriendListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                onBackPress = onBackPress,
+                onBackPress = onBackPressed,
             )
         },
         contents = {
@@ -304,7 +304,7 @@ private fun FriendListScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             friends = friends,
             onFriendClick = {},
-            onBackPress = {},
+            onBackPressed = {},
         )
     }
 }

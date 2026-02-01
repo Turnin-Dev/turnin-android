@@ -35,7 +35,7 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Report
@@ -245,7 +245,7 @@ private fun Contents(
     ) {
         // 사용자 정보
         UserInfo(
-            modifier = Modifier.clickableSingle { onUserClick() },
+            modifier = Modifier.clickableSingleWithoutRipple { onUserClick() },
             userName = userName,
             profileImageUrl = profileImageUrl,
             createdAt = createdAt,

@@ -47,7 +47,7 @@ class ReportUseCase @Inject constructor(
         // 2) 데이터 준비
         val reportedIdVO = reportedId?.let { UserId(it) }
         val reportedUserKeywordIdVO = reportedUserKeywordId?.let { UserKeywordId(it) }
-        val reporterIdVO = userRepository.getUserId()
+        val reporterIdVO = userRepository.getMyUserId()
 
         if (reporterIdVO == null) {
             emit(Result.Error(ReportErrorType.UserIdNotFound))

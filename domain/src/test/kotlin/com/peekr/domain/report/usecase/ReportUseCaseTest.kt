@@ -25,7 +25,7 @@ class ReportUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { userRepository.getUserId() } returns TestUserId
+        coEvery { userRepository.getMyUserId() } returns TestUserId
     }
 
     @Test
@@ -85,7 +85,7 @@ class ReportUseCaseTest {
     @Test
     fun `사용자 ID를 가져오지 못하는 경우 에러를 반환한다`() = runTest {
         // given
-        coEvery { userRepository.getUserId() } returns null
+        coEvery { userRepository.getMyUserId() } returns null
 
         // when
         val result = usecase(

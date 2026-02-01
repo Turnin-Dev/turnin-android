@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.Flow
 /** 사용자 리포지토리 */
 interface UserRepository {
     /**
-     * 사용자 ID 조회
+     * 나의 사용자 ID 조회
      */
-    suspend fun getUserId(): UserId?
+    suspend fun getMyUserId(): UserId?
 
     /**
      * 사용자 조회

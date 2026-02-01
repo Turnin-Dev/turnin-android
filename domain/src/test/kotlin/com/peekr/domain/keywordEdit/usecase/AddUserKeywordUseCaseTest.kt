@@ -28,7 +28,7 @@ class AddUserKeywordUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { userRepository.getUserId() } returns TestUserId
+        coEvery { userRepository.getMyUserId() } returns TestUserId
         every {
             userKeywordRepository.createUserKeyword(TestCreateUserKeyword)
         } returns flowOf(Result.Success(TestUserKeyword))

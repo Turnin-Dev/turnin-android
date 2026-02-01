@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.friend.friendsListScreen
@@ -29,6 +30,8 @@ fun AppNavigation(
     appNavController: NavHostController,
     loggedIn: Boolean?,
 ) {
+    val bottomNavController = rememberNavController()
+
     if (loggedIn != null) {
         NavHost(
             modifier = modifier,
@@ -64,6 +67,7 @@ fun AppNavigation(
                 BottomNavigation(
                     modifier = Modifier.fillMaxSize(),
                     appNavController = appNavController,
+                    bottomNavController = bottomNavController,
                 )
             }
 

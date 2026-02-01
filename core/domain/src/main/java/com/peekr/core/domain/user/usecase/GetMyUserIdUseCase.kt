@@ -7,9 +7,9 @@ import javax.inject.Inject
 /**
  * 사용자 ID 조회
  */
-class GetUserIdUseCase @Inject constructor(
+class GetMyUserIdUseCase @Inject constructor(
     private val userRepository: UserRepository,
 ) {
     suspend operator fun invoke(): UserId? =
-        userRepository.getUserId()
+        userRepository.getMyUserId()
 }

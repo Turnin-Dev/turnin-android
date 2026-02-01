@@ -8,7 +8,7 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.user.usecase.GetUserIdUseCase
+import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.domain.userKeyword.model.UserInfo
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
@@ -27,12 +27,12 @@ import org.junit.Test
 
 class GetKeywordDetailUseCaseTest {
     private val userKeywordRepository: UserKeywordRepository = mockk()
-    private val getUserIdUseCase: GetUserIdUseCase = mockk()
-    private val usecase = GetKeywordDetailUseCase(userKeywordRepository, getUserIdUseCase)
+    private val getMyUserIdUseCase: GetMyUserIdUseCase = mockk()
+    private val usecase = GetKeywordDetailUseCase(userKeywordRepository, getMyUserIdUseCase)
 
     @Before
     fun setUp() {
-        coEvery { getUserIdUseCase() } returns TestUserId
+        coEvery { getMyUserIdUseCase() } returns TestUserId
     }
 
     // ------------------------------ 나의 키워드를 조회하는 경우 ------------------------------

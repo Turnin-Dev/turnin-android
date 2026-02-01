@@ -3,7 +3,7 @@ package com.peekr.presentation.keywordDetail.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.user.usecase.GetUserIdUseCase
+import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.onEach
 @HiltViewModel
 class KeywordDetailViewModel @Inject constructor(
     private val usecase: KeywordDetailUseCases,
-    private val getUserIdUseCase: GetUserIdUseCase,
+    private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val snackbarController: SnackbarController,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<KeywordDetailContract.UiState, KeywordDetailContract.UiEvent, KeywordDetailContract.UiEffect>() {
@@ -85,7 +85,7 @@ class KeywordDetailViewModel @Inject constructor(
      * @return 나의 키워드라면 true, 아니라면 false, 아예 ID를 찾을 수 없다면 `null`을 반환한다
      */
     private suspend fun checkMyKeyword() {
-        val userId = getUserIdUseCase()
+        val userId = getMyUserIdUseCase()
         if (userId == null) {
             showSnackBar(KeywordDetailErrorType.UserIdNotFound.asUiText())
         } else {
