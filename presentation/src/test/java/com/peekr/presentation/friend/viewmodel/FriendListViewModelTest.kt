@@ -1,6 +1,5 @@
 package com.peekr.presentation.friend.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import com.peekr.core.domain.friend.model.FriendId
@@ -11,12 +10,11 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.presentation.MainDispatcherRule
 import com.peekr.domain.friend.usecase.GetFriendsPaginationUseCase
 import com.peekr.presentation.friend.model.toUiModel
+import com.peekr.presentation.util.MockLog
 import com.peekr.presentation.util.collectDataForTest
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -46,23 +44,13 @@ class FriendListViewModelTest {
         savedStateHandle = TestSavedStateHandle
         viewModel = FriendListViewModel(getFriendsPaginationUseCase, savedStateHandle)
         // Paging 라이브러리 내부에서 발생하는 Log 호출 방지
-        mockkStatic(Log::class)
-        every { Log.v(any(), any()) } returns 0
-        every { Log.v(any(), any(), any()) } returns 0
-        every { Log.d(any(), any()) } returns 0
-        every { Log.d(any(), any(), any()) } returns 0
-        every { Log.i(any(), any()) } returns 0
-        every { Log.w(any(), any<String>()) } returns 0
-        every { Log.e(any(), any()) } returns 0
-        every { Log.isLoggable(any<String>(), any()) } returns true
-        every { Log.e(any(), any(), any()) } returns 0
-        every { Log.w(any(), any<String>(), any()) } returns 0
+        MockLog.mock()
     }
 
     @After
     fun teardown() {
         clearAllMocks()
-        unmockkStatic(Log::class)
+        MockLog.cleanUp()
     }
 
     @Test

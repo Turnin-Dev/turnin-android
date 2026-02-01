@@ -1,8 +1,10 @@
 package com.peekr.core.data.di
 
+import com.peekr.core.data.repository.FeedRepositoryImpl
 import com.peekr.core.data.source.network.api.FeedApi
 import com.peekr.core.data.source.network.datasource.FeedNetworkDataSource
 import com.peekr.core.data.source.network.datasource.FeedNetworkDataSourceImpl
+import com.peekr.core.domain.feed.repository.FeedRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,4 +35,9 @@ interface FeedBindModule {
     fun bindsFeedNetworkDataSource(
         impl: FeedNetworkDataSourceImpl,
     ): FeedNetworkDataSource
+
+    @Binds
+    fun bindsFeedRepository(
+        impl: FeedRepositoryImpl,
+    ): FeedRepository
 }

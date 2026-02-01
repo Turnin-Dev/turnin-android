@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 fun KeywordDetailRoute(
     onNavigateToReport: (userId: Long?, userKeywordId: Long?) -> Unit,
     onNavigateToKeywordEdit: (userKeywordId: Long?) -> Unit,
+    onNavigateToUserProfile: (userId: Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val viewModel: KeywordDetailViewModel = hiltViewModel()
@@ -85,6 +86,9 @@ fun KeywordDetailRoute(
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
         onMoreClick = { isOptionModalOpen = true },
+        onUserClick = { userId ->
+            onNavigateToUserProfile(userId)
+        },
         onBackPressed = onBackPressed,
     )
 }

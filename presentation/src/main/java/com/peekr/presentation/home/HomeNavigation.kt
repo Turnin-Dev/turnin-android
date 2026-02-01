@@ -4,11 +4,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
+import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 
-fun NavGraphBuilder.homeNavigation(
-    navController: NavHostController,
-) {
+fun NavGraphBuilder.homeNavigation(appNavController: NavHostController) {
     composable<SubGraph.BottomNav.Home> {
-        // Home Route
+        HomeRoute(
+            onNavigateToKeywordDetail = { userId, userKeywordId ->
+                appNavController.navigateToKeywordDetail(userId, userKeywordId)
+            },
+            onNavigateToUserProfile = { userId ->
+                appNavController.navigateToUserProfile(userId)
+            },
+        )
     }
 }

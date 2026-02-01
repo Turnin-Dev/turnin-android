@@ -22,7 +22,7 @@ data class FriendInfo(
     val displayId: DisplayId,
     val name: Name,
     val profileImageUrl: String?,
-    val respondedAt: Long,
+    val respondedAt: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )

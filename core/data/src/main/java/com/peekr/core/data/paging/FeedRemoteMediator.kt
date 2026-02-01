@@ -5,6 +5,7 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.database.PeekrDatabase
 import com.peekr.core.data.source.local.database.entity.FeedEntity
 import com.peekr.core.data.source.local.database.entity.FeedRemoteKeyEntity
@@ -14,6 +15,7 @@ import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.feed.model.FeedCursor
 import com.peekr.core.domain.model.UserKeywordId
+import kotlinx.coroutines.CancellationException
 
 /**
  * Feed 페이징 RemoteMediator
@@ -23,6 +25,8 @@ class FeedRemoteMediator(
     private val feedNetworkDataSource: FeedNetworkDataSource,
     private val database: PeekrDatabase,
 ) : RemoteMediator<Int, FeedEntity>() {
+    private val tag = this::class.java.simpleName
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, FeedEntity>,
@@ -104,6 +108,8 @@ class FeedRemoteMediator(
                 }
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            AppLogger.e(tag, e, "RemoteMediator exception during load.")
             MediatorResult.Error(e)
         }
     }

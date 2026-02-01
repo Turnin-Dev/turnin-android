@@ -111,7 +111,7 @@ sealed interface Screens {
      * @property userId 사용자 ID
      */
     @Serializable
-    data class FriendsList(
+    data class FriendList(
         val userId: Long,
     ) : Screens
 

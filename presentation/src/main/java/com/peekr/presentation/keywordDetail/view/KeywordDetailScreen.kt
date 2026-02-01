@@ -35,6 +35,7 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Report
@@ -117,6 +118,7 @@ fun KeywordDetailScreen(
     uiState: KeywordDetailContract.UiState,
     onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
     onMoreClick: () -> Unit,
+    onUserClick: (userId: Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     Box(modifier) {
@@ -153,6 +155,7 @@ fun KeywordDetailScreen(
                             createdAt = uiState.keywordDetail.createdAt,
                             keyword = uiState.keywordDetail.keyword,
                             description = uiState.keywordDetail.description,
+                            onUserClick = { onUserClick(uiState.keywordDetail.userId) },
                         )
                     }
                 }
@@ -234,6 +237,7 @@ private fun Contents(
     createdAt: String,
     keyword: String,
     description: String,
+    onUserClick: () -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -241,6 +245,7 @@ private fun Contents(
     ) {
         // 사용자 정보
         UserInfo(
+            modifier = Modifier.clickableSingle { onUserClick() },
             userName = userName,
             profileImageUrl = profileImageUrl,
             createdAt = createdAt,
@@ -435,6 +440,7 @@ private fun ContentsPreview() {
                 "감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다.\n" +
                 "국가는 지역간의 균형있는 발전을 위하여 지역경제를 육성할 의무를 진다. 국가는 건전한 소비행위를 계도하고" +
                 "생산품의 품질향상을 촉구하기 위한 소비자보호운동을 법률이 정하는 바에 의하여 보장한다.",
+            onUserClick = {},
         )
     }
 }
@@ -463,6 +469,7 @@ private fun KeywordDetailScreenPreview() {
             ),
             onUiEvent = {},
             onMoreClick = {},
+            onUserClick = {},
             onBackPressed = {},
         )
     }
@@ -477,6 +484,7 @@ private fun SkeletonPreview() {
             uiState = KeywordDetailContract.UiState(loading = true),
             onUiEvent = {},
             onMoreClick = {},
+            onUserClick = {},
             onBackPressed = {},
         )
     }

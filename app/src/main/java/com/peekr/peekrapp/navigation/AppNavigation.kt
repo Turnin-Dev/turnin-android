@@ -12,9 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.keywordEdit.keywordEditNavigation
 import com.peekr.presentation.login.loginNavigation
+import com.peekr.presentation.profile.userProfileNavigation
 import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.report.reportNavigation
 
@@ -31,12 +33,13 @@ fun AppNavigation(
         NavHost(
             modifier = modifier,
             navController = appNavController,
-            startDestination = if (!loggedIn) {
-                SubGraph.Login.Root
-            } else {
+            startDestination = if (loggedIn) {
                 SubGraph.BottomNav.Root
+            } else {
+                SubGraph.Login.Root
             },
         ) {
+            // 로그인 네비게이션
             loginNavigation(
                 navController = appNavController,
                 navigateToMain = {
@@ -46,6 +49,7 @@ fun AppNavigation(
                 },
             )
 
+            // 회원가입 네비게이션
             registerNavigation(
                 navController = appNavController,
                 navigateToMain = {
@@ -55,6 +59,7 @@ fun AppNavigation(
                 },
             )
 
+            // 바텀 네비게이션
             composable<SubGraph.BottomNav.Root> {
                 BottomNavigation(
                     modifier = Modifier.fillMaxSize(),
@@ -62,14 +67,22 @@ fun AppNavigation(
                 )
             }
 
+            // 사용자 프로필 네비게이션
+            userProfileNavigation(appNavController)
+
+            // 친구 목록 네비게이션
+            friendsListScreen(appNavController)
+
+            // 키워드 상세화면 네비게이션
             keywordDetailNavigation(appNavController)
 
+            // 키워드 편집 네비게이션
             keywordEditNavigation(appNavController)
 
-            reportNavigation(
-                navController = appNavController,
-            )
+            // 신고 네비게이션
+            reportNavigation(appNavController)
 
+            // 임시 화면
             composable<Screens.TempMain> {
                 Box(
                     modifier = Modifier.fillMaxSize(),

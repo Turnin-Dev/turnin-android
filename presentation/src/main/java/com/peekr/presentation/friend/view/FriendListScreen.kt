@@ -6,20 +6,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,7 +30,9 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
+import com.peekr.core.presentation.ui.component.error.FooterError
+import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
+import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.friend.model.UiFriendInfo
@@ -128,126 +123,54 @@ private fun FriendList(
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
 ) {
-    val pullToRefreshState = rememberPullToRefreshState()
-    var isRefreshing by remember { mutableStateOf(false) }
-    LaunchedEffect(friends.loadState.refresh) {
-        isRefreshing = when (friends.loadState.refresh) {
-            LoadState.Loading -> true
-            else -> false
+    var isRefreshing = remember {
+        derivedStateOf {
+            friends.loadState.refresh is LoadState.Loading
         }
-    }
+    }.value
 
-    // 당겨서 새로고침 영역
-    PullToRefreshBox(
-        modifier = modifier,
-        state = pullToRefreshState,
+    // 친구 목록 + Footer
+    RefreshableLazyColumn(
+        modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
         onRefresh = { friends.refresh() },
-        indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
+        contentPadding = PaddingValues(bottom = 16.dp),
     ) {
-        // 친구 목록 + Footer
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 16.dp),
-        ) {
-            // 초기 에러 발생 시
-            val refreshState = friends.loadState.refresh
-            if (refreshState is LoadState.Error && friends.itemCount == 0) {
-                item {
-                    FooterError(
-                        modifier = Modifier.fillMaxWidth(),
-                        errorMessage = stringResource(R.string.friend_list_error_message_default),
-                        onRetry = { friends.retry() },
-                    )
-                }
-            }
-
-            // 초기 로딩 시 스켈레톤 표시
-            if (isRefreshing && friends.itemCount == 0) {
-                items(20) {
-                    FriendCardSkeleton()
-                }
-            } else {
-                // 친구 목록 표시
-                items(
-                    count = friends.itemCount,
-                    key = friends.itemKey { it.id },
-                ) { idx ->
-                    val friend = friends[idx]
-                    friend?.let {
-                        FriendCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickableSingle(onClick = { onFriendClick(it) })
-                                .padding(horizontal = ScreenTokens.HorizontalPadding),
-                            profileImageUrl = it.profileImageUrl,
-                            name = it.name,
-                            displayId = it.displayId,
-                        )
-                    }
-                }
-
-                // 상태 별 Footer UI
-                when (val appendState = friends.loadState.append) {
-                    is LoadState.Loading -> {
-                        // 로딩 시
-                        item {
-                            FriendCardSkeleton()
-                        }
-                    }
-
-                    is LoadState.Error -> {
-                        // 에러 발생 시
-                        item {
-                            FooterError(
-                                modifier = Modifier.fillMaxWidth(),
-                                errorMessage = stringResource(R.string.friend_list_error_message_default),
-                                onRetry = { friends.retry() },
-                            )
-                        }
-                    }
-
-                    is LoadState.NotLoading -> {
-                        // 더 이상 로드할 데이터가 없거나 정상 상태 or 마지막 페이지인 상태
-                        // 아무 것도 보여주지 않는다.
-                    }
-                }
+        pagingItem(
+            pagingItems = friends,
+            key = friends.itemKey { it.id },
+            skeletonCount = 20,
+            skeleton = {
+                FriendCardSkeleton()
+            },
+            initialError = {
+                FooterError(
+                    modifier = Modifier.fillMaxWidth(),
+                    errorMessage = stringResource(R.string.friend_list_error_message_default),
+                    onRetry = { friends.retry() },
+                )
+            },
+            footerError = {
+                FooterError(
+                    modifier = Modifier.fillMaxWidth(),
+                    errorMessage = stringResource(R.string.friend_list_error_message_default),
+                    onRetry = { friends.retry() },
+                )
+            },
+        ) { idx ->
+            val friend = friends[idx]
+            friend?.let {
+                FriendCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickableSingle(onClick = { onFriendClick(it) })
+                        .padding(horizontal = ScreenTokens.HorizontalPadding),
+                    profileImageUrl = it.profileImageUrl,
+                    name = it.name,
+                    displayId = it.displayId,
+                )
             }
         }
-    }
-}
-
-/**
- * 에러 발생 시 목록 하단에 표시할 footer
- *
- * @param modifier [Modifier]
- * @param errorMessage 에러 메시지
- * @param onRetry 재시도 로직
- */
-@Composable
-private fun FooterError(
-    modifier: Modifier = Modifier,
-    errorMessage: String,
-    onRetry: () -> Unit,
-) {
-    Column(
-        modifier = modifier.heightIn(min = 78.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
-    ) {
-        Text(
-            text = errorMessage,
-            style = PeekrTheme.typography.label1,
-            fontWeight = FontWeight.Medium,
-            color = PeekrTheme.colorScheme.textAssist2,
-        )
-        Text(
-            modifier = Modifier.clickableSingle(onClick = onRetry),
-            text = stringResource(R.string.friend_list_error_retry),
-            style = PeekrTheme.typography.label1,
-            fontWeight = FontWeight.Bold,
-            color = PeekrTheme.colorScheme.textStrong,
-        )
     }
 }
 
@@ -367,18 +290,6 @@ private fun FriendListPreview() {
             modifier = Modifier.fillMaxSize(),
             friends = friends,
             onFriendClick = {},
-        )
-    }
-}
-
-@PreviewLightDarkWithBackground
-@Composable
-private fun FooterErrorPreview() {
-    PeekrAppTheme {
-        FooterError(
-            modifier = Modifier.fillMaxWidth(),
-            errorMessage = "에러가 발생했어요.",
-            onRetry = {},
         )
     }
 }

@@ -27,6 +27,7 @@ internal fun UserProfileRoute(
     onBackPressed: () -> Unit,
     navigateToReport: (Long) -> Unit,
     navigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
+    navigateToFriendsList: (userId: Long) -> Unit,
 ) {
     val viewModel: UserProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,6 +73,9 @@ internal fun UserProfileRoute(
         onUiEvent = viewModel::processEvent,
         onNavigateToKeywordDetail = { userId, userKeywordId ->
             navigateToKeywordDetail(userId, userKeywordId)
+        },
+        onNavigateToFriendsList = { userId ->
+            navigateToFriendsList(userId)
         },
         onBackPressed = onBackPressed,
     )
