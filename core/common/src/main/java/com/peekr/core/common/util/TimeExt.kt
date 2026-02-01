@@ -1,5 +1,6 @@
 package com.peekr.core.common.util
 
+import com.peekr.core.common.logger.AppLogger
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -40,32 +41,40 @@ import java.time.ZoneId
  *
  * @param isMillis 밀리초 여부
  */
-fun Long.toRelativeTime(isMillis: Boolean): String {
-    val receivedTime = if (isMillis) this else this * 1000
-    val now = System.currentTimeMillis()
-    val diffMillis = now - receivedTime
+fun Long.toRelativeTime(isMillis: Boolean): String =
+    try {
+        val receivedTime = if (isMillis) this else this * 1000
+        val now = System.currentTimeMillis()
+        val diffMillis = now - receivedTime
 
-    val seconds = diffMillis / 1000
-    val minutes = seconds / 60
-    val hours = minutes / 60
-    val days = hours / 24
+        if (diffMillis < 0) {
+            "방금 전"
+        } else {
+            val seconds = diffMillis / 1000
+            val minutes = seconds / 60
+            val hours = minutes / 60
+            val days = hours / 24
 
-    return when {
-        seconds < 60 -> "방금 전"
-        minutes < 60 -> "${minutes}분 전"
-        hours < 24 -> "${hours}시간 전"
-        days < 7 -> "${days}일 전"
-        else -> {
-            // 일주일이 지나면 날짜를 표시 (사용자의 로컬 시간대로 변환)
-            val localDateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(receivedTime),
-                ZoneId.systemDefault(),
-            )
-            val year = localDateTime.year
-            val month = localDateTime.monthValue.toString().padStart(2, '0')
-            val day = localDateTime.dayOfMonth.toString().padStart(2, '0')
+            when {
+                seconds < 60 -> "방금 전"
+                minutes < 60 -> "${minutes}분 전"
+                hours < 24 -> "${hours}시간 전"
+                days < 7 -> "${days}일 전"
+                else -> {
+                    // 일주일이 지나면 날짜를 표시 (사용자의 로컬 시간대로 변환)
+                    val localDateTime = LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(receivedTime),
+                        ZoneId.systemDefault(),
+                    )
+                    val year = localDateTime.year
+                    val month = localDateTime.monthValue.toString().padStart(2, '0')
+                    val day = localDateTime.dayOfMonth.toString().padStart(2, '0')
 
-            "$year.$month.$day"
+                    "$year.$month.$day"
+                }
+            }
         }
+    } catch (e: Exception) {
+        AppLogger.e("TimeExt(toRelativeTime)", e, "Unexpected error")
+        "시간 정보 없음"
     }
-}

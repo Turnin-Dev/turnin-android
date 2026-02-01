@@ -285,7 +285,7 @@ private fun Feed(
                     modifier = Modifier.size(28.dp),
                     model = feed.profileImageUrl,
                     contentDescription = feed.userName,
-                    onClick = {},
+                    onClick = onUserClick,
                 )
                 Text(
                     text = feed.userName,

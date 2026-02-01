@@ -21,14 +21,14 @@ class HomeViewModel @Inject constructor(
     private val tag = this::class.java.simpleName
 
     val feedsPagingData = getFeedsUseCase()
+        .catch { e ->
+            AppLogger.e(tag, e, "Unexpected feed pagination error")
+            emit(PagingData.empty())
+        }
         .map { pagingData: PagingData<Feed> ->
             pagingData.map { feed ->
                 feed.toUiModel()
             }
-        }
-        .catch { e ->
-            AppLogger.e(tag, "Unexpected feed pagination error")
-            emit(PagingData.empty())
         }
         .cachedIn(viewModelScope)
 }

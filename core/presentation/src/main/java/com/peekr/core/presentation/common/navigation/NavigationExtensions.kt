@@ -37,5 +37,5 @@ fun NavController.navigateToKeywordDetail(
 
 // ------------------------------ FriendsList ------------------------------
 fun NavController.navigateToFriendsList(userId: Long) {
-    navigate(Screens.FriendsList(userId))
+    navigate(Screens.FriendList(userId))
 }

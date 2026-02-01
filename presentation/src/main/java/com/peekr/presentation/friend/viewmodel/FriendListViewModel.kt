@@ -28,14 +28,14 @@ class FriendListViewModel @Inject constructor(
     // TODO: 이렇게 검사할거면 UserId VO 객체의 유효성 검사가 의미가 있는지 생각해보기
     val friendsPagingData = if (userId > 0) {
         getFriendsPaginationUseCase(userId)
+            .catch { e ->
+                AppLogger.d(tag, e, "Unexpected friend pagination error")
+                emit(PagingData.empty())
+            }
             .map { pagingData: PagingData<FriendInfo> ->
                 pagingData.map { friendInfo ->
                     friendInfo.toUiModel()
                 }
-            }
-            .catch { e ->
-                AppLogger.d(tag, e, "Unexpected friend pagination error")
-                emit(PagingData.empty())
             }
             .cachedIn(viewModelScope)
     } else {

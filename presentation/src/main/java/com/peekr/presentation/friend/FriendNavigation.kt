@@ -15,7 +15,7 @@ import com.peekr.presentation.friend.view.FriendListScreen
 import com.peekr.presentation.friend.viewmodel.FriendListViewModel
 
 fun NavGraphBuilder.friendsListScreen(appNavController: NavHostController) {
-    composable<Screens.FriendsList> {
+    composable<Screens.FriendList> {
         val friendListViewModel: FriendListViewModel = hiltViewModel()
         val friends = friendListViewModel.friendsPagingData.collectAsLazyPagingItems()
 

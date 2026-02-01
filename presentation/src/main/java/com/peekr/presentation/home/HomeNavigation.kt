@@ -7,10 +7,7 @@ import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
 import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 
-fun NavGraphBuilder.homeNavigation(
-    bottomNavController: NavHostController,
-    appNavController: NavHostController,
-) {
+fun NavGraphBuilder.homeNavigation(appNavController: NavHostController) {
     composable<SubGraph.BottomNav.Home> {
         HomeRoute(
             onNavigateToKeywordDetail = { userId, userKeywordId ->

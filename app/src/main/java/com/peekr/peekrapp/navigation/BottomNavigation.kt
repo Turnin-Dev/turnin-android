@@ -32,10 +32,7 @@ fun BottomNavigation(
             navController = bottomNavController,
             startDestination = SubGraph.BottomNav.Home,
         ) {
-            homeNavigation(
-                bottomNavController = bottomNavController,
-                appNavController = appNavController,
-            )
+            homeNavigation(appNavController)
 
             composable<SubGraph.BottomNav.Discover> {
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
