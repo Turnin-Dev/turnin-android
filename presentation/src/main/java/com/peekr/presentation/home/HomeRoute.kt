@@ -11,7 +11,9 @@ import com.peekr.presentation.home.view.HomeScreen
 import com.peekr.presentation.home.viewmodel.HomeViewModel
 
 @Composable
-fun HomeRoute() {
+fun HomeRoute(
+    onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
+) {
     val viewModel: HomeViewModel = hiltViewModel()
     val feeds = viewModel.feedsPagingData.collectAsLazyPagingItems()
 
@@ -20,7 +22,9 @@ fun HomeRoute() {
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
         feeds = feeds,
-        onFeedClick = { feed -> },
+        onFeedClick = { feed ->
+            onNavigateToKeywordDetail(feed.userId, feed.userKeywordId)
+        },
         onNotificationClick = {},
     )
 }

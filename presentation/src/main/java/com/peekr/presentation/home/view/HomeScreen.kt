@@ -18,11 +18,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +67,7 @@ import com.peekr.presentation.R
 import com.peekr.presentation.home.model.UiFeed
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 /**
  * 홈 화면 프레임
@@ -81,7 +86,7 @@ private fun HomeScreenFrame(
 ) {
     val density = LocalDensity.current
     val topBarHeightPx = with(density) { PeekrTopBarTokens.Height.toPx() }
-    var topBarOffsetY by remember { mutableFloatStateOf(0f) }
+    var topBarOffsetY by rememberSaveable { mutableFloatStateOf(0f) }
     val canTopBarControlState by rememberUpdatedState(canTopBarControl)
     val nestedScroll = remember {
         object : NestedScrollConnection {
@@ -129,17 +134,26 @@ fun HomeScreen(
     onFeedClick: (UiFeed) -> Unit,
     onNotificationClick: () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
-    val isRefreshing = remember {
+    val isRefreshing by remember {
         derivedStateOf {
             feeds.loadState.refresh is LoadState.Loading &&
                 feeds.itemCount > 0
         }
-    }.value
+    }
+    var isRefreshTriggered by remember { mutableStateOf(false) }
     val isFirstItemScrolled by remember {
         derivedStateOf {
             lazyListState.firstVisibleItemIndex > 0 ||
                 lazyListState.firstVisibleItemScrollOffset > 0
+        }
+    }
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing && isRefreshTriggered) {
+            lazyListState.requestScrollToItem(0)
+            isRefreshTriggered = false
         }
     }
 
@@ -164,14 +178,21 @@ fun HomeScreen(
                         tint = PeekrTheme.colorScheme.textNormal,
                     )
                 },
-                onLogoClick = {},
+                onLogoClick = {
+                    coroutineScope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
+                },
             )
         },
         contents = {
             RefreshableLazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 isRefreshing = isRefreshing,
-                onRefresh = { feeds.refresh() },
+                onRefresh = {
+                    isRefreshTriggered = true
+                    feeds.refresh()
+                },
                 indicator = { state ->
                     PeekrIndicator(
                         isRefreshing = isRefreshing,
