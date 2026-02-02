@@ -73,6 +73,8 @@ class FriendListViewModel @Inject constructor(
             val myUserId = getMyUserIdUseCase()
             if (myUserId == null || myUserId.value != otherUserId) {
                 _effect.send(FriendEffect.NavigateToUserProfile(otherUserId))
+            } else {
+                _effect.send(FriendEffect.NavigateToMyProfile)
             }
         }
     }

@@ -2,6 +2,11 @@ package com.peekr.core.presentation.common.navigation
 
 import androidx.navigation.NavController
 
+// ------------------------------ MyProfile ------------------------------
+fun NavController.navigateToMyProfile() {
+    navigate(Screens.MyProfile)
+}
+
 // ------------------------------ UserProfile ------------------------------
 fun NavController.navigateToUserProfile(userId: Long) {
     navigate(Screens.UserProfile(userId))

@@ -10,13 +10,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.keywordEdit.keywordEditNavigation
 import com.peekr.presentation.login.loginNavigation
+import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
 import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.report.reportNavigation
@@ -30,8 +30,6 @@ fun AppNavigation(
     appNavController: NavHostController,
     loggedIn: Boolean?,
 ) {
-    val bottomNavController = rememberNavController()
-
     if (loggedIn != null) {
         NavHost(
             modifier = modifier,
@@ -67,9 +65,11 @@ fun AppNavigation(
                 BottomNavigation(
                     modifier = Modifier.fillMaxSize(),
                     appNavController = appNavController,
-                    bottomNavController = bottomNavController,
                 )
             }
+
+            // 나의 프로필
+            myProfileNavigation<Screens.MyProfile>(appNavController)
 
             // 사용자 프로필 네비게이션
             userProfileNavigation(appNavController)

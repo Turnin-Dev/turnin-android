@@ -16,6 +16,7 @@ import com.peekr.presentation.friend.viewmodel.FriendListViewModel
 fun FriendRoute(
     onBackPressed: () -> Unit,
     onNavigateToUserProfile: (userId: Long) -> Unit,
+    onNavigateToMyProfile: () -> Unit,
 ) {
     val viewModel: FriendListViewModel = hiltViewModel()
     val friends = viewModel.friendsPagingData.collectAsLazyPagingItems()
@@ -24,6 +25,10 @@ fun FriendRoute(
         when (effect) {
             is FriendEffect.NavigateToUserProfile -> {
                 onNavigateToUserProfile(effect.userId)
+            }
+
+            FriendEffect.NavigateToMyProfile -> {
+                onNavigateToMyProfile()
             }
         }
     }
