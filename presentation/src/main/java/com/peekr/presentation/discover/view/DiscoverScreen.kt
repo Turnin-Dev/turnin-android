@@ -1,4 +1,4 @@
-package com.peekr.presentation.discover.main
+package com.peekr.presentation.discover.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DiscoverMainScreen(
+fun DiscoverScreen(
     modifier: Modifier = Modifier,
 ) {
     Box(
