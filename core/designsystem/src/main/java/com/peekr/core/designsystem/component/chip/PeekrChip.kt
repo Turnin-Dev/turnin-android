@@ -66,7 +66,7 @@ fun PeekrChip(
             }
             Text(
                 text = text,
-                style = PeekrTheme.typography.caption2,
+                style = PeekrTheme.typography.caption3,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textNormal,
             )

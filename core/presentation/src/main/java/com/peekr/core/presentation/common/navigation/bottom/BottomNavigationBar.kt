@@ -184,7 +184,7 @@ private fun Item(
         )
         Text(
             text = stringResource(title),
-            style = PeekrTheme.typography.caption1,
+            style = PeekrTheme.typography.caption2,
             fontWeight = FontWeight.Medium,
             color = color,
         )

@@ -70,7 +70,7 @@ internal fun UserChip(
             )
             Text(
                 text = userChipInfo.userName,
-                style = PeekrTheme.typography.caption2,
+                style = PeekrTheme.typography.caption3,
                 fontWeight = FontWeight.Normal,
                 color = if (isSelected) {
                     PeekrTheme.colorScheme.backgroundNormal

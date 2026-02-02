@@ -74,7 +74,7 @@ fun PeekrFab(
             text?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.caption2,
+                    style = PeekrTheme.typography.caption3,
                     fontWeight = FontWeight.Medium,
                     color = PeekrTheme.colorScheme.staticWhite,
                 )

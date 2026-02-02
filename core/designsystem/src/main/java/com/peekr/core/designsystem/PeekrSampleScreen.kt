@@ -237,7 +237,7 @@ private fun TypographySample() {
         HorizontalDivider()
         Text(
             text = "Caption 1",
-            style = PeekrTheme.typography.caption1,
+            style = PeekrTheme.typography.caption2,
             color = PeekrTheme.colorScheme.textStrong,
         )
     }

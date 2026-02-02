@@ -156,7 +156,7 @@ private fun Introduce(
                         expandedIntroduce = !expandedIntroduce
                     },
                 text = if (expandedIntroduce) "접기" else "...더보기",
-                style = PeekrTheme.typography.caption1,
+                style = PeekrTheme.typography.caption2,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textAssist2,
                 textAlign = TextAlign.End,

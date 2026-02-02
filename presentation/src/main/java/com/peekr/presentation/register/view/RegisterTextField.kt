@@ -116,7 +116,7 @@ private fun ErrorMessage(
     Text(
         modifier = modifier.accessibility(errorMessage),
         text = errorMessage,
-        style = PeekrTheme.typography.caption1,
+        style = PeekrTheme.typography.caption2,
         color = PeekrTheme.colorScheme.statusNegative,
         textAlign = TextAlign.Start,
     )
