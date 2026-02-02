@@ -27,7 +27,7 @@ class UpdateFriendStateUseCaseTest {
 
     @Before
     fun setUp() {
-        coEvery { userRepository.getUserId() } returns TestRequesterId
+        coEvery { userRepository.getMyUserId() } returns TestRequesterId
         every {
             friendRepository.addFriend(any())
         } returns flowOf(Result.Success(TestFriend))
@@ -90,7 +90,7 @@ class UpdateFriendStateUseCaseTest {
     @Test
     fun `사용자 ID를 찾지 못하는 경우 에러를 반환한다`() = runTest {
         // given
-        coEvery { userRepository.getUserId() } returns null
+        coEvery { userRepository.getMyUserId() } returns null
 
         // when
         val currentFriendStatus = FriendStatus.NOTHING

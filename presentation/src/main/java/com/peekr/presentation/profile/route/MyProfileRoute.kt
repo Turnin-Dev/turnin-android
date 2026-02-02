@@ -2,7 +2,6 @@ package com.peekr.presentation.profile.route
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -12,9 +11,8 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.presentation.profile.view.MyProfileScreen
 import com.peekr.presentation.profile.viewmodel.MyProfileViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun MyProfileRoute(
+fun MyProfileRoute(
     onSettingClick: () -> Unit,
     onFriendsCountClick: (Long) -> Unit,
     onNavigateToKeywordAddScreen: () -> Unit,

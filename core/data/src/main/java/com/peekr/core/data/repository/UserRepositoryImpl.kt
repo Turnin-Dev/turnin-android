@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryImpl @Inject constructor(
@@ -44,10 +45,10 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
     private val tag = this::class.java.simpleName
 
-    override suspend fun getUserId(): UserId? {
+    override suspend fun getMyUserId(): UserId? = withContext(ioDispatcher) {
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-        if (userId == null) return null
-        return UserId(userId)
+        if (userId == null) return@withContext null
+        UserId(userId)
     }
 
     override fun getUser(): Flow<Result<User, CommonErrorType>> =

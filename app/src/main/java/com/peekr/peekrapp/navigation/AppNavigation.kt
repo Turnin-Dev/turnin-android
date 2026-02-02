@@ -16,6 +16,7 @@ import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.keywordEdit.keywordEditNavigation
 import com.peekr.presentation.login.loginNavigation
+import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
 import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.report.reportNavigation
@@ -66,6 +67,9 @@ fun AppNavigation(
                     appNavController = appNavController,
                 )
             }
+
+            // 나의 프로필
+            myProfileNavigation<Screens.MyProfile>(appNavController)
 
             // 사용자 프로필 네비게이션
             userProfileNavigation(appNavController)

@@ -4,10 +4,8 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.mapSuccess
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.model.UserId.Companion.invoke
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.model.UserKeywordId.Companion.invoke
-import com.peekr.core.domain.user.usecase.GetUserIdUseCase
+import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.model.KeywordDetail
@@ -25,7 +23,7 @@ import kotlinx.coroutines.flow.last
  */
 class GetKeywordDetailUseCase @Inject constructor(
     private val userKeywordRepository: UserKeywordRepository,
-    private val getUserIdUseCase: GetUserIdUseCase,
+    private val getMyUserIdUseCase: GetMyUserIdUseCase,
 ) {
     /**
      * 키워드 상세 정보를 조회한다.
@@ -40,7 +38,7 @@ class GetKeywordDetailUseCase @Inject constructor(
         // 1. 데이터 준비
         val userIdVO = UserId(userId)
         val userKeywordIdVO = UserKeywordId(userKeywordId)
-        val myUserIdVO = getUserIdUseCase()
+        val myUserIdVO = getMyUserIdUseCase()
         if (myUserIdVO == null) {
             emit(Result.Error(KeywordDetailErrorType.UserIdNotFound))
             return@flow

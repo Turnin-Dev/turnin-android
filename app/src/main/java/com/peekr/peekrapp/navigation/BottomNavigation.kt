@@ -38,7 +38,7 @@ fun BottomNavigation(
                 DiscoverMainScreen(modifier = Modifier.fillMaxSize())
             }
 
-            myProfileNavigation(appNavController)
+            myProfileNavigation<SubGraph.BottomNav.Profile>(appNavController)
         }
     }
 }

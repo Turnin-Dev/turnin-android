@@ -124,4 +124,7 @@ sealed interface Screens {
     data class UserProfile(
         val userId: Long,
     ) : Screens
+
+    @Serializable
+    data object MyProfile : Screens
 }

@@ -8,7 +8,7 @@ import com.peekr.core.domain.model.KeywordName
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
-import com.peekr.core.domain.user.usecase.GetUserIdUseCase
+import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
@@ -40,14 +40,14 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
 >() {
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var viewModel: KeywordDetailViewModel
-    private val getUserIdUseCase: GetUserIdUseCase = mockk()
+    private val getMyUserIdUseCase: GetMyUserIdUseCase = mockk()
     private val usecase: KeywordDetailUseCases = mockk()
     private val snackbarController = FakeSnackbarController()
 
     @Before
     fun setUp() {
         // 나의 키워드인 경우를 테스트하기 위해 나의 UserId로 설정한다.
-        coEvery { getUserIdUseCase() } returns TestMyUserId
+        coEvery { getMyUserIdUseCase() } returns TestMyUserId
     }
 
     // ------------------------------ 나의 키워드인 경우 ------------------------------
@@ -61,7 +61,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestMySavedStateHandle
         viewModel = KeywordDetailViewModel(
             usecase = usecase,
-            getUserIdUseCase = getUserIdUseCase,
+            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -89,7 +89,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestMySavedStateHandle
         viewModel = KeywordDetailViewModel(
             usecase = usecase,
-            getUserIdUseCase = getUserIdUseCase,
+            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -131,7 +131,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestMySavedStateHandle
         viewModel = KeywordDetailViewModel(
             usecase = usecase,
-            getUserIdUseCase = getUserIdUseCase,
+            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -183,7 +183,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestMySavedStateHandle
         viewModel = KeywordDetailViewModel(
             usecase = usecase,
-            getUserIdUseCase = getUserIdUseCase,
+            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -227,7 +227,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestSavedStateHandle
         viewModel = KeywordDetailViewModel(
             usecase = usecase,
-            getUserIdUseCase = getUserIdUseCase,
+            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -255,7 +255,7 @@ class KeywordDetailViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = TestSavedStateHandle
         viewModel = KeywordDetailViewModel(
             usecase = usecase,
-            getUserIdUseCase = getUserIdUseCase,
+            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )

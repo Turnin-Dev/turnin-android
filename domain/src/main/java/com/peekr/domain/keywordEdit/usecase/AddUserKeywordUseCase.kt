@@ -35,7 +35,7 @@ class AddUserKeywordUseCase @Inject constructor(
     ): Flow<Result<UserKeyword, KeywordEditErrorType>> = flow {
         try {
             emit(Result.Loading)
-            val userId = userRepository.getUserId()
+            val userId = userRepository.getMyUserId()
             if (userId != null) {
                 val createUserKeyword = CreateUserKeyword(
                     userId = userId,

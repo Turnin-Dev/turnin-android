@@ -40,7 +40,7 @@ class UpdateFriendStateUseCase @Inject constructor(
         receiverId: Long,
         currentFriendStatus: FriendStatus,
     ): Flow<Result<FriendStatus, ProfileErrorType>> = flow {
-        userRepository.getUserId()?.let { userId ->
+        userRepository.getMyUserId()?.let { userId ->
             val receiverIdVO = UserId(receiverId)
 
             when (currentFriendStatus) {
