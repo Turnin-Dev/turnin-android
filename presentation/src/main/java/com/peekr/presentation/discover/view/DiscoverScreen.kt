@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -77,9 +78,7 @@ fun DiscoverScreen(
         },
         historyBar = {
             HistoryBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ScreenTokens.HorizontalPadding),
+                modifier = Modifier.fillMaxWidth(),
                 currentTargetUserId = uiState.currentTargetUserId,
                 historyUsers = uiState.historyUsers,
                 onItemClick = { historyUser ->
@@ -111,6 +110,7 @@ private fun HistoryBar(
 ) {
     LazyRow(
         modifier = modifier,
+        contentPadding = PaddingValues(horizontal = ScreenTokens.HorizontalPadding),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

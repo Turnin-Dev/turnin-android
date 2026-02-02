@@ -17,7 +17,7 @@ data class UiHistoryUser(
     val profileImageUrl: String?,
 ) {
     companion object {
-        val samples = List(3) {
+        val samples = List(10) {
             UiHistoryUser(it + 1L, "username$it", null)
         }
     }
