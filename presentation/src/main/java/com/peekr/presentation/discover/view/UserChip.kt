@@ -25,22 +25,21 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
+import com.peekr.presentation.discover.model.UiHistoryUser
 
 /**
  * 탐색 화면에서 사용하는 사용자 칩
  *
  * @param modifier [Modifier]
  * @param isSelected 선택 여부
- * @param profileImageUrl 프로필 사진 URL
- * @param userName 사용자 명
+ * @param userChipInfo 사용자 칩 정보
  * @param onClick 칩 클릭 시 콜백
  */
 @Composable
 internal fun UserChip(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
-    profileImageUrl: String?,
-    userName: String,
+    userChipInfo: UiHistoryUser,
     onClick: () -> Unit,
 ) {
     Box(
@@ -66,11 +65,11 @@ internal fun UserChip(
         ) {
             PeekrAvatar(
                 modifier = Modifier.size(AvatarSize),
-                model = profileImageUrl,
+                model = userChipInfo.profileImageUrl,
                 contentDescription = null,
             )
             Text(
-                text = userName,
+                text = userChipInfo.userName,
                 style = PeekrTheme.typography.caption2,
                 fontWeight = FontWeight.Normal,
                 color = if (isSelected) {
@@ -100,8 +99,7 @@ private fun UserChipPreview() {
 
         UserChip(
             isSelected = isSelected,
-            profileImageUrl = null,
-            userName = "홍길동",
+            userChipInfo = UiHistoryUser(1L, "홍길동", null),
             onClick = { isSelected = !isSelected },
         )
     }
