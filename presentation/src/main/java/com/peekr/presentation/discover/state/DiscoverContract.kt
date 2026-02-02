@@ -20,8 +20,8 @@ class DiscoverContract {
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
-        data class OnSelectedHistoryUser(
-            val historyUser: UiHistoryUser,
+        data class RefreshDiscoverContexts(
+            val userId: Long,
         ) : UiEvent
     }
 

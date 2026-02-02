@@ -1,5 +1,7 @@
 package com.peekr.presentation.discover.model
 
+import com.peekr.domain.discover.model.HistoryUser
+
 /**
  * 히스토리 사용자 UI 모델
  *
@@ -13,4 +15,17 @@ data class UiHistoryUser(
     val userId: Long,
     val userName: String,
     val profileImageUrl: String?,
-)
+) {
+    companion object {
+        val samples = List(3) {
+            UiHistoryUser(it + 1L, "username$it", null)
+        }
+    }
+}
+
+fun HistoryUser.toUiModel(): UiHistoryUser =
+    UiHistoryUser(
+        userId = userId.value,
+        userName = userName.value,
+        profileImageUrl = profileImageUrl,
+    )

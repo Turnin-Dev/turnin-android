@@ -17,6 +17,9 @@
 
     <!-- Discover Screen -->
     <string name="discover_screen_top_bar_title">탐색</string>
+    <!-- Discover Error -->
+    <string name="discover_error_my_profile_not_found">나의 정보를 찾을 수 없습니다. 다시 시도해주세요.</string>
+    <string name="discover_error_unexpected">탐색 중 문제가 발생했어요. 다시 시도해주세요.</string>
 
     <!-- Register Screen -->
     <string name="register_screen_display_id_title">아이디를 입력해주세요.</string>
