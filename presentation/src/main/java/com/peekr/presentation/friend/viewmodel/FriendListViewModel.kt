@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -37,28 +38,32 @@ class FriendListViewModel @Inject constructor(
     private val _effect = Channel<FriendEffect>()
     val effect = _effect.receiveAsFlow()
 
-    private val currentUserId: Long by lazy {
-        requireNotNull(savedStateHandle.get<Long>("userId"))
-    }
+    private val currentUserId: Long? = savedStateHandle.get<Long>("userId")
 
     init {
-        viewModelScope.launch {
-            checkNavArgument()
+        if (currentUserId == null) {
+            viewModelScope.launch {
+                showSnackbar(FriendErrorType.UserIdNotFound.asUiText())
+            }
         }
     }
 
     // TODO: 이렇게 검사할거면 UserId VO 객체의 유효성 검사가 의미가 있는지 생각해보기
-    val friendsPagingData = getFriendsPaginationUseCase(currentUserId)
-        .catch { e ->
-            AppLogger.d(tag, e, "Unexpected friend pagination error")
-            emit(PagingData.empty())
-        }
-        .map { pagingData: PagingData<FriendInfo> ->
-            pagingData.map { friendInfo ->
-                friendInfo.toUiModel()
+    val friendsPagingData = if (currentUserId != null && currentUserId > 0) {
+        getFriendsPaginationUseCase(currentUserId)
+            .catch { e ->
+                AppLogger.d(tag, e, "Unexpected friend pagination error")
+                emit(PagingData.empty())
             }
-        }
-        .cachedIn(viewModelScope)
+            .map { pagingData: PagingData<FriendInfo> ->
+                pagingData.map { friendInfo ->
+                    friendInfo.toUiModel()
+                }
+            }
+            .cachedIn(viewModelScope)
+    } else {
+        flowOf(PagingData.empty())
+    }
 
     // TODO: 친구 목록에서 '나'를 클릭 시 처리 필요
 
@@ -78,13 +83,6 @@ class FriendListViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun checkNavArgument() = runCatching {
-        currentUserId
-    }
-        .onFailure {
-            showSnackbar(FriendErrorType.UserIdNotFound.asUiText())
-        }
 
     private suspend fun showSnackbar(message: UiText) {
         snackbarController.sendEvent(SnackbarEvent(message = message))
