@@ -225,9 +225,9 @@ private fun CurrentDiscoverTarget(
             .clip(CurrentTargetUserShape)
             .background(PeekrTheme.colorScheme.backgroundNormal, CurrentTargetUserShape),
         discoverContext = discoverContext,
-        onFeedClick = {},
-        onUserClick = {},
-        onKeywordClick = {},
+        onFeedClick = onFeedClick,
+        onUserClick = onUserClick,
+        onKeywordClick = onKeywordClick,
     )
 }
 
