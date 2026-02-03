@@ -97,6 +97,7 @@ class DiscoverRepositoryImplTest {
                         user = DiscoverUserResponse(
                             userId = it.toLong(),
                             userName = "name",
+                            displayId = "did",
                             profileImageUrl = null,
                         ),
                         keywords = listOf(
