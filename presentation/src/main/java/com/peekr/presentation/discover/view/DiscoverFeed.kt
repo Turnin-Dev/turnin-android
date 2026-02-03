@@ -1,5 +1,6 @@
 package com.peekr.presentation.discover.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
@@ -40,12 +42,20 @@ import com.peekr.presentation.discover.model.UiDiscoverKeyword
 internal fun DiscoverFeed(
     modifier: Modifier = Modifier,
     discoverContext: UiDiscoverContext,
+    selected: Boolean,
     onFeedClick: () -> Unit,
     onUserClick: () -> Unit,
     onKeywordClick: (UiDiscoverKeyword) -> Unit,
 ) {
     Column(
         modifier = modifier
+            .background(
+                if (selected) {
+                    PeekrTheme.colorScheme.interactionClick
+                } else {
+                    Color.Transparent
+                },
+            )
             .clickableSingle(onClick = onFeedClick)
             .padding(vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -185,6 +195,7 @@ private fun DiscoverFeedPreview() {
     PeekrAppTheme {
         DiscoverFeed(
             discoverContext = UiDiscoverContext.sample,
+            selected = false,
             onFeedClick = {},
             onUserClick = {},
             onKeywordClick = {},

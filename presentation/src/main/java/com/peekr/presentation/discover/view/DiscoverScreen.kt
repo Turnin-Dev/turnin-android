@@ -1,7 +1,9 @@
 package com.peekr.presentation.discover.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,22 +15,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.peekr.core.designsystem.component.fab.PeekrFab
 import com.peekr.core.designsystem.component.icon.PeekrIcon
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
@@ -36,6 +48,7 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.icon.Arrow1Right
 import com.peekr.core.designsystem.util.icon.PeekrIcons
+import com.peekr.core.designsystem.util.icon.Refresh
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.component.error.FooterError
@@ -97,7 +110,6 @@ private fun DiscoverScreenFrame(
         Spacer(Modifier.height(4.dp))
         FeedDivider(Modifier.fillMaxWidth())
         users()
-        Spacer(Modifier.height(20.dp))
     }
 }
 
@@ -116,49 +128,66 @@ fun DiscoverScreen(
     discoverContexts: LazyPagingItems<UiDiscoverContext>,
     onUiEvent: (DiscoverContract.UiEvent) -> Unit,
 ) {
-    DiscoverScreenFrame(
-        modifier = modifier,
-        topBar = {
-            PeekrTopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ScreenTokens.HorizontalPadding),
-                title = stringResource(R.string.discover_screen_top_bar_title),
-            )
-        },
-        historyBar = {
-            HistoryBar(
-                modifier = Modifier.fillMaxWidth(),
-                currentTargetUserId = uiState.currentDiscoverTarget?.user?.userId,
-                histories = uiState.histories,
-                onItemClick = { discoverContext ->
-                    onUiEvent(
-                        DiscoverContract.UiEvent.ChangeCurrentDiscoverTarget(discoverContext),
+    Box(modifier) {
+        DiscoverScreenFrame(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                PeekrTopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPadding),
+                    title = stringResource(R.string.discover_screen_top_bar_title),
+                )
+            },
+            historyBar = {
+                HistoryBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    currentTargetUserId = uiState.currentDiscoverTarget?.user?.userId,
+                    histories = uiState.histories,
+                    onItemClick = { discoverContext ->
+                        onUiEvent(
+                            DiscoverContract.UiEvent.ChangeCurrentDiscoverTarget(discoverContext),
+                        )
+                    },
+                )
+            },
+            currentDiscoverTarget = {
+                uiState.currentDiscoverTarget?.let {
+                    CurrentDiscoverTarget(
+                        modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
+                        discoverContext = it,
+                        onFeedClick = {},
+                        onUserClick = {},
+                        onKeywordClick = {},
                     )
-                },
-            )
-        },
-        currentDiscoverTarget = {
-            uiState.currentDiscoverTarget?.let {
-                CurrentDiscoverTarget(
-                    modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
-                    discoverContext = it,
-                    onFeedClick = {},
+                }
+            },
+            users = {
+                Users(
+                    modifier = Modifier.fillMaxWidth(),
+                    users = discoverContexts,
+                    selectedDiscoverContext = uiState.selectedDiscoverTarget,
+                    onFeedClick = { discoverContext ->
+                        onUiEvent(
+                            DiscoverContract.UiEvent.SelectFeed(discoverContext),
+                        )
+                    },
                     onUserClick = {},
                     onKeywordClick = {},
                 )
-            }
-        },
-        users = {
-            Users(
-                modifier = Modifier.fillMaxWidth(),
-                users = discoverContexts,
-                onFeedClick = {},
-                onUserClick = {},
-                onKeywordClick = {},
-            )
-        },
-    )
+            },
+        )
+
+        ReDiscoverFab(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(FabPaddingValues),
+            enabled = uiState.selectedDiscoverTarget != null,
+            onClick = {
+                onUiEvent(DiscoverContract.UiEvent.ReDiscover)
+            },
+        )
+    }
 }
 
 /**
@@ -176,11 +205,23 @@ private fun HistoryBar(
     histories: List<UiDiscoverContext>,
     onItemClick: (UiDiscoverContext) -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
+    val snapFormatter = rememberSnapFlingBehavior(lazyListState)
+    LaunchedEffect(currentTargetUserId) {
+        if (currentTargetUserId == null) return@LaunchedEffect
+        val targetIndex = histories.indexOfFirst { it.user.userId == currentTargetUserId }
+        if (targetIndex != -1) {
+            lazyListState.animateScrollToItemCenter(targetIndex)
+        }
+    }
+
     LazyRow(
         modifier = modifier,
+        state = lazyListState,
         contentPadding = PaddingValues(horizontal = ScreenTokens.HorizontalPadding),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
+        flingBehavior = snapFormatter,
     ) {
         items(
             items = histories,
@@ -200,6 +241,19 @@ private fun HistoryBar(
             )
         }
     }
+}
+
+suspend fun LazyListState.animateScrollToItemCenter(index: Int) {
+    val layoutInfo = this.layoutInfo
+    // 실제 보이는 영역의 너비 계산
+    val viewportWidth = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
+
+    // 첫 번째 아이템의 사이즈를 추정치로 사용하거나, 현재 보이는 아이템에서 찾음
+    val itemSize = layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: 0
+    val centerOffset = (viewportWidth / 2) - (itemSize / 2)
+
+    // 마이너스 오프셋을 주어 아이템을 중앙으로 당김
+    this.animateScrollToItem(index, -centerOffset)
 }
 
 /**
@@ -225,6 +279,7 @@ private fun CurrentDiscoverTarget(
             .clip(CurrentTargetUserShape)
             .background(PeekrTheme.colorScheme.backgroundNormal, CurrentTargetUserShape),
         discoverContext = discoverContext,
+        selected = false,
         onFeedClick = onFeedClick,
         onUserClick = onUserClick,
         onKeywordClick = onKeywordClick,
@@ -235,12 +290,26 @@ private fun CurrentDiscoverTarget(
 private fun Users(
     modifier: Modifier = Modifier,
     users: LazyPagingItems<UiDiscoverContext>,
+    selectedDiscoverContext: UiDiscoverContext?,
     onFeedClick: (UiDiscoverContext) -> Unit,
     onUserClick: (UiDiscoverContext) -> Unit,
     onKeywordClick: (UiDiscoverKeyword) -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
+    LaunchedEffect(users.loadState.refresh) {
+        if (users.loadState.refresh is LoadState.Loading) {
+            lazyListState.scrollToItem(0)
+        }
+    }
+
     LazyColumn(
         modifier = modifier,
+        state = lazyListState,
+        contentPadding = PaddingValues(
+            // 마지막에 더해주는 20.dp는 여유 패딩 값
+            bottom = FabSize + FabPaddingValues.calculateBottomPadding() + 20.dp,
+        ),
+        userScrollEnabled = users.loadState.refresh !is LoadState.Loading,
     ) {
         pagingItem(
             pagingItems = users,
@@ -270,6 +339,7 @@ private fun Users(
                     DiscoverFeed(
                         modifier = Modifier.fillMaxWidth(),
                         discoverContext = user,
+                        selected = selectedDiscoverContext?.user?.userId == user.user.userId,
                         onFeedClick = { onFeedClick(user) },
                         onUserClick = { onUserClick(user) },
                         onKeywordClick = { keyword -> onKeywordClick(keyword) },
@@ -279,6 +349,34 @@ private fun Users(
             }
         }
     }
+}
+
+/**
+ * 재탐색 Fab
+ *
+ * @param modifier [Modifier]
+ * @param enabled 활성화 여부
+ * @param onClick 재탐색 수행 콜백
+ */
+@Composable
+private fun ReDiscoverFab(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    PeekrFab(
+        modifier = modifier.size(FabSize),
+        icon = PeekrIcons.Default.Normal.Refresh,
+        contentDescription = stringResource(R.string.discover_screen_fab_content_desc),
+        enabled = enabled,
+        text = stringResource(R.string.discover_screen_fab_text),
+        shape = CircleShape,
+        onClick = {
+            if (enabled) {
+                onClick()
+            }
+        },
+    )
 }
 
 @Composable
@@ -291,6 +389,8 @@ private fun FeedDivider(modifier: Modifier = Modifier) {
 }
 
 private val CurrentTargetUserShape = RoundedCornerShape(8.dp)
+private val FabSize = 50.dp
+private val FabPaddingValues = PaddingValues(end = 20.dp, bottom = 24.dp)
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
@@ -308,8 +408,25 @@ private fun CurrentTargetUserPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
+private fun HistoryBarPreview() {
+    var target: Long? by remember { mutableStateOf(null) }
+
+    PeekrAppTheme {
+        HistoryBar(
+            modifier = Modifier.fillMaxWidth(),
+            currentTargetUserId = target,
+            histories = testDiscoverContexts,
+            onItemClick = {
+                target = it.user.userId
+            },
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
 private fun DiscoverScreenPreview() {
-    val discoverContexts = testDiscoverContexts.collectAsLazyPagingItems()
+    val discoverContexts = testDiscoverContextsPaging.collectAsLazyPagingItems()
 
     PeekrAppTheme {
         DiscoverScreen(
@@ -324,26 +441,25 @@ private fun DiscoverScreenPreview() {
     }
 }
 
-private val testDiscoverContexts = MutableStateFlow(
-    PagingData.from(
-        List(20) {
-            val id = it + 1L
-            UiDiscoverContext(
-                user = UiDiscoverUser(
-                    userId = id,
-                    userName = "username$id",
-                    displayId = "displayId$id",
-                    profileImageUrl = null,
-                ),
-                keywords = List(5) {
-                    val kid = it + 1L
-                    UiDiscoverKeyword(
-                        userKeywordId = kid,
-                        keywordId = kid,
-                        keywordName = "keyword$kid",
-                    )
-                },
+private val testDiscoverContexts = List(20) {
+    val id = it + 1L
+    UiDiscoverContext(
+        user = UiDiscoverUser(
+            userId = id,
+            userName = "username$id",
+            displayId = "displayId$id",
+            profileImageUrl = null,
+        ),
+        keywords = List(5) {
+            val kid = it + 1L
+            UiDiscoverKeyword(
+                userKeywordId = kid,
+                keywordId = kid,
+                keywordName = "keyword$kid",
             )
         },
-    ),
-)
+    )
+}
+
+private val testDiscoverContextsPaging =
+    MutableStateFlow(PagingData.from(testDiscoverContexts))

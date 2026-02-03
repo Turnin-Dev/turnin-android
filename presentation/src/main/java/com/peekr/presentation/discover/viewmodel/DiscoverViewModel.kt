@@ -65,7 +65,24 @@ class DiscoverViewModel @Inject constructor(
     override suspend fun handleEvent(event: DiscoverContract.UiEvent) {
         when (event) {
             is DiscoverContract.UiEvent.ChangeCurrentDiscoverTarget -> {
-                changeCurrentTargetUser(event.target)
+                changeCurrentDiscoverTarget(event.target)
+            }
+
+            is DiscoverContract.UiEvent.SelectFeed -> {
+                updateState {
+                    this.copy(
+                        selectedDiscoverTarget =
+                            if (currentUiState.selectedDiscoverTarget == event.discoverContext) {
+                                null
+                            } else {
+                                event.discoverContext
+                            },
+                    )
+                }
+            }
+
+            DiscoverContract.UiEvent.ReDiscover -> {
+                reDiscover()
             }
         }
     }
@@ -94,10 +111,57 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun changeCurrentTargetUser(target: UiDiscoverContext) {
+    /**
+     * 현재 탐색 대상 변경
+     *
+     * 1. 현재 탐색 대상 변경
+     * 2. 재탐색 대상 초기화
+     */
+    private fun changeCurrentDiscoverTarget(target: UiDiscoverContext) {
         updateState {
             this.copy(
                 currentDiscoverTarget = target,
+                selectedDiscoverTarget = null,
+            )
+        }
+    }
+
+    /**
+     * 재탐색
+     *
+     * 1. 현재 탐색 대상을 재탐색 대상으로 변경 (새로운 페이징 트리거)
+     * 2. 히스토리 바에 재탐색 대상 추가
+     * 3. 재탐색 대상 초기화
+     */
+    private suspend fun reDiscover() {
+        val selectedTarget = currentUiState.selectedDiscoverTarget
+        val currentTarget = currentUiState.currentDiscoverTarget
+        val histories = currentUiState.histories
+
+        // 선택된 탐색 대상이 없을 경우 에러 표시
+        if (selectedTarget == null || currentTarget == null) {
+            showSnackbar(DiscoverErrorType.NotSelectedTarget.asUiText())
+            return
+        }
+
+        // 현재 탐색 대상의 인덱스 조회
+        val currentTargetIndex = histories.indexOfFirst {
+            it.user.userId == currentTarget.user.userId
+        }
+
+        // 현재 탐색 대상 뒤의 데이터를 제거
+        val trimmedHistories = if (currentTargetIndex != -1) {
+            histories.subList(0, currentTargetIndex + 1)
+        } else {
+            histories
+        }
+
+        // 정제된 히스토리에 새로운 타겟 추가 및 상태 업데이트
+        updateState {
+            this.copy(
+                currentDiscoverTarget = selectedTarget,
+                histories = trimmedHistories + selectedTarget,
+                selectedDiscoverTarget = null,
             )
         }
     }

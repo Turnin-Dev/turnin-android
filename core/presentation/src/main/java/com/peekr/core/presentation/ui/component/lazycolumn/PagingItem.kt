@@ -37,7 +37,7 @@ fun <T : Any> LazyListScope.pagingItem(
 
     when {
         // 1. 데이터가 하나도 없는 초기 로딩 중일 때 스켈레톤 표시
-        refreshState is LoadState.Loading && pagingItems.itemCount == 0 -> {
+        refreshState is LoadState.Loading -> {
             items(skeletonCount) {
                 skeleton(it)
             }
