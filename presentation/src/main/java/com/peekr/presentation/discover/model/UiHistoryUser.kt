@@ -1,7 +1,5 @@
 package com.peekr.presentation.discover.model
 
-import com.peekr.domain.discover.model.HistoryUser
-
 /**
  * 히스토리 사용자 UI 모델
  *
@@ -23,9 +21,9 @@ data class UiHistoryUser(
     }
 }
 
-fun HistoryUser.toUiModel(): UiHistoryUser =
+fun UiDiscoverContext.extractHistoryUser(): UiHistoryUser =
     UiHistoryUser(
-        userId = userId.value,
-        userName = userName.value,
+        userId = userId,
+        userName = userName,
         profileImageUrl = profileImageUrl,
     )

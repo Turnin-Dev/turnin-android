@@ -3,6 +3,7 @@ package com.peekr.presentation.discover.state
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
+import com.peekr.presentation.discover.model.UiDiscoverContext
 import com.peekr.presentation.discover.model.UiHistoryUser
 
 /**
@@ -12,10 +13,10 @@ class DiscoverContract {
     /**
      * UI 상태
      *
-     * @property currentTargetUserId 현재 탐색 대상 사용자 ID
+     * @property currentTargetUser 현재 탐색 대상 사용자 (탐색 컨텍스트)
      */
     data class UiState(
-        val currentTargetUserId: Long? = null,
+        val currentTargetUser: UiDiscoverContext? = null,
         val historyUsers: List<UiHistoryUser> = emptyList(),
     ) : BaseUiState
 

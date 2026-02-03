@@ -6,9 +6,10 @@ import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.discover.error.DiscoverErrorType
-import com.peekr.domain.discover.usecase.GetMyHistoryUserUseCase
+import com.peekr.domain.discover.usecase.GetMyDiscoverContextUseCase
 import com.peekr.presentation.discover.error.asUiText
 import com.peekr.presentation.discover.model.UiHistoryUser
+import com.peekr.presentation.discover.model.extractHistoryUser
 import com.peekr.presentation.discover.model.toUiModel
 import com.peekr.presentation.discover.state.DiscoverContract
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
-    private val getMyHistoryUserUseCase: GetMyHistoryUserUseCase,
+    private val getMyDiscoverContextUseCase: GetMyDiscoverContextUseCase,
     private val snackbarController: SnackbarController,
 ) : MVIBaseViewModel<DiscoverContract.UiState, DiscoverContract.UiEvent, DiscoverContract.UiEffect>() {
     init {
@@ -43,17 +44,18 @@ class DiscoverViewModel @Inject constructor(
      */
     private fun initialize() {
         viewModelScope.launch {
-            val myHistoryUser = getMyHistoryUserUseCase()
-            if (myHistoryUser == null) {
+            val myDiscoverContext = getMyDiscoverContextUseCase()
+            if (myDiscoverContext == null) {
                 showSnackbar(DiscoverErrorType.MyProfileNotFound.asUiText())
                 return@launch
             }
             // 히스토리에 나를 추가하고 현재 탐색 대상을 나로 설정
-            val myHistoryUserUiModel = myHistoryUser.toUiModel()
+            val myDiscoverContextUiModel = myDiscoverContext.toUiModel()
+            val myHistoryUser = myDiscoverContextUiModel.extractHistoryUser()
             updateState {
                 this.copy(
-                    historyUsers = emptyList<UiHistoryUser>() + myHistoryUserUiModel,
-                    currentTargetUserId = myHistoryUserUiModel.userId,
+                    historyUsers = emptyList<UiHistoryUser>() + myHistoryUser,
+                    currentTargetUser = myDiscoverContextUiModel,
                 )
             }
         }
