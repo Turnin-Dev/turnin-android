@@ -4,6 +4,7 @@ import com.peekr.core.domain.discover.model.DiscoverUser
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -15,7 +16,9 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class DiscoverUserResponse(
+    @Json(name = "id")
     val userId: Long,
+    @Json(name = "name")
     val userName: String,
     val displayId: String,
     val profileImageUrl: String?,

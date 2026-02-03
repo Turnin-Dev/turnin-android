@@ -25,7 +25,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
-import com.peekr.presentation.discover.model.UiHistoryUser
+import com.peekr.presentation.discover.model.UiDiscoverUser
 
 /**
  * 탐색 화면에서 사용하는 사용자 칩
@@ -39,7 +39,7 @@ import com.peekr.presentation.discover.model.UiHistoryUser
 internal fun UserChip(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
-    userChipInfo: UiHistoryUser,
+    userChipInfo: UiDiscoverUser,
     onClick: () -> Unit,
 ) {
     Box(
@@ -100,7 +100,7 @@ private fun UserChipPreview() {
 
         UserChip(
             isSelected = isSelected,
-            userChipInfo = UiHistoryUser(1L, "홍길동", null),
+            userChipInfo = UiDiscoverUser(1L, "홍길동", "did", null),
             onClick = { isSelected = !isSelected },
         )
     }

@@ -1,37 +1,71 @@
 package com.peekr.presentation.discover.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
+import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.domain.discover.model.DiscoverContext
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.discover.error.DiscoverErrorType
-import com.peekr.domain.discover.usecase.GetMyDiscoverContextUseCase
+import com.peekr.domain.discover.usecase.DiscoverUseCases
 import com.peekr.presentation.discover.error.asUiText
-import com.peekr.presentation.discover.model.UiHistoryUser
-import com.peekr.presentation.discover.model.extractHistoryUser
+import com.peekr.presentation.discover.model.UiDiscoverContext
 import com.peekr.presentation.discover.model.toUiModel
 import com.peekr.presentation.discover.state.DiscoverContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
-    private val getMyDiscoverContextUseCase: GetMyDiscoverContextUseCase,
+    private val usecases: DiscoverUseCases,
     private val snackbarController: SnackbarController,
 ) : MVIBaseViewModel<DiscoverContract.UiState, DiscoverContract.UiEvent, DiscoverContract.UiEffect>() {
+    private val tag = this::class.java.simpleName
+
     init {
         initialize()
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val discoverContexts = uiState
+        .map { it.currentDiscoverTarget?.user?.userId }
+        .distinctUntilChanged()
+        .flatMapLatest { userId ->
+            if (userId != null) {
+                usecases.getDiscoverContexts(userId)
+                    .catch { e ->
+                        AppLogger.e(tag, e, "Unexpected discover contexts pagination error")
+                        emit(PagingData.empty())
+                    }
+                    .map { pagingData: PagingData<DiscoverContext> ->
+                        pagingData.map { discoverContext ->
+                            discoverContext.toUiModel()
+                        }
+                    }
+            } else {
+                flowOf(PagingData.empty())
+            }
+        }
+        .cachedIn(viewModelScope)
 
     override fun createInitialState(): DiscoverContract.UiState =
         DiscoverContract.UiState()
 
     override suspend fun handleEvent(event: DiscoverContract.UiEvent) {
         when (event) {
-            is DiscoverContract.UiEvent.RefreshDiscoverContexts -> {
-                refreshDiscoverContexts(event.userId)
+            is DiscoverContract.UiEvent.ChangeCurrentDiscoverTarget -> {
+                changeCurrentTargetUser(event.target)
             }
         }
     }
@@ -44,26 +78,28 @@ class DiscoverViewModel @Inject constructor(
      */
     private fun initialize() {
         viewModelScope.launch {
-            val myDiscoverContext = getMyDiscoverContextUseCase()
+            val myDiscoverContext = usecases.getMyDiscoverContext()
             if (myDiscoverContext == null) {
                 showSnackbar(DiscoverErrorType.MyProfileNotFound.asUiText())
                 return@launch
             }
             // 히스토리에 나를 추가하고 현재 탐색 대상을 나로 설정
             val myDiscoverContextUiModel = myDiscoverContext.toUiModel()
-            val myHistoryUser = myDiscoverContextUiModel.extractHistoryUser()
             updateState {
                 this.copy(
-                    historyUsers = emptyList<UiHistoryUser>() + myHistoryUser,
-                    currentTargetUser = myDiscoverContextUiModel,
+                    histories = emptyList<UiDiscoverContext>() + myDiscoverContextUiModel,
+                    currentDiscoverTarget = myDiscoverContextUiModel,
                 )
             }
         }
     }
 
-    // 탐색 컨텍스트 새로고침 (새롭게 로드)
-    private fun refreshDiscoverContexts(userId: Long) {
-        // - 현재 탐색 대상과 같으면 수행하지 않음
+    private fun changeCurrentTargetUser(target: UiDiscoverContext) {
+        updateState {
+            this.copy(
+                currentDiscoverTarget = target,
+            )
+        }
     }
 
     private suspend fun showSnackbar(message: UiText) {

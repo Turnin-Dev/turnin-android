@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.chip.PeekrChip
+import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
@@ -52,9 +54,9 @@ internal fun DiscoverFeed(
             modifier = Modifier
                 .clickableSingle(onClick = onUserClick)
                 .padding(horizontal = ScreenTokens.HorizontalPadding),
-            userName = discoverContext.userName,
-            displayId = discoverContext.displayId,
-            profileImageUrl = discoverContext.profileImageUrl,
+            userName = discoverContext.user.userName,
+            displayId = discoverContext.user.displayId,
+            profileImageUrl = discoverContext.user.profileImageUrl,
         )
         Keywords(
             modifier = Modifier.fillMaxWidth(),
@@ -87,7 +89,7 @@ private fun UserInfo(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PeekrAvatar(
-            modifier = Modifier.size(35.dp),
+            modifier = Modifier.size(AvatarSize),
             model = profileImageUrl,
             contentDescription = userName,
         )
@@ -140,6 +142,43 @@ private fun Keywords(
     }
 }
 
+@Composable
+fun DiscoverFeedSkeleton() {
+    Column(
+        modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // 사용자 정보
+        Row(
+            modifier = Modifier,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SkeletonBox(Modifier.size(AvatarSize), CircleShape)
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                SkeletonBox(Modifier.size(46.dp, 10.dp))
+                SkeletonBox(Modifier.size(54.dp, 10.dp))
+            }
+        }
+
+        // 키워드
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            repeat(4) {
+                SkeletonBox(Modifier.size(60.dp, 23.dp))
+            }
+        }
+    }
+}
+
+private val AvatarSize = 35.dp
+
+// ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
 @Composable
 private fun DiscoverFeedPreview() {
@@ -150,5 +189,13 @@ private fun DiscoverFeedPreview() {
             onUserClick = {},
             onKeywordClick = {},
         )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun DiscoverFeedSkeletonPreview() {
+    PeekrAppTheme {
+        DiscoverFeedSkeleton()
     }
 }

@@ -9,25 +9,21 @@ import com.peekr.core.domain.discover.model.DiscoverContext
  *
  * - 담고 있는 정보: 사용자 정보 일부 + 키워드 정보 일부
  *
- * @property userId 사용자 ID
- * @property userName 사용자 명
- * @property displayId 사용자 표시 ID
- * @property profileImageUrl 사용자 프로필 url
+ * @property user 탐색용 사용자
  * @property keywords 탐색용 키워드 리스트
  */
 data class UiDiscoverContext(
-    val userId: Long,
-    val userName: String,
-    val displayId: String,
-    val profileImageUrl: String?,
+    val user: UiDiscoverUser,
     val keywords: List<UiDiscoverKeyword>,
 ) {
     companion object {
         val sample = UiDiscoverContext(
-            userId = 1L,
-            userName = "홍길동",
-            displayId = "Honggd123",
-            profileImageUrl = null,
+            user = UiDiscoverUser(
+                userId = 1L,
+                userName = "홍길동",
+                displayId = "Hong123",
+                profileImageUrl = null,
+            ),
             keywords = List(5) {
                 UiDiscoverKeyword(
                     userKeywordId = it + 1L,
@@ -41,9 +37,6 @@ data class UiDiscoverContext(
 
 fun DiscoverContext.toUiModel(): UiDiscoverContext =
     UiDiscoverContext(
-        userId = user.userId.value,
-        userName = user.userName.value,
-        displayId = user.displayId.value,
-        profileImageUrl = user.profileImageUrl,
+        user = user.toUiModel(),
         keywords = keywords.map { it.toUiModel() },
     )

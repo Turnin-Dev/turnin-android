@@ -1,8 +1,10 @@
 package com.peekr.core.data.di
 
+import com.peekr.core.data.repository.DiscoverRepositoryImpl
 import com.peekr.core.data.source.network.api.DiscoverApi
 import com.peekr.core.data.source.network.datasource.DiscoverNetworkDataSource
 import com.peekr.core.data.source.network.datasource.DiscoverNetworkDataSourceImpl
+import com.peekr.core.domain.discover.repository.DiscoverRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,4 +35,9 @@ interface DiscoverBindModule {
     fun bindsDiscoverNetworkDataSource(
         impl: DiscoverNetworkDataSourceImpl,
     ): DiscoverNetworkDataSource
+
+    @Binds
+    fun bindsDiscoverRepository(
+        impl: DiscoverRepositoryImpl,
+    ): DiscoverRepository
 }
