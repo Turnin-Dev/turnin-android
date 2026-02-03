@@ -109,6 +109,7 @@ class DiscoverNetworkDataSourceImplTest {
         private val TestDiscoverUserResponse = DiscoverUserResponse(
             userId = 1L,
             userName = "name",
+            displayId = "did",
             profileImageUrl = null,
         )
         private val TestDiscoverKeywordResponse = DiscoverKeywordResponse(

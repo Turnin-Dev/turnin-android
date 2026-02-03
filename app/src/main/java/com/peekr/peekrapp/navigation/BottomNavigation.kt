@@ -6,11 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationFrame
-import com.peekr.presentation.discover.main.DiscoverMainScreen
+import com.peekr.presentation.discover.discoverNavigation
 import com.peekr.presentation.home.homeNavigation
 import com.peekr.presentation.profile.myProfileNavigation
 
@@ -34,9 +33,7 @@ fun BottomNavigation(
         ) {
             homeNavigation(appNavController)
 
-            composable<SubGraph.BottomNav.Discover> {
-                DiscoverMainScreen(modifier = Modifier.fillMaxSize())
-            }
+            discoverNavigation(appNavController)
 
             myProfileNavigation<SubGraph.BottomNav.Profile>(appNavController)
         }
