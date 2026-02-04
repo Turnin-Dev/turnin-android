@@ -138,25 +138,36 @@ class DiscoverViewModel @Inject constructor(
         val currentTarget = currentUiState.currentDiscoverTarget
         val histories = currentUiState.histories
 
-        // 선택된 탐색 대상이 없을 경우 에러 표시
+        // 선택된 탐색 대상 혹은 현재 탐색 대상이 없는 경우 에러 표시
         if (selectedTarget == null || currentTarget == null) {
             showSnackbar(DiscoverErrorType.NotSelectedTarget.asUiText())
             return
         }
 
-        // 현재 탐색 대상의 인덱스 조회
+        // 1) 선택된 탐색 대상, 현재 탐색 대상 인덱스 결정
+        val selectedTargetIndex = histories.indexOfFirst {
+            it.user.userId == selectedTarget.user.userId
+        }
         val currentTargetIndex = histories.indexOfFirst {
             it.user.userId == currentTarget.user.userId
         }
 
-        // 현재 탐색 대상 뒤의 데이터를 제거
-        val trimmedHistories = if (currentTargetIndex != -1) {
-            histories.subList(0, currentTargetIndex + 1)
-        } else {
-            histories
+        // 2) 히스토리 정제
+        val trimmedHistories = when {
+            // 선택된 탐색 대상이 히스토리에 있는 경우 대상을 제외하고 추출
+            selectedTargetIndex != -1 -> {
+                histories.subList(0, selectedTargetIndex)
+            }
+
+            // 선택된 탐색 대상이 히스토리에 없으므로 현재 탐색 대상을 포함하여 추출
+            currentTargetIndex != -1 -> {
+                histories.subList(0, currentTargetIndex + 1)
+            }
+
+            else -> histories
         }
 
-        // 정제된 히스토리에 새로운 타겟 추가 및 상태 업데이트
+        // 3) 정제된 히스토리에 새로운 타겟 추가 및 상태 업데이트
         updateState {
             this.copy(
                 currentDiscoverTarget = selectedTarget,
