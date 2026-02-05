@@ -194,23 +194,18 @@ class DiscoverViewModel @Inject constructor(
 
     private suspend fun navigateToUserProfile(userId: Long) {
         val myUserId = getMyUserIdUseCase()
-        when {
-            myUserId == null -> {
-                sendEffect {
-                    DiscoverContract.UiEffect.NavigateToUserProfile(userId)
-                }
-            }
+        if (myUserId == null) {
+            showSnackbar(DiscoverErrorType.MyProfileNotFound.asUiText())
+            return
+        }
 
-            myUserId.value == userId -> {
-                sendEffect {
-                    DiscoverContract.UiEffect.NavigateToMyProfile
-                }
+        if (myUserId.value != userId) {
+            sendEffect {
+                DiscoverContract.UiEffect.NavigateToUserProfile(userId)
             }
-
-            else -> {
-                sendEffect {
-                    DiscoverContract.UiEffect.NavigateToUserProfile(userId)
-                }
+        } else {
+            sendEffect {
+                DiscoverContract.UiEffect.NavigateToMyProfile
             }
         }
     }
