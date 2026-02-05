@@ -25,6 +25,7 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -88,7 +89,11 @@ class FeedRepositoryImplTest {
         // Repository 호출 및 데이터 수집
         // PagingData는 수집하기 전까지 내부 로직이 돌아가지 않으므로 collect 처리
         val pagingDataFlow = repository.getFeeds()
-        val snapshot = pagingDataFlow.asSnapshot()
+        val snapshot = pagingDataFlow.asSnapshot {
+            scrollTo(index = 1)
+        }
+
+        advanceUntilIdle()
 
         // then
         // 네트워크 응답이 도메인 모델(Feed)로 잘 변환되었는지 확인

@@ -5,12 +5,11 @@ import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
 import io.mockk.Runs
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -19,8 +18,12 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -29,16 +32,23 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TokenAuthenticationIntegrationTest {
+class TokenAuthenticatorLogoutTest {
     private val dataStoreManager: DataStoreManager = mockk()
     private val refreshTokenApi: RefreshTokenApi = mockk()
     private val authEventBus: AuthEventBus = AuthEventBus()
     private lateinit var tokenAuthenticator: TokenAuthenticator
+    private lateinit var mockWebServer: MockWebServer
+    private lateinit var unauthorizedResponse: Response
+    private lateinit var testRequest: Request
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
+        // MockWebServer 설정
+        mockWebServer = MockWebServer()
+        mockWebServer.start()
+
         Dispatchers.setMain(testDispatcher)
 
         tokenAuthenticator = TokenAuthenticator(
@@ -46,6 +56,23 @@ class TokenAuthenticationIntegrationTest {
             refreshTokenApi,
             authEventBus,
         )
+
+        // mock 요청, 응답 설정
+        // 테스트용 Request 생성
+        testRequest = Request
+            .Builder()
+            .url(mockWebServer.url("/test"))
+            .header("Authorization", "Bearer $OLD_ACCESS_TOKEN")
+            .build()
+
+        // 401 에러 Response 모킹
+        unauthorizedResponse = Response
+            .Builder()
+            .request(testRequest)
+            .protocol(Protocol.HTTP_1_1)
+            .code(401)
+            .message("Unauthorized")
+            .build()
 
         // mock 설정
         coEvery { dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken) } just Runs
@@ -56,6 +83,8 @@ class TokenAuthenticationIntegrationTest {
     @After
     fun teardown() {
         Dispatchers.resetMain()
+        mockWebServer.close()
+        clearAllMocks()
     }
 
     @Test
@@ -67,14 +96,16 @@ class TokenAuthenticationIntegrationTest {
                 logoutEvents.add(it)
             }
         }
-        val mockResponse = mockk<Response>()
 
+        coEvery {
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
+        } returns flowOf(OLD_ACCESS_TOKEN)
         coEvery {
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
         } returns flowOf(null)
 
         // when
-        val result = tokenAuthenticator.authenticate(null, mockResponse)
+        val result = tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // then
         assertNull(result)
@@ -94,24 +125,21 @@ class TokenAuthenticationIntegrationTest {
                 logoutEvents.add(it)
             }
         }
-        val mockResponse = mockk<Response> {
-            every { request } returns mockk {
-                every { newBuilder() } returns mockk()
-            }
-        }
-
+        coEvery {
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
+        } returns flowOf(OLD_ACCESS_TOKEN)
         coEvery {
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
-        } returns flowOf("expired_refresh_token")
-
-        val failedResponse = mockk<retrofit2.Response<TokenResponse>> {
-            every { isSuccessful } returns false
-            every { code() } returns 401
-        }
-        coEvery { refreshTokenApi.refresh(any()) } returns failedResponse
+        } returns flowOf(OLD_REFRESH_TOKEN)
+        coEvery {
+            refreshTokenApi.refresh("Bearer $OLD_REFRESH_TOKEN")
+        } returns retrofit2.Response.error(
+            401,
+            "".toResponseBody("application/json".toMediaTypeOrNull()),
+        )
 
         // when
-        val result = tokenAuthenticator.authenticate(null, mockResponse)
+        val result = tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // then
         assertNull(result)
@@ -131,20 +159,18 @@ class TokenAuthenticationIntegrationTest {
                 logoutEvents.add(it)
             }
         }
-        val mockResponse = mockk<Response>()
-
+        coEvery {
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
+        } returns flowOf(OLD_ACCESS_TOKEN)
         coEvery {
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
-        } returns flowOf("valid_refresh_token")
-        val successResponse = mockk<retrofit2.Response<TokenResponse>> {
-            every { isSuccessful } returns true
-            every { code() } returns 200
-            every { body() } returns null
-        }
-        coEvery { refreshTokenApi.refresh(any()) } returns successResponse
+        } returns flowOf(OLD_REFRESH_TOKEN)
+        coEvery {
+            refreshTokenApi.refresh("Bearer $OLD_REFRESH_TOKEN")
+        } returns retrofit2.Response.success(null)
 
         // when
-        val result = tokenAuthenticator.authenticate(null, mockResponse)
+        val result = tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // then
         assertNull(result)
@@ -164,43 +190,24 @@ class TokenAuthenticationIntegrationTest {
                 logoutEvents.add(it)
             }
         }
-        val mockRequest = mockk<Request>()
-        val mockRequestBuilder = mockk<Request.Builder> {
-            every { header(any(), any()) } returns this
-            every { build() } returns mockRequest
-        }
-        val mockResponse = mockk<Response> {
-            every { request } returns mockk {
-                every { newBuilder() } returns mockRequestBuilder
-            }
-        }
-        val expectedAccessToken = "new_access_token"
-        val expectedRefreshToken = "new_refresh_token"
+        val tokenResponse = TokenResponse(NEW_ACCESS_TOKEN, NEW_REFRESH_TOKEN)
+        val successResponse = retrofit2.Response.success(tokenResponse)
+        coEvery { refreshTokenApi.refresh(any()) } returns successResponse
+        coEvery {
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
+        } returns flowOf(OLD_ACCESS_TOKEN)
         coEvery {
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
-        } returns flowOf("valid_refresh_token")
+        } returns flowOf(OLD_REFRESH_TOKEN)
         coEvery {
-            dataStoreManager.saveEncryptedStringData(
-                DataStoreKey.Auth.AccessToken,
-                expectedAccessToken,
-            )
+            dataStoreManager.saveEncryptedStringData(DataStoreKey.Auth.AccessToken, NEW_ACCESS_TOKEN)
         } just Runs
         coEvery {
-            dataStoreManager.saveEncryptedStringData(
-                DataStoreKey.Auth.RefreshToken,
-                expectedRefreshToken,
-            )
+            dataStoreManager.saveEncryptedStringData(DataStoreKey.Auth.RefreshToken, NEW_REFRESH_TOKEN)
         } just Runs
-        val newTokenResponse = TokenResponse(expectedAccessToken, expectedRefreshToken)
-        val successResponse = mockk<retrofit2.Response<TokenResponse>> {
-            every { isSuccessful } returns true
-            every { code() } returns 200
-            every { body() } returns newTokenResponse
-        }
-        coEvery { refreshTokenApi.refresh(any()) } returns successResponse
 
         // when
-        val result = tokenAuthenticator.authenticate(null, mockResponse)
+        val result = tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // then
         assertNotNull(result)
@@ -208,22 +215,20 @@ class TokenAuthenticationIntegrationTest {
         coVerify {
             dataStoreManager.saveEncryptedStringData(
                 DataStoreKey.Auth.AccessToken,
-                expectedAccessToken,
+                NEW_ACCESS_TOKEN,
             )
         }
         coVerify {
             dataStoreManager.saveEncryptedStringData(
                 DataStoreKey.Auth.RefreshToken,
-                expectedRefreshToken,
+                NEW_REFRESH_TOKEN,
             )
         }
-        verify { mockRequestBuilder.header("Authorization", "Bearer $expectedAccessToken") }
 
         // cleanup
         job.cancel()
     }
 
-    // TODO: 검토 필요
     @Test
     fun `여러 번 실패해도 매번 로그아웃 이벤트가 발생한다`() = runTest {
         // given
@@ -234,15 +239,12 @@ class TokenAuthenticationIntegrationTest {
             }
         }
 
-        val mockResponse = mockk<Response>()
-        coEvery {
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
-        } returns flowOf(null)
+        setFailure()
 
         // when
-        tokenAuthenticator.authenticate(null, mockResponse)
-        tokenAuthenticator.authenticate(null, mockResponse)
-        tokenAuthenticator.authenticate(null, mockResponse)
+        tokenAuthenticator.authenticate(null, unauthorizedResponse)
+        tokenAuthenticator.authenticate(null, unauthorizedResponse)
+        tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // then
         assertTrue(logoutEvents.size == 3)
@@ -268,13 +270,10 @@ class TokenAuthenticationIntegrationTest {
             authEventBus.logoutEvent.collect { events3.add(it) }
         }
 
-        val mockResponse = mockk<Response>()
-        coEvery {
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
-        } returns flowOf(null)
+        setFailure()
 
         // When
-        tokenAuthenticator.authenticate(null, mockResponse)
+        tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // Then: 모든 구독자가 이벤트 수신
         assertTrue(events1.size == 1)
@@ -286,9 +285,26 @@ class TokenAuthenticationIntegrationTest {
         job3.cancel()
     }
 
+    // 기존 리프레쉬 토큰을 없도록 설정하여 실패를 유도한다.
+    private fun setFailure() {
+        coEvery {
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken)
+        } returns flowOf(OLD_ACCESS_TOKEN)
+        coEvery {
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
+        } returns flowOf(null)
+    }
+
     private fun verifyDataDeletion() {
         coVerify { dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken) }
         coVerify { dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken) }
         coVerify { dataStoreManager.deleteLongData(DataStoreKey.User.UserId) }
+    }
+
+    companion object {
+        private const val OLD_ACCESS_TOKEN = "old.access.token"
+        private const val OLD_REFRESH_TOKEN = "old.refresh.token"
+        private const val NEW_ACCESS_TOKEN = "new.refresh.token"
+        private const val NEW_REFRESH_TOKEN = "new.refresh.token"
     }
 }

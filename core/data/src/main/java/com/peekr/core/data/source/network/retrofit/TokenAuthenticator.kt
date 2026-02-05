@@ -47,20 +47,22 @@ class TokenAuthenticator(
             val originalRefreshToken =
                 dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken).first()
             if (originalRefreshToken == null) {
-                handleAuthenticationFailure()
+                AppLogger.w(tag, "No refresh token available")
+                resetAuthDataAndLogout()
                 return@runBlocking null
             }
             val newTokenResponse = refreshToken(originalRefreshToken)
 
             // 리프레쉬 실패 시 실패 처리(자동 로그아웃)
             if (!newTokenResponse.isSuccessful) {
-                handleAuthenticationFailure()
+                resetAuthDataAndLogout()
                 AppLogger.w(tag, "Token refresh failed (code: ${newTokenResponse.code()})")
                 return@runBlocking null
             }
 
             val body = newTokenResponse.body() ?: run {
-                handleAuthenticationFailure()
+                AppLogger.e(tag, "Token refresh body is null")
+                resetAuthDataAndLogout()
                 return@runBlocking null
             }
 
@@ -93,7 +95,7 @@ class TokenAuthenticator(
     /**
      * 인증 실패 시 토큰을 전부 삭제하고 자동 로그아웃 처리를 한다.
      */
-    private suspend fun handleAuthenticationFailure() {
+    private suspend fun resetAuthDataAndLogout() {
         AppLogger.d(tag, "Authentication Failure")
         dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken)
         dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken)
