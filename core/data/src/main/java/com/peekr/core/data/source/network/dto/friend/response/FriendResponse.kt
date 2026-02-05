@@ -25,7 +25,7 @@ data class FriendResponse(
     val receiverId: Long,
     @Json(name = "status")
     val requestState: FriendRequestStatus,
-    val respondedAt: Long,
+    val respondedAt: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )
