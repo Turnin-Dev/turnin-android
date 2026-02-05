@@ -24,6 +24,7 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.discover.model.UiDiscoverContext
@@ -62,7 +63,7 @@ internal fun DiscoverFeed(
     ) {
         UserInfo(
             modifier = Modifier
-                .clickableSingle(onClick = onUserClick)
+                .clickableSingleWithoutRipple(onClick = onUserClick)
                 .padding(horizontal = ScreenTokens.HorizontalPadding),
             userName = discoverContext.user.userName,
             displayId = discoverContext.user.displayId,

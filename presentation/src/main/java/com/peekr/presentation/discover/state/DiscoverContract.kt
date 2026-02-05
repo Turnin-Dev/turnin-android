@@ -41,7 +41,42 @@ class DiscoverContract {
          * 재탐색 이벤트
          */
         data object ReDiscover : UiEvent
+
+        /**
+         * 키워드 상세 화면 이동 이벤트
+         */
+        data class NavigateToKeywordDetail(
+            val userId: Long,
+            val userKeywordId: Long,
+        ) : UiEvent
+
+        /**
+         * 사용자 프로필 이동 이벤트
+         */
+        data class NavigateToUserProfile(
+            val userId: Long,
+        ) : UiEvent
     }
 
-    sealed interface UiEffect : BaseUiEffect
+    sealed interface UiEffect : BaseUiEffect {
+        /**
+         * 키워드 상세 화면 이동 일회성 이벤트
+         */
+        data class NavigateToKeywordDetail(
+            val userId: Long,
+            val userKeywordId: Long,
+        ) : UiEffect
+
+        /**
+         * 나의 프로필 이동 일회성 이벤트
+         */
+        data object NavigateToMyProfile : UiEffect
+
+        /**
+         * 사용자 프로필 이동 일회성 이벤트
+         */
+        data class NavigateToUserProfile(
+            val userId: Long,
+        ) : UiEffect
+    }
 }

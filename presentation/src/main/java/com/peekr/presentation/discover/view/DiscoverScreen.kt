@@ -152,13 +152,32 @@ fun DiscoverScreen(
                 )
             },
             currentDiscoverTarget = {
-                uiState.currentDiscoverTarget?.let {
+                uiState.currentDiscoverTarget?.let { discoverContext ->
                     CurrentDiscoverTarget(
                         modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
-                        discoverContext = it,
-                        onFeedClick = {},
-                        onUserClick = {},
-                        onKeywordClick = {},
+                        discoverContext = discoverContext,
+                        onFeedClick = {
+                            onUiEvent(
+                                DiscoverContract.UiEvent.NavigateToUserProfile(
+                                    userId = discoverContext.user.userId,
+                                ),
+                            )
+                        },
+                        onUserClick = {
+                            onUiEvent(
+                                DiscoverContract.UiEvent.NavigateToUserProfile(
+                                    userId = discoverContext.user.userId,
+                                ),
+                            )
+                        },
+                        onKeywordClick = { keyword ->
+                            onUiEvent(
+                                DiscoverContract.UiEvent.NavigateToKeywordDetail(
+                                    userId = discoverContext.user.userId,
+                                    userKeywordId = keyword.userKeywordId,
+                                ),
+                            )
+                        },
                     )
                 }
             },
@@ -172,8 +191,21 @@ fun DiscoverScreen(
                             DiscoverContract.UiEvent.SelectFeed(discoverContext),
                         )
                     },
-                    onUserClick = {},
-                    onKeywordClick = {},
+                    onUserClick = { discoverContext ->
+                        onUiEvent(
+                            DiscoverContract.UiEvent.NavigateToUserProfile(
+                                userId = discoverContext.user.userId,
+                            ),
+                        )
+                    },
+                    onKeywordClick = { userId, keyword ->
+                        onUiEvent(
+                            DiscoverContract.UiEvent.NavigateToKeywordDetail(
+                                userId = userId,
+                                userKeywordId = keyword.userKeywordId,
+                            ),
+                        )
+                    },
                 )
             },
         )
@@ -293,7 +325,7 @@ private fun Users(
     selectedDiscoverContext: UiDiscoverContext?,
     onFeedClick: (UiDiscoverContext) -> Unit,
     onUserClick: (UiDiscoverContext) -> Unit,
-    onKeywordClick: (UiDiscoverKeyword) -> Unit,
+    onKeywordClick: (userId: Long, UiDiscoverKeyword) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
     LaunchedEffect(users.loadState.refresh) {
@@ -342,7 +374,7 @@ private fun Users(
                         selected = selectedDiscoverContext?.user?.userId == user.user.userId,
                         onFeedClick = { onFeedClick(user) },
                         onUserClick = { onUserClick(user) },
-                        onKeywordClick = { keyword -> onKeywordClick(keyword) },
+                        onKeywordClick = { keyword -> onKeywordClick(user.user.userId, keyword) },
                     )
                     FeedDivider(Modifier.fillMaxWidth())
                 }

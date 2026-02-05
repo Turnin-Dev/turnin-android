@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.discover.model.DiscoverContext
+import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
     private val usecases: DiscoverUseCases,
+    private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val snackbarController: SnackbarController,
 ) : MVIBaseViewModel<DiscoverContract.UiState, DiscoverContract.UiEvent, DiscoverContract.UiEffect>() {
     private val tag = this::class.java.simpleName
@@ -83,6 +85,19 @@ class DiscoverViewModel @Inject constructor(
 
             DiscoverContract.UiEvent.ReDiscover -> {
                 reDiscover()
+            }
+
+            is DiscoverContract.UiEvent.NavigateToKeywordDetail -> {
+                sendEffect {
+                    DiscoverContract.UiEffect.NavigateToKeywordDetail(
+                        userId = event.userId,
+                        userKeywordId = event.userKeywordId,
+                    )
+                }
+            }
+
+            is DiscoverContract.UiEvent.NavigateToUserProfile -> {
+                navigateToUserProfile(event.userId)
             }
         }
     }
@@ -174,6 +189,29 @@ class DiscoverViewModel @Inject constructor(
                 histories = trimmedHistories + selectedTarget,
                 selectedDiscoverTarget = null,
             )
+        }
+    }
+
+    private suspend fun navigateToUserProfile(userId: Long) {
+        val myUserId = getMyUserIdUseCase()
+        when {
+            myUserId == null -> {
+                sendEffect {
+                    DiscoverContract.UiEffect.NavigateToUserProfile(userId)
+                }
+            }
+
+            myUserId.value == userId -> {
+                sendEffect {
+                    DiscoverContract.UiEffect.NavigateToMyProfile
+                }
+            }
+
+            else -> {
+                sendEffect {
+                    DiscoverContract.UiEffect.NavigateToUserProfile(userId)
+                }
+            }
         }
     }
 
