@@ -304,7 +304,7 @@ class TokenAuthenticatorLogoutTest {
     companion object {
         private const val OLD_ACCESS_TOKEN = "old.access.token"
         private const val OLD_REFRESH_TOKEN = "old.refresh.token"
-        private const val NEW_ACCESS_TOKEN = "new.refresh.token"
+        private const val NEW_ACCESS_TOKEN = "new.access.token"
         private const val NEW_REFRESH_TOKEN = "new.refresh.token"
     }
 }

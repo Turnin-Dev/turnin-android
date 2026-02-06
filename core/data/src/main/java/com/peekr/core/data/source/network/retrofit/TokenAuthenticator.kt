@@ -15,6 +15,7 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import okio.IOException
 
 /** 인증 요청 시 응답의 HTTP 상태코드가 401일 때만 호출된다.  */
 class TokenAuthenticator(
@@ -51,7 +52,18 @@ class TokenAuthenticator(
                 resetAuthDataAndLogout()
                 return@runBlocking null
             }
-            val newTokenResponse = refreshToken(originalRefreshToken)
+            val newTokenResponse = try {
+                refreshToken(originalRefreshToken)
+            } catch (e: IOException) {
+                // IO 작업(예: 네트워크 관련 작업) 예외는 단순 취소만 수행
+                AppLogger.e(tag, e, "Token refresh request failed")
+                return@runBlocking null
+            } catch (e: Exception) {
+                // IO 예외 이 외에는 보안상 토큰 삭제 후 로그아웃 처리
+                AppLogger.e(tag, e, "Token refresh request failed")
+                resetAuthDataAndLogout()
+                return@runBlocking null
+            }
 
             // 리프레쉬 실패 시 실패 처리(자동 로그아웃)
             if (!newTokenResponse.isSuccessful) {

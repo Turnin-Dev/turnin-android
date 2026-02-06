@@ -25,7 +25,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -252,7 +251,7 @@ class TokenAuthenticatorTest {
     }
 
     @Test
-    fun `네트워크 오류 시 예외 전파`() = runTest {
+    fun `RefreshToken API에서 네트워크 오류 시 null 반환`() = runTest {
         // Given: refresh API 호출 시 예외가 발생하도록 세팅
         val tokenResponse = TokenResponse(NEW_ACCESS_TOKEN, NEW_REFRESH_TOKEN)
         val successResponse = retrofit2.Response.success(tokenResponse)
@@ -268,13 +267,10 @@ class TokenAuthenticatorTest {
         } throws IOException("Network error")
 
         // When
-        val exception = runCatching {
-            tokenAuthenticator.authenticate(null, unauthorizedResponse)
-        }.exceptionOrNull()
+        val result = tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // Then
-        assertNotNull(exception)
-        assertTrue(exception is IOException)
+        assertNull(result)
 
         // 토큰 관련 작업이 수행되지 않았는지 확인
         coVerify(exactly = 0) { dataStoreManager.saveEncryptedStringData(any(), any()) }
@@ -282,7 +278,7 @@ class TokenAuthenticatorTest {
     }
 
     @Test
-    fun `일반 예외 발생 시 예외 전파`() = runTest {
+    fun `RefreshToken API에서 일반 예외 발생 시 기존 토큰 삭제, 로그아웃 처리 후 null 반환`() = runTest {
         // Given: refresh API 호출 시 일반 예외가 발생하도록 세팅
         val tokenResponse = TokenResponse(NEW_ACCESS_TOKEN, NEW_REFRESH_TOKEN)
         val successResponse = retrofit2.Response.success(tokenResponse)
@@ -293,28 +289,35 @@ class TokenAuthenticatorTest {
         coEvery {
             dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken)
         } returns flowOf(OLD_REFRESH_TOKEN)
+        coEvery { dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken) } just Runs
+        coEvery { dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken) } just Runs
+        coEvery { dataStoreManager.deleteLongData(DataStoreKey.User.UserId) } just Runs
+        coEvery { authEventBus.emitLogout() } just Runs
         coEvery {
             refreshTokenApi.refresh(any())
         } throws RuntimeException("unexpected error")
 
         // When
-        val exception = runCatching {
-            tokenAuthenticator.authenticate(null, unauthorizedResponse)
-        }.exceptionOrNull()
+        val result = tokenAuthenticator.authenticate(null, unauthorizedResponse)
 
         // Then
-        assertNotNull(exception)
-        assertTrue(exception is RuntimeException)
+        assertNull(result)
 
-        // 토큰 관련 작업이 수행되지 않았는지 확인
+        // 인증 관련 데이터 삭제 및 로그아웃 처리 확인
+        coVerify(exactly = 1) { refreshTokenApi.refresh("Bearer $OLD_REFRESH_TOKEN") }
+        coVerify(exactly = 1) { dataStoreManager.deleteStringData(DataStoreKey.Auth.AccessToken) }
+        coVerify(exactly = 1) { dataStoreManager.deleteStringData(DataStoreKey.Auth.RefreshToken) }
+        coVerify(exactly = 1) { dataStoreManager.deleteLongData(DataStoreKey.User.UserId) }
+        coVerify(exactly = 1) { authEventBus.emitLogout() }
+
+        // 새로운 토큰 저장이 호출되지 않았는지 확인
         coVerify(exactly = 0) { dataStoreManager.saveEncryptedStringData(any(), any()) }
-        coVerify(exactly = 0) { dataStoreManager.deleteStringData(any()) }
     }
 
     companion object {
         private const val OLD_ACCESS_TOKEN = "old.access.token"
         private const val OLD_REFRESH_TOKEN = "old.refresh.token"
-        private const val NEW_ACCESS_TOKEN = "new.refresh.token"
+        private const val NEW_ACCESS_TOKEN = "new.access.token"
         private const val NEW_REFRESH_TOKEN = "new.refresh.token"
     }
 }
