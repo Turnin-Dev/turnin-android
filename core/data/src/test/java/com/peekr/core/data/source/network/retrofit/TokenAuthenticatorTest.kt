@@ -4,8 +4,6 @@ import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
-import com.peekr.core.data.source.network.retrofit.TokenAuthenticator
-import com.peekr.core.data.source.network.retrofit.TokenResponse
 import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
