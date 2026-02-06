@@ -53,7 +53,7 @@ internal fun UserChip(
                 },
             )
             .border(
-                width = 0.35.dp,
+                width = 0.5.dp,
                 color = PeekrTheme.colorScheme.textNormal,
                 shape = Shape,
             )

@@ -18,7 +18,7 @@ data class Friend(
     val requesterId: UserId,
     val receiverId: UserId,
     val requestStatus: FriendRequestStatus,
-    val respondedAt: Long,
+    val respondedAt: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )

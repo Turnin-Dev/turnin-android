@@ -16,9 +16,20 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
+import okhttp3.internal.platform.Platform
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+
+private val maskingLogger = HttpLoggingInterceptor.Logger { message ->
+    val masked = message
+        .replace(
+            Regex("""("(?:access_?token|refresh_?token)"\s*:\s*")([^"]+)(")""", RegexOption.IGNORE_CASE),
+            "$1********$3",
+        )
+
+    Platform.get().log(masked)
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,7 +42,7 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply {
+        HttpLoggingInterceptor(maskingLogger).apply {
             if (BuildConfig.DEBUG) {
                 setLevel(HttpLoggingInterceptor.Level.BODY)
             } else {

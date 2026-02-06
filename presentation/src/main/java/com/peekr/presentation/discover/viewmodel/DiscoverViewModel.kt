@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.discover.model.DiscoverContext
+import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
     private val usecases: DiscoverUseCases,
+    private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val snackbarController: SnackbarController,
 ) : MVIBaseViewModel<DiscoverContract.UiState, DiscoverContract.UiEvent, DiscoverContract.UiEffect>() {
     private val tag = this::class.java.simpleName
@@ -65,7 +67,37 @@ class DiscoverViewModel @Inject constructor(
     override suspend fun handleEvent(event: DiscoverContract.UiEvent) {
         when (event) {
             is DiscoverContract.UiEvent.ChangeCurrentDiscoverTarget -> {
-                changeCurrentTargetUser(event.target)
+                changeCurrentDiscoverTarget(event.target)
+            }
+
+            is DiscoverContract.UiEvent.SelectFeed -> {
+                updateState {
+                    this.copy(
+                        selectedDiscoverTarget =
+                            if (currentUiState.selectedDiscoverTarget == event.discoverContext) {
+                                null
+                            } else {
+                                event.discoverContext
+                            },
+                    )
+                }
+            }
+
+            DiscoverContract.UiEvent.ReDiscover -> {
+                reDiscover()
+            }
+
+            is DiscoverContract.UiEvent.NavigateToKeywordDetail -> {
+                sendEffect {
+                    DiscoverContract.UiEffect.NavigateToKeywordDetail(
+                        userId = event.userId,
+                        userKeywordId = event.userKeywordId,
+                    )
+                }
+            }
+
+            is DiscoverContract.UiEvent.NavigateToUserProfile -> {
+                navigateToUserProfile(event.userId)
             }
         }
     }
@@ -94,11 +126,87 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun changeCurrentTargetUser(target: UiDiscoverContext) {
+    /**
+     * 현재 탐색 대상 변경
+     *
+     * 1. 현재 탐색 대상 변경
+     * 2. 재탐색 대상 초기화
+     */
+    private fun changeCurrentDiscoverTarget(target: UiDiscoverContext) {
         updateState {
             this.copy(
                 currentDiscoverTarget = target,
+                selectedDiscoverTarget = null,
             )
+        }
+    }
+
+    /**
+     * 재탐색
+     *
+     * 1. 현재 탐색 대상을 재탐색 대상으로 변경 (새로운 페이징 트리거)
+     * 2. 히스토리 바에 재탐색 대상 추가
+     * 3. 재탐색 대상 초기화
+     */
+    private suspend fun reDiscover() {
+        val selectedTarget = currentUiState.selectedDiscoverTarget
+        val currentTarget = currentUiState.currentDiscoverTarget
+        val histories = currentUiState.histories
+
+        // 선택된 탐색 대상 혹은 현재 탐색 대상이 없는 경우 에러 표시
+        if (selectedTarget == null || currentTarget == null) {
+            showSnackbar(DiscoverErrorType.NotSelectedTarget.asUiText())
+            return
+        }
+
+        // 1) 선택된 탐색 대상, 현재 탐색 대상 인덱스 결정
+        val selectedTargetIndex = histories.indexOfFirst {
+            it.user.userId == selectedTarget.user.userId
+        }
+        val currentTargetIndex = histories.indexOfFirst {
+            it.user.userId == currentTarget.user.userId
+        }
+
+        // 2) 히스토리 정제
+        val trimmedHistories = when {
+            // 선택된 탐색 대상이 히스토리에 있는 경우 대상을 제외하고 추출
+            selectedTargetIndex != -1 -> {
+                histories.subList(0, selectedTargetIndex)
+            }
+
+            // 선택된 탐색 대상이 히스토리에 없으므로 현재 탐색 대상을 포함하여 추출
+            currentTargetIndex != -1 -> {
+                histories.subList(0, currentTargetIndex + 1)
+            }
+
+            else -> histories
+        }
+
+        // 3) 정제된 히스토리에 새로운 타겟 추가 및 상태 업데이트
+        updateState {
+            this.copy(
+                currentDiscoverTarget = selectedTarget,
+                histories = trimmedHistories + selectedTarget,
+                selectedDiscoverTarget = null,
+            )
+        }
+    }
+
+    private suspend fun navigateToUserProfile(userId: Long) {
+        val myUserId = getMyUserIdUseCase()
+        if (myUserId == null) {
+            showSnackbar(DiscoverErrorType.MyProfileNotFound.asUiText())
+            return
+        }
+
+        if (myUserId.value != userId) {
+            sendEffect {
+                DiscoverContract.UiEffect.NavigateToUserProfile(userId)
+            }
+        } else {
+            sendEffect {
+                DiscoverContract.UiEffect.NavigateToMyProfile
+            }
         }
     }
 

@@ -15,6 +15,7 @@ import androidx.paging.compose.LazyPagingItems
  * @param key [LazyColumn] key
  * @param contentType [LazyColumn] contentType
  * @param skeletonCount 표시할 스켈레톤 개수
+ * @param alwaysShowSkeleton `true`면 새로고침 시 항상 스켈레톤을 표시하고 `false`면 초기 로딩 시에만 스켈레톤을 표시
  * @param skeleton 스켈레톤 뷰
  * @param initialError 초기 에러 뷰
  * @param footerError Footer 에러 뷰
@@ -26,6 +27,7 @@ fun <T : Any> LazyListScope.pagingItem(
     key: ((Int) -> Any)? = null,
     contentType: (Int) -> Any? = { null },
     skeletonCount: Int = 5,
+    alwaysShowSkeleton: Boolean = true,
     skeleton: @Composable (LazyItemScope.(Int) -> Unit),
     initialError: @Composable (LazyItemScope.() -> Unit),
     footerError: @Composable (LazyItemScope.() -> Unit),
@@ -35,9 +37,15 @@ fun <T : Any> LazyListScope.pagingItem(
     val refreshState = pagingItems.loadState.refresh
     val appendState = pagingItems.loadState.append
 
+    val isRefreshing = if (alwaysShowSkeleton) {
+        refreshState is LoadState.Loading
+    } else {
+        refreshState is LoadState.Loading && pagingItems.itemCount == 0
+    }
+
     when {
-        // 1. 데이터가 하나도 없는 초기 로딩 중일 때 스켈레톤 표시
-        refreshState is LoadState.Loading && pagingItems.itemCount == 0 -> {
+        // 1. 로딩 시 스켈레톤 표시 (조건부)
+        isRefreshing -> {
             items(skeletonCount) {
                 skeleton(it)
             }

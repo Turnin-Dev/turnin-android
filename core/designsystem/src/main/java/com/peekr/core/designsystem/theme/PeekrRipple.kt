@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class)
 val PeekrRipple = RippleConfiguration(
     color = Color.LightGray,
-    rippleAlpha = RippleAlpha(0.2f, 0.2f, 0.2f, 0.2f),
+    rippleAlpha = RippleAlpha(0.1f, 0.1f, 0.1f, 0.1f),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
