@@ -51,6 +51,7 @@ object NetworkApiPath {
         const val ROUTE = "$BASE/friend"
         const val STATUS = "$ROUTE/status"
         const val LIST = "$ROUTE/list"
+        const val INCOMING_REQUEST = "$ROUTE/incoming-request"
     }
 
     object Discover {

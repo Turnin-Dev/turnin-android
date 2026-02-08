@@ -6,6 +6,7 @@ import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
+import com.peekr.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 
 interface FriendNetworkDataSource {
@@ -23,6 +24,17 @@ interface FriendNetworkDataSource {
         page: Long,
         size: Int,
     ): NetworkResult<FriendsResponse>
+
+    /**
+     * 나에게 들어온 친구 요청 목록 조회 (페이지네이션)
+     *
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     */
+    suspend fun getIncomingRequests(
+        page: Long,
+        size: Int,
+    ): NetworkResult<IncomingRequestsResponse>
 
     /**
      * 친구 추가

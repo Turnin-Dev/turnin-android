@@ -4,6 +4,7 @@ import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
+import com.peekr.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -23,6 +24,15 @@ interface FriendApi {
         @Query("page") page: Long,
         @Query("size") size: Int,
     ): Response<FriendsResponse>
+
+    /**
+     * 나에게 들어온 친구 요청 목록 조회 (페이지네이션)
+     */
+    @GET(NetworkApiPath.Friend.INCOMING_REQUEST)
+    suspend fun getIncomingRequests(
+        @Query("page") page: Long,
+        @Query("size") size: Int,
+    ): Response<IncomingRequestsResponse>
 
     /**
      * 친구 추가
