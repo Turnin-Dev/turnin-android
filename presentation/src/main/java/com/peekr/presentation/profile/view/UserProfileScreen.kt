@@ -18,23 +18,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.peekr.core.designsystem.component.button.PeekrButtonStyle
 import com.peekr.core.designsystem.component.button.PeekrIconButton
-import com.peekr.core.designsystem.component.button.PeekrOutlinedButton
-import com.peekr.core.designsystem.component.button.PeekrSolidButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.icon.Arrow2Right
-import com.peekr.core.designsystem.util.icon.Cancel
-import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.PeekrIcons
-import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.ui.component.button.FriendStatusButton
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -208,44 +202,11 @@ private fun Profile(
         introduce = introduce,
         onProfileImageClick = onProfileImageClick,
         onFriendsCountClick = onFriendsCountClick,
-        friendshipStatusButton = {
-            when (friendStatus) {
-                FriendStatus.NOTHING -> {
-                    PeekrSolidButton(
-                        text = stringResource(R.string.user_profile_screen_friendship_status_btn_nothing),
-                        style = PeekrButtonStyle.Tiny,
-                        icon = PeekrIcons.Default.Bold.Plus,
-                        onClick = { onFriendsButtonClick(friendStatus) },
-                    )
-                }
-
-                FriendStatus.FRIENDS -> {
-                    PeekrOutlinedButton(
-                        text = stringResource(R.string.user_profile_screen_friendship_status_btn_friends),
-                        style = PeekrButtonStyle.Tiny,
-                        icon = PeekrIcons.Default.Bold.Check,
-                        onClick = { onFriendsButtonClick(friendStatus) },
-                    )
-                }
-
-                FriendStatus.REQUESTED -> {
-                    PeekrOutlinedButton(
-                        text = stringResource(R.string.user_profile_screen_friendship_status_btn_requested),
-                        style = PeekrButtonStyle.Tiny,
-                        icon = PeekrIcons.Default.Bold.Cancel,
-                        onClick = { onFriendsButtonClick(friendStatus) },
-                    )
-                }
-
-                FriendStatus.RECEIVED -> {
-                    PeekrSolidButton(
-                        text = stringResource(R.string.user_profile_screen_friendship_status_btn_received),
-                        style = PeekrButtonStyle.Tiny,
-                        icon = PeekrIcons.Default.Bold.Arrow2Right,
-                        onClick = { onFriendsButtonClick(friendStatus) },
-                    )
-                }
-            }
+        friendStatusButton = {
+            FriendStatusButton(
+                friendStatus = friendStatus,
+                onClick = { onFriendsButtonClick(friendStatus) },
+            )
         },
     )
 }

@@ -38,7 +38,7 @@ import com.peekr.presentation.R
  * @param introduce 소개 글
  * @param onProfileImageClick 프로필 사진 클릭 시
  * @param onFriendsCountClick 친구 수 클릭 시
- * @param friendshipStatusButton 친구 관계 상태 버튼 (나의 프로필 에선 활성화하지 않는다.)
+ * @param friendStatusButton 친구 상태 버튼 (나의 프로필 에선 활성화하지 않는다.)
  */
 @Composable
 fun ProfileFrame(
@@ -49,7 +49,7 @@ fun ProfileFrame(
     introduce: String,
     onProfileImageClick: () -> Unit,
     onFriendsCountClick: () -> Unit,
-    friendshipStatusButton: (@Composable () -> Unit)? = null,
+    friendStatusButton: (@Composable () -> Unit)? = null,
 ) {
     Column(
         modifier = modifier,
@@ -110,7 +110,7 @@ fun ProfileFrame(
                     .weight(1f)
                     .wrapContentSize(Alignment.CenterEnd),
             ) {
-                friendshipStatusButton?.invoke()
+                friendStatusButton?.invoke()
             }
         }
 
