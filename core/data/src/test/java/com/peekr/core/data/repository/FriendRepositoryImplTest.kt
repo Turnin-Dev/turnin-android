@@ -444,8 +444,10 @@ class FriendRepositoryImplTest {
         (startId until startId + count).map { id ->
             IncomingRequestResponse(
                 id = id,
-                requesterId = id + 1L,
-                requestStatus = FriendRequestStatus.PENDING,
+                userId = id + 1L,
+                displayId = "did${id + 1L}",
+                name = "name${id + 1L}",
+                profileImageUrl = null,
                 respondedAt = 1000,
                 createdAt = 1000,
                 updatedAt = 1000,
