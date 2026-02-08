@@ -2,10 +2,11 @@ package com.peekr.core.data.source.network.dto.friend.response
 
 import com.peekr.core.domain.friend.model.FriendId
 import com.peekr.core.domain.friend.model.FriendRequestStatus
+import com.peekr.core.domain.friend.model.IncomingRequest
 import com.peekr.core.domain.model.UserId
 
 /**
- * 나에게 들어온 친구 요청
+ * 나에게 들어온 친구 요청 응답 바디
  *
  * @property id 친구 ID
  * @property requesterId 요청한 사용자 ID
@@ -15,10 +16,20 @@ import com.peekr.core.domain.model.UserId
  * @property updatedAt 요청 수정 일자
  */
 data class IncomingRequestResponse(
-    val id: FriendId,
-    val requesterId: UserId,
+    val id: Long,
+    val requesterId: Long,
     val requestStatus: FriendRequestStatus,
     val respondedAt: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )
+
+fun IncomingRequestResponse.toDomainModel(): IncomingRequest =
+    IncomingRequest(
+        id = FriendId(id),
+        requesterId = UserId(requesterId),
+        requestStatus = requestStatus,
+        respondedAt = respondedAt,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

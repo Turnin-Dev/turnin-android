@@ -10,6 +10,8 @@ import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRe
 import com.peekr.core.data.source.network.dto.friend.response.FriendInfoResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
+import com.peekr.core.data.source.network.dto.friend.response.IncomingRequestResponse
+import com.peekr.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import com.peekr.core.data.source.network.dto.friend.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
@@ -20,6 +22,7 @@ import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.FriendPagingTokens
 import com.peekr.core.domain.friend.model.FriendRequestStatus
+import com.peekr.core.domain.friend.model.IncomingRequestPagingTokens
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.model.UserId
 import io.mockk.Runs
@@ -111,6 +114,49 @@ class FriendRepositoryImplTest {
 
         // when
         val pagingData = repository.getFriends(UserId(1L)).asSnapshot()
+
+        // then
+        assertEquals(pageSize * 2, pagingData.size)
+        assertEquals(expectedFirstPage.first().id, pagingData.first().id)
+        val expectedLastId = pageSize * 2
+        assertEquals(expectedLastId.toLong(), pagingData.last().id.value)
+    }
+
+    @Test
+    fun `나에게 들어온 친구 요청 목록 조회 - 초기 호출 성공 시 도메인 모델로 변환된 데이터를 반환한다`() = runTest {
+        // given
+        val pageSize = IncomingRequestPagingTokens.PAGE_SIZE
+        val expectedFirstPage =
+            createIncomingRequestResponseList(startId = 1, count = pageSize)
+                .map { it.toDomainModel() }
+
+        // 첫 번째 페이지 설정 (page=1, size=20)
+        coEvery {
+            dataSource.getIncomingRequests(1, pageSize)
+        } returns NetworkResult.Success(
+            createIncomingRequestsResponse(
+                pageNumber = 1L,
+                startId = 1L,
+                count = pageSize,
+                hasNext = true,
+            ),
+        )
+
+        // 두 번째 페이지 설정 (page=2, size=20)
+        // Paging Sourcesms initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
+        coEvery {
+            dataSource.getIncomingRequests(2, pageSize)
+        } returns NetworkResult.Success(
+            createIncomingRequestsResponse(
+                pageNumber = 2L,
+                startId = pageSize + 1L,
+                count = pageSize,
+                hasNext = true,
+            ),
+        )
+
+        // when
+        val pagingData = repository.getIncomingRequests().asSnapshot()
 
         // then
         assertEquals(pageSize * 2, pagingData.size)
@@ -361,7 +407,10 @@ class FriendRepositoryImplTest {
         list = createFriendInfoResponseList(startId, count),
     )
 
-    private fun createFriendInfoResponseList(startId: Long, count: Int): List<FriendInfoResponse> =
+    private fun createFriendInfoResponseList(
+        startId: Long,
+        count: Int,
+    ): List<FriendInfoResponse> =
         (startId until startId + count).map { id ->
             FriendInfoResponse(
                 id = id,
@@ -369,6 +418,34 @@ class FriendRepositoryImplTest {
                 displayId = "did",
                 name = "name",
                 profileImageUrl = null,
+                respondedAt = 1000,
+                createdAt = 1000,
+                updatedAt = 1000,
+            )
+        }
+
+    private fun createIncomingRequestsResponse(
+        pageNumber: Long,
+        startId: Long,
+        count: Int,
+        hasNext: Boolean,
+    ): IncomingRequestsResponse = IncomingRequestsResponse(
+        pageNumber = pageNumber,
+        pageSize = count,
+        totalSize = 100L,
+        hasNext = hasNext,
+        list = createIncomingRequestResponseList(startId, count),
+    )
+
+    private fun createIncomingRequestResponseList(
+        startId: Long,
+        count: Int,
+    ): List<IncomingRequestResponse> =
+        (startId until startId + count).map { id ->
+            IncomingRequestResponse(
+                id = id,
+                requesterId = id + 1L,
+                requestStatus = FriendRequestStatus.PENDING,
                 respondedAt = 1000,
                 createdAt = 1000,
                 updatedAt = 1000,

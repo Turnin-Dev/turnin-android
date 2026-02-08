@@ -7,6 +7,7 @@ import com.peekr.core.domain.friend.model.AddFriend
 import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.Friend
 import com.peekr.core.domain.friend.model.FriendInfo
+import com.peekr.core.domain.friend.model.IncomingRequest
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.model.UserId
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,13 @@ interface FriendRepository {
      * @return [FriendInfo] 친구 정보
      */
     fun getFriends(userId: UserId): Flow<PagingData<FriendInfo>>
+
+    /**
+     * 나에게 들어온 친구 요청 목록 조회 (페이지네이션)
+     *
+     * @return [IncomingRequest] 나에게 들어온 친구 요청
+     */
+    fun getIncomingRequests(): Flow<PagingData<IncomingRequest>>
 
     /**
      * 친구 추가
