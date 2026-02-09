@@ -67,7 +67,12 @@ class FriendListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // 나의 사용자 ID를 로드하고 나의 친구 목록인지 판단
-            myUserId.update { getMyUserIdUseCase()?.value }
+            val localMyUserId = getMyUserIdUseCase()
+            if (localMyUserId == null) {
+                showSnackbar(FriendErrorType.MyUserIdNotFound.asUiText())
+                return@launch
+            }
+            myUserId.update { localMyUserId.value }
             _isMyFriendList.update { myUserId.value == currentUserId }
 
             // 인자로 넘어온 현재 사용자 ID가 null이면 스낵바 에러 표시
@@ -130,8 +135,17 @@ class FriendListViewModel @Inject constructor(
         targetUserId: Long,
         currentFriendStatus: FriendStatus,
     ) {
-        // 1) 나의 사용자 ID가 null이거나 현재 친구 상태가 이미 '친구'인 상태면 아무 작업도 수행하지 않는다.
-        if (myUserId.value == null || currentFriendStatus == FriendStatus.FRIENDS) return
+        // 조건 1. 나의 사용자 ID가 null이 아니여야 한다.
+        // 조건 2. 현재 친구 상태가 '친구'인 상태가 아니여야 한다.
+        // 조건 3. 나의 사용자 ID와 현재 사용자 ID가 같아야 한다.
+
+        // 1) 위 조건 중 하나라도 만족하지 않는 경우 아무 작업도 수행하지 않는다.
+        if (myUserId.value == null ||
+            currentFriendStatus == FriendStatus.FRIENDS ||
+            myUserId.value != currentUserId
+        ) {
+            return
+        }
 
         // 2) 즉시 '친구' 상태로 업데이트 (낙관적 업데이트)
         _requesterStatus.update { it + (targetUserId to FriendStatus.FRIENDS) }

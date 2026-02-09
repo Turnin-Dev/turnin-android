@@ -4,6 +4,9 @@ import com.peekr.core.domain.common.BaseError
 import com.peekr.core.domain.common.error.CommonErrorType
 
 sealed interface FriendErrorType : BaseError {
+    /** 나의 사용자 ID 조회 실패 에러 */
+    data object MyUserIdNotFound : FriendErrorType
+
     /** 사용자 ID 조회 실패 에러 */
     data object UserIdNotFound : FriendErrorType
 
