@@ -46,6 +46,9 @@ fun FriendRoute(
         friends = friends,
         requesters = requesters,
         requestersStatus = requestersStatus,
+        loadRequestersPagingData = {
+            viewModel.loadRequestersPagingData()
+        },
         onFriendClick = { friendUserId ->
             viewModel.navigateToUserProfileOrMyProfile(friendUserId)
         },

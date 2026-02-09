@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -70,6 +71,7 @@ private fun FriendListFrame(
     }
 
     Column(modifier) {
+        topBar()
         PeekrTabBar(
             modifier = Modifier.fillMaxWidth(),
             tabs = tabs,
@@ -81,7 +83,6 @@ private fun FriendListFrame(
                 }
             },
         )
-        topBar()
     }
 }
 
@@ -93,6 +94,7 @@ private fun FriendListFrame(
  * @param friends 친구 목록
  * @param requesters 친구 요청 목록
  * @param requestersStatus 친구 요청한 사용자의 상태 Map
+ * @param loadRequestersPagingData 친구 요청 목록 화면 진입 시 로드 이벤트
  * @param onFriendClick 친구 클릭 시 콜백
  * @param onRequestAcceptClick 친구 요청 수락 시 콜백
  * @param onBackPressed 뒤로 가기 클릭 시 콜백
@@ -104,6 +106,7 @@ fun FriendListScreen(
     friends: LazyPagingItems<UiFriendInfo>,
     requesters: LazyPagingItems<UiRequester>,
     requestersStatus: Map<Long, FriendStatus>,
+    loadRequestersPagingData: () -> Unit,
     onFriendClick: (userId: Long) -> Unit,
     onRequestAcceptClick: (targetId: Long, status: FriendStatus) -> Unit,
     onBackPressed: () -> Unit,
@@ -129,8 +132,12 @@ fun FriendListScreen(
             )
         },
         requesters = {
+            LaunchedEffect(Unit) {
+                loadRequestersPagingData()
+            }
+
             RequesterList(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 requesters = requesters,
                 requestersStatus = requestersStatus,
                 onRequesterClick = { requester ->
@@ -186,7 +193,7 @@ private fun FriendList(
         modifier = modifier,
         isRefreshing = isRefreshing,
         onRefresh = { friends.refresh() },
-        contentPadding = PaddingValues(bottom = 16.dp),
+        contentPadding = ListContentPadding,
     ) {
         pagingItem(
             pagingItems = friends,
@@ -254,7 +261,7 @@ private fun RequesterList(
         modifier = modifier,
         isRefreshing = isRefreshing,
         onRefresh = { requesters.refresh() },
-        contentPadding = PaddingValues(top = 10.dp, bottom = 16.dp),
+        contentPadding = ListContentPadding,
     ) {
         pagingItem(
             pagingItems = requesters,
@@ -280,7 +287,7 @@ private fun RequesterList(
         ) { idx ->
             val requester = requesters[idx]
             requester?.let {
-                val requesterStatus = requestersStatus[requester.id] ?: FriendStatus.RECEIVED
+                val requesterStatus = requestersStatus[requester.userId] ?: FriendStatus.RECEIVED
 
                 RequesterCard(
                     modifier = Modifier
@@ -404,6 +411,7 @@ private fun FriendCardSkeleton(modifier: Modifier = Modifier) {
 }
 
 private val AvatarSize = 58.dp
+private val ListContentPadding = PaddingValues(top = 10.dp, bottom = 16.dp)
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
@@ -464,6 +472,7 @@ private fun FriendListScreenPreview() {
             isMyFriendList = true,
             friends = friends,
             requesters = requesters,
+            loadRequestersPagingData = {},
             onFriendClick = {},
             requestersStatus = mapOf(),
             onRequestAcceptClick = { _, _ -> },

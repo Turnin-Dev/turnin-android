@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.flow
 
 /**
  * 친구 요청 수락
+ *
+ * @see invoke
  */
 class AcceptFriendRequestUseCase @Inject constructor(
     private val friendRepository: FriendRepository,

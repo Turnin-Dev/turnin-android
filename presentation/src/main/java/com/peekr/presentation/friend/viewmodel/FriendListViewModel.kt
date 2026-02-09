@@ -10,7 +10,6 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.friend.model.FriendInfo
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.domain.friend.model.IncomingRequest
 import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
@@ -29,15 +28,17 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private typealias FriendID = Long
+private typealias UserID = Long
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -59,11 +60,11 @@ class FriendListViewModel @Inject constructor(
     private val _effect = Channel<FriendEffect>()
     val effect = _effect.receiveAsFlow()
 
-    private var _requestersStateInitialized = MutableStateFlow(false)
-    val requestersStateInitialized = _requestersStateInitialized.asStateFlow()
+    // 친구 요청 페이징 데이터 초기화 여부
+    private var loadRequestersPagingData = MutableStateFlow(false)
 
     // 친구 상태 변경을 위한 상태 값
-    private var _requesterStatus = MutableStateFlow(mapOf<FriendID, FriendStatus>())
+    private var _requesterStatus = MutableStateFlow(mapOf<UserID, FriendStatus>())
     val requesterStatus = _requesterStatus.asStateFlow()
 
     init {
@@ -78,6 +79,7 @@ class FriendListViewModel @Inject constructor(
         }
     }
 
+    // 친구 목록 페이징 데이터
     val friendsPagingData = if (currentUserId != null && currentUserId > 0) {
         getFriendsPaginationUseCase(currentUserId)
             .catch { e ->
@@ -94,53 +96,55 @@ class FriendListViewModel @Inject constructor(
         flowOf(PagingData.empty())
     }
 
-    val requestersPagingData = requestersStateInitialized
-        .flatMapLatest { initialized ->
-            if (initialized) {
-                getIncomingRequestsUseCase()
-                    .catch { e ->
-                        AppLogger.e(tag, e, "Unexpected incoming-requests pagination error")
+    // 친구 요청 목록 페이징 데이터
+    val requestersPagingData = loadRequestersPagingData
+        .filter { it }
+        .flatMapLatest {
+            getIncomingRequestsUseCase()
+                .catch { e ->
+                    AppLogger.e(tag, e, "Unexpected incoming-requests pagination error")
+                    emit(PagingData.empty())
+                }
+                .map { pagingData ->
+                    pagingData.map { incomingRequest ->
+                        incomingRequest.toUiModel()
                     }
-                    .map { pagingData: PagingData<IncomingRequest> ->
-                        pagingData.map { incomingRequest ->
-                            incomingRequest.toUiModel()
-                        }
-                    }
-            } else {
-                flowOf(PagingData.empty())
-            }
+                }
         }
         .cachedIn(viewModelScope)
 
     /**
+     * 친구 요청 페이징 데이터 초기 로드 트리거
+     */
+    fun loadRequestersPagingData() {
+        if (!loadRequestersPagingData.value) {
+            loadRequestersPagingData.update { true }
+        }
+    }
+
+    /**
      * 친구 요청 수락
+     *
+     * @param targetUserId 요청자 사용자 ID
+     * @param currentStatus 현재 친구 상태
      */
     fun acceptFriendRequest(
-        friendId: Long,
-        status: FriendStatus,
+        targetUserId: Long,
+        currentStatus: FriendStatus,
     ) {
-        if (myUserId.value == null || status == FriendStatus.FRIENDS) return
+        if (myUserId.value == null || currentStatus == FriendStatus.FRIENDS) return
 
-        viewModelScope.launch {
-            _requesterStatus.update { it + (friendId to FriendStatus.FRIENDS) }
+        _requesterStatus.update { it + (targetUserId to FriendStatus.FRIENDS) }
 
-            acceptFriendRequestUseCase(
-                myUserId = myUserId.value!!,
-                targetUserId = friendId,
-            ).onEach { result ->
-                when (result) {
-                    Result.Loading -> {}
-                    is Result.Error -> {
-                        _requesterStatus.update { it + (friendId to FriendStatus.RECEIVED) }
-                        showSnackbar(result.error.asUiText())
-                    }
-
-                    is Result.Success -> {
-                        _requesterStatus.update { it + (friendId to FriendStatus.FRIENDS) }
-                    }
-                }
+        acceptFriendRequestUseCase(
+            myUserId = myUserId.value!!,
+            targetUserId = targetUserId,
+        ).onEach { result ->
+            if (result is Result.Error) {
+                _requesterStatus.update { it + (targetUserId to FriendStatus.RECEIVED) }
+                showSnackbar(result.error.asUiText())
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     /**
