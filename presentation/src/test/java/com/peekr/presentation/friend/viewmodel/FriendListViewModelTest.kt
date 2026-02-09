@@ -12,7 +12,7 @@ import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MainDispatcherRule
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.domain.friend.error.FriendErrorType
-import com.peekr.domain.friend.usecase.GetFriendsPaginationUseCase
+import com.peekr.domain.friend.usecase.FriendUseCases
 import com.peekr.presentation.friend.error.asUiText
 import com.peekr.presentation.friend.model.toUiModel
 import com.peekr.presentation.util.MockLog
@@ -40,7 +40,7 @@ class FriendListViewModelTest {
     @get:Rule
     val dispatcherRule = MainDispatcherRule()
 
-    private val getFriendsPaginationUseCase: GetFriendsPaginationUseCase = mockk()
+    private val usecases: FriendUseCases = mockk()
     private val getMyUserIdUseCase: GetMyUserIdUseCase = mockk()
     private val snackbarController = FakeSnackbarController()
     private lateinit var savedStateHandle: SavedStateHandle
@@ -49,11 +49,11 @@ class FriendListViewModelTest {
     @Before
     fun setUp() {
         every {
-            getFriendsPaginationUseCase(TestUserId.value)
+            usecases.getFriends(TestUserId.value)
         } returns TestPagingDataFlow
         savedStateHandle = TestSavedStateHandle
         viewModel = FriendListViewModel(
-            getFriendsPaginationUseCase = getFriendsPaginationUseCase,
+            usecases = usecases,
             getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
@@ -79,7 +79,7 @@ class FriendListViewModelTest {
 
         // when: 뷰모델 생성
         viewModel = FriendListViewModel(
-            getFriendsPaginationUseCase = getFriendsPaginationUseCase,
+            usecases = usecases,
             getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
@@ -119,12 +119,12 @@ class FriendListViewModelTest {
     fun `페이지네이션 과정에서 예외 발생 시 빈 페이징 데이터를 반환한다`() = runTest(dispatcherRule.testDispatcher) {
         // given
         every {
-            getFriendsPaginationUseCase(TestUserId.value)
+            usecases.getFriends(TestUserId.value)
         } returns flow {
             throw Exception("Test exception")
         }
         viewModel = FriendListViewModel(
-            getFriendsPaginationUseCase = getFriendsPaginationUseCase,
+            usecases = usecases,
             getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,

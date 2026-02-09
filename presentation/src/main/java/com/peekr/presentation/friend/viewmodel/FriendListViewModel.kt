@@ -15,9 +15,7 @@ import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.friend.error.FriendErrorType
-import com.peekr.domain.friend.usecase.AcceptFriendRequestUseCase
-import com.peekr.domain.friend.usecase.GetFriendsPaginationUseCase
-import com.peekr.domain.friend.usecase.GetIncomingRequestsUseCase
+import com.peekr.domain.friend.usecase.FriendUseCases
 import com.peekr.presentation.friend.error.asUiText
 import com.peekr.presentation.friend.model.toUiModel
 import com.peekr.presentation.friend.state.FriendEffect
@@ -43,9 +41,7 @@ private typealias UserID = Long
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FriendListViewModel @Inject constructor(
-    private val getFriendsPaginationUseCase: GetFriendsPaginationUseCase,
-    private val getIncomingRequestsUseCase: GetIncomingRequestsUseCase,
-    private val acceptFriendRequestUseCase: AcceptFriendRequestUseCase,
+    private val usecases: FriendUseCases,
     private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val snackbarController: SnackbarController,
     savedStateHandle: SavedStateHandle,
@@ -54,14 +50,15 @@ class FriendListViewModel @Inject constructor(
 
     private val currentUserId: Long? = savedStateHandle.get<Long>("userId")
     private val myUserId = MutableStateFlow<Long?>(null)
+
     private val _isMyFriendList = MutableStateFlow<Boolean>(false)
     val isMyFriendList = _isMyFriendList.asStateFlow()
 
     private val _effect = Channel<FriendEffect>()
     val effect = _effect.receiveAsFlow()
 
-    // 친구 요청 페이징 데이터 초기화 여부
-    private var loadRequestersPagingData = MutableStateFlow(false)
+    // 친구 요청 목록 페이징 데이터 초기화 여부
+    private var isInitRequestersPagingData = MutableStateFlow(false)
 
     // 친구 상태 변경을 위한 상태 값
     private var _requesterStatus = MutableStateFlow(mapOf<UserID, FriendStatus>())
@@ -69,10 +66,11 @@ class FriendListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            // 나의 사용자 ID를 로드하고 나의 친구 목록인지 판단
             myUserId.update { getMyUserIdUseCase()?.value }
-
             _isMyFriendList.update { myUserId.value == currentUserId }
 
+            // 인자로 넘어온 현재 사용자 ID가 null이면 스낵바 에러 표시
             if (currentUserId == null) {
                 showSnackbar(FriendErrorType.UserIdNotFound.asUiText())
             }
@@ -81,7 +79,7 @@ class FriendListViewModel @Inject constructor(
 
     // 친구 목록 페이징 데이터
     val friendsPagingData = if (currentUserId != null && currentUserId > 0) {
-        getFriendsPaginationUseCase(currentUserId)
+        usecases.getFriends(currentUserId)
             .catch { e ->
                 AppLogger.d(tag, e, "Unexpected friend pagination error")
                 emit(PagingData.empty())
@@ -97,10 +95,10 @@ class FriendListViewModel @Inject constructor(
     }
 
     // 친구 요청 목록 페이징 데이터
-    val requestersPagingData = loadRequestersPagingData
+    val requestersPagingData = isInitRequestersPagingData
         .filter { it }
         .flatMapLatest {
-            getIncomingRequestsUseCase()
+            usecases.getIncomingRequests()
                 .catch { e ->
                     AppLogger.e(tag, e, "Unexpected incoming-requests pagination error")
                     emit(PagingData.empty())
@@ -116,9 +114,9 @@ class FriendListViewModel @Inject constructor(
     /**
      * 친구 요청 페이징 데이터 초기 로드 트리거
      */
-    fun loadRequestersPagingData() {
-        if (!loadRequestersPagingData.value) {
-            loadRequestersPagingData.update { true }
+    fun initRequestersPagingData() {
+        if (!isInitRequestersPagingData.value) {
+            isInitRequestersPagingData.update { true }
         }
     }
 
@@ -126,21 +124,25 @@ class FriendListViewModel @Inject constructor(
      * 친구 요청 수락
      *
      * @param targetUserId 요청자 사용자 ID
-     * @param currentStatus 현재 친구 상태
+     * @param currentFriendStatus 현재 친구 상태
      */
     fun acceptFriendRequest(
         targetUserId: Long,
-        currentStatus: FriendStatus,
+        currentFriendStatus: FriendStatus,
     ) {
-        if (myUserId.value == null || currentStatus == FriendStatus.FRIENDS) return
+        // 1) 나의 사용자 ID가 null이거나 현재 친구 상태가 이미 '친구'인 상태면 아무 작업도 수행하지 않는다.
+        if (myUserId.value == null || currentFriendStatus == FriendStatus.FRIENDS) return
 
+        // 2) 즉시 '친구' 상태로 업데이트 (낙관적 업데이트)
         _requesterStatus.update { it + (targetUserId to FriendStatus.FRIENDS) }
 
-        acceptFriendRequestUseCase(
+        // 3) 친구 수락 수행
+        usecases.acceptFriendRequest(
             myUserId = myUserId.value!!,
             targetUserId = targetUserId,
         ).onEach { result ->
             if (result is Result.Error) {
+                // 에러 발생 시 친구 상태 롤백, 스낵바 에러 표시
                 _requesterStatus.update { it + (targetUserId to FriendStatus.RECEIVED) }
                 showSnackbar(result.error.asUiText())
             }
