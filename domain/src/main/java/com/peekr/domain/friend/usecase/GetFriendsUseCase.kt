@@ -8,11 +8,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
- * 친구 목록 페이지네이션 조회
+ * 친구 목록 조회 (페이지네이션)
  *
  * @see invoke
  */
-class GetFriendsPaginationUseCase @Inject constructor(
+class GetFriendsUseCase @Inject constructor(
     private val friendRepository: FriendRepository,
 ) {
     /**

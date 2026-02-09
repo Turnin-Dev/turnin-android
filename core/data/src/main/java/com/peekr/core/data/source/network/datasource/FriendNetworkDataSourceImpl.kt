@@ -6,6 +6,7 @@ import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
 import com.peekr.core.data.source.network.dto.friend.response.FriendResponse
 import com.peekr.core.data.source.network.dto.friend.response.FriendsResponse
+import com.peekr.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import com.peekr.core.data.source.network.util.networkCallWithoutResponse
@@ -20,6 +21,12 @@ class FriendNetworkDataSourceImpl @Inject constructor(
         size: Int,
     ): NetworkResult<FriendsResponse> =
         networkCall { friendApi.getFriends(userId, page, size) }
+
+    override suspend fun getIncomingRequests(
+        page: Long,
+        size: Int,
+    ): NetworkResult<IncomingRequestsResponse> =
+        networkCall { friendApi.getIncomingRequests(page, size) }
 
     override suspend fun addFriend(addFriendRequest: AddFriendRequest): NetworkResult<FriendResponse> =
         networkCall { friendApi.addFriend(addFriendRequest) }

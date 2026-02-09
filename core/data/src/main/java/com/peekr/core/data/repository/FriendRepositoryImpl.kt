@@ -9,6 +9,7 @@ import com.peekr.core.data.paging.PeekrPagingSource
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.toDataModel
 import com.peekr.core.data.source.network.dto.friend.response.FriendInfoResponse
+import com.peekr.core.data.source.network.dto.friend.response.IncomingRequestResponse
 import com.peekr.core.data.source.network.dto.friend.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
@@ -20,6 +21,8 @@ import com.peekr.core.domain.friend.model.DeleteFriend
 import com.peekr.core.domain.friend.model.Friend
 import com.peekr.core.domain.friend.model.FriendInfo
 import com.peekr.core.domain.friend.model.FriendPagingTokens
+import com.peekr.core.domain.friend.model.IncomingRequest
+import com.peekr.core.domain.friend.model.IncomingRequestPagingTokens
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.friend.repository.FriendRepository
 import com.peekr.core.domain.model.UserId
@@ -53,6 +56,30 @@ class FriendRepositoryImpl @Inject constructor(
             .flow
             .map { pagingData ->
                 pagingData.map(FriendInfoResponse::toDomainModel)
+            }
+    }
+
+    override fun getIncomingRequests(): Flow<PagingData<IncomingRequest>> {
+        val pageSize = IncomingRequestPagingTokens.PAGE_SIZE
+        val prefetchDistance = IncomingRequestPagingTokens.PREFETCH_DISTANCE
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = pageSize,
+                prefetchDistance = prefetchDistance,
+                initialLoadSize = pageSize + prefetchDistance,
+            ),
+            pagingSourceFactory = {
+                PeekrPagingSource(
+                    apiCall = { page ->
+                        friendNetworkDataSource.getIncomingRequests(page, pageSize)
+                    },
+                )
+            },
+        )
+            .flow
+            .map { pagingData ->
+                pagingData.map(IncomingRequestResponse::toDomainModel)
             }
     }
 

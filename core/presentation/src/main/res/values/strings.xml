@@ -81,4 +81,10 @@
 
     <!-- Footer Error -->
     <string name="footer_error_retry">다시 시도</string>
+
+    <!-- FriendStatusButton -->
+    <string name="friend_status_btn_nothing">친구 추가</string>
+    <string name="friend_status_btn_friends">친구</string>
+    <string name="friend_status_btn_requested">요청 취소</string>
+    <string name="friend_status_btn_received">요청 수락</string>
 </resources>
