@@ -182,7 +182,7 @@ private fun FriendList(
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
 ) {
-    var isRefreshing = remember {
+    val isRefreshing = remember {
         derivedStateOf {
             friends.loadState.refresh is LoadState.Loading
         }

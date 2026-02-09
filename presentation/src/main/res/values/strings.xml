@@ -75,7 +75,7 @@
     <string name="profile_error_keywords_load_failed">키워드 목록을 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="profile_error_update_friend_status_failed">잠시 후 다시 시도해주세요.</string>
     <string name="profile_error_already_friends_or_requested">이미 친구거나 이미 요청된 상태입니다.</string>
-    <string name="profile_error_already_processed">이미 처리된 요청입니다.</string>
+    <string name="profile_error_already_proceed">이미 처리된 요청입니다.</string>
 
     <!-- KeywordEdit -->
     <!-- KeywordEditScreen -->

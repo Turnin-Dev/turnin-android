@@ -157,7 +157,7 @@ class FriendListViewModel @Inject constructor(
         ).onEach { result ->
             if (result is Result.Error) {
                 // 에러 발생 시 친구 상태 롤백, 스낵바 에러 표시
-                _requesterStatus.update { it + (targetUserId to FriendStatus.RECEIVED) }
+                _requesterStatus.update { it + (targetUserId to currentFriendStatus) }
                 showSnackbar(result.error.asUiText())
             }
         }.launchIn(viewModelScope)

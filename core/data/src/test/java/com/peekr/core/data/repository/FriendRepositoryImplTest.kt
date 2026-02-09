@@ -143,7 +143,7 @@ class FriendRepositoryImplTest {
         )
 
         // 두 번째 페이지 설정 (page=2, size=20)
-        // Paging Sourcesms initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
+        // Paging Source는 initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
         coEvery {
             dataSource.getIncomingRequests(2, pageSize)
         } returns NetworkResult.Success(

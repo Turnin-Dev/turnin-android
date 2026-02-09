@@ -380,13 +380,13 @@ class FriendListViewModelTest {
         myUserId: Long,
         currentUserId: Long,
     ) {
-        val myUserId = UserId(myUserId)
-        val currentUserId = UserId(currentUserId)
-        every { usecases.getFriends(currentUserId.value) } returns TestFriendsPagingDataFlow
+        val myUserIdVO = UserId(myUserId)
+        val currentUserIdVO = UserId(currentUserId)
+        every { usecases.getFriends(currentUserIdVO.value) } returns TestFriendsPagingDataFlow
         every { usecases.getIncomingRequests() } returns TestRequestersPagingDataFlow
-        coEvery { getMyUserIdUseCase() } returns myUserId
+        coEvery { getMyUserIdUseCase() } returns myUserIdVO
         savedStateHandle = SavedStateHandle(
-            mapOf("userId" to currentUserId.value),
+            mapOf("userId" to currentUserIdVO.value),
         )
 
         viewModel = FriendListViewModel(
