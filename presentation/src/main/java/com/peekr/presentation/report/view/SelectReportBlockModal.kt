@@ -24,6 +24,7 @@ import com.peekr.presentation.R
  *
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
+ * @param onlyReport 신고만 수행할 지에 대한 여부
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
  * @param onCancel 모달 취소 시
  * @param selectReport 신고 수행 콜백
@@ -34,20 +35,22 @@ import com.peekr.presentation.R
 fun SelectReportBlockModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
+    onlyReport: Boolean,
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
     selectReport: () -> Unit,
     selectBlock: () -> Unit,
 ) {
-    PeekrModalBottomSheet(
-        modifier = modifier,
-        sheetState = sheetState,
-        sheetGesturesEnabled = false,
-        onDismissRequest = onDismissRequest,
-    ) { contentModifier ->
-        PeekrModalBottomSheetContent(
-            modifier = contentModifier.fillMaxWidth(),
-            onCancel = onCancel,
+    val modalContentTokens = if (onlyReport) {
+        listOf(
+            ModalContentToken(
+                stringResource(R.string.report_block_modal_report),
+                PeekrTheme.colorScheme.statusNegative,
+                selectReport,
+            ),
+        )
+    } else {
+        listOf(
             ModalContentToken(
                 stringResource(R.string.report_block_modal_report),
                 PeekrTheme.colorScheme.textNormal,
@@ -60,10 +63,23 @@ fun SelectReportBlockModal(
             ),
         )
     }
+
+    PeekrModalBottomSheet(
+        modifier = modifier,
+        sheetState = sheetState,
+        sheetGesturesEnabled = false,
+        onDismissRequest = onDismissRequest,
+    ) { contentModifier ->
+        PeekrModalBottomSheetContent(
+            modifier = contentModifier.fillMaxWidth(),
+            onCancel = onCancel,
+            *modalContentTokens.toTypedArray(),
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@Preview(name = "신고/차단 모달")
 @Composable
 private fun SelectReportBlockModalPreview() {
     var showBottomSheet by remember { mutableStateOf(true) }
@@ -72,6 +88,26 @@ private fun SelectReportBlockModalPreview() {
     PeekrAppTheme {
         SelectReportBlockModal(
             sheetState = sheetState,
+            onlyReport = false,
+            onDismissRequest = { showBottomSheet = false },
+            onCancel = { showBottomSheet = false },
+            selectReport = {},
+            selectBlock = {},
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "신고 모달")
+@Composable
+private fun SelectReportBlockModalPreview2() {
+    var showBottomSheet by remember { mutableStateOf(true) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    PeekrAppTheme {
+        SelectReportBlockModal(
+            sheetState = sheetState,
+            onlyReport = true,
             onDismissRequest = { showBottomSheet = false },
             onCancel = { showBottomSheet = false },
             selectReport = {},

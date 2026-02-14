@@ -9,8 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.domain.block.model.BlockReasonId
-import com.peekr.core.domain.report.model.ReportReasonId.Companion.invoke
-import com.peekr.core.presentation.ui.component.modal.SelectReportBlockModal
+import com.peekr.core.presentation.ui.component.modal.SelectReportBlockReasonModal
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.block.model.UiBlockReason
 
@@ -38,7 +37,7 @@ fun SelectBlockReasonModal(
     onCancel: () -> Unit,
     onBlockReasonClick: (UiBlockReason) -> Unit,
 ) {
-    SelectReportBlockModal(
+    SelectReportBlockReasonModal(
         modifier = modifier,
         sheetState = sheetState,
         reasons = blockReasons,

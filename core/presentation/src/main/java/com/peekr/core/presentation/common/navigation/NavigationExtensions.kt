@@ -16,8 +16,9 @@ fun NavController.navigateToUserProfile(userId: Long) {
 fun NavController.navigateToReport(
     reportedId: Long?,
     reportedUserKeywordId: Long?,
+    onlyReport: Boolean,
 ) {
-    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId)) {
+    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId, onlyReport)) {
         launchSingleTop = true
     }
 }

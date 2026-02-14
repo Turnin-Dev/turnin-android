@@ -61,6 +61,7 @@ sealed interface SubGraph {
         data class Root(
             val userId: Long?,
             val userKeywordId: Long?,
+            val onlyReport: Boolean,
         ) : Report
 
         /** 신고/차단 선택 */

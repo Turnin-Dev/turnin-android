@@ -12,7 +12,7 @@ fun NavGraphBuilder.keywordDetailNavigation(appNavController: NavController) {
     composable<Screens.KeywordDetail> { navBackStackEntry ->
         KeywordDetailRoute(
             onNavigateToReport = { userId, userKeywordId ->
-                appNavController.navigateToReport(userId, userKeywordId)
+                appNavController.navigateToReport(userId, userKeywordId, true)
             },
             onNavigateToKeywordEdit = { userKeywordId ->
                 appNavController.navigateToKeywordEdit(userKeywordId)

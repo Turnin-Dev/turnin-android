@@ -24,7 +24,7 @@ import com.peekr.core.presentation.ui.util.UiText
 /**
  * 선택 가능한 신고/차단 사유 모델
  *
- * [SelectReportBlockModal]에서 사용하는 UI 모델은 반드시 해당 인터페이스를 구현해서 사용한다.
+ * [SelectReportBlockReasonModal]에서 사용하는 UI 모델은 반드시 해당 인터페이스를 구현해서 사용한다.
  */
 interface SelectableReason {
     val description: String
@@ -44,7 +44,7 @@ interface SelectableReason {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : SelectableReason> SelectReportBlockModal(
+fun <T : SelectableReason> SelectReportBlockReasonModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
     reasons: List<T>,

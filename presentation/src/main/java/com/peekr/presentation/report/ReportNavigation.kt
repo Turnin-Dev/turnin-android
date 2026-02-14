@@ -5,12 +5,14 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.common.viewmodel.sharedViewModel
@@ -33,9 +35,15 @@ fun NavGraphBuilder.reportNavigation(
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val sheetState = rememberModalBottomSheetState()
             val scope = rememberCoroutineScope()
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<SubGraph.Report.Root>()
+            }
+            val rootArgs = parentEntry.toRoute<SubGraph.Report.Root>()
+            val onlyReport = rootArgs.onlyReport
 
             SelectReportBlockModal(
                 sheetState = sheetState,
+                onlyReport = onlyReport,
                 onDismissRequest = {
                     exitReportNavigation(
                         scope = scope,
