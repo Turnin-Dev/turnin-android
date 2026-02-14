@@ -1,5 +1,6 @@
 package com.peekr.core.domain.report.model
 
+/** 신고 사유 ID */
 @JvmInline
 value class ReportReasonId private constructor(val value: Long) {
     /** 신고 사유 ID */

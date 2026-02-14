@@ -61,4 +61,9 @@ object NetworkApiPath {
     object Feed {
         const val ROUTE = "$BASE/feed"
     }
+
+    object Block {
+        const val ROUTE = "$BASE/block"
+        const val REASON = "$ROUTE/reason"
+    }
 }
