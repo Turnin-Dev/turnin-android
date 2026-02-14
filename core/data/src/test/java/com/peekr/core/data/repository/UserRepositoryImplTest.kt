@@ -193,7 +193,7 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 성공 테스트(캐시가 존재하지 않는 경우 네트워크에서 조회를 한다)`() = runTest {
         // given
         coEvery {
-            dataSource.getUserProfile(TestUserId)
+            dataSource.getUserProfile(TestUserId, true)
         } returns NetworkResult.Success(TestUserProfileResponse)
         coEvery { memoryCache[TestUserId.value] } returns null
         coEvery { memoryCache[TestUserId.value] = any() } returns Unit
@@ -213,7 +213,7 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 성공 테스트(캐시가 존재하는 경우 캐시 데이터를 조회한다)`() = runTest {
         // given
         coEvery {
-            dataSource.getUserProfile(TestUserId)
+            dataSource.getUserProfile(TestUserId, true)
         } returns NetworkResult.Success(TestUserProfileResponse)
         coEvery {
             memoryCache[TestUserId.value]
@@ -234,7 +234,7 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 새로고침 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getUserProfile(TestUserId)
+            dataSource.getUserProfile(TestUserId, true)
         } returns NetworkResult.Success(TestUserProfileResponse)
         coEvery { memoryCache[TestUserId.value] = any() } returns Unit
 
@@ -254,7 +254,7 @@ class UserRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.getUserProfile(TestUserId)
+            dataSource.getUserProfile(TestUserId, true)
         } returns NetworkResult.Error(expectedError)
         coEvery { memoryCache[TestUserId.value] } returns null
         coEvery { memoryCache[TestUserId.value] = any() } returns Unit
@@ -274,7 +274,7 @@ class UserRepositoryImplTest {
     fun `사용자 프로필 조회 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
-        coEvery { dataSource.getUserProfile(TestUserId) } throws exception
+        coEvery { dataSource.getUserProfile(TestUserId, true) } throws exception
         coEvery { memoryCache[TestUserId.value] } returns null
         coEvery { memoryCache[TestUserId.value] = any() } returns Unit
 

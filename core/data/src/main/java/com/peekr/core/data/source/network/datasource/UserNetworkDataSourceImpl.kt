@@ -22,8 +22,11 @@ class UserNetworkDataSourceImpl @Inject constructor(
     override suspend fun getMyProfile(): NetworkResult<MyProfileResponse> =
         networkCall { userApi.getMyProfile() }
 
-    override suspend fun getUserProfile(userId: UserId): NetworkResult<UserProfileResponse> =
-        networkCall { userApi.getUserProfile(userId.value) }
+    override suspend fun getUserProfile(
+        userId: UserId,
+        includeBlocked: Boolean,
+    ): NetworkResult<UserProfileResponse> =
+        networkCall { userApi.getUserProfile(userId.value, includeBlocked) }
 
     override suspend fun getMyKeywords(): NetworkResult<List<UserKeywordDetailResponse>> =
         networkCall { userApi.getMyKeywords() }
