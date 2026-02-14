@@ -56,23 +56,50 @@ sealed interface SubGraph {
 
     /** 신고 그래프 */
     sealed interface Report : SubGraph {
+        /** 신고 그래프 진입점 */
         @Serializable
         data class Root(
             val userId: Long?,
             val userKeywordId: Long?,
         ) : Report
 
+        /** 신고/차단 선택 */
         @Serializable
         data object SelectReportBlock : Report
 
+        /** 신고 사유 선택 */
         @Serializable
         data object SelectReportReason : Report
 
+        /** 신고 사유 입력 */
         @Serializable
         data object InputReportReason : Report
 
+        /** 신고 결과 */
         @Serializable
         data object ReportResult : Report
+    }
+
+    /** 차단 그래프 */
+    sealed interface Block : SubGraph {
+        /** 차단 그래프 진입점 */
+        @Serializable
+        data class Root(
+            val userId: Long?,
+            val userKeywordId: Long?,
+        ) : Block
+
+        /** 차단 사유 선택 */
+        @Serializable
+        data object SelectBlockReason : Block
+
+        /** 차단 사유 입력 */
+        @Serializable
+        data object InputBlockReason : Block
+
+        /** 차단 결과 */
+        @Serializable
+        data object BlockResult : Block
     }
 }
 

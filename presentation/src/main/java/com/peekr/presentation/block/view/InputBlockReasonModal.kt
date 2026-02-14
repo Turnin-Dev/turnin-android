@@ -1,4 +1,4 @@
-package com.peekr.presentation.report.view
+package com.peekr.presentation.block.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
@@ -8,54 +8,52 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.peekr.core.designsystem.theme.PeekrAppTheme
-import com.peekr.core.presentation.ui.component.modal.ReportBlockResultModal
-import com.peekr.core.presentation.ui.util.UiText
+import com.peekr.core.presentation.ui.component.modal.InputReportBlockReasonModal
 import com.peekr.presentation.R
 
 /**
- * 신고 결과 모달
+ * 차단 사유 작성 모달
  *
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
- * @param error 에러 메시지
+ * @param loading 로딩 여부
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
- * @param onFinishClick 완료 클릭 시 콜백
+ * @param onBlock 차단 수행 시 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportResultModal(
+fun InputBlockReasonModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
-    error: UiText?,
+    loading: Boolean,
     onDismissRequest: () -> Unit,
-    onFinishClick: () -> Unit,
+    onBlock: (String) -> Unit,
 ) {
-    ReportBlockResultModal(
+    InputReportBlockReasonModal(
         modifier = modifier,
         sheetState = sheetState,
-        error = error,
-        errorBtnText = stringResource(R.string.report_result_modal_btn_ok),
-        normalBtnText = stringResource(R.string.report_result_modal_btn_finish),
-        successTitle = stringResource(R.string.report_result_modal_success_title),
-        successContent = stringResource(R.string.report_result_modal_success),
+        title = stringResource(R.string.input_block_reason_modal_title),
+        placeholder = stringResource(R.string.input_block_reason_modal_tf_placeholder),
+        btnTitle = stringResource(R.string.input_block_reason_modal_btn_block),
+        loading = loading,
         onDismissRequest = onDismissRequest,
-        onFinishClick = onFinishClick,
+        onFinish = onBlock,
     )
 }
 
-// ------------------------------ Preview ------------------------------
+// ------------------------------ Previews ------------------------------
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun ReportResultModalPreview() {
-    val sheetState = rememberModalBottomSheetState()
+private fun InputBlockReasonPreview() {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     PeekrAppTheme {
-        ReportResultModal(
+        InputBlockReasonModal(
             sheetState = sheetState,
-            error = null,
+            loading = false,
             onDismissRequest = {},
-            onFinishClick = {},
+            onBlock = {},
         )
     }
 }

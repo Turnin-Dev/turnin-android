@@ -1,8 +1,10 @@
 package com.peekr.core.data.di
 
+import com.peekr.core.data.repository.BlockRepositoryImpl
 import com.peekr.core.data.source.network.api.BlockApi
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSourceImpl
+import com.peekr.core.domain.block.repository.BlockRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,4 +35,9 @@ interface BlockBindModule {
     fun bindsBlockNetworkDataSource(
         impl: BlockNetworkDataSourceImpl,
     ): BlockNetworkDataSource
+
+    @Binds
+    fun bindsBlockRepository(
+        impl: BlockRepositoryImpl,
+    ): BlockRepository
 }

@@ -1,75 +1,78 @@
-package com.peekr.presentation.report.view
+package com.peekr.presentation.block.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.peekr.core.designsystem.theme.PeekrAppTheme
-import com.peekr.core.domain.report.model.ReportReasonId
+import com.peekr.core.domain.block.model.BlockReasonId
+import com.peekr.core.domain.report.model.ReportReasonId.Companion.invoke
 import com.peekr.core.presentation.ui.component.modal.SelectReportBlockModal
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.presentation.report.model.UiReportReason
+import com.peekr.presentation.block.model.UiBlockReason
 
 /**
- * 신고 사유 선택 모달
+ * 차단 사유 선택 모달
  *
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
- * @param reportReasons 신고 사유 목록
+ * @param blockReasons 차단 사유 목록
  * @param loading 신고 사유 목록 로딩 여부
  * @param error 에러 메시지
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
  * @param onCancel 모달 취소 시
- * @param onReportReasonsClick 신고 사유 클릭 시
+ * @param onBlockReasonClick 차단 사유 클릭 시
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectReportReasonModal(
+fun SelectBlockReasonModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
-    reportReasons: List<UiReportReason>,
+    blockReasons: List<UiBlockReason>,
     loading: Boolean,
     error: UiText?,
     onDismissRequest: () -> Unit,
     onCancel: () -> Unit,
-    onReportReasonsClick: (UiReportReason) -> Unit,
+    onBlockReasonClick: (UiBlockReason) -> Unit,
 ) {
     SelectReportBlockModal(
         modifier = modifier,
         sheetState = sheetState,
-        reasons = reportReasons,
+        reasons = blockReasons,
         loading = loading,
         error = error,
         onDismissRequest = onDismissRequest,
         onCancel = onCancel,
-        onReasonClick = onReportReasonsClick,
+        onReasonClick = onBlockReasonClick,
     )
 }
 
+// ------------------------------ Previews ------------------------------
 @OptIn(ExperimentalMaterial3Api::class)
-@PreviewLightDark
+@Preview
 @Composable
-private fun SelectReportReasonModalPreview() {
+private fun SelectBlockReasonModalPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     PeekrAppTheme {
-        SelectReportReasonModal(
+        SelectBlockReasonModal(
             sheetState = sheetState,
-            reportReasons = listOf(
-                UiReportReason(
-                    id = ReportReasonId(1L),
+            blockReasons = listOf(
+                UiBlockReason(
+                    id = BlockReasonId(1L),
                     code = "SPAM",
                     description = "스팸 및 사기",
                 ),
-                UiReportReason(
-                    id = ReportReasonId(1L),
+                UiBlockReason(
+                    id = BlockReasonId(1L),
                     code = "INAPPROPRIATE",
                     description = "부적절한 콘텐츠",
                 ),
-                UiReportReason(
-                    id = ReportReasonId(1L),
+                UiBlockReason(
+                    id = BlockReasonId(1L),
                     code = "ETC",
                     description = "기타",
                 ),
@@ -78,7 +81,7 @@ private fun SelectReportReasonModalPreview() {
             error = null,
             onDismissRequest = {},
             onCancel = {},
-            onReportReasonsClick = {},
+            onBlockReasonClick = {},
         )
     }
 }
@@ -90,14 +93,14 @@ private fun SkeletonPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     PeekrAppTheme {
-        SelectReportReasonModal(
+        SelectBlockReasonModal(
             sheetState = sheetState,
-            reportReasons = emptyList(),
+            blockReasons = emptyList(),
             loading = true,
             error = null,
             onDismissRequest = {},
             onCancel = {},
-            onReportReasonsClick = {},
+            onBlockReasonClick = {},
         )
     }
 }
@@ -109,14 +112,14 @@ private fun ErrorPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     PeekrAppTheme {
-        SelectReportReasonModal(
+        SelectBlockReasonModal(
             sheetState = sheetState,
-            reportReasons = emptyList(),
+            blockReasons = emptyList(),
             loading = false,
             error = UiText.DynamicString("잠시 오류가 발생했어요. 다시 시도해주세요."),
             onDismissRequest = {},
             onCancel = {},
-            onReportReasonsClick = {},
+            onBlockReasonClick = {},
         )
     }
 }

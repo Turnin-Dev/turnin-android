@@ -1,4 +1,4 @@
-package com.peekr.presentation.report.view
+package com.peekr.presentation.block.view
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
@@ -13,7 +13,7 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.R
 
 /**
- * 신고 결과 모달
+ * 차단 결과 모달
  *
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
@@ -23,7 +23,7 @@ import com.peekr.presentation.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportResultModal(
+fun BlockResultModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
     error: UiText?,
@@ -34,10 +34,10 @@ fun ReportResultModal(
         modifier = modifier,
         sheetState = sheetState,
         error = error,
-        errorBtnText = stringResource(R.string.report_result_modal_btn_ok),
-        normalBtnText = stringResource(R.string.report_result_modal_btn_finish),
-        successTitle = stringResource(R.string.report_result_modal_success_title),
-        successContent = stringResource(R.string.report_result_modal_success),
+        errorBtnText = stringResource(R.string.block_result_modal_btn_ok),
+        normalBtnText = stringResource(R.string.block_result_modal_btn_finish),
+        successTitle = stringResource(R.string.block_result_modal_success_title),
+        successContent = stringResource(R.string.block_result_modal_success),
         onDismissRequest = onDismissRequest,
         onFinishClick = onFinishClick,
     )
@@ -47,11 +47,11 @@ fun ReportResultModal(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun ReportResultModalPreview() {
+private fun BlockResultModalPreview() {
     val sheetState = rememberModalBottomSheetState()
 
     PeekrAppTheme {
-        ReportResultModal(
+        BlockResultModal(
             sheetState = sheetState,
             error = null,
             onDismissRequest = {},
