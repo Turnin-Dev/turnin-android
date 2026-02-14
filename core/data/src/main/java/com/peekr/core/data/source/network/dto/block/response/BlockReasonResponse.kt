@@ -1,5 +1,7 @@
 package com.peekr.core.data.source.network.dto.block.response
 
+import com.peekr.core.domain.block.model.BlockReason
+import com.peekr.core.domain.block.model.BlockReasonId
 import com.squareup.moshi.JsonClass
 
 /**
@@ -15,3 +17,10 @@ data class BlockReasonResponse(
     val code: String,
     val description: String,
 )
+
+fun BlockReasonResponse.toDomainModel(): BlockReason =
+    BlockReason(
+        id = BlockReasonId(id),
+        code = code,
+        description = description,
+    )

@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.dto.block.request
 
+import com.peekr.core.domain.block.model.CreateBlock
 import com.squareup.moshi.JsonClass
 
 /**
@@ -17,3 +18,11 @@ data class BlockRequest(
     val reasonId: Long,
     val customReason: String?,
 )
+
+fun CreateBlock.toDataModel(): BlockRequest =
+    BlockRequest(
+        blockerId = blockerId.value,
+        blockedId = blockedId.value,
+        reasonId = reasonId.value,
+        customReason = customReason,
+    )
