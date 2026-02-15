@@ -10,6 +10,10 @@ import javax.inject.Inject
 class BlockViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<BlockContract.UiState, BlockContract.UiEvent, BlockContract.UiEffect>() {
+    private val blockedId: Long? by lazy {
+        savedStateHandle.get<Long>("userId")
+    }
+
     override fun createInitialState(): BlockContract.UiState =
         BlockContract.UiState()
 
@@ -18,4 +22,20 @@ class BlockViewModel @Inject constructor(
             else -> TODO()
         }
     }
+
+    override suspend fun loadInitialData() {
+        val initResult = initNavArgumentData()
+        if (!initResult) return
+    }
+
+    // 초기 데이터 로드: 이전 백스택에서 넘어온 인자 값 로드
+    private fun initNavArgumentData(): Boolean =
+        if (blockedId == null) {
+            sendEffect {
+                BlockContract.UiEffect.CloseBlockModal
+            }
+            false
+        } else {
+            true
+        }
 }

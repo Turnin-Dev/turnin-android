@@ -25,5 +25,8 @@ class BlockContract {
 
     sealed interface UiEvent : BaseUiEvent
 
-    sealed interface UiEffect : BaseUiEffect
+    sealed interface UiEffect : BaseUiEffect {
+        /** 차단 모달 닫기 일회성 이벤트 */
+        data object CloseBlockModal : UiEffect
+    }
 }
