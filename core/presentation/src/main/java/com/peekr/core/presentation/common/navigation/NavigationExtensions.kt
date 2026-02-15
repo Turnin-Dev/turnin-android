@@ -26,6 +26,9 @@ fun NavController.navigateToReport(
 // ------------------------------ BlockModal ------------------------------
 fun NavController.navigateToBlockModal(userId: Long?) {
     navigate(SubGraph.BlockModal.Root(userId)) {
+        popUpTo(SubGraph.Report.SelectReportBlock) {
+            inclusive = true
+        }
         launchSingleTop = true
     }
 }
