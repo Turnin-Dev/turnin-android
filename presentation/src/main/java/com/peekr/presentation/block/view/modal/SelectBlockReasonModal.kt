@@ -1,4 +1,4 @@
-package com.peekr.presentation.block.view
+package com.peekr.presentation.block.view.modal
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState

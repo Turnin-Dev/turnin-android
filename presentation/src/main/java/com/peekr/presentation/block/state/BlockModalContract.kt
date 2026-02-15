@@ -7,9 +7,9 @@ import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.block.model.UiBlockReason
 
 /**
- * 차단 UI 계약
+ * 차단 모달 UI 계약
  */
-class BlockContract {
+class BlockModalContract {
     /**
      * 차단 UI 상태
      *

@@ -2,22 +2,22 @@ package com.peekr.presentation.block.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
-import com.peekr.presentation.block.state.BlockContract
+import com.peekr.presentation.block.state.BlockModalContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class BlockViewModel @Inject constructor(
+class BlockModalViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-) : MVIBaseViewModel<BlockContract.UiState, BlockContract.UiEvent, BlockContract.UiEffect>() {
+) : MVIBaseViewModel<BlockModalContract.UiState, BlockModalContract.UiEvent, BlockModalContract.UiEffect>() {
     private val blockedId: Long? by lazy {
         savedStateHandle.get<Long>("userId")
     }
 
-    override fun createInitialState(): BlockContract.UiState =
-        BlockContract.UiState()
+    override fun createInitialState(): BlockModalContract.UiState =
+        BlockModalContract.UiState()
 
-    override suspend fun handleEvent(event: BlockContract.UiEvent) {
+    override suspend fun handleEvent(event: BlockModalContract.UiEvent) {
         when (event) {
             else -> TODO()
         }
@@ -32,7 +32,7 @@ class BlockViewModel @Inject constructor(
     private fun initNavArgumentData(): Boolean =
         if (blockedId == null) {
             sendEffect {
-                BlockContract.UiEffect.CloseBlockModal
+                BlockModalContract.UiEffect.CloseBlockModal
             }
             false
         } else {

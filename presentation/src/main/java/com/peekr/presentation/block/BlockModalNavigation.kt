@@ -9,14 +9,14 @@ import com.peekr.core.presentation.common.navigation.SubGraph
 fun NavGraphBuilder.blockNavigation(
     navController: NavHostController,
 ) {
-    navigation<SubGraph.Block.Root>(startDestination = SubGraph.Block.SelectBlockReason) {
-        dialog<SubGraph.Block.SelectBlockReason> { backStackEntry ->
+    navigation<SubGraph.BlockModal.Root>(startDestination = SubGraph.BlockModal.SelectBlockModalReason) {
+        dialog<SubGraph.BlockModal.SelectBlockModalReason> { backStackEntry ->
         }
 
-        dialog<SubGraph.Block.InputBlockReason> { backStackEntry ->
+        dialog<SubGraph.BlockModal.InputBlockModalReason> { backStackEntry ->
         }
 
-        dialog<SubGraph.Block.BlockResult> { backStackEntry ->
+        dialog<SubGraph.BlockModal.BlockModalResult> { backStackEntry ->
         }
     }
 }

@@ -93,25 +93,25 @@ sealed interface SubGraph {
         data object ReportResult : Report
     }
 
-    /** 차단 그래프 */
-    sealed interface Block : SubGraph {
-        /** 차단 그래프 진입점 */
+    /** 차단 모달 그래프 */
+    sealed interface BlockModal : SubGraph {
+        /** 차단 모달 그래프 진입점 */
         @Serializable
         data class Root(
             val userId: Long?,
-        ) : Block
+        ) : BlockModal
 
         /** 차단 사유 선택 */
         @Serializable
-        data object SelectBlockReason : Block
+        data object SelectBlockModalReason : BlockModal
 
         /** 차단 사유 입력 */
         @Serializable
-        data object InputBlockReason : Block
+        data object InputBlockModalReason : BlockModal
 
         /** 차단 결과 */
         @Serializable
-        data object BlockResult : Block
+        data object BlockModalResult : BlockModal
     }
 }
 
