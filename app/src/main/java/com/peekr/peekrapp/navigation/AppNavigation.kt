@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.presentation.block.blockModalNavigation
 import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.keywordEdit.keywordEditNavigation
@@ -85,6 +86,9 @@ fun AppNavigation(
 
             // 신고 네비게이션
             reportNavigation(appNavController)
+
+            // 차단 모달 네비게이션
+            blockModalNavigation(appNavController)
 
             // 임시 화면
             composable<Screens.TempMain> {

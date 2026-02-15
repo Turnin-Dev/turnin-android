@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.peekr.core.designsystem.theme.PeekrAppTheme
-import com.peekr.core.domain.block.model.BlockReasonId
 import com.peekr.core.presentation.ui.component.modal.SelectReportBlockReasonModal
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.presentation.block.model.UiBlockReason
@@ -61,17 +60,17 @@ private fun SelectBlockReasonModalPreview() {
             sheetState = sheetState,
             blockReasons = listOf(
                 UiBlockReason(
-                    id = BlockReasonId(1L),
+                    id = 1L,
                     code = "SPAM",
                     description = "스팸 및 사기",
                 ),
                 UiBlockReason(
-                    id = BlockReasonId(1L),
+                    id = 1L,
                     code = "INAPPROPRIATE",
                     description = "부적절한 콘텐츠",
                 ),
                 UiBlockReason(
-                    id = BlockReasonId(1L),
+                    id = 1L,
                     code = "ETC",
                     description = "기타",
                 ),

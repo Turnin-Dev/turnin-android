@@ -137,6 +137,7 @@
     <!-- Block Error -->
     <string name="block_error_unexpected">차단 과정에서 오류가 발생했습니다. 다시 차단을 진행해주세요.</string>
     <string name="block_error_requester_id_blocker_id_not_same">차단 권한이 없습니다. 차단을 올바르게 진행해주세요.</string>
+    <string name="block_error_missing_block_target">차단에 필요한 데이터가 누락됐습니다. 처음부터 다시 진행해주세요.</string>
 
     <!-- Friend -->
     <string name="friend_list_top_bar_title">친구</string>

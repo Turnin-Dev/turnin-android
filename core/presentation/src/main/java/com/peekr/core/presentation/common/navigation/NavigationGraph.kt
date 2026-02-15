@@ -95,7 +95,11 @@ sealed interface SubGraph {
 
     /** 차단 모달 그래프 */
     sealed interface BlockModal : SubGraph {
-        /** 차단 모달 그래프 진입점 */
+        /**
+         * 차단 모달 그래프 진입점
+         *
+         * @param userId 차단할 사용자 ID
+         */
         @Serializable
         data class Root(
             val userId: Long?,

@@ -1,6 +1,6 @@
 package com.peekr.presentation.block.model
 
-import com.peekr.core.domain.block.model.BlockReasonId
+import com.peekr.core.domain.block.model.BlockReason
 import com.peekr.core.presentation.ui.component.modal.SelectableReason
 
 /**
@@ -11,7 +11,14 @@ import com.peekr.core.presentation.ui.component.modal.SelectableReason
  * @property description 차단 사유 설명
  */
 data class UiBlockReason(
-    val id: BlockReasonId,
+    val id: Long,
     val code: String,
     override val description: String,
 ) : SelectableReason
+
+fun BlockReason.toUiModel(): UiBlockReason =
+    UiBlockReason(
+        id = id.value,
+        code = code,
+        description = description,
+    )

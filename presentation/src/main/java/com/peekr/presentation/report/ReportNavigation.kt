@@ -14,6 +14,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.navigateToBlockModal
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.common.viewmodel.sharedViewModel
 import com.peekr.presentation.report.state.ReportContract
@@ -39,6 +40,7 @@ fun NavGraphBuilder.reportNavigation(
                 navController.getBackStackEntry<SubGraph.Report.Root>()
             }
             val rootArgs = parentEntry.toRoute<SubGraph.Report.Root>()
+            val blockedId = rootArgs.userId
             val onlyReport = rootArgs.onlyReport
 
             SelectReportBlockModal(
@@ -59,7 +61,9 @@ fun NavGraphBuilder.reportNavigation(
                         }
                     }
                 },
-                selectBlock = {},
+                selectBlock = {
+                    navController.navigateToBlockModal(blockedId)
+                },
             )
         }
 

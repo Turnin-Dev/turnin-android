@@ -23,6 +23,13 @@ fun NavController.navigateToReport(
     }
 }
 
+// ------------------------------ BlockModal ------------------------------
+fun NavController.navigateToBlockModal(userId: Long?) {
+    navigate(SubGraph.BlockModal.Root(userId)) {
+        launchSingleTop = true
+    }
+}
+
 // ------------------------------ KeywordEdit ------------------------------
 fun NavController.navigateToKeywordEdit(userKeywordId: Long?) {
     navigate(Screens.KeywordEdit(userKeywordId))

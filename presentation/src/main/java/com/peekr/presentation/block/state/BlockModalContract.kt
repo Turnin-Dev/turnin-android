@@ -23,10 +23,26 @@ class BlockModalContract {
         val loading: Boolean = false,
     ) : BaseUiState
 
-    sealed interface UiEvent : BaseUiEvent
+    sealed interface UiEvent : BaseUiEvent {
+        /** 차단 사유 목록 조회 이벤트 */
+        data object GetBlockReasons : UiEvent
+
+        /** 차단 사유 선택 이벤트 */
+        data class SelectBlockReason(
+            val blockReason: UiBlockReason,
+        ) : UiEvent
+
+        /** 차단 수행 이벤트 */
+        data class OnBlock(
+            val reason: String,
+        ) : UiEvent
+    }
 
     sealed interface UiEffect : BaseUiEffect {
         /** 차단 모달 닫기 일회성 이벤트 */
         data object CloseBlockModal : UiEffect
+
+        /** 차단 결과 이동 일회성 이벤트 */
+        data object NavigateToBlockResult : UiEffect
     }
 }
