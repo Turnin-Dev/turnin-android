@@ -409,6 +409,7 @@ class UserNetworkDataSourceTest {
                 active = true,
                 friendsCount = 20L,
                 friendStatus = FriendStatus.NOTHING,
+                isBlocked = false,
             )
     }
 }

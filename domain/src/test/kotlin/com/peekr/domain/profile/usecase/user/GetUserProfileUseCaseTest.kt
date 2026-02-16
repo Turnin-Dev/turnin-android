@@ -51,6 +51,7 @@ class GetUserProfileUseCaseTest {
             friendsCount = 50L,
             active = true,
             friendStatus = FriendStatus.NOTHING,
+            isBlocked = false,
         )
     }
 }

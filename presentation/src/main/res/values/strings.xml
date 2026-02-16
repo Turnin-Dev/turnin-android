@@ -126,6 +126,19 @@
     <string name="report_error_already_reported">이미 해당 내용에 대한 신고 접수가 된 상태입니다.\n내부 정책에 따라 조치가 진행 중입니다.\n감사합니다.</string>
     <string name="report_error_unexpected">신고 과정에서 오류가 발생했습니다. 다시 신고를 진행해주세요.</string>
 
+    <!-- Block -->
+    <string name="input_block_reason_modal_title">차단 사유를 작성해주세요.</string>
+    <string name="input_block_reason_modal_tf_placeholder">차단 사유를 작성해주세요. (선택 사항)</string>
+    <string name="input_block_reason_modal_btn_block">차단하기</string>
+    <string name="block_result_modal_btn_ok">확인</string>
+    <string name="block_result_modal_btn_finish">완료</string>
+    <string name="block_result_modal_success_title">차단 완료</string>
+    <string name="block_result_modal_success">사용자를 차단했습니다.\n이제 모든 컨텐츠에서 해당 사용자의 내용이 제외됩니다.\n감사합니다.</string>
+    <!-- Block Error -->
+    <string name="block_error_unexpected">차단 과정에서 오류가 발생했습니다. 다시 차단을 진행해주세요.</string>
+    <string name="block_error_requester_id_blocker_id_not_same">차단 권한이 없습니다. 차단을 올바르게 진행해주세요.</string>
+    <string name="block_error_missing_block_target">차단에 필요한 데이터가 누락됐습니다. 처음부터 다시 진행해주세요.</string>
+
     <!-- Friend -->
     <string name="friend_list_top_bar_title">친구</string>
     <string name="friend_list_tab_bar_title_1">친구 목록</string>

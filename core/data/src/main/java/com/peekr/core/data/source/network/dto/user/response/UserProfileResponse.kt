@@ -21,6 +21,7 @@ import com.squareup.moshi.JsonClass
  * @property friendsCount 친구 수
  * @property friendStatus 친구 관계 상태
  * @property active 사용자 활성화 여부
+ * @property isBlocked 차단 여부
  */
 @JsonClass(generateAdapter = true)
 data class UserProfileResponse(
@@ -34,6 +35,7 @@ data class UserProfileResponse(
     val friendStatus: FriendStatus,
     @Json(name = "isActive")
     val active: Boolean,
+    val isBlocked: Boolean,
 )
 
 fun UserProfileResponse.toDomainModel(): CoreUserProfile =
@@ -47,4 +49,5 @@ fun UserProfileResponse.toDomainModel(): CoreUserProfile =
         friendsCount = friendsCount,
         friendStatus = friendStatus,
         active = active,
+        isBlocked = isBlocked,
     )

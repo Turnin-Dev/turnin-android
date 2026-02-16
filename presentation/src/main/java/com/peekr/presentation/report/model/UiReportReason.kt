@@ -2,6 +2,7 @@ package com.peekr.presentation.report.model
 
 import com.peekr.core.domain.report.model.ReportReason
 import com.peekr.core.domain.report.model.ReportReasonId
+import com.peekr.core.presentation.ui.component.modal.SelectableReason
 
 /**
  * UI용 신고 사유
@@ -13,8 +14,8 @@ import com.peekr.core.domain.report.model.ReportReasonId
 data class UiReportReason(
     val id: ReportReasonId,
     val code: String,
-    val description: String,
-)
+    override val description: String,
+) : SelectableReason
 
 fun ReportReason.toUiModel(): UiReportReason =
     UiReportReason(

@@ -66,7 +66,7 @@ class ReportViewModel @Inject constructor(
             true
         }
 
-    // 사용자 신고
+    // 신고
     private fun report(customReason: String?) {
         // 신고 사유 미 선택 시 에러 발생
         if (selectedReportReason == null) {

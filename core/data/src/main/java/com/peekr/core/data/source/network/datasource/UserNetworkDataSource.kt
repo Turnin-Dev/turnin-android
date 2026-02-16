@@ -32,7 +32,9 @@ interface UserNetworkDataSource {
      *
      * @return [UserProfileResponse]
      */
-    suspend fun getUserProfile(userId: UserId): NetworkResult<UserProfileResponse>
+    suspend fun getUserProfile(
+        userId: UserId,
+    ): NetworkResult<UserProfileResponse>
 
     /**
      * 나의 키워드 상세 정보 리스트 조회

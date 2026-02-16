@@ -459,6 +459,7 @@ class UserRepositoryImplTest {
             active = true,
             friendStatus = FriendStatus.NOTHING,
             friendsCount = 51,
+            isBlocked = false,
         )
         private val TestMyProfileResponse = MyProfileResponse(
             userId = TestMyUserId.value,

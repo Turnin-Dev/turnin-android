@@ -16,8 +16,19 @@ fun NavController.navigateToUserProfile(userId: Long) {
 fun NavController.navigateToReport(
     reportedId: Long?,
     reportedUserKeywordId: Long?,
+    onlyReport: Boolean,
 ) {
-    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId)) {
+    navigate(SubGraph.Report.Root(reportedId, reportedUserKeywordId, onlyReport)) {
+        launchSingleTop = true
+    }
+}
+
+// ------------------------------ BlockModal ------------------------------
+fun NavController.navigateToBlockModal(userId: Long?) {
+    navigate(SubGraph.BlockModal.Root(userId)) {
+        popUpTo(SubGraph.Report.SelectReportBlock) {
+            inclusive = true
+        }
         launchSingleTop = true
     }
 }

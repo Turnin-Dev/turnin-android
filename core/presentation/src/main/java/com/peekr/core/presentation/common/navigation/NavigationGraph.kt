@@ -54,25 +54,68 @@ sealed interface SubGraph {
         data object CropProfileImage : Register
     }
 
-    /** 신고 그래프 */
+    /**
+     * 신고 그래프
+     *
+     * 기본적으로 신고 그래프는 차단 그래프까지 이어진다.
+     *
+     * [Root.onlyReport] 인자에 따라 차단 그래프까지 수행할 수 있는 지에 대한 여부를 선택할 수 있다.
+     */
     sealed interface Report : SubGraph {
+        /**
+         * 신고 그래프 진입점
+         *
+         * @property userId 사용자 ID
+         * @property userKeywordId 사용자 키워드 ID
+         * @property onlyReport 신고만 수행할 지에 대한 여부 (기본적으로 신고 기능은 차단 기능까지 이어진다.)
+         */
         @Serializable
         data class Root(
             val userId: Long?,
             val userKeywordId: Long?,
+            val onlyReport: Boolean,
         ) : Report
 
+        /** 신고/차단 선택 */
         @Serializable
         data object SelectReportBlock : Report
 
+        /** 신고 사유 선택 */
         @Serializable
         data object SelectReportReason : Report
 
+        /** 신고 사유 입력 */
         @Serializable
         data object InputReportReason : Report
 
+        /** 신고 결과 */
         @Serializable
         data object ReportResult : Report
+    }
+
+    /** 차단 모달 그래프 */
+    sealed interface BlockModal : SubGraph {
+        /**
+         * 차단 모달 그래프 진입점
+         *
+         * @param userId 차단할 사용자 ID
+         */
+        @Serializable
+        data class Root(
+            val userId: Long?,
+        ) : BlockModal
+
+        /** 차단 사유 선택 */
+        @Serializable
+        data object SelectBlockModalReason : BlockModal
+
+        /** 차단 사유 입력 */
+        @Serializable
+        data object InputBlockModalReason : BlockModal
+
+        /** 차단 결과 */
+        @Serializable
+        data object BlockModalResult : BlockModal
     }
 }
 
