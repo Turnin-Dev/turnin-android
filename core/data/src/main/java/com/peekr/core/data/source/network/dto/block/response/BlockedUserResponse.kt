@@ -1,6 +1,6 @@
 package com.peekr.core.data.source.network.dto.block.response
 
-import com.peekr.core.domain.block.model.BlockUser
+import com.peekr.core.domain.block.model.BlockedUser
 import com.peekr.core.domain.model.BlockId
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
@@ -17,7 +17,7 @@ import com.squareup.moshi.JsonClass
  * @property profileImageUrl 차단한 사용자 프로필 사진 url
  */
 @JsonClass(generateAdapter = true)
-data class BlockUserResponse(
+data class BlockedUserResponse(
     val id: Long,
     val userId: Long,
     val displayId: String,
@@ -25,8 +25,8 @@ data class BlockUserResponse(
     val profileImageUrl: String?,
 )
 
-fun BlockUserResponse.toDomainModel(): BlockUser =
-    BlockUser(
+fun BlockedUserResponse.toDomainModel(): BlockedUser =
+    BlockedUser(
         id = BlockId(id),
         userId = UserId(userId),
         displayId = DisplayId(displayId),

@@ -13,10 +13,10 @@ import com.squareup.moshi.JsonClass
  * @property list 차단 목록
  */
 @JsonClass(generateAdapter = true)
-data class BlockUsersResponse(
+data class BlockedUsersResponse(
     val pageNumber: Long,
     val pageSize: Int,
     override val hasNext: Boolean,
     @Json(name = "blockUsers")
-    override val list: List<BlockUserResponse>,
-) : PagingDataHolder<BlockUserResponse>
+    override val list: List<BlockedUserResponse>,
+) : PagingDataHolder<BlockedUserResponse>

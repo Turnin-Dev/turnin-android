@@ -9,7 +9,7 @@ package com.peekr.presentation.block.model
  * @property name 차단한 사용자 명
  * @property profileImageUrl 차단한 사용자 프로필 사진 url
  */
-data class UiBlockUser(
+data class UiBlockedUser(
     val id: Long,
     val userId: Long,
     val displayId: String,

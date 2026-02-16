@@ -36,7 +36,7 @@ import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
 import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
-import com.peekr.presentation.block.model.UiBlockUser
+import com.peekr.presentation.block.model.UiBlockedUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -45,17 +45,17 @@ import kotlinx.coroutines.launch
  *
  * @param modifier [Modifier]
  * @param topBar 탑바
- * @param blockUsers 차단 사용자 목록
+ * @param blockedUsers 차단 사용자 목록
  */
 @Composable
 private fun BlockListFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
-    blockUsers: @Composable () -> Unit,
+    blockedUsers: @Composable () -> Unit,
 ) {
     Column(modifier) {
         topBar()
-        blockUsers()
+        blockedUsers()
     }
 }
 
@@ -63,16 +63,16 @@ private fun BlockListFrame(
  * 차단 목록 화면
  *
  * @param modifier [Modifier]
- * @param blockUsers 차단 사용자 목록
- * @param onBlockUserClick 차단 항목 클릭 시 콜백
+ * @param blockedUsers 차단 사용자 목록
+ * @param onBlockedUserClick 차단 사용자 클릭 시 콜백
  * @param onDelete 차단 해제(삭제) 시 콜백
  */
 @Composable
 fun BlockListScreen(
     modifier: Modifier = Modifier,
-    blockUsers: LazyPagingItems<UiBlockUser>,
-    onBlockUserClick: (UiBlockUser) -> Unit,
-    onDelete: (UiBlockUser) -> Unit,
+    blockedUsers: LazyPagingItems<UiBlockedUser>,
+    onBlockedUserClick: (UiBlockedUser) -> Unit,
+    onDelete: (UiBlockedUser) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     BlockListFrame(
@@ -85,11 +85,11 @@ fun BlockListScreen(
                 onBackPressed = onBackPressed,
             )
         },
-        blockUsers = {
+        blockedUsers = {
             BlockList(
                 modifier = Modifier.fillMaxSize(),
-                blockUsers = blockUsers,
-                onBlockUserClick = { },
+                blockedUsers = blockedUsers,
+                onBlockedUserClick = { },
                 onDelete = {},
             )
         },
@@ -118,15 +118,15 @@ private fun TopBar(
  * 차단 목록
  *
  * @param modifier [Modifier]
- * @param blockUsers 차단 사용자 목록
- * @param onBlockUserClick 차단 항목 클릭 시 콜백
+ * @param blockedUsers 차단 사용자 목록
+ * @param onBlockedUserClick 차단 사용자 클릭 시 콜백
  */
 @Composable
 private fun BlockList(
     modifier: Modifier = Modifier,
-    blockUsers: LazyPagingItems<UiBlockUser>,
-    onBlockUserClick: (UiBlockUser) -> Unit,
-    onDelete: (UiBlockUser) -> Unit,
+    blockedUsers: LazyPagingItems<UiBlockedUser>,
+    onBlockedUserClick: (UiBlockedUser) -> Unit,
+    onDelete: (UiBlockedUser) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var isRefreshing by rememberSaveable { mutableStateOf(false) }
@@ -137,40 +137,40 @@ private fun BlockList(
         onRefresh = {
             scope.launch {
                 isRefreshing = true
-                blockUsers.refresh()
+                blockedUsers.refresh()
                 isRefreshing = false
             }
         },
         contentPadding = ListContentPadding,
     ) {
         pagingItem(
-            pagingItems = blockUsers,
-            key = blockUsers.itemKey { it.id },
+            pagingItems = blockedUsers,
+            key = blockedUsers.itemKey { it.id },
             skeletonCount = 20,
             skeleton = {
-                BlockCardSkeleton()
+                BlockedUserCardSkeleton()
             },
             initialError = {
                 FooterError(
                     modifier = Modifier.fillMaxWidth(),
                     errorMessage = stringResource(R.string.block_list_screen_error_message_default),
-                    onRetry = { blockUsers.retry() },
+                    onRetry = { blockedUsers.retry() },
                 )
             },
             footerError = {
                 FooterError(
                     modifier = Modifier.fillMaxWidth(),
                     errorMessage = stringResource(R.string.block_list_screen_error_message_default),
-                    onRetry = { blockUsers.retry() },
+                    onRetry = { blockedUsers.retry() },
                 )
             },
         ) { idx ->
-            val block = blockUsers[idx]
+            val block = blockedUsers[idx]
             block?.let {
-                BlockCard(
+                BlockedUserCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickableSingle(onClick = { onBlockUserClick(block) })
+                        .clickableSingle(onClick = { onBlockedUserClick(block) })
                         .padding(horizontal = ScreenTokens.HorizontalPadding),
                     profileImageUrl = it.profileImageUrl,
                     name = it.name,
@@ -183,14 +183,15 @@ private fun BlockList(
 }
 
 /**
- * 차단 항목
+ * 차단 사용자 항목
  *
- * @param profileImageUrl 친구 프로필 사진 url
- * @param name 친구 이름
- * @param displayId 친구 사용자 표시 ID
+ * @param profileImageUrl 프로필 사진 url
+ * @param name 이름
+ * @param displayId 사용자 표시 ID
+ * @param onDelete 차단 해제(삭제) 시 콜백
  */
 @Composable
-private fun BlockCard(
+private fun BlockedUserCard(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     name: String,
@@ -220,7 +221,7 @@ private fun BlockCard(
  * 차단 항목 스켈레톤
  */
 @Composable
-private fun BlockCardSkeleton(modifier: Modifier = Modifier) {
+private fun BlockedUserCardSkeleton(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -248,9 +249,9 @@ private val ListContentPadding = PaddingValues(top = 10.dp, bottom = 16.dp)
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
 @Composable
-private fun BlockCardPreview() {
+private fun BlockedUserCardPreview() {
     PeekrAppTheme {
-        BlockCard(
+        BlockedUserCard(
             modifier = Modifier.fillMaxWidth(),
             profileImageUrl = "https://example.com/photo.jpg",
             name = "John Doe",
@@ -263,23 +264,23 @@ private fun BlockCardPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun BlockListScreenPreview() {
-    val blockUsers = testBlockUsersPagingData.collectAsLazyPagingItems()
+    val blockedUsers = testBlockedUsersPagingData.collectAsLazyPagingItems()
 
     PeekrAppTheme {
         BlockListScreen(
             modifier = Modifier.fillMaxSize(),
-            blockUsers = blockUsers,
-            onBlockUserClick = {},
+            blockedUsers = blockedUsers,
+            onBlockedUserClick = {},
             onDelete = {},
             onBackPressed = {},
         )
     }
 }
 
-private val testBlockUsersPagingData = MutableStateFlow(
+private val testBlockedUsersPagingData = MutableStateFlow(
     PagingData.from(
         List(30) {
-            UiBlockUser(
+            UiBlockedUser(
                 id = it.toLong(),
                 userId = it.toLong(),
                 displayId = "DisplayID $it",

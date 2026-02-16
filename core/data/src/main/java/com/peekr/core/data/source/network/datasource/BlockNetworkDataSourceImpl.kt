@@ -3,7 +3,7 @@ package com.peekr.core.data.source.network.datasource
 import com.peekr.core.data.source.network.api.BlockApi
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlockUsersResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUsersResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import com.peekr.core.data.source.network.util.networkCallWithoutResponse
@@ -12,11 +12,11 @@ import javax.inject.Inject
 class BlockNetworkDataSourceImpl @Inject constructor(
     private val blockApi: BlockApi,
 ) : BlockNetworkDataSource {
-    override suspend fun getBlockUsers(
+    override suspend fun getBlockedUsers(
         page: Long,
         size: Int,
-    ): NetworkResult<BlockUsersResponse> =
-        networkCall { blockApi.getBlockUsers(page, size) }
+    ): NetworkResult<BlockedUsersResponse> =
+        networkCall { blockApi.getBlockedUsers(page, size) }
 
     override suspend fun getBlockReasons(): NetworkResult<List<BlockReasonResponse>> =
         networkCall { blockApi.getBlockReasons() }

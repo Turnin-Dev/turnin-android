@@ -5,8 +5,8 @@ import com.peekr.core.data.MockLog
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlockUserResponse
-import com.peekr.core.data.source.network.dto.block.response.BlockUsersResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUserResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUsersResponse
 import com.peekr.core.data.source.network.dto.block.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
@@ -47,8 +47,8 @@ class BlockRepositoryImplTest {
             dataSource.deleteBlock(any())
         } returns NetworkResult.Success(Unit)
         coEvery {
-            dataSource.getBlockUsers(any(), any())
-        } returns NetworkResult.Success(TestBlockUsersResponse)
+            dataSource.getBlockedUsers(any(), any())
+        } returns NetworkResult.Success(TestBlockedUsersResponse)
         coEvery {
             dataSource.createBlock(any())
         } returns NetworkResult.Success(Unit)
@@ -69,7 +69,7 @@ class BlockRepositoryImplTest {
 
         // 첫 번째 페이지 설정 (page=1, size=20)
         coEvery {
-            dataSource.getBlockUsers(1, pageSize)
+            dataSource.getBlockedUsers(1, pageSize)
         } returns NetworkResult.Success(
             createBlocksResponse(
                 pageNumber = 1L,
@@ -82,7 +82,7 @@ class BlockRepositoryImplTest {
         // 두 번쨰 페이지 설정 (page=2, size=20)
         // Paging Source는 initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
         coEvery {
-            dataSource.getBlockUsers(2, pageSize)
+            dataSource.getBlockedUsers(2, pageSize)
         } returns NetworkResult.Success(
             createBlocksResponse(
                 pageNumber = 2L,
@@ -93,7 +93,7 @@ class BlockRepositoryImplTest {
         )
 
         // when
-        val pagingData = repository.getBlockUsers().asSnapshot()
+        val pagingData = repository.getBlockedUsers().asSnapshot()
 
         // then
         assertEquals(pageSize * 2, pagingData.size)
@@ -204,7 +204,7 @@ class BlockRepositoryImplTest {
             startId: Long,
             count: Int,
             hasNext: Boolean,
-        ): BlockUsersResponse = BlockUsersResponse(
+        ): BlockedUsersResponse = BlockedUsersResponse(
             pageNumber = pageNumber,
             pageSize = count,
             hasNext = hasNext,
@@ -214,9 +214,9 @@ class BlockRepositoryImplTest {
         private fun createBlockResponseList(
             startId: Long,
             count: Int,
-        ): List<BlockUserResponse> =
+        ): List<BlockedUserResponse> =
             (startId until startId + count).map { id ->
-                BlockUserResponse(
+                BlockedUserResponse(
                     id = id,
                     userId = id + 1L,
                     displayId = "did$id",
@@ -231,18 +231,18 @@ class BlockRepositoryImplTest {
             reasonId = 1L,
             customReason = "custom-reason",
         )
-        private val TestBlockUserResponse = BlockUserResponse(
+        private val TestBlockedUserResponse = BlockedUserResponse(
             id = 1L,
             userId = 2L,
             displayId = "did",
             name = "name",
             profileImageUrl = null,
         )
-        private val TestBlockUsersResponse = BlockUsersResponse(
+        private val TestBlockedUsersResponse = BlockedUsersResponse(
             pageNumber = 1L,
             pageSize = 20,
             hasNext = true,
-            list = listOf(TestBlockUserResponse),
+            list = listOf(TestBlockedUserResponse),
         )
         private val TestBlockReasonResponse = BlockReasonResponse(
             id = 1L,

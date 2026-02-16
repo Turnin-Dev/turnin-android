@@ -2,7 +2,7 @@ package com.peekr.core.domain.block.repository
 
 import androidx.paging.PagingData
 import com.peekr.core.domain.block.model.BlockReason
-import com.peekr.core.domain.block.model.BlockUser
+import com.peekr.core.domain.block.model.BlockedUser
 import com.peekr.core.domain.block.model.CreateBlock
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
@@ -14,7 +14,7 @@ interface BlockRepository {
     /**
      * 차단 사용자 목록 조회 (페이지네이션)
      */
-    fun getBlockUsers(): Flow<PagingData<BlockUser>>
+    fun getBlockedUsers(): Flow<PagingData<BlockedUser>>
 
     /**
      * 차단 사유 목록 조회
