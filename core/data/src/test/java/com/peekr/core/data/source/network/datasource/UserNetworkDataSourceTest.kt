@@ -200,7 +200,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestUserId, true)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val successResponse = response as NetworkResult.Success
@@ -219,7 +219,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestUserId, true)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -232,10 +232,10 @@ class UserNetworkDataSourceTest {
         val mockApi: UserApi = mockk()
         val exception = Exception()
         dataSource = UserNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.getUserProfile(TestUserId.value, true) } throws exception
+        coEvery { mockApi.getUserProfile(TestUserId.value) } throws exception
 
         // when
-        val response = dataSource.getUserProfile(TestUserId, true)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -252,7 +252,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.getUserProfile(TestUserId, true)
+        val response = dataSource.getUserProfile(TestUserId)
 
         // then
         val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
@@ -409,6 +409,7 @@ class UserNetworkDataSourceTest {
                 active = true,
                 friendsCount = 20L,
                 friendStatus = FriendStatus.NOTHING,
+                isBlocked = false,
             )
     }
 }

@@ -337,6 +337,7 @@ private fun UserProfileScreenPreview() {
                     lastLoginAt = 1000L,
                     active = true,
                     friendStatus = FriendStatus.NOTHING,
+                    isBlocked = false,
                 ),
                 keywords = UiUserKeyword.samples,
             ),

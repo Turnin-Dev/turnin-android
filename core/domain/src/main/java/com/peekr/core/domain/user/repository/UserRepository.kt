@@ -38,15 +38,12 @@ interface UserRepository {
      * 사용자 프로필 조회
      *
      * @param userId 사용자 ID
-     * @param includeBlocked 조회 시 차단 사용자 포함 여부
-     * (`true`면 차단 사용자까지 함께 조회하고 `false`면 제외하고 조회한다.)
      * @param forceRefresh 강제 새로고침 (캐시를 무효화하고 데이터를 새롭게 받아온다.)
      *
      * @return [CoreUserProfile]
      */
     fun getUserProfile(
         userId: UserId,
-        includeBlocked: Boolean = false,
         forceRefresh: Boolean = false,
     ): Flow<Result<CoreUserProfile, CommonErrorType>>
 

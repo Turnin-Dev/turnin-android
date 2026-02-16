@@ -18,6 +18,7 @@ import com.peekr.core.domain.model.UserId
  * @property friendsCount 친구 수
  * @property friendStatus 친구 관계 상태
  * @property active 사용자 활성화 여부
+ * @property isBlocked 차단 여부
  */
 data class CoreUserProfile(
     val userId: UserId,
@@ -29,4 +30,5 @@ data class CoreUserProfile(
     val friendsCount: Long,
     val friendStatus: FriendStatus,
     val active: Boolean,
+    val isBlocked: Boolean,
 )

@@ -100,7 +100,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getUserProfile(
         userId: UserId,
-        includeBlocked: Boolean,
         forceRefresh: Boolean,
     ): Flow<Result<CoreUserProfile, CommonErrorType>> =
         safeResultFlow<CoreUserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
@@ -110,7 +109,7 @@ class UserRepositoryImpl @Inject constructor(
                 emit(Result.Success(cachedProfile))
             } else {
                 emit(Result.Loading)
-                when (val result = userNetworkDataSource.getUserProfile(userId, includeBlocked)) {
+                when (val result = userNetworkDataSource.getUserProfile(userId)) {
                     is NetworkResult.Success -> {
                         val profile = result.data.toDomainModel()
                         memoryCache[userId.value] = profile

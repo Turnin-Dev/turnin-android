@@ -18,6 +18,7 @@ import com.peekr.core.domain.model.UserId
  * @property lastLoginAt 마지막 로그인 일시
  * @property friendStatus 친구 관계 상태
  * @property active 사용자 활성화 여부
+ * @property isBlocked 차단 여부
  */
 data class UserProfile(
     val userId: UserId,
@@ -29,4 +30,5 @@ data class UserProfile(
     val lastLoginAt: Long,
     val friendStatus: FriendStatus,
     val active: Boolean,
+    val isBlocked: Boolean,
 )

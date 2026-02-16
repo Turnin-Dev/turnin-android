@@ -11,7 +11,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 /** User Network API */
 interface UserApi {
@@ -27,7 +26,6 @@ interface UserApi {
     @GET(NetworkApiPath.User.USER_PROFILE)
     suspend fun getUserProfile(
         @Path("userId") userId: Long,
-        @Query("includeBlocked") includeBlocked: Boolean,
     ): Response<UserProfileResponse>
 
     /** 나의 키워드 상세 정보 리스트 조회 */

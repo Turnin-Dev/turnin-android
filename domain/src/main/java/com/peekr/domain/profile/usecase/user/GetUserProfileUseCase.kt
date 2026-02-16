@@ -42,6 +42,7 @@ class GetUserProfileUseCase @Inject constructor(
                         friendStatus = coreUserProfile.friendStatus,
                         lastLoginAt = coreUserProfile.lastLoginAt,
                         active = coreUserProfile.active,
+                        isBlocked = coreUserProfile.isBlocked,
                     )
                 }
                 .mapError { commonError ->
