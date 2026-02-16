@@ -32,7 +32,7 @@ import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
 import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
-import com.peekr.presentation.block.model.UiBlock
+import com.peekr.presentation.block.model.UiBlockUser
 import kotlinx.coroutines.launch
 
 /**
@@ -65,9 +65,9 @@ private fun BlockListFrame(
 @Composable
 fun BlockListScreen(
     modifier: Modifier = Modifier,
-    blocks: LazyPagingItems<UiBlock>,
-    onBlockClick: (UiBlock) -> Unit,
-    onDelete: (UiBlock) -> Unit,
+    blocks: LazyPagingItems<UiBlockUser>,
+    onBlockClick: (UiBlockUser) -> Unit,
+    onDelete: (UiBlockUser) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     BlockListFrame(
@@ -113,8 +113,8 @@ private fun TopBar(
 @Composable
 private fun BlockList(
     modifier: Modifier = Modifier,
-    blocks: LazyPagingItems<UiBlock>,
-    onBlockClick: (UiBlock) -> Unit,
+    blocks: LazyPagingItems<UiBlockUser>,
+    onBlockClick: (UiBlockUser) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var isRefreshing by rememberSaveable { mutableStateOf(false) }

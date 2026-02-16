@@ -2,7 +2,7 @@ package com.peekr.core.data.source.network.api
 
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlocksResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockUsersResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -15,13 +15,13 @@ import retrofit2.http.Query
  */
 interface BlockApi {
     /**
-     * 차단 목록 조회 (페이지네이션)
+     * 차단 사용자 목록 조회 (페이지네이션)
      */
     @GET(NetworkApiPath.Block.ROUTE)
-    suspend fun getBlocks(
+    suspend fun getBlockUsers(
         @Query("page") page: Long,
         @Query("size") size: Int,
-    ): Response<BlocksResponse>
+    ): Response<BlockUsersResponse>
 
     /**
      * 차단 사유 목록 조회

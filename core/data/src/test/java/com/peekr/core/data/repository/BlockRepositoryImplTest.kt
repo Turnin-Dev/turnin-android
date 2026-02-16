@@ -5,8 +5,8 @@ import com.peekr.core.data.MockLog
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlockResponse
-import com.peekr.core.data.source.network.dto.block.response.BlocksResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockUserResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockUsersResponse
 import com.peekr.core.data.source.network.dto.block.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
@@ -47,8 +47,8 @@ class BlockRepositoryImplTest {
             dataSource.deleteBlock(any())
         } returns NetworkResult.Success(Unit)
         coEvery {
-            dataSource.getBlocks(any(), any())
-        } returns NetworkResult.Success(TestBlocksResponse)
+            dataSource.getBlockUsers(any(), any())
+        } returns NetworkResult.Success(TestBlockUsersResponse)
         coEvery {
             dataSource.createBlock(any())
         } returns NetworkResult.Success(Unit)
@@ -69,7 +69,7 @@ class BlockRepositoryImplTest {
 
         // 첫 번째 페이지 설정 (page=1, size=20)
         coEvery {
-            dataSource.getBlocks(1, pageSize)
+            dataSource.getBlockUsers(1, pageSize)
         } returns NetworkResult.Success(
             createBlocksResponse(
                 pageNumber = 1L,
@@ -82,7 +82,7 @@ class BlockRepositoryImplTest {
         // 두 번쨰 페이지 설정 (page=2, size=20)
         // Paging Source는 initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
         coEvery {
-            dataSource.getBlocks(2, pageSize)
+            dataSource.getBlockUsers(2, pageSize)
         } returns NetworkResult.Success(
             createBlocksResponse(
                 pageNumber = 2L,
@@ -93,7 +93,7 @@ class BlockRepositoryImplTest {
         )
 
         // when
-        val pagingData = repository.getBlocks().asSnapshot()
+        val pagingData = repository.getBlockUsers().asSnapshot()
 
         // then
         assertEquals(pageSize * 2, pagingData.size)
@@ -204,10 +204,9 @@ class BlockRepositoryImplTest {
             startId: Long,
             count: Int,
             hasNext: Boolean,
-        ): BlocksResponse = BlocksResponse(
+        ): BlockUsersResponse = BlockUsersResponse(
             pageNumber = pageNumber,
             pageSize = count,
-            totalSize = 100L,
             hasNext = hasNext,
             list = createBlockResponseList(startId, count),
         )
@@ -215,14 +214,14 @@ class BlockRepositoryImplTest {
         private fun createBlockResponseList(
             startId: Long,
             count: Int,
-        ): List<BlockResponse> =
+        ): List<BlockUserResponse> =
             (startId until startId + count).map { id ->
-                BlockResponse(
+                BlockUserResponse(
                     id = id,
-                    blockerId = id,
-                    blockedId = id + 1L,
-                    reasonId = 1L,
-                    customReason = "custom-reason",
+                    userId = id + 1L,
+                    displayId = "did$id",
+                    name = "name$id",
+                    profileImageUrl = null,
                 )
             }
 
@@ -232,19 +231,18 @@ class BlockRepositoryImplTest {
             reasonId = 1L,
             customReason = "custom-reason",
         )
-        private val TestBlockResponse = BlockResponse(
+        private val TestBlockUserResponse = BlockUserResponse(
             id = 1L,
-            blockerId = 1L,
-            blockedId = 2L,
-            reasonId = 1L,
-            customReason = "custom-reason",
+            userId = 2L,
+            displayId = "did",
+            name = "name",
+            profileImageUrl = null,
         )
-        private val TestBlocksResponse = BlocksResponse(
+        private val TestBlockUsersResponse = BlockUsersResponse(
             pageNumber = 1L,
             pageSize = 20,
-            totalSize = 100L,
             hasNext = true,
-            list = listOf(TestBlockResponse),
+            list = listOf(TestBlockUserResponse),
         )
         private val TestBlockReasonResponse = BlockReasonResponse(
             id = 1L,

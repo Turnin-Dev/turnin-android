@@ -1,7 +1,7 @@
 package com.peekr.presentation.block.model
 
 /**
- * UI용 차단
+ * UI용 차단 사용자
  *
  * @property id 차단 ID
  * @property blockerId 차단 요청한 사용자 ID
@@ -9,7 +9,7 @@ package com.peekr.presentation.block.model
  * @property reasonId 차단 사유 ID
  * @property customReason 차단 기타 사유
  */
-data class UiBlock(
+data class UiBlockUser(
     val id: Long,
     val blockerId: Long,
     val blockedId: Long,

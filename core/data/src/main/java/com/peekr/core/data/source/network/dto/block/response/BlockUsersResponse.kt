@@ -9,16 +9,14 @@ import com.squareup.moshi.JsonClass
  *
  * @property pageNumber 페이지 번호
  * @property pageSize 페이지 크기
- * @property totalSize 모든 항목(차단) 개수
  * @property hasNext 다음 페이지 존재 여부
  * @property list 차단 목록
  */
 @JsonClass(generateAdapter = true)
-data class BlocksResponse(
+data class BlockUsersResponse(
     val pageNumber: Long,
     val pageSize: Int,
-    val totalSize: Long,
     override val hasNext: Boolean,
-    @Json(name = "blocks")
-    override val list: List<BlockResponse>,
-) : PagingDataHolder<BlockResponse>
+    @Json(name = "blockUsers")
+    override val list: List<BlockUserResponse>,
+) : PagingDataHolder<BlockUserResponse>
