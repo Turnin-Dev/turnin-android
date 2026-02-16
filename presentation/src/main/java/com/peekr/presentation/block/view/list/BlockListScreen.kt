@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,13 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.peekr.core.designsystem.component.button.PeekrButtonStyle
 import com.peekr.core.designsystem.component.button.PeekrOutlinedButton
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
+import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.component.card.ProfileCard
 import com.peekr.core.presentation.ui.component.error.FooterError
@@ -33,6 +37,7 @@ import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.block.model.UiBlockUser
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -40,17 +45,17 @@ import kotlinx.coroutines.launch
  *
  * @param modifier [Modifier]
  * @param topBar 탑바
- * @param blockList 차단 목록
+ * @param blockUsers 차단 사용자 목록
  */
 @Composable
 private fun BlockListFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
-    blockList: @Composable () -> Unit,
+    blockUsers: @Composable () -> Unit,
 ) {
     Column(modifier) {
         topBar()
-        blockList()
+        blockUsers()
     }
 }
 
@@ -58,15 +63,15 @@ private fun BlockListFrame(
  * 차단 목록 화면
  *
  * @param modifier [Modifier]
- * @param blocks 차단 목록
- * @param onBlockClick 차단 항목 클릭 시 콜백
+ * @param blockUsers 차단 사용자 목록
+ * @param onBlockUserClick 차단 항목 클릭 시 콜백
  * @param onDelete 차단 해제(삭제) 시 콜백
  */
 @Composable
 fun BlockListScreen(
     modifier: Modifier = Modifier,
-    blocks: LazyPagingItems<UiBlockUser>,
-    onBlockClick: (UiBlockUser) -> Unit,
+    blockUsers: LazyPagingItems<UiBlockUser>,
+    onBlockUserClick: (UiBlockUser) -> Unit,
     onDelete: (UiBlockUser) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -80,7 +85,13 @@ fun BlockListScreen(
                 onBackPressed = onBackPressed,
             )
         },
-        blockList = {
+        blockUsers = {
+            BlockList(
+                modifier = Modifier.fillMaxSize(),
+                blockUsers = blockUsers,
+                onBlockUserClick = { },
+                onDelete = {},
+            )
         },
     )
 }
@@ -107,14 +118,15 @@ private fun TopBar(
  * 차단 목록
  *
  * @param modifier [Modifier]
- * @param blocks 차단 목록
- * @param onBlockClick 차단 항목 클릭 시 콜백
+ * @param blockUsers 차단 사용자 목록
+ * @param onBlockUserClick 차단 항목 클릭 시 콜백
  */
 @Composable
 private fun BlockList(
     modifier: Modifier = Modifier,
-    blocks: LazyPagingItems<UiBlockUser>,
-    onBlockClick: (UiBlockUser) -> Unit,
+    blockUsers: LazyPagingItems<UiBlockUser>,
+    onBlockUserClick: (UiBlockUser) -> Unit,
+    onDelete: (UiBlockUser) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var isRefreshing by rememberSaveable { mutableStateOf(false) }
@@ -125,15 +137,15 @@ private fun BlockList(
         onRefresh = {
             scope.launch {
                 isRefreshing = true
-                blocks.refresh()
+                blockUsers.refresh()
                 isRefreshing = false
             }
         },
         contentPadding = ListContentPadding,
     ) {
         pagingItem(
-            pagingItems = blocks,
-            key = blocks.itemKey { it.id },
+            pagingItems = blockUsers,
+            key = blockUsers.itemKey { it.id },
             skeletonCount = 20,
             skeleton = {
                 BlockCardSkeleton()
@@ -142,28 +154,29 @@ private fun BlockList(
                 FooterError(
                     modifier = Modifier.fillMaxWidth(),
                     errorMessage = stringResource(R.string.block_list_screen_error_message_default),
-                    onRetry = { blocks.retry() },
+                    onRetry = { blockUsers.retry() },
                 )
             },
             footerError = {
                 FooterError(
                     modifier = Modifier.fillMaxWidth(),
                     errorMessage = stringResource(R.string.block_list_screen_error_message_default),
-                    onRetry = { blocks.retry() },
+                    onRetry = { blockUsers.retry() },
                 )
             },
         ) { idx ->
-            val block = blocks[idx]
+            val block = blockUsers[idx]
             block?.let {
-//                BlockCard(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .clickableSingle(onClick = { onBlockClick(block) })
-//                        .padding(horizontal = ScreenTokens.HorizontalPadding),
-//                    profileImageUrl = it.profileImageUrl,
-//                    name = it.name,
-//                    displayId = it.displayId,
-//                )
+                BlockCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickableSingle(onClick = { onBlockUserClick(block) })
+                        .padding(horizontal = ScreenTokens.HorizontalPadding),
+                    profileImageUrl = it.profileImageUrl,
+                    name = it.name,
+                    displayId = it.displayId,
+                    onDelete = { onDelete(block) },
+                )
             }
         }
     }
@@ -246,3 +259,33 @@ private fun BlockCardPreview() {
         )
     }
 }
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun BlockListScreenPreview() {
+    val blockUsers = testBlockUsersPagingData.collectAsLazyPagingItems()
+
+    PeekrAppTheme {
+        BlockListScreen(
+            modifier = Modifier.fillMaxSize(),
+            blockUsers = blockUsers,
+            onBlockUserClick = {},
+            onDelete = {},
+            onBackPressed = {},
+        )
+    }
+}
+
+private val testBlockUsersPagingData = MutableStateFlow(
+    PagingData.from(
+        List(30) {
+            UiBlockUser(
+                id = it.toLong(),
+                userId = it.toLong(),
+                displayId = "DisplayID $it",
+                name = "Name $it",
+                profileImageUrl = null,
+            )
+        },
+    ),
+)

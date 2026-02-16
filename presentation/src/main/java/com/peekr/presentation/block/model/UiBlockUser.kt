@@ -4,15 +4,15 @@ package com.peekr.presentation.block.model
  * UI용 차단 사용자
  *
  * @property id 차단 ID
- * @property blockerId 차단 요청한 사용자 ID
- * @property blockedId 차단 당한 사용자 ID
- * @property reasonId 차단 사유 ID
- * @property customReason 차단 기타 사유
+ * @property userId 차단한 사용자 ID
+ * @property displayId 차단한 사용자 표시 ID
+ * @property name 차단한 사용자 명
+ * @property profileImageUrl 차단한 사용자 프로필 사진 url
  */
 data class UiBlockUser(
     val id: Long,
-    val blockerId: Long,
-    val blockedId: Long,
-    val reasonId: Long,
-    val customReason: String?,
+    val userId: Long,
+    val displayId: String,
+    val name: String,
+    val profileImageUrl: String?,
 )
