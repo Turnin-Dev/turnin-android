@@ -18,7 +18,7 @@ import com.peekr.presentation.block.model.UiBlockReason
  * @param modifier [Modifier]
  * @param sheetState [SheetState]
  * @param blockReasons 차단 사유 목록
- * @param loading 신고 사유 목록 로딩 여부
+ * @param loading 차단 사유 목록 로딩 여부
  * @param error 에러 메시지
  * @param onDismissRequest 모달이 사라질 때 수행할 콜백
  * @param onCancel 모달 취소 시

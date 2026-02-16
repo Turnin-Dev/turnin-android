@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
  *
  * @property pageNumber 페이지 번호
  * @property pageSize 페이지 크기
- * @property totalSize 모든 항목(친구) 개수
+ * @property totalSize 모든 항목(차단) 개수
  * @property hasNext 다음 페이지 존재 여부
  * @property list 차단 목록
  */

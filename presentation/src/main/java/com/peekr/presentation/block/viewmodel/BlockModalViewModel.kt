@@ -98,14 +98,6 @@ class BlockModalViewModel @Inject constructor(
 
     // 사용자 차단
     private fun block(reason: String) {
-        // 차단 사유 미 선택 시 에러 발생
-        if (selectedBlockReason == null) {
-            sendEffect {
-                BlockModalContract.UiEffect.CloseBlockModal
-            }
-            return
-        }
-
         // 차단 수행
         createBlockUseCase(
             blockedId = blockedId,
