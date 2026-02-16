@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -18,23 +17,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.tabBar.PeekrTabBar
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
-import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.ui.component.button.FriendStatusButton
+import com.peekr.core.presentation.ui.component.card.ProfileCard
+import com.peekr.core.presentation.ui.component.card.ProfileCardTokens
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
 import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
@@ -219,7 +217,7 @@ private fun FriendList(
         ) { idx ->
             val friend = friends[idx]
             friend?.let {
-                FriendCard(
+                ProfileCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickableSingle(onClick = { onFriendClick(it) })
@@ -326,7 +324,7 @@ private fun RequesterCard(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        FriendCard(
+        ProfileCard(
             profileImageUrl = profileImageUrl,
             name = name,
             displayId = displayId,
@@ -336,51 +334,6 @@ private fun RequesterCard(
             friendStatus = friendStatus,
             onClick = onFriendStatusClick,
         )
-    }
-}
-
-/**
- * 친구 항목
- *
- * @param modifier [Modifier]
- * @param profileImageUrl 친구 프로필 사진 url
- * @param name 친구 이름
- * @param displayId 친구 사용자 표시 ID
- */
-@Composable
-private fun FriendCard(
-    modifier: Modifier = Modifier,
-    profileImageUrl: String?,
-    name: String,
-    displayId: String,
-) {
-    Row(
-        modifier = modifier.padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        PeekrAvatar(
-            modifier = Modifier.size(AvatarSize),
-            model = profileImageUrl,
-            contentDescription = name,
-        )
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(2.dp, alignment = Alignment.CenterVertically),
-        ) {
-            Text(
-                text = name,
-                style = PeekrTheme.typography.body3Many,
-                fontWeight = FontWeight.Bold,
-                color = PeekrTheme.colorScheme.textNormal,
-            )
-            Text(
-                text = displayId,
-                style = PeekrTheme.typography.body4,
-                fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist,
-            )
-        }
     }
 }
 
@@ -397,7 +350,7 @@ private fun FriendCardSkeleton(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SkeletonBox(
-            modifier = Modifier.size(AvatarSize),
+            modifier = Modifier.size(ProfileCardTokens.AvatarSize),
             shape = CircleShape,
         )
         Column(
@@ -410,7 +363,6 @@ private fun FriendCardSkeleton(modifier: Modifier = Modifier) {
     }
 }
 
-private val AvatarSize = 58.dp
 private val ListContentPadding = PaddingValues(top = 10.dp, bottom = 16.dp)
 
 // ------------------------------ Previews ------------------------------
@@ -421,19 +373,6 @@ private fun TopBarPreview() {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             onBackPress = {},
-        )
-    }
-}
-
-@PreviewLightDarkWithBackground
-@Composable
-private fun FriendCardPreview() {
-    PeekrAppTheme {
-        FriendCard(
-            modifier = Modifier.fillMaxWidth(),
-            profileImageUrl = null,
-            displayId = "Display ID",
-            name = "name",
         )
     }
 }
