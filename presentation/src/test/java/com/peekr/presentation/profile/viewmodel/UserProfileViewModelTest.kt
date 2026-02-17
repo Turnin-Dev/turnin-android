@@ -321,6 +321,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             friendsCount = 50L,
             active = true,
             friendStatus = FriendStatus.NOTHING,
+            isBlocked = false,
         )
         private val TestUserKeywords = listOf(
             UserKeyword(
@@ -342,6 +343,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             friendsCount = 50L,
             active = true,
             friendStatus = FriendStatus.NOTHING,
+            isBlocked = false,
         )
         private val TestNewUserKeywords = listOf(
             UserKeyword(
