@@ -2,7 +2,7 @@ package com.peekr.core.data.source.network.api
 
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlockedUsersResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUserCursorPageResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,9 +19,9 @@ interface BlockApi {
      */
     @GET(NetworkApiPath.Block.ROUTE)
     suspend fun getBlockedUsers(
-        @Query("page") page: Long,
+        @Query("cursor") cursor: Long?,
         @Query("size") size: Int,
-    ): Response<BlockedUsersResponse>
+    ): Response<BlockedUserCursorPageResponse>
 
     /**
      * 차단 사유 목록 조회

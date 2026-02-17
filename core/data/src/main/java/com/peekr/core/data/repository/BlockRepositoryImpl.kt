@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.peekr.core.common.coroutine.IO
-import com.peekr.core.data.paging.PeekrPagingSource
+import com.peekr.core.data.paging.PeekrCursorPagingSource
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
 import com.peekr.core.data.source.network.dto.block.request.toDataModel
 import com.peekr.core.data.source.network.dto.block.response.BlockedUserResponse
@@ -41,9 +41,9 @@ class BlockRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize + prefetchDistance,
             ),
             pagingSourceFactory = {
-                PeekrPagingSource(
-                    apiCall = { page ->
-                        blockNetworkDataSource.getBlockedUsers(page, pageSize)
+                PeekrCursorPagingSource<Long, BlockedUserResponse>(
+                    apiCall = { nextCursor ->
+                        blockNetworkDataSource.getBlockedUsers(nextCursor, pageSize)
                     },
                 )
             },
