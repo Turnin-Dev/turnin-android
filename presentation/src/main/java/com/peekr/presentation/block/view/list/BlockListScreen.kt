@@ -1,5 +1,6 @@
 package com.peekr.presentation.block.view.list
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -65,14 +66,14 @@ private fun BlockListFrame(
  * @param modifier [Modifier]
  * @param blockedUsers 차단 사용자 목록
  * @param onBlockedUserClick 차단 사용자 클릭 시 콜백
- * @param onDelete 차단 해제(삭제) 시 콜백
+ * @param onUnblock 차단 해제 시 콜백
  */
 @Composable
 fun BlockListScreen(
     modifier: Modifier = Modifier,
     blockedUsers: LazyPagingItems<UiBlockedUser>,
     onBlockedUserClick: (UiBlockedUser) -> Unit,
-    onDelete: (UiBlockedUser) -> Unit,
+    onUnblock: (UiBlockedUser) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     BlockListFrame(
@@ -89,8 +90,12 @@ fun BlockListScreen(
             BlockList(
                 modifier = Modifier.fillMaxSize(),
                 blockedUsers = blockedUsers,
-                onBlockedUserClick = { },
-                onDelete = {},
+                onBlockedUserClick = { blockedUser ->
+                    onBlockedUserClick(blockedUser)
+                },
+                onUnblock = { blockedUser ->
+                    onUnblock(blockedUser)
+                },
             )
         },
     )
@@ -120,13 +125,14 @@ private fun TopBar(
  * @param modifier [Modifier]
  * @param blockedUsers 차단 사용자 목록
  * @param onBlockedUserClick 차단 사용자 클릭 시 콜백
+ * @param onUnblock 차단 해제 시 콜백
  */
 @Composable
 private fun BlockList(
     modifier: Modifier = Modifier,
     blockedUsers: LazyPagingItems<UiBlockedUser>,
     onBlockedUserClick: (UiBlockedUser) -> Unit,
-    onDelete: (UiBlockedUser) -> Unit,
+    onUnblock: (UiBlockedUser) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     var isRefreshing by rememberSaveable { mutableStateOf(false) }
@@ -171,11 +177,16 @@ private fun BlockList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickableSingle(onClick = { onBlockedUserClick(block) })
+                        .animateItem(
+                            fadeInSpec = null,
+                            fadeOutSpec = tween(300),
+                        )
                         .padding(horizontal = ScreenTokens.HorizontalPadding),
                     profileImageUrl = it.profileImageUrl,
                     name = it.name,
                     displayId = it.displayId,
-                    onDelete = { onDelete(block) },
+                    loading = it.loading,
+                    onUnblock = { onUnblock(block) },
                 )
             }
         }
@@ -185,10 +196,12 @@ private fun BlockList(
 /**
  * 차단 사용자 항목
  *
+ * @param modifier [Modifier]
  * @param profileImageUrl 프로필 사진 url
  * @param name 이름
  * @param displayId 사용자 표시 ID
- * @param onDelete 차단 해제(삭제) 시 콜백
+ * @param loading 로딩 여부
+ * @param onUnblock 차단 해제 시 콜백
  */
 @Composable
 private fun BlockedUserCard(
@@ -196,7 +209,8 @@ private fun BlockedUserCard(
     profileImageUrl: String?,
     name: String,
     displayId: String,
-    onDelete: () -> Unit,
+    loading: Boolean,
+    onUnblock: () -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -212,7 +226,8 @@ private fun BlockedUserCard(
         PeekrOutlinedButton(
             text = stringResource(R.string.block_list_screen_btn_delete),
             style = PeekrButtonStyle.Tiny,
-            onClick = onDelete,
+            loading = loading,
+            onClick = onUnblock,
         )
     }
 }
@@ -256,7 +271,8 @@ private fun BlockedUserCardPreview() {
             profileImageUrl = "https://example.com/photo.jpg",
             name = "John Doe",
             displayId = "johndoe123",
-            onDelete = {},
+            loading = false,
+            onUnblock = {},
         )
     }
 }
@@ -271,7 +287,7 @@ private fun BlockListScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             blockedUsers = blockedUsers,
             onBlockedUserClick = {},
-            onDelete = {},
+            onUnblock = {},
             onBackPressed = {},
         )
     }

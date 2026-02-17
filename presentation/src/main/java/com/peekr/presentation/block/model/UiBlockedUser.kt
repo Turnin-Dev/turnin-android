@@ -17,6 +17,7 @@ data class UiBlockedUser(
     val displayId: String,
     val name: String,
     val profileImageUrl: String?,
+    val loading: Boolean = false,
 )
 
 fun BlockedUser.toUiModel(): UiBlockedUser =

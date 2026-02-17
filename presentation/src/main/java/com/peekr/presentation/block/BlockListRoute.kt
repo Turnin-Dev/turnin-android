@@ -12,6 +12,7 @@ import com.peekr.presentation.block.viewmodel.BlockListViewModel
 
 @Composable
 fun BlockListRoute(
+    onNavigateToUserProfile: (Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val viewModel: BlockListViewModel = hiltViewModel()
@@ -22,8 +23,12 @@ fun BlockListRoute(
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
         blockedUsers = blockedUsersPagingData,
-        onBlockedUserClick = { },
-        onDelete = { },
+        onBlockedUserClick = { blockedUser ->
+            onNavigateToUserProfile(blockedUser.userId)
+        },
+        onUnblock = { blockedUser ->
+            viewModel.unblock(blockedUser.id)
+        },
         onBackPressed = onBackPressed,
     )
 }
