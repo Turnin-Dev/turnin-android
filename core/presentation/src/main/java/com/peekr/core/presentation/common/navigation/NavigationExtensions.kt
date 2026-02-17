@@ -33,6 +33,11 @@ fun NavController.navigateToBlockModal(userId: Long?) {
     }
 }
 
+// ------------------------------ BlockList ------------------------------
+fun NavController.navigateToBlockList() {
+    navigate(Screens.BlockList)
+}
+
 // ------------------------------ KeywordEdit ------------------------------
 fun NavController.navigateToKeywordEdit(userKeywordId: Long?) {
     navigate(Screens.KeywordEdit(userKeywordId))

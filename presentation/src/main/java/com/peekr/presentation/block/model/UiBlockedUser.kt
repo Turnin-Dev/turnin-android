@@ -1,5 +1,7 @@
 package com.peekr.presentation.block.model
 
+import com.peekr.core.domain.block.model.BlockedUser
+
 /**
  * UI용 차단 사용자
  *
@@ -16,3 +18,12 @@ data class UiBlockedUser(
     val name: String,
     val profileImageUrl: String?,
 )
+
+fun BlockedUser.toUiModel(): UiBlockedUser =
+    UiBlockedUser(
+        id = id.value,
+        userId = userId.value,
+        displayId = displayId.value,
+        name = name.value,
+        profileImageUrl = profileImageUrl,
+    )

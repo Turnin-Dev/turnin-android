@@ -159,7 +159,7 @@ sealed interface Screens {
     ) : Screens
 
     /**
-     * 사용자 프로필
+     * 사용자 프로필 화면
      *
      * @property userId 사용자 ID
      */
@@ -168,6 +168,15 @@ sealed interface Screens {
         val userId: Long,
     ) : Screens
 
+    /**
+     * 나의 프로필 화면 (Screen 버전)
+     */
     @Serializable
     data object MyProfile : Screens
+
+    /**
+     * 차단 목록 화면
+     */
+    @Serializable
+    data object BlockList : Screens
 }
