@@ -113,6 +113,7 @@ class BlockListViewModelTest {
 
         // when: 차단 ID가 1인 데이터로 차단 해제 수행
         viewModel.unblock(1)
+        advanceUntilIdle()
         val actualPagingData = viewModel.blockedUsersPagingData.first()
         val actualList = actualPagingData.collectDataForTest(
             dispatcherRule.testDispatcher,
@@ -121,7 +122,7 @@ class BlockListViewModelTest {
 
         // then: 페이징 데이터에서 차단 ID가 1인 데이터를 제외한 나머지 데이터가 반환된다.
         assertEquals(expectedList.size - 1, actualList.size)
-        assertEquals(expectedList.filter { it.id != 1L }, actualList)
+        assertEquals(expectedList.filter { it.id!=1L }, actualList)
     }
 
     @Test

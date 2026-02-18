@@ -4,7 +4,6 @@ import com.peekr.core.domain.block.repository.BlockRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.BlockId
-import com.peekr.core.domain.model.BlockId.Companion.invoke
 import com.peekr.domain.profile.error.ProfileErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
