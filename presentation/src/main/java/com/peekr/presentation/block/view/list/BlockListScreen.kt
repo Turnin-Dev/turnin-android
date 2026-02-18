@@ -11,15 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -39,7 +39,6 @@ import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.block.model.UiBlockedUser
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 /**
  * 차단 목록 화면 프레임
@@ -134,19 +133,16 @@ private fun BlockList(
     onBlockedUserClick: (UiBlockedUser) -> Unit,
     onUnblock: (UiBlockedUser) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-    var isRefreshing by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing = remember {
+        derivedStateOf {
+            blockedUsers.loadState.refresh is LoadState.Loading
+        }
+    }.value
 
     RefreshableLazyColumn(
         modifier = modifier,
         isRefreshing = isRefreshing,
-        onRefresh = {
-            scope.launch {
-                isRefreshing = true
-                blockedUsers.refresh()
-                isRefreshing = false
-            }
-        },
+        onRefresh = { blockedUsers.refresh() },
         contentPadding = ListContentPadding,
     ) {
         pagingItem(

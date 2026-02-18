@@ -227,6 +227,9 @@ class UserProfileViewModel @Inject constructor(
                 }
 
                 is Result.Success -> {
+                    updateState {
+                        this.copy(unblockLoading = false)
+                    }
                     // 차단 해제 성공 시 새로고침
                     getUserProfile(true)
                     getUserKeywords(true)
