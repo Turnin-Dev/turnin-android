@@ -18,7 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.peekr.core.designsystem.component.button.PeekrButtonStyle
 import com.peekr.core.designsystem.component.button.PeekrIconButton
+import com.peekr.core.designsystem.component.button.PeekrOutlinedButton
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
@@ -75,6 +77,7 @@ fun UserProfileScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                             title = uiState.profile.displayId,
+                            isBlocked = uiState.profile.isBlocked,
                             onReportClick = {
                                 onUiEvent(
                                     UserProfileContract.UiEvent.OnReport,
@@ -97,6 +100,8 @@ fun UserProfileScreen(
                             friendsCount = it.friendsCount,
                             introduce = it.introduce,
                             friendStatus = it.friendStatus,
+                            isBlocked = it.isBlocked,
+                            unblockLoading = uiState.unblockLoading,
                             onProfileImageClick = {},
                             onFriendsCountClick = {
                                 onNavigateToFriendsList(it.userId)
@@ -107,6 +112,9 @@ fun UserProfileScreen(
                                         friendStatus = currentFriendshipStatus,
                                     ),
                                 )
+                            },
+                            onUnblock = {
+                                onUiEvent(UserProfileContract.UiEvent.Unblock)
                             },
                         )
                     }
@@ -145,6 +153,7 @@ fun UserProfileScreen(
  *
  * @param modifier [Modifier]
  * @param title 탑바 타이틀
+ * @param isBlocked 차단 여부
  * @param onReportClick 신고 클릭 시
  * @param onBackPressed 뒤로 가기 클릭 시
  */
@@ -152,6 +161,7 @@ fun UserProfileScreen(
 private fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
+    isBlocked: Boolean,
     onReportClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -159,12 +169,14 @@ private fun TopBar(
         modifier = modifier,
         title = title,
         optionSlot = {
-            PeekrIconButton(
-                icon = PeekrIcons.Filled.Bold.Report,
-                iconSize = TopBarOptionIconSize,
-                contentDescription = stringResource(R.string.user_profile_screen_top_bar_report),
-                onClick = onReportClick,
-            )
+            if (!isBlocked) {
+                PeekrIconButton(
+                    icon = PeekrIcons.Filled.Bold.Report,
+                    iconSize = TopBarOptionIconSize,
+                    contentDescription = stringResource(R.string.user_profile_screen_top_bar_report),
+                    onClick = onReportClick,
+                )
+            }
         },
         onBackPressed = onBackPressed,
     )
@@ -179,6 +191,8 @@ private fun TopBar(
  * @param friendsCount 친구 수
  * @param introduce 소개 글
  * @param friendStatus 친구 관계 상태
+ * @param isBlocked 차단 여부
+ * @param unblockLoading 차단 해제 로딩
  * @param onProfileImageClick 프로필 사진 클릭 시
  * @param onFriendsCountClick 친구 수 클릭 시
  */
@@ -190,9 +204,12 @@ private fun Profile(
     friendsCount: Long,
     introduce: String,
     friendStatus: FriendStatus,
+    isBlocked: Boolean,
+    unblockLoading: Boolean,
     onProfileImageClick: () -> Unit,
     onFriendsCountClick: () -> Unit,
     onFriendsButtonClick: (currentFriendStatus: FriendStatus) -> Unit,
+    onUnblock: () -> Unit,
 ) {
     ProfileFrame(
         modifier = modifier,
@@ -203,10 +220,19 @@ private fun Profile(
         onProfileImageClick = onProfileImageClick,
         onFriendsCountClick = onFriendsCountClick,
         friendStatusButton = {
-            FriendStatusButton(
-                friendStatus = friendStatus,
-                onClick = { onFriendsButtonClick(friendStatus) },
-            )
+            if (!isBlocked) {
+                FriendStatusButton(
+                    friendStatus = friendStatus,
+                    onClick = { onFriendsButtonClick(friendStatus) },
+                )
+            } else {
+                PeekrOutlinedButton(
+                    text = stringResource(R.string.user_profile_screen_btn_unblock),
+                    style = PeekrButtonStyle.Tiny,
+                    loading = unblockLoading,
+                    onClick = onUnblock,
+                )
+            }
         },
     )
 }
@@ -288,6 +314,7 @@ private fun TopBarPreview() {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             title = "TopBar",
+            isBlocked = false,
             onReportClick = {},
             onBackPressed = {},
         )
@@ -306,9 +333,12 @@ private fun ProfilePreview() {
                     introduce = "hello world!",
                     friendsCount = 28,
                     friendStatus = it,
+                    isBlocked = false,
+                    unblockLoading = false,
                     onProfileImageClick = {},
                     onFriendsCountClick = {},
                     onFriendsButtonClick = {},
+                    onUnblock = {},
                 )
             }
         }

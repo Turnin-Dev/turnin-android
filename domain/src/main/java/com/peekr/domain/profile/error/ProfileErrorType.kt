@@ -14,6 +14,9 @@ sealed interface ProfileErrorType : BaseError {
     /** 키워드 리스트 로드 실패 에러 */
     data object KeywordsLoadFailed : ProfileErrorType
 
+    /** 차단 해제 대상이 없는 경우 */
+    data object MissingUnblockTarget : ProfileErrorType
+
     /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
     data class Unexpected(val cause: Throwable?) : ProfileErrorType
 

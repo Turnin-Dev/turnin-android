@@ -11,8 +11,11 @@ fun NavGraphBuilder.blockListScreen(
 ) {
     composable<Screens.BlockList> {
         BlockListRoute(
-            onNavigateToUserProfile = { blockedUserId ->
-                navController.navigateToUserProfile(blockedUserId)
+            onNavigateToUserProfile = { blockedUser ->
+                navController.navigateToUserProfile(
+                    userId = blockedUser.userId,
+                    blockedId = blockedUser.id,
+                )
             },
             onBackPressed = {
                 navController.popBackStack()

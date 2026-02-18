@@ -30,6 +30,9 @@ class UserProfileViewModel @Inject constructor(
         requireNotNull(savedStateHandle.get<Long>("userId"))
     }
 
+    /** 차단 ID */
+    private val blockedId: Long? = savedStateHandle.get<Long>("blockedId")
+
     override fun createInitialState(): UserProfileContract.UiState =
         UserProfileContract.UiState()
 
@@ -56,6 +59,10 @@ class UserProfileViewModel @Inject constructor(
             UserProfileContract.UiEvent.Refresh -> {
                 getUserProfile(true)
                 getUserKeywords(true)
+            }
+
+            UserProfileContract.UiEvent.Unblock -> {
+                unblock()
             }
         }
     }
@@ -192,6 +199,37 @@ class UserProfileViewModel @Inject constructor(
                             )
                         }
                     }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    // 차단 해제
+    private suspend fun unblock() {
+        if (blockedId == null) {
+            showSnackBar(ProfileErrorType.MissingUnblockTarget.asUiText())
+            return
+        }
+
+        usecases.deleteBlock(blockedId).onEach { result ->
+            when (result) {
+                Result.Loading -> {
+                    updateState {
+                        this.copy(unblockLoading = true)
+                    }
+                }
+
+                is Result.Error -> {
+                    updateState {
+                        this.copy(unblockLoading = false)
+                    }
+                    showSnackBar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    // 차단 해제 성공 시 새로고침
+                    getUserProfile(true)
+                    getUserKeywords(true)
                 }
             }
         }.launchIn(viewModelScope)

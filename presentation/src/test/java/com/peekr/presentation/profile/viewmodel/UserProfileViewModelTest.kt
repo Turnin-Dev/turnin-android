@@ -28,6 +28,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -301,6 +302,100 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         // then: 스낵바 이벤트 검증
         assertTrue(snackbarList.isNotEmpty())
         assertEquals(ProfileErrorType.KeywordsLoadFailed.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    @Test
+    fun `차단한 프로필에서 차단 해제 성공 시 새로고침을 수행한다`() = runTest {
+        // given
+        every { usecases.deleteBlock(any()) } returns flowOf(Result.Success(Unit))
+        every {
+            usecases.getUserProfile(TestUserId.value, true)
+        } returns flowOf(Result.Success(TestUserProfile))
+        every {
+            usecases.getUserKeywords(TestUserId.value, true)
+        } returns flowOf(Result.Success(TestUserKeywords))
+        savedStateHandle = SavedStateHandle(
+            mapOf(
+                "userId" to TestUserId.value,
+                "blockedId" to 1L,
+            ),
+        )
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
+
+        // when: 차단 해제 수행
+        // then: 새로고침 수행
+        testState(
+            viewModel = viewModel,
+            intents = listOf(
+                UserProfileContract.UiEvent.Unblock,
+            ),
+            assertions = listOf(
+                UserProfileContract.UiState(
+                    profile = TestUserProfile.toUiModel(),
+                    keywords = TestUserKeywords.map { it.toUiModel() },
+                    unblockLoading = false,
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `차단한 프로필에서 차단 해제 실패 시 스낵바가 표시된다`() = runTest {
+        // given
+        val expectedError = ProfileErrorType.Unexpected(null)
+        every { usecases.deleteBlock(any()) } returns flowOf(Result.Error(expectedError))
+        savedStateHandle = SavedStateHandle(
+            mapOf(
+                "userId" to TestUserId.value,
+                "blockedId" to 1L,
+            ),
+        )
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when: 차단 해제 수행
+        // then: 차단 해제 로딩 해제
+        testState(
+            viewModel = viewModel,
+            intents = listOf(
+                UserProfileContract.UiEvent.Unblock,
+            ),
+            assertions = listOf(
+                UserProfileContract.UiState(
+                    profile = TestUserProfile.toUiModel(),
+                    keywords = TestUserKeywords.map { it.toUiModel() },
+                    unblockLoading = false,
+                ),
+            ),
+        )
+
+        // then: 스낵바 검증
+        assertEquals(expectedError.asUiText(), snackbarList.last().message)
+
+        // clean up
+        snackbarJob.cancel()
+    }
+
+    @Test
+    fun `차단한 프로필에서 차단 ID가 null인 경우 스낵바를 표시한다`() = runTest {
+        // given
+        val snackbarList = mutableListOf<SnackbarEvent>()
+        val snackbarJob = launch {
+            snackbarController.events.toList(snackbarList)
+        }
+
+        // when
+        viewModel.processEvent(UserProfileContract.UiEvent.Unblock)
+        advanceUntilIdle()
+
+        // then: 스낵바 검증
+        assertEquals(ProfileErrorType.MissingUnblockTarget.asUiText(), snackbarList.last().message)
 
         // clean up
         snackbarJob.cancel()

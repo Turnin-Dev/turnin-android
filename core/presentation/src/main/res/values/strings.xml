@@ -87,4 +87,5 @@
     <string name="friend_status_btn_friends">친구</string>
     <string name="friend_status_btn_requested">요청 취소</string>
     <string name="friend_status_btn_received">요청 수락</string>
+    <string name="btn_unblock">차단 해제</string>
 </resources>

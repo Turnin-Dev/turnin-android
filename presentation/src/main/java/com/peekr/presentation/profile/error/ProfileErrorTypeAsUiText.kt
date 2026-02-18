@@ -15,6 +15,7 @@ internal fun ProfileErrorType.asUiText(): UiText = when (this) {
     ProfileErrorType.UpdateFriendStatusFailed -> StringResource(R.string.profile_error_update_friend_status_failed)
     ProfileErrorType.AlreadyFriendsOrRequested -> StringResource(R.string.profile_error_already_friends_or_requested)
     ProfileErrorType.AlreadyProcessed -> StringResource(R.string.profile_error_already_proceed)
+    ProfileErrorType.MissingUnblockTarget -> StringResource(R.string.profile_error_missing_unblock_target)
 
     is ProfileErrorType.Unexpected -> StringResource(R.string.profile_error_unexpected)
 }

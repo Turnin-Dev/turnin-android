@@ -8,8 +8,11 @@ fun NavController.navigateToMyProfile() {
 }
 
 // ------------------------------ UserProfile ------------------------------
-fun NavController.navigateToUserProfile(userId: Long) {
-    navigate(Screens.UserProfile(userId))
+fun NavController.navigateToUserProfile(
+    userId: Long,
+    blockedId: Long? = null,
+) {
+    navigate(Screens.UserProfile(userId, blockedId))
 }
 
 // ------------------------------ Report ------------------------------

@@ -162,10 +162,12 @@ sealed interface Screens {
      * 사용자 프로필 화면
      *
      * @property userId 사용자 ID
+     * @property blockedId 차단 ID
      */
     @Serializable
     data class UserProfile(
         val userId: Long,
+        val blockedId: Long?,
     ) : Screens
 
     /**
