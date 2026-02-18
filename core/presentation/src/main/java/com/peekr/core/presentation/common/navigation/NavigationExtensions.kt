@@ -8,8 +8,11 @@ fun NavController.navigateToMyProfile() {
 }
 
 // ------------------------------ UserProfile ------------------------------
-fun NavController.navigateToUserProfile(userId: Long) {
-    navigate(Screens.UserProfile(userId))
+fun NavController.navigateToUserProfile(
+    userId: Long,
+    blockedId: Long? = null,
+) {
+    navigate(Screens.UserProfile(userId, blockedId))
 }
 
 // ------------------------------ Report ------------------------------
@@ -31,6 +34,11 @@ fun NavController.navigateToBlockModal(userId: Long?) {
         }
         launchSingleTop = true
     }
+}
+
+// ------------------------------ BlockList ------------------------------
+fun NavController.navigateToBlockList() {
+    navigate(Screens.BlockList)
 }
 
 // ------------------------------ KeywordEdit ------------------------------

@@ -21,6 +21,7 @@ class UserProfileContract {
      * @property keywordsLoading 사용자 키워드 리스트 로딩
      * @property isRefreshing 새로고침 여부
      * @property error 공통 에러 메시지
+     * @property unblockLoading 차단 해제 로딩
      */
     data class UiState(
         val profile: UiUserProfile? = null,
@@ -29,6 +30,7 @@ class UserProfileContract {
         val keywordsLoading: Boolean = false,
         val isRefreshing: Boolean = false,
         val error: UiText? = null,
+        val unblockLoading: Boolean = false,
     ) : BaseUiState
 
     sealed interface UiEvent : BaseUiEvent {
@@ -49,17 +51,28 @@ class UserProfileContract {
          */
         data object DeleteFriend : UiEvent
 
-        /***
+        /**
          * (프로필, 키워드 리스트) 새로고침 이벤트
          */
         data object Refresh : UiEvent
+
+        /**
+         * 차단 해제 이벤트
+         */
+        data object Unblock : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
+        /**
+         * 신고 모달 이동 일회성 이벤트
+         */
         data class NavigateToReport(
             val userId: Long,
         ) : UiEffect
 
+        /**
+         * 친구 삭제 모달 열기 일회성 이벤트
+         */
         data object OpenDeleteFriendModal : UiEffect
     }
 }

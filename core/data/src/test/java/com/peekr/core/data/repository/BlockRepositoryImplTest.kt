@@ -3,15 +3,13 @@ package com.peekr.core.data.repository
 import androidx.paging.testing.asSnapshot
 import com.peekr.core.data.MockLog
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
-import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlockResponse
-import com.peekr.core.data.source.network.dto.block.response.BlocksResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUserCursorPageResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUserResponse
 import com.peekr.core.data.source.network.dto.block.response.toDomainModel
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.block.model.BlockPagingTokens
 import com.peekr.core.domain.block.model.BlockReasonId
 import com.peekr.core.domain.block.model.CreateBlock
 import com.peekr.core.domain.common.Result
@@ -47,8 +45,8 @@ class BlockRepositoryImplTest {
             dataSource.deleteBlock(any())
         } returns NetworkResult.Success(Unit)
         coEvery {
-            dataSource.getBlocks(any(), any())
-        } returns NetworkResult.Success(TestBlocksResponse)
+            dataSource.getBlockedUsers(any(), any())
+        } returns NetworkResult.Success(TestBlockedUsersResponse)
         coEvery {
             dataSource.createBlock(any())
         } returns NetworkResult.Success(Unit)
@@ -63,43 +61,30 @@ class BlockRepositoryImplTest {
 
     @Test
     fun `차단 목록 조회 - 초기 호출 성공 시 도메인 모델로 변환된 데이터를 반환한다`() = runTest {
-        // given
-        val pageSize = BlockPagingTokens.PAGE_SIZE
-        val expectedFirstPage = createBlockResponseList(1, pageSize).map { it.toDomainModel() }
+        // given: 2페이지 테스트 데이터 설정
+        val pageSize = 5
+        val expectedCursorPage1 = createCursorPageResponse(nextCursor = 5L, pageSize)
+        val expectedCursorPage2 = createCursorPageResponse(nextCursor = null, pageSize)
 
-        // 첫 번째 페이지 설정 (page=1, size=20)
         coEvery {
-            dataSource.getBlocks(1, pageSize)
-        } returns NetworkResult.Success(
-            createBlocksResponse(
-                pageNumber = 1L,
-                startId = 1L,
-                count = pageSize,
-                hasNext = true,
-            ),
-        )
+            dataSource.getBlockedUsers(any(), any())
+        } answers {
+            val cursor = firstArg<Long?>()
+            when (cursor) {
+                null -> NetworkResult.Success(expectedCursorPage1)
+                5L -> NetworkResult.Success(expectedCursorPage2)
+                else -> NetworkResult.Success(
+                    BlockedUserCursorPageResponse(items = emptyList(), nextCursor = null),
+                )
+            }
+        }
 
-        // 두 번쨰 페이지 설정 (page=2, size=20)
-        // Paging Source는 initialLoadSize(30)를 채우기 위해 2페이지를 요청할 것으로 예상
-        coEvery {
-            dataSource.getBlocks(2, pageSize)
-        } returns NetworkResult.Success(
-            createBlocksResponse(
-                pageNumber = 2L,
-                startId = pageSize + 1L,
-                count = pageSize,
-                hasNext = true,
-            ),
-        )
-
-        // when
-        val pagingData = repository.getBlocks().asSnapshot()
+        // when: 조회(페이징) 진행
+        val blockedUsers = repository.getBlockedUsers().asSnapshot()
 
         // then
-        assertEquals(pageSize * 2, pagingData.size)
-        assertEquals(expectedFirstPage.first().id, pagingData.first().id)
-        val expectedLastId = pageSize * 2
-        assertEquals(expectedLastId.toLong(), pagingData.last().id.value)
+        assertEquals(pageSize * 2, blockedUsers.size)
+        assertEquals(expectedCursorPage1.items.first().toDomainModel(), blockedUsers.first())
     }
 
     @Test
@@ -199,52 +184,38 @@ class BlockRepositoryImplTest {
     }
 
     companion object {
-        private fun createBlocksResponse(
-            pageNumber: Long,
-            startId: Long,
-            count: Int,
-            hasNext: Boolean,
-        ): BlocksResponse = BlocksResponse(
-            pageNumber = pageNumber,
-            pageSize = count,
-            totalSize = 100L,
-            hasNext = hasNext,
-            list = createBlockResponseList(startId, count),
-        )
+        /**
+         * 테스트용 커서 페이지 응답 바디 생성기
+         *
+         * 목록 데이터는 중요하지 않고 다음 커서를 직접 설정해서 테스트를 진행한다.
+         */
+        private fun createCursorPageResponse(
+            nextCursor: Long?,
+            pageSize: Int,
+        ): BlockedUserCursorPageResponse =
+            BlockedUserCursorPageResponse(
+                items = List(pageSize) {
+                    BlockedUserResponse(
+                        id = it.toLong(),
+                        userId = it.toLong(),
+                        displayId = "displayId$it",
+                        name = "name$it",
+                        profileImageUrl = null,
+                    )
+                },
+                nextCursor = nextCursor,
+            )
 
-        private fun createBlockResponseList(
-            startId: Long,
-            count: Int,
-        ): List<BlockResponse> =
-            (startId until startId + count).map { id ->
-                BlockResponse(
-                    id = id,
-                    blockerId = id,
-                    blockedId = id + 1L,
-                    reasonId = 1L,
-                    customReason = "custom-reason",
-                )
-            }
-
-        private val TestBlockRequest = BlockRequest(
-            blockerId = 1L,
-            blockedId = 2L,
-            reasonId = 1L,
-            customReason = "custom-reason",
-        )
-        private val TestBlockResponse = BlockResponse(
+        private val TestBlockedUserResponse = BlockedUserResponse(
             id = 1L,
-            blockerId = 1L,
-            blockedId = 2L,
-            reasonId = 1L,
-            customReason = "custom-reason",
+            userId = 2L,
+            displayId = "did",
+            name = "name",
+            profileImageUrl = null,
         )
-        private val TestBlocksResponse = BlocksResponse(
-            pageNumber = 1L,
-            pageSize = 20,
-            totalSize = 100L,
-            hasNext = true,
-            list = listOf(TestBlockResponse),
+        private val TestBlockedUsersResponse = BlockedUserCursorPageResponse(
+            items = listOf(TestBlockedUserResponse),
+            nextCursor = TestBlockedUserResponse.id,
         )
         private val TestBlockReasonResponse = BlockReasonResponse(
             id = 1L,

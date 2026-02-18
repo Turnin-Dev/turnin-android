@@ -38,22 +38,22 @@ class DiscoverRepositoryImplTest {
     @Test
     fun `탐색 컨텍스트 조회 - 성공 테스트`() = runTest {
         // given: 2페이지까지 페이지네이션 가능한 테스트 데이터 설정
-        val pageSize = DiscoverPagingTokens.PAGE_SIZE
-        val expectedCursorPage1 = createCursorPageResponse(
-            cursor = null,
-            pageSize = pageSize,
-        )
-        val expectedCursorPage2 = createCursorPageResponse(
-            cursor = 2,
-            pageSize = pageSize,
-        )
+        val pageSize = 5
+        val expectedCursorPage1 = createCursorPageResponse(nextCursor = 5L, pageSize)
+        val expectedCursorPage2 = createCursorPageResponse(nextCursor = null, pageSize)
 
         coEvery {
-            dataSource.getDiscoverContexts(any(), null, pageSize)
-        } returns NetworkResult.Success(expectedCursorPage1)
-        coEvery {
-            dataSource.getDiscoverContexts(any(), 1, pageSize)
-        } returns NetworkResult.Success(expectedCursorPage2)
+            dataSource.getDiscoverContexts(any(), any(), any())
+        } answers {
+            val cursor = secondArg<Long?>()
+            when (cursor) {
+                null -> NetworkResult.Success(expectedCursorPage1)
+                5L -> NetworkResult.Success(expectedCursorPage2)
+                else -> NetworkResult.Success(
+                    DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
+                )
+            }
+        }
 
         // when
         val discoverContexts = repository.getDiscoverContexts(UserId(1L)).asSnapshot()
@@ -85,31 +85,30 @@ class DiscoverRepositoryImplTest {
         /**
          * 테스트용 커서 페이지 응답 바디 생성기
          *
-         * 단순하게 [cursor]가 1씩 증가하도록 구성
+         * 목록 데이터는 중요하지 않고 다음 커서를 직접 설정해서 테스트를 진행한다.
          */
         private fun createCursorPageResponse(
-            cursor: Long?,
+            nextCursor: Long?,
             pageSize: Int,
-        ): DiscoverContextCursorPageResponse =
-            DiscoverContextCursorPageResponse(
-                items = List(pageSize) {
-                    DiscoverContextResponse(
-                        user = DiscoverUserResponse(
-                            userId = it.toLong(),
-                            userName = "name",
-                            displayId = "did",
-                            profileImageUrl = null,
+        ): DiscoverContextCursorPageResponse = DiscoverContextCursorPageResponse(
+            items = List(pageSize) {
+                DiscoverContextResponse(
+                    user = DiscoverUserResponse(
+                        userId = it.toLong(),
+                        userName = "name$it",
+                        displayId = "did$it",
+                        profileImageUrl = null,
+                    ),
+                    keywords = listOf(
+                        DiscoverKeywordResponse(
+                            keywordId = 1L,
+                            keywordName = "keyword",
+                            userKeywordId = 1L,
                         ),
-                        keywords = listOf(
-                            DiscoverKeywordResponse(
-                                keywordId = 1L,
-                                keywordName = "keyword",
-                                userKeywordId = 1L,
-                            ),
-                        ),
-                    )
-                },
-                nextCursor = cursor?.let { it + 1 } ?: 1,
-            )
+                    ),
+                )
+            },
+            nextCursor = nextCursor,
+        )
     }
 }

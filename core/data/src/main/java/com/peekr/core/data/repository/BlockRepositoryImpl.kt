@@ -5,16 +5,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.peekr.core.common.coroutine.IO
-import com.peekr.core.data.paging.PeekrPagingSource
+import com.peekr.core.data.paging.PeekrCursorPagingSource
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
 import com.peekr.core.data.source.network.dto.block.request.toDataModel
-import com.peekr.core.data.source.network.dto.block.response.BlockResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUserResponse
 import com.peekr.core.data.source.network.dto.block.response.toDomainModel
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.domain.block.model.Block
 import com.peekr.core.domain.block.model.BlockPagingTokens
 import com.peekr.core.domain.block.model.BlockReason
+import com.peekr.core.domain.block.model.BlockedUser
 import com.peekr.core.domain.block.model.CreateBlock
 import com.peekr.core.domain.block.repository.BlockRepository
 import com.peekr.core.domain.common.Result
@@ -30,7 +30,7 @@ class BlockRepositoryImpl @Inject constructor(
     private val blockNetworkDataSource: BlockNetworkDataSource,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : BlockRepository {
-    override fun getBlocks(): Flow<PagingData<Block>> {
+    override fun getBlockedUsers(): Flow<PagingData<BlockedUser>> {
         val pageSize = BlockPagingTokens.PAGE_SIZE
         val prefetchDistance = BlockPagingTokens.PREFETCH_DISTANCE
 
@@ -41,16 +41,16 @@ class BlockRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize + prefetchDistance,
             ),
             pagingSourceFactory = {
-                PeekrPagingSource(
-                    apiCall = { page ->
-                        blockNetworkDataSource.getBlocks(page, pageSize)
+                PeekrCursorPagingSource<Long, BlockedUserResponse>(
+                    apiCall = { nextCursor ->
+                        blockNetworkDataSource.getBlockedUsers(nextCursor, pageSize)
                     },
                 )
             },
         )
             .flow
             .map { pagingData ->
-                pagingData.map(BlockResponse::toDomainModel)
+                pagingData.map(BlockedUserResponse::toDomainModel)
             }
     }
 

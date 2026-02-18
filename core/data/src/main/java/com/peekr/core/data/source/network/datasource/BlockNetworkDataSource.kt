@@ -2,23 +2,23 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
-import com.peekr.core.data.source.network.dto.block.response.BlocksResponse
+import com.peekr.core.data.source.network.dto.block.response.BlockedUserCursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 
 /** Block 네트워크 데이터소스 */
 interface BlockNetworkDataSource {
     /**
-     * 차단 목록 조회 (페이지네이션)
+     * 차단 사용자 목록 조회 (페이지네이션)
      *
-     * @param page 페이지 번호
+     * @param cursor 커서 값 (차단 ID)
      * @param size 페이지 크기
      *
-     * @return [BlocksResponse]
+     * @return [BlockedUserCursorPageResponse]
      */
-    suspend fun getBlocks(
-        page: Long,
+    suspend fun getBlockedUsers(
+        cursor: Long?,
         size: Int,
-    ): NetworkResult<BlocksResponse>
+    ): NetworkResult<BlockedUserCursorPageResponse>
 
     /**
      * 차단 사유 목록 조회
