@@ -56,11 +56,14 @@
     <string name="my_profile_screen_fab_content_desc">키워드 추가</string>
     <string name="my_profile_screen_introduce_expand">더보기</string>
     <string name="my_profile_screen_introduce_collapse">접기</string>
+    <string name="my_profile_screen_keywords_empty_title">아직 키워드가 없어요</string>
+    <string name="my_profile_screen_keywords_empty_desc">나를 구성하고 있는 키워드를 추가하고,\n유사한 키워드로 소통하는 다른 사람들을\n탐색해봐요</string>
     <!-- My Profile Screen (KeywordCardView) -->
     <string name="my_profile_screen_keyword_card">키워드 자세히 보기</string>
     <!-- User Profile Screen -->
     <string name="user_profile_screen_top_bar_report">신고</string>
     <string name="user_profile_screen_btn_unblock">차단 해제</string>
+    <string name="user_profile_screen_keywords_empty_title">아직 키워드가 없어요</string>
     <!-- User Profile Screen (DeleteFriendModal) -->
     <string name="user_profile_delete_friend_modal_content">친구 삭제</string>
     <!-- Profile Common Success -->
