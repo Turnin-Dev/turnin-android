@@ -1,9 +1,12 @@
 package com.peekr.core.presentation.ui.component.lazycolumn
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 
@@ -19,6 +22,7 @@ import androidx.paging.compose.LazyPagingItems
  * @param skeleton 스켈레톤 뷰
  * @param initialError 초기 에러 뷰
  * @param footerError Footer 에러 뷰
+ * @param emptyGuidance 빈 리스트인 경우 표시할 뷰
  * @param lastContent 더 이상 표시할 데이터가 없는 경우에 표시할 뷰
  * @param pagingContent 페이징 컨텐츠
  */
@@ -31,6 +35,7 @@ fun <T : Any> LazyListScope.pagingItem(
     skeleton: @Composable (LazyItemScope.(Int) -> Unit),
     initialError: @Composable (LazyItemScope.() -> Unit),
     footerError: @Composable (LazyItemScope.() -> Unit),
+    emptyGuidance: (@Composable (LazyItemScope.() -> Unit))? = null,
     lastContent: (@Composable (LazyItemScope.() -> Unit))? = null,
     pagingContent: @Composable (LazyItemScope.(Int) -> Unit),
 ) {
@@ -61,12 +66,26 @@ fun <T : Any> LazyListScope.pagingItem(
         // 3. 데이터가 존재하며 정상적으로 표시 가능한 경우
         else -> {
             // 페이징 아이템 렌더링
-            items(
-                count = pagingItems.itemCount,
-                key = key,
-                contentType = contentType,
-                itemContent = pagingContent,
-            )
+            if (pagingItems.itemCount != 0) {
+                items(
+                    count = pagingItems.itemCount,
+                    key = key,
+                    contentType = contentType,
+                    itemContent = pagingContent,
+                )
+            } else {
+                // 페이징 아이템이 비어있는 경우 빈 화면 안내 뷰 표시
+                emptyGuidance?.let {
+                    item {
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            it()
+                        }
+                    }
+                }
+            }
 
             // 하단 추가 로드 상태(Append) 상태 처리
             when (appendState) {
