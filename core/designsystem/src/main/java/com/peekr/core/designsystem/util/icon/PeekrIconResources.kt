@@ -49,6 +49,9 @@ val PeekrIcons.Filled.Normal.Edit: PeekrIconType
 val PeekrIcons.Filled.Normal.Send: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_filled_normal_send)
 
+val PeekrIcons.Filled.Normal.Exclamation: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_filled_normal_exclamation)
+
 // ------------------------------ Filled (Bold) ------------------------------
 
 val PeekrIcons.Filled.Bold.Report: PeekrIconType
@@ -115,6 +118,9 @@ val PeekrIcons.Outlined.Normal.Edit: PeekrIconType
 
 val PeekrIcons.Outlined.Normal.Send: PeekrIconType
     get() = PeekrIconType(R.drawable.ic_outlined_normal_send)
+
+val PeekrIcons.Outlined.Normal.Exclamation: PeekrIconType
+    get() = PeekrIconType(R.drawable.ic_outlined_normal_exclamation)
 
 // ------------------------------ Outlined (Bold) ------------------------------
 
