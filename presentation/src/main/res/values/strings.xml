@@ -144,6 +144,7 @@
     <string name="block_list_screen_top_bar_title">차단 사용자 관리</string>
     <string name="block_list_screen_error_message_default">문제가 발생했어요. 다시 시도 해주세요.</string>
     <string name="block_list_screen_btn_delete">차단 해제</string>
+    <string name="block_list_screen_empty_guidance_title">차단한 사용자가 없어요</string>
     <!-- Block Error -->
     <string name="block_error_unexpected">차단 과정에서 오류가 발생했습니다. 다시 차단을 진행해주세요.</string>
     <string name="block_error_requester_id_blocker_id_not_same">차단 권한이 없습니다. 차단을 올바르게 진행해주세요.</string>
