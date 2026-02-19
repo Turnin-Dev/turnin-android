@@ -1,5 +1,7 @@
 package com.peekr.peekrapp.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -30,6 +32,10 @@ fun BottomNavigation(
                 .padding(innerPadding),
             navController = bottomNavController,
             startDestination = SubGraph.BottomNav.Home,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
         ) {
             homeNavigation(appNavController)
 

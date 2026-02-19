@@ -108,7 +108,7 @@ fun MyProfileScreen(
                 }
             },
             keywordsTitle = {
-                if (uiState.myKeywordsLoading) {
+                if (uiState.myKeywordsLoading || uiState.myKeywords == null) {
                     KeywordsTitleSkeleton()
                 } else {
                     KeywordsTitleView(
@@ -119,7 +119,7 @@ fun MyProfileScreen(
             },
             keywords = {
                 when {
-                    uiState.myKeywordsLoading -> {
+                    uiState.myKeywordsLoading || uiState.myKeywords == null -> {
                         keywordItemsSkeleton()
                     }
 
