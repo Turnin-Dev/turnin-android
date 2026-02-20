@@ -51,10 +51,14 @@ fun AppNavigation(
                 SubGraph.Login.Root
             },
             // TODO: 테스트용 트랜지션
-            enterTransition = getEnterTransition(),
-            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
-            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
-            popExitTransition = getPopExitTransition(),
+//            enterTransition = getEnterTransition(),
+//            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
+//            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
+//            popExitTransition = getPopExitTransition(),
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
         ) {
             // 로그인 네비게이션
             loginNavigation(

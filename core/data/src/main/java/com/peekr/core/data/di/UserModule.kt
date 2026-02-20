@@ -32,8 +32,10 @@ class UserModule {
 @InstallIn(SingletonComponent::class)
 interface UserBindModule {
     @Binds
+    @Singleton
     fun bindsUserNetworkDataSource(impl: UserNetworkDataSourceImpl): UserNetworkDataSource
 
     @Binds
+    @Singleton
     fun bindsUserRepository(impl: UserRepositoryImpl): UserRepository
 }

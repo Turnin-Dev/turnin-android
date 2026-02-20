@@ -32,10 +32,12 @@ class UserKeywordModule {
 @InstallIn(SingletonComponent::class)
 interface UserKeywordBindModule {
     @Binds
+    @Singleton
     fun bindsUserKeywordNetworkDataSource(
         impl: UserKeywordNetworkDataSourceImpl,
     ): UserKeywordNetworkDataSource
 
     @Binds
+    @Singleton
     fun bindsUserKeywordRepository(impl: UserKeywordRepositoryImpl): UserKeywordRepository
 }
