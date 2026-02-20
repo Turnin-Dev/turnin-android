@@ -53,6 +53,7 @@ import com.peekr.presentation.profile.view.common.keywordItemsView
  * @param uiState UI 상태
  * @param onUiEvent UI 이벤트
  * @param onNavigateToKeywordDetail 키워드 상세 화면 이동 콜백
+ * @param onNavigateToFriendsList 친구 목록 이동 콜백
  * @param onBackPressed 뒤로가기 클릭 시 콜백
  */
 @Composable
@@ -66,7 +67,9 @@ fun UserProfileScreen(
 ) {
     Box(modifier) {
         ProfileScreenFrame(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PeekrTheme.colorScheme.backgroundNormal),
             isRefreshing = uiState.isRefreshing,
             onRefresh = { onUiEvent(UserProfileContract.UiEvent.Refresh) },
             topBar = {
@@ -126,15 +129,17 @@ fun UserProfileScreen(
                 if (uiState.keywordsLoading) {
                     KeywordsTitleSkeleton()
                 } else {
-                    KeywordsTitleView(
-                        modifier = Modifier.align(Alignment.CenterStart),
-                        count = uiState.keywords.count(),
-                    )
+                    uiState.keywords?.let {
+                        KeywordsTitleView(
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            count = uiState.keywords.count(),
+                        )
+                    }
                 }
             },
             keywords = {
                 when {
-                    uiState.keywordsLoading -> {
+                    uiState.keywordsLoading || uiState.keywords == null -> {
                         keywordItemsSkeleton()
                     }
 
