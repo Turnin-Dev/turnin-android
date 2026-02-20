@@ -1,7 +1,8 @@
 package com.peekr.peekrapp.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -32,10 +33,11 @@ fun BottomNavigation(
                 .padding(innerPadding),
             navController = bottomNavController,
             startDestination = SubGraph.BottomNav.Home,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
+            // TODO: 테스트용 트랜지션
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { enterTransition },
+            popExitTransition = { exitTransition },
         ) {
             homeNavigation(appNavController)
 
@@ -45,3 +47,6 @@ fun BottomNavigation(
         }
     }
 }
+
+private val enterTransition = fadeIn(animationSpec = tween(150))
+private val exitTransition = fadeOut(animationSpec = tween(150))

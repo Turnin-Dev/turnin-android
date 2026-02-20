@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.Screens
 import com.peekr.core.presentation.common.navigation.navigateToKeywordEdit
+import com.peekr.core.presentation.common.navigation.navigateToMyProfile
 import com.peekr.core.presentation.common.navigation.navigateToReport
 import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 
@@ -19,6 +20,9 @@ fun NavGraphBuilder.keywordDetailNavigation(appNavController: NavController) {
             },
             onNavigateToUserProfile = { userId ->
                 appNavController.navigateToUserProfile(userId)
+            },
+            onNavigateToMyProfile = {
+                appNavController.navigateToMyProfile()
             },
             onBackPressed = {
                 appNavController.popBackStack()

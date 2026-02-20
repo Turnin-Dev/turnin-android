@@ -1,5 +1,12 @@
 package com.peekr.peekrapp.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -7,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,6 +50,11 @@ fun AppNavigation(
             } else {
                 SubGraph.Login.Root
             },
+            // TODO: 테스트용 트랜지션
+            enterTransition = getEnterTransition(),
+            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
+            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
+            popExitTransition = getPopExitTransition(),
         ) {
             // 로그인 네비게이션
             loginNavigation(
@@ -104,5 +118,63 @@ fun AppNavigation(
                 }
             }
         }
+    }
+}
+
+private fun getEnterTransition(
+    vararg excludeScreen: Screens,
+): AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition =
+    {
+        if (excludeScreen.any { initialState.destination.hasRoute(it::class) }) {
+            EnterTransition.None
+        } else {
+            fadeIn(tween(250)) + slideIntoContainer(
+                towards = SlideDirection.Start,
+                animationSpec = tween(250),
+                initialOffset = { it / 4 },
+            )
+        }
+    }
+
+private fun getExitTransition(
+    vararg excludeScreen: Screens,
+): AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+    if (excludeScreen.any { targetState.destination.hasRoute(it::class) }) {
+        ExitTransition.None
+    } else {
+        fadeOut(tween(250)) + slideOutOfContainer(
+            towards = SlideDirection.Start,
+            animationSpec = tween(250),
+            targetOffset = { it / 4 },
+        )
+    }
+}
+
+private fun getPopEnterTransition(
+    vararg excludeScreen: Screens,
+): AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition =
+    {
+        if (excludeScreen.any { initialState.destination.hasRoute(it::class) }) {
+            EnterTransition.None
+        } else {
+            fadeIn(tween(250)) + slideIntoContainer(
+                towards = SlideDirection.End,
+                animationSpec = tween(250),
+                initialOffset = { it / 4 },
+            )
+        }
+    }
+
+private fun getPopExitTransition(
+    vararg excludeScreen: Screens,
+): AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+    if (excludeScreen.any { targetState.destination.hasRoute(it::class) }) {
+        ExitTransition.None
+    } else {
+        fadeOut(tween(250)) + slideOutOfContainer(
+            towards = SlideDirection.End,
+            animationSpec = tween(250),
+            targetOffset = { it / 4 },
+        )
     }
 }
