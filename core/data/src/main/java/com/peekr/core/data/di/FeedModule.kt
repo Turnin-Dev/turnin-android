@@ -32,11 +32,13 @@ class FeedModule {
 @InstallIn(SingletonComponent::class)
 interface FeedBindModule {
     @Binds
+    @Singleton
     fun bindsFeedNetworkDataSource(
         impl: FeedNetworkDataSourceImpl,
     ): FeedNetworkDataSource
 
     @Binds
+    @Singleton
     fun bindsFeedRepository(
         impl: FeedRepositoryImpl,
     ): FeedRepository

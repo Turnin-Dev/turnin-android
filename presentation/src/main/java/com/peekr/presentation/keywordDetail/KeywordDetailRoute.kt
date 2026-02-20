@@ -27,6 +27,7 @@ fun KeywordDetailRoute(
     onNavigateToReport: (userId: Long?, userKeywordId: Long?) -> Unit,
     onNavigateToKeywordEdit: (userKeywordId: Long?) -> Unit,
     onNavigateToUserProfile: (userId: Long) -> Unit,
+    onNavigateToMyProfile: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val viewModel: KeywordDetailViewModel = hiltViewModel()
@@ -87,7 +88,11 @@ fun KeywordDetailRoute(
         onUiEvent = viewModel::processEvent,
         onMoreClick = { isOptionModalOpen = true },
         onUserClick = { userId ->
-            onNavigateToUserProfile(userId)
+            if (uiState.myKeyword) {
+                onNavigateToMyProfile()
+            } else {
+                onNavigateToUserProfile(userId)
+            }
         },
         onBackPressed = onBackPressed,
     )

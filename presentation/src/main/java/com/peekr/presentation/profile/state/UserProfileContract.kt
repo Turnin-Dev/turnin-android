@@ -26,7 +26,7 @@ class UserProfileContract {
     data class UiState(
         val profile: UiUserProfile? = null,
         val profileLoading: Boolean = false,
-        val keywords: List<UiUserKeyword> = emptyList(),
+        val keywords: List<UiUserKeyword>? = null,
         val keywordsLoading: Boolean = false,
         val isRefreshing: Boolean = false,
         val error: UiText? = null,

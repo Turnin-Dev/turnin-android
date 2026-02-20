@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,10 +25,12 @@ import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.icon.Exclamation
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Plus
 import com.peekr.core.designsystem.util.icon.Settings
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -105,7 +108,7 @@ fun MyProfileScreen(
                 }
             },
             keywordsTitle = {
-                if (uiState.myKeywordsLoading) {
+                if (uiState.myKeywordsLoading || uiState.myKeywords == null) {
                     KeywordsTitleSkeleton()
                 } else {
                     KeywordsTitleView(
@@ -115,17 +118,25 @@ fun MyProfileScreen(
                 }
             },
             keywords = {
-                if (uiState.myKeywordsLoading) {
-                    keywordItemsSkeleton()
-                } else {
-                    keywordItemsView(
-                        keywords = uiState.myKeywords,
-                        onClick = { uiUserKeyword ->
-                            uiState.myProfile?.let {
-                                onNavigateToKeywordDetail(it.userId, uiUserKeyword.id)
-                            }
-                        },
-                    )
+                when {
+                    uiState.myKeywordsLoading || uiState.myKeywords == null -> {
+                        keywordItemsSkeleton()
+                    }
+
+                    uiState.myKeywords.isEmpty() -> {
+                        keywordEmptyGuidance()
+                    }
+
+                    else -> {
+                        keywordItemsView(
+                            keywords = uiState.myKeywords,
+                            onClick = { uiUserKeyword ->
+                                uiState.myProfile?.let {
+                                    onNavigateToKeywordDetail(it.userId, uiUserKeyword.id)
+                                }
+                            },
+                        )
+                    }
                 }
             },
         )
@@ -201,6 +212,26 @@ private fun Profile(
         onProfileImageClick = onProfileImageClick,
         onFriendsCountClick = onFriendsCountClick,
     )
+}
+
+/**
+ * 키워드 빈 화면 안내 뷰
+ */
+private fun LazyListScope.keywordEmptyGuidance() {
+    item {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = ScreenTokens.HorizontalPadding * 3),
+            contentAlignment = Alignment.Center,
+        ) {
+            EmptyGuidance(
+                icon = PeekrIcons.Filled.Normal.Exclamation,
+                title = stringResource(R.string.my_profile_screen_keywords_empty_title),
+                description = stringResource(R.string.my_profile_screen_keywords_empty_desc),
+            )
+        }
+    }
 }
 
 private val FabSize = 50.dp
@@ -307,6 +338,37 @@ private fun MyProfileScreenPreview() {
                     active = true,
                 ),
                 myKeywords = UiUserKeyword.samples,
+            ),
+            onUiEvent = {},
+            onNavigateToKeywordAdd = {},
+            onSettingClick = {},
+            onFriendsCountClick = {},
+            onNavigateToKeywordDetail = { _, _ -> },
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun MyProfileScreen_Empty_Preview() {
+    PeekrAppTheme {
+        MyProfileScreen(
+            modifier = Modifier.fillMaxSize(),
+            uiState = MyProfileContract.UiState(
+                myProfile = UiMyProfile(
+                    userId = 1L,
+                    displayId = "Honggd123",
+                    name = "홍길동",
+                    profileImageUrl = null,
+                    introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
+                        "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+                    friendsCount = 86,
+                    lastLoginAt = 1000L,
+                    active = true,
+                ),
+                myKeywords = emptyList(),
             ),
             onUiEvent = {},
             onNavigateToKeywordAdd = {},

@@ -29,6 +29,7 @@ import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.component.card.ProfileCard
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
@@ -164,6 +165,9 @@ private fun BlockList(
                     onRetry = { blockedUsers.retry() },
                 )
             },
+            emptyGuidance = {
+                BlocksEmptyGuidance()
+            },
         ) { idx ->
             val block = blockedUsers[idx]
             block?.let {
@@ -250,6 +254,14 @@ private fun BlockedUserCardSkeleton(modifier: Modifier = Modifier) {
             SkeletonBox(Modifier.size(54.dp, 12.dp))
         }
     }
+}
+
+/**
+ * 차단 목록 빈 화면 안내 뷰
+ */
+@Composable
+private fun BlocksEmptyGuidance() {
+    EmptyGuidance(title = stringResource(R.string.block_list_screen_empty_guidance_title))
 }
 
 private val AvatarSize = 58.dp

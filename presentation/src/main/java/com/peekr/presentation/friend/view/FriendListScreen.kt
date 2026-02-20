@@ -30,6 +30,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.component.button.FriendStatusButton
 import com.peekr.core.presentation.ui.component.card.ProfileCard
 import com.peekr.core.presentation.ui.component.card.ProfileCardTokens
@@ -123,9 +124,10 @@ fun FriendListScreen(
         friends = {
             FriendList(
                 modifier = Modifier.fillMaxSize(),
+                isMyFriendList = isMyFriendList,
                 friends = friends,
                 onFriendClick = { friend ->
-                    onFriendClick(friend.id)
+                    onFriendClick(friend.userId)
                 },
             )
         },
@@ -136,6 +138,7 @@ fun FriendListScreen(
 
             RequesterList(
                 modifier = Modifier.fillMaxSize(),
+                isMyFriendList = isMyFriendList,
                 requesters = requesters,
                 requestersStatus = requestersStatus,
                 onRequesterClick = { requester ->
@@ -171,12 +174,14 @@ private fun TopBar(
  * 친구 목록
  *
  * @param modifier [Modifier]
+ * @param isMyFriendList 나의 친구 목록 여부
  * @param friends 친구 목록
  * @param onFriendClick 친구 클릭 시 콜백
  */
 @Composable
 private fun FriendList(
     modifier: Modifier = Modifier,
+    isMyFriendList: Boolean,
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
 ) {
@@ -214,6 +219,9 @@ private fun FriendList(
                     onRetry = { friends.retry() },
                 )
             },
+            emptyGuidance = {
+                FriendsEmptyGuidance(isMyFriendList)
+            },
         ) { idx ->
             val friend = friends[idx]
             friend?.let {
@@ -235,6 +243,7 @@ private fun FriendList(
  * 친구 요청 목록
  *
  * @param modifier [Modifier]
+ * @param isMyFriendList 나의 친구 목록 여부
  * @param requesters 친구 요청 목록
  * @param requestersStatus 친구 요청한 사용자의 상태 Map
  * @param onRequesterClick 요청자 클릭 시 콜백
@@ -243,6 +252,7 @@ private fun FriendList(
 @Composable
 private fun RequesterList(
     modifier: Modifier = Modifier,
+    isMyFriendList: Boolean,
     requesters: LazyPagingItems<UiRequester>,
     requestersStatus: Map<Long, FriendStatus>,
     onRequesterClick: (UiRequester) -> Unit,
@@ -282,10 +292,14 @@ private fun RequesterList(
                     onRetry = { requesters.retry() },
                 )
             },
+            emptyGuidance = {
+                RequestersEmptyGuidance()
+            },
         ) { idx ->
             val requester = requesters[idx]
             requester?.let {
-                val requesterStatus = requestersStatus[requester.userId] ?: FriendStatus.RECEIVED
+                val requesterStatus = requestersStatus[requester.userId]
+                    ?: FriendStatus.RECEIVED
 
                 RequesterCard(
                     modifier = Modifier
@@ -363,6 +377,33 @@ private fun FriendCardSkeleton(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * 친구 목록 빈 화면 안내 뷰
+ *
+ * @param isMyFriendList 나의 친구 목록 여부
+ */
+@Composable
+private fun FriendsEmptyGuidance(isMyFriendList: Boolean) {
+    if (isMyFriendList) {
+        EmptyGuidance(
+            title = stringResource(R.string.friend_list_empty_guidance_title),
+            description = stringResource(R.string.friend_list_empty_guidance_desc),
+        )
+    } else {
+        EmptyGuidance(title = stringResource(R.string.friend_list_empty_guidance_title))
+    }
+}
+
+/**
+ * 받은 요청 목록 빈 화면 안내 뷰
+ */
+@Composable
+private fun RequestersEmptyGuidance() {
+    EmptyGuidance(
+        title = stringResource(R.string.requester_list_empty_guidance_title),
+    )
+}
+
 private val ListContentPadding = PaddingValues(top = 10.dp, bottom = 16.dp)
 
 // ------------------------------ Previews ------------------------------
@@ -393,6 +434,7 @@ private fun FriendListPreview() {
     PeekrAppTheme {
         FriendList(
             modifier = Modifier.fillMaxSize(),
+            isMyFriendList = false,
             friends = friends,
             onFriendClick = {},
         )
@@ -419,6 +461,56 @@ private fun FriendListScreenPreview() {
         )
     }
 }
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun FriendListScreen_Empty_Preview() {
+    val friends = testFriendsEmptyPagingData.collectAsLazyPagingItems()
+    val requesters = testRequestersEmptyPagingData.collectAsLazyPagingItems()
+
+    PeekrAppTheme {
+        FriendListScreen(
+            modifier = Modifier.fillMaxSize(),
+            isMyFriendList = true,
+            friends = friends,
+            requesters = requesters,
+            loadRequestersPagingData = {},
+            onFriendClick = {},
+            requestersStatus = mapOf(),
+            onRequestAcceptClick = { _, _ -> },
+            onBackPressed = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun FriendListScreen_Empty_Preview2() {
+    val friends = testFriendsEmptyPagingData.collectAsLazyPagingItems()
+    val requesters = testRequestersEmptyPagingData.collectAsLazyPagingItems()
+
+    PeekrAppTheme {
+        FriendListScreen(
+            modifier = Modifier.fillMaxSize(),
+            isMyFriendList = false,
+            friends = friends,
+            requesters = requesters,
+            loadRequestersPagingData = {},
+            onFriendClick = {},
+            requestersStatus = mapOf(),
+            onRequestAcceptClick = { _, _ -> },
+            onBackPressed = {},
+        )
+    }
+}
+
+private val testFriendsEmptyPagingData = MutableStateFlow(
+    PagingData.from(emptyList<UiFriendInfo>()),
+)
+
+private val testRequestersEmptyPagingData = MutableStateFlow(
+    PagingData.from(emptyList<UiRequester>()),
+)
 
 private val testFriendsPagingData = MutableStateFlow(
     PagingData.from(

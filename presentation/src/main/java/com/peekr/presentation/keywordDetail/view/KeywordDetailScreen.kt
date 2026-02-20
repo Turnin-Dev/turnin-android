@@ -1,6 +1,5 @@
 package com.peekr.presentation.keywordDetail.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,7 +20,6 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,7 +51,6 @@ import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
  * @param onRefresh 새로고침 콜백
  * @param topBar 탑바 영역
  * @param contents 컨텐츠 영역(사용자 정보, 키워드, 내용 등)
- * @param comments 댓글 영역
  */
 @Composable
 private fun KeywordDetailScreenFrame(
@@ -63,7 +59,6 @@ private fun KeywordDetailScreenFrame(
     onRefresh: () -> Unit,
     topBar: @Composable ColumnScope.() -> Unit,
     contents: @Composable ColumnScope.() -> Unit,
-    comments: @Composable ColumnScope.() -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -95,9 +90,6 @@ private fun KeywordDetailScreenFrame(
                     thickness = 0.35.dp,
                     color = PeekrTheme.colorScheme.lineDivider,
                 )
-
-                // 댓글
-                comments()
             }
         }
     }
@@ -158,17 +150,6 @@ fun KeywordDetailScreen(
                             onUserClick = { onUserClick(uiState.keywordDetail.userId) },
                         )
                     }
-                }
-            },
-            comments = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(500.dp)
-                        .background(Color.LightGray),
-                    contentAlignment = Alignment.TopCenter,
-                ) {
-                    Text("댓글 영역")
                 }
             },
         )

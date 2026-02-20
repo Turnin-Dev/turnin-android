@@ -56,11 +56,14 @@
     <string name="my_profile_screen_fab_content_desc">키워드 추가</string>
     <string name="my_profile_screen_introduce_expand">더보기</string>
     <string name="my_profile_screen_introduce_collapse">접기</string>
+    <string name="my_profile_screen_keywords_empty_title">아직 키워드가 없어요</string>
+    <string name="my_profile_screen_keywords_empty_desc">나를 구성하고 있는 키워드를 추가하고,\n유사한 키워드로 소통하는 다른 사람들을\n탐색해봐요</string>
     <!-- My Profile Screen (KeywordCardView) -->
     <string name="my_profile_screen_keyword_card">키워드 자세히 보기</string>
     <!-- User Profile Screen -->
     <string name="user_profile_screen_top_bar_report">신고</string>
     <string name="user_profile_screen_btn_unblock">차단 해제</string>
+    <string name="user_profile_screen_keywords_empty_title">아직 키워드가 없어요</string>
     <!-- User Profile Screen (DeleteFriendModal) -->
     <string name="user_profile_delete_friend_modal_content">친구 삭제</string>
     <!-- Profile Common Success -->
@@ -141,6 +144,7 @@
     <string name="block_list_screen_top_bar_title">차단 사용자 관리</string>
     <string name="block_list_screen_error_message_default">문제가 발생했어요. 다시 시도 해주세요.</string>
     <string name="block_list_screen_btn_delete">차단 해제</string>
+    <string name="block_list_screen_empty_guidance_title">차단한 사용자가 없어요</string>
     <!-- Block Error -->
     <string name="block_error_unexpected">차단 과정에서 오류가 발생했습니다. 다시 차단을 진행해주세요.</string>
     <string name="block_error_requester_id_blocker_id_not_same">차단 권한이 없습니다. 차단을 올바르게 진행해주세요.</string>
@@ -151,6 +155,9 @@
     <string name="friend_list_tab_bar_title_1">친구 목록</string>
     <string name="friend_list_tab_bar_title_2">받은 요청</string>
     <string name="friend_list_error_message_default">문제가 발생했어요. 다시 시도해주세요.</string>
+    <string name="friend_list_empty_guidance_title">친구 목록이 비어있어요</string>
+    <string name="friend_list_empty_guidance_desc">마음이 맞는 친구를 찾아보세요.\n그들의 키워드 변화를 지켜보고,\n친구가 새롭게 업데이트하는 키워드들을\n가장 먼저 확인할 수 있습니다</string>
+    <string name="requester_list_empty_guidance_title">아직 받은 요청이 없어요</string>
     <string name="requester_list_error_message_default">문제가 발생했어요. 다시 시도해주세요.</string>
     <!-- Friend Error -->
     <string name="friend_error_my_user_id_not_found">내 정보를 불러올 수 없습니다. 다시 시도해주세요.</string>

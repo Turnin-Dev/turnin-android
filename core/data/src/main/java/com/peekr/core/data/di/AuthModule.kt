@@ -30,8 +30,10 @@ class AuthModule {
 @InstallIn(SingletonComponent::class)
 interface AuthBindModule {
     @Binds
+    @Singleton
     fun bindsAuthNetworkDataSource(impl: AuthNetworkDataSourceImpl): AuthNetworkDataSource
 
     @Binds
+    @Singleton
     fun bindsAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 }

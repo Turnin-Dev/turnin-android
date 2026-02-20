@@ -23,7 +23,7 @@ class MyProfileContract {
     data class UiState(
         val myProfile: UiMyProfile? = null,
         val myProfileLoading: Boolean = false,
-        val myKeywords: List<UiUserKeyword> = emptyList(),
+        val myKeywords: List<UiUserKeyword>? = null,
         val myKeywordsLoading: Boolean = false,
         val error: UiText? = null,
     ) : BaseUiState

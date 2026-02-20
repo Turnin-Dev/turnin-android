@@ -30,11 +30,11 @@ class MyProfileViewModel @Inject constructor(
     override fun createInitialState(): MyProfileContract.UiState =
         MyProfileContract.UiState()
 
-    override suspend fun loadInitialData() {
+    init {
         // 각각 viewModelScope 내에서 병렬 수행
         observeMyProfile()
-        refreshMyProfile(false)
         observeMyKeywords()
+        refreshMyProfile(false)
         refreshMyKeywords(false)
     }
 
