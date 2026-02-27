@@ -49,7 +49,8 @@ data class UiImageFileDetail(
             username: String,
             mime: Mime = Mime.IMAGE_JPEG,
         ): UiImageFileDetail {
-            val fileName = FileNameGenerator.generate(username)
+            val fileName =
+                "${FileNameGenerator.generate(username)}.${mime.extension}"
             return UiImageFileDetail(bytes, fileName, mime)
         }
     }

@@ -20,6 +20,7 @@ import com.peekr.core.presentation.feature.image.cropper.uriToBitmap
  * 이미지 선택기
  *
  * @param open 이미지 선택기 활성화 여부
+ * @param maxFileSizeBytes 이미지 최대 크기
  * @param onSelected 이미지 선택시 ([ImageBitmap]타입)
  * @param onClose 이미지 선택시 닫을 시 수행할 작업 (Ex. open = false)
  * @param onError 에러 발생 시 수행할 작업
@@ -27,6 +28,7 @@ import com.peekr.core.presentation.feature.image.cropper.uriToBitmap
 @Composable
 fun SinglePhotoPicker(
     open: Boolean,
+    maxFileSizeBytes: Long = MAX_FILE_SIZE_BYTES,
     onSelected: (ImageBitmap?) -> Unit,
     onClose: () -> Unit,
     onError: ((Exception) -> Unit)? = null,
@@ -49,6 +51,26 @@ fun SinglePhotoPicker(
     LaunchedEffect(selectedImageUri) {
         selectedImageUri?.let { uri ->
             try {
+                // 파일 크기 확인 및 에러 처리
+                val fileSize = context.contentResolver.openFileDescriptor(uri, "r")
+                    ?.use { it.statSize } ?: 0
+                if (fileSize > maxFileSizeBytes) {
+                    Toast
+                        .makeText(
+                            context,
+                            context.getString(
+                                R.string.single_photo_picker_invalid_max_size_exceed,
+                                MAX_FILE_SIZE_MB.toInt(),
+                            ),
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    onSelected(null)
+                    selectedImageUri = null
+                    onClose()
+                    return@let
+                }
+
+                // 파일 변환 및 선택 수행
                 val imageBitmap = uriToBitmap(context, uri)
                 onSelected(imageBitmap)
                 selectedImageUri = null
@@ -74,3 +96,6 @@ fun SinglePhotoPicker(
         }
     }
 }
+
+private const val MAX_FILE_SIZE_MB: Long = 10
+private const val MAX_FILE_SIZE_BYTES: Long = MAX_FILE_SIZE_MB * 1024 * 1024
