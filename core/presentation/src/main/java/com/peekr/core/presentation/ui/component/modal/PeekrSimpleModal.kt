@@ -111,17 +111,17 @@ private fun Buttons(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        PeekrSolidButton(
-            modifier = Modifier.weight(1f),
-            text = stringResource(acceptLabel),
-            style = PeekrButtonStyle.Medium,
-            onClick = onAcceptClick,
-        )
         PeekrNegativeButton(
             modifier = Modifier.weight(1f),
             text = stringResource(cancelLabel),
             style = PeekrButtonStyle.Medium,
             onClick = onCancelClick,
+        )
+        PeekrSolidButton(
+            modifier = Modifier.weight(1f),
+            text = stringResource(acceptLabel),
+            style = PeekrButtonStyle.Medium,
+            onClick = onAcceptClick,
         )
     }
 }
