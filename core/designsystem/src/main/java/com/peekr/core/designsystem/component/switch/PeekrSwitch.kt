@@ -1,9 +1,10 @@
 package com.peekr.core.designsystem.component.switch
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,7 +34,8 @@ import com.peekr.core.designsystem.util.click.clickableSingle
 enum class PeekrSwitchSize(val width: Int, val height: Int, val padding: Double) {
     Small(24, 18, 1.0),
     Medium(32, 24, 1.3),
-    Large(40, 30, 1.6), ;
+    Large(40, 30, 1.6),
+    ;
 
     val containerWidth: Double = (width * 2) + (padding * 2)
     val containerHeight: Double = height + (padding * 2)
@@ -47,8 +49,6 @@ enum class PeekrSwitchSize(val width: Int, val height: Int, val padding: Double)
  * @param onCheckedChanged 체크 변경 시
  * @param size [PeekrSwitchSize]
  * @param modifier [Modifier]
- * @param uncheckedIcon 미체크 상태 아이콘 (스위치가 왼쪽에 있는 상태)
- * @param checkedIcon 체크 상태 아이콘 (스위치가 오른쪽에 있는 상태)
  *
  * @see PeekrSwitchSize
  *
@@ -60,21 +60,33 @@ fun PeekrSwitch(
     onCheckedChanged: (Boolean) -> Unit,
     size: PeekrSwitchSize,
     modifier: Modifier = Modifier,
-    uncheckedIcon: (@Composable () -> Unit)? = null,
-    checkedIcon: (@Composable () -> Unit)? = null,
 ) {
     val animatedOffsetX by animateDpAsState(
         targetValue = if (checked) size.width.dp else 0.dp,
+        animationSpec = tween(
+            durationMillis = 180,
+            easing = FastOutSlowInEasing,
+        ),
     )
 
     // ------------------------------ Switch Container ------------------------------
     Box(
         modifier = modifier
             .size(size.containerWidth.dp, size.containerHeight.dp)
+            .clip(SwitchShape)
             .background(
-                color = PeekrTheme.colorScheme.backgroundNormal,
+                color = if (checked) {
+                    PeekrTheme.colorScheme.primary
+                } else {
+                    PeekrTheme.colorScheme.interactionDisable
+                },
                 shape = SwitchShape,
-            ).padding(size.padding.dp),
+            )
+            .clickableSingle(
+                clickMode = ClickMode.Throttle,
+                onClick = { onCheckedChanged(!checked) },
+            )
+            .padding(size.padding.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         // ------------------------------ Switch Content ------------------------------
@@ -82,32 +94,12 @@ fun PeekrSwitch(
             modifier = Modifier
                 .graphicsLayer {
                     translationX = animatedOffsetX.toPx()
-                }.clip(SwitchShape)
+                }
+                .clip(SwitchShape)
                 .width(size.width.dp)
                 .height(size.height.dp)
-                .background(PeekrTheme.colorScheme.primary, SwitchShape)
-                .clickableSingle(
-                    clickMode = ClickMode.Throttle,
-                    onClick = { onCheckedChanged(!checked) },
-                ),
+                .background(PeekrTheme.colorScheme.backgroundNormal, SwitchShape),
         )
-
-        Row(
-            modifier = Modifier.align(Alignment.Center),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            uncheckedIcon?.let {
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    uncheckedIcon()
-                }
-            }
-
-            checkedIcon?.let {
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    checkedIcon()
-                }
-            }
-        }
     }
 }
 
