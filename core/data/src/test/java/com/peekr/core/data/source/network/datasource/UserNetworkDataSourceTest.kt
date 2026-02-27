@@ -381,9 +381,10 @@ class UserNetworkDataSourceTest {
             }
             """.trimIndent()
         private val TestUserPatchRequest = UserPatchRequest(
-            displayId = "id",
             name = "name",
-            profileImageUrl = null,
+            displayId = "id",
+            oldProfileImageUrl = null,
+            newProfileImageUrl = null,
             introduce = "hello",
         )
         private val TestIntroducePatchRequest = IntroducePatchRequest("hello")

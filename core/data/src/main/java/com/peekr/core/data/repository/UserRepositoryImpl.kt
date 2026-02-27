@@ -138,7 +138,7 @@ class UserRepositoryImpl @Inject constructor(
                             userId = userId,
                             displayId = patch.displayId.value,
                             name = patch.name.value,
-                            profileImageUrl = patch.profileImageUrl,
+                            profileImageUrl = patch.newProfileImageUrl,
                             introduce = patch.introduce.value,
                         )
                         emit(Result.Success(result.data))

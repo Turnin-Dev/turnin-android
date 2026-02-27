@@ -10,6 +10,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 /** User Network API */
@@ -39,7 +40,7 @@ interface UserApi {
     ): Response<List<UserKeywordDetailResponse>>
 
     /** 사용자 수정 */
-    @PATCH(NetworkApiPath.User.ROUTE)
+    @PUT(NetworkApiPath.User.ROUTE)
     suspend fun updateUser(
         @Body userPatchRequest: UserPatchRequest,
     ): Response<Unit>

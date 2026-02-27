@@ -437,15 +437,17 @@ class UserRepositoryImplTest {
             active = true,
         )
         private val TestUserPatchRequest = UserPatchRequest(
-            displayId = "id",
             name = "name",
-            profileImageUrl = null,
+            displayId = "id",
+            oldProfileImageUrl = null,
+            newProfileImageUrl = null,
             introduce = "hello",
         )
         private val TestUserPatch = UserPatch(
-            displayId = DisplayId("id"),
             name = Name("name"),
-            profileImageUrl = null,
+            displayId = DisplayId("id"),
+            oldProfileImageUrl = null,
+            newProfileImageUrl = null,
             introduce = Introduce("hello"),
         )
         private val TestIntroducePatchRequest = IntroducePatchRequest("hello")

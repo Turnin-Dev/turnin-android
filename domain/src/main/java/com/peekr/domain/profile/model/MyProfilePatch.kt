@@ -10,20 +10,23 @@ import com.peekr.core.domain.user.model.UserPatch
  *
  * @property displayId 사용자 표시 ID
  * @property name 사용자 이름
- * @property profileImageUrl 사용자 프로필 사진 url
+ * @property oldProfileImageUrl 기존 사용자 프로필 사진 url
+ * @property newProfileImageUrl 새로운 사용자 프로필 사진 url
  * @property introduce 사용자 소개 글
  */
 data class MyProfilePatch(
-    val displayId: DisplayId,
     val name: Name,
-    val profileImageUrl: String?,
+    val displayId: DisplayId,
+    val oldProfileImageUrl: String?,
+    val newProfileImageUrl: String?,
     val introduce: Introduce,
 )
 
 fun MyProfilePatch.toUserPatch(): UserPatch =
     UserPatch(
-        displayId = displayId,
         name = name,
-        profileImageUrl = profileImageUrl,
+        displayId = displayId,
+        oldProfileImageUrl = oldProfileImageUrl,
+        newProfileImageUrl = newProfileImageUrl,
         introduce = introduce,
     )
