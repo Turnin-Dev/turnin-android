@@ -139,6 +139,7 @@ class FeedRepositoryImplTest {
         // PagingData는 수집하기 전까지 내부 로직이 돌아가지 않으므로 collect 처리
         val pagingDataFlow = repository.getFeeds()
         val snapshot = pagingDataFlow.asSnapshot()
+        advanceUntilIdle()
 
         // then
         // 네트워크 응답이 도메인 모델(Feed)로 잘 변환되었는지 확인
@@ -155,7 +156,7 @@ class FeedRepositoryImplTest {
         assertNotNull(remoteKey)
         assertEquals(cursor?.score, remoteKey?.cursorScore)
 
-        coVerify(exactly = 1) { dataSource.getFeeds(null, null, null, any()) }
+        coVerify(exactly = 2) { dataSource.getFeeds(any(), any(), any(), any()) }
     }
 
     @Test

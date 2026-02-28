@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.dto.user.request
 
+import com.peekr.core.domain.user.model.ProfileImagePatch
 import com.peekr.core.domain.user.model.UserPatch
 import com.squareup.moshi.JsonClass
 
@@ -26,6 +27,10 @@ fun UserPatch.toDataModel(): UserPatchRequest =
         name = name.value,
         displayId = displayId.value,
         oldProfileImageUrl = oldProfileImageUrl,
-        newProfileImageUrl = newProfileImageUrl,
+        newProfileImageUrl = when (val patch = profileImagePatch) {
+            ProfileImagePatch.Unchanged -> oldProfileImageUrl
+            ProfileImagePatch.Remove -> null
+            is ProfileImagePatch.Update -> patch.url
+        },
         introduce = introduce.value,
     )

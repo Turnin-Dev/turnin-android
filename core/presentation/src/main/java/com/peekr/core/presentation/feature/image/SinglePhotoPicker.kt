@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.feature.image.cropper.uriToBitmap
+import kotlin.math.ceil
 
 /**
  * 이미지 선택기
@@ -53,20 +54,21 @@ fun SinglePhotoPicker(
             try {
                 // 파일 크기 확인 및 에러 처리
                 val fileSize = context.contentResolver.openFileDescriptor(uri, "r")
-                    ?.use { it.statSize } ?: 0
-                if (fileSize > maxFileSizeBytes) {
+                    ?.use { it.statSize } ?: -1L
+                if (fileSize > maxFileSizeBytes || fileSize < 0) {
+                    val maxFileSizeMbForMessage =
+                        ceil(maxFileSizeBytes / (1024.0 * 1024.0)).toInt()
                     Toast
                         .makeText(
                             context,
                             context.getString(
                                 R.string.single_photo_picker_invalid_max_size_exceed,
-                                MAX_FILE_SIZE_MB.toInt(),
+                                maxFileSizeMbForMessage,
                             ),
                             Toast.LENGTH_SHORT,
                         ).show()
                     onSelected(null)
                     selectedImageUri = null
-                    onClose()
                     return@let
                 }
 
@@ -97,5 +99,4 @@ fun SinglePhotoPicker(
     }
 }
 
-private const val MAX_FILE_SIZE_MB: Long = 10
-private const val MAX_FILE_SIZE_BYTES: Long = MAX_FILE_SIZE_MB * 1024 * 1024
+private const val MAX_FILE_SIZE_BYTES: Long = 10 * 1024 * 1024

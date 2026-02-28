@@ -3,5 +3,5 @@
 현재 이미지 파일은 JPEG(JPG)만 지원한다. JPEG은 파일 크기가 작고 범용적이기 때문이다.
 
 만약, PNG 등 다른 이미지 파일을 지원하려면
-`ImageBitmap.toByteArray()` 함수와 `Mime` Enum 클래스를 수정하고
-프로필 사진 등록하는 부분을 수정해야 한다.  
+`ImageBitmap.toJpegByteArray()` 함수와 `Mime` Enum 클래스를 수정하고
+프로필 사진 등록하는 부분을 수정해야 한다.

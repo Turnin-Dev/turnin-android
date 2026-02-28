@@ -21,6 +21,7 @@ import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreMyProfile
 import com.peekr.core.domain.user.model.CoreUserProfile
+import com.peekr.core.domain.user.model.ProfileImagePatch
 import com.peekr.core.domain.user.model.User
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
@@ -138,7 +139,11 @@ class UserRepositoryImpl @Inject constructor(
                             userId = userId,
                             displayId = patch.displayId.value,
                             name = patch.name.value,
-                            profileImageUrl = patch.newProfileImageUrl,
+                            profileImageUrl = when (val imagePatch = patch.profileImagePatch) {
+                                ProfileImagePatch.Unchanged -> patch.oldProfileImageUrl
+                                ProfileImagePatch.Remove -> null
+                                is ProfileImagePatch.Update -> imagePatch.url
+                            },
                             introduce = patch.introduce.value,
                         )
                         emit(Result.Success(result.data))
