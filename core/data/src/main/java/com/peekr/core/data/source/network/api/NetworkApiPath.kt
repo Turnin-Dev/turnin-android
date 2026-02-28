@@ -4,6 +4,10 @@ object NetworkApiPath {
     private const val VERSION = "/v1"
     private const val BASE = "/api$VERSION"
 
+    object Account {
+        const val ROUTE = "$BASE/account"
+    }
+
     object Auth {
         const val ROUTE = "$BASE/auth"
 

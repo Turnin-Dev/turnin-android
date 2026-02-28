@@ -1,0 +1,45 @@
+package com.peekr.core.data.di
+
+import com.peekr.core.data.repository.AccountRepositoryImpl
+import com.peekr.core.data.source.network.api.AccountApi
+import com.peekr.core.data.source.network.datasource.AccountNetworkDataSource
+import com.peekr.core.data.source.network.datasource.AccountNetworkDataSourceImpl
+import com.peekr.core.domain.account.repository.AccountRepository
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+
+@Module
+@InstallIn(SingletonComponent::class)
+class AccountModule {
+    @Singleton
+    @Provides
+    fun provideAccountApi(
+        retrofit: Retrofit.Builder,
+        @TokenOkHttpClient okHttpClient: OkHttpClient,
+    ): AccountApi = retrofit
+        .client(okHttpClient)
+        .build()
+        .create(AccountApi::class.java)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface AccountBindModule {
+    @Binds
+    @Singleton
+    fun bindsAccountNetworkDataSource(
+        impl: AccountNetworkDataSourceImpl,
+    ): AccountNetworkDataSource
+
+    @Binds
+    @Singleton
+    fun bindsAccountRepository(
+        impl: AccountRepositoryImpl,
+    ): AccountRepository
+}
