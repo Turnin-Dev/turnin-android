@@ -41,6 +41,7 @@ object NetworkApiPath {
         const val USER_PROFILE = "$ROUTE/{userId}/profile"
         const val MY_KEYWORDS = "$ROUTE/me/keywords"
         const val USER_KEYWORDS = "$ROUTE/{userId}/keywords"
+        const val LOGOUT = "$ROUTE/logout"
     }
 
     object Report {

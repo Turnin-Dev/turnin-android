@@ -61,4 +61,9 @@ interface UserNetworkDataSource {
      * @param patch 사용자 소개글 수정 요청 바디
      */
     suspend fun updateIntroduce(patch: IntroducePatchRequest): NetworkResult<Unit>
+
+    /**
+     * 로그아웃
+     */
+    suspend fun logout(): NetworkResult<Unit>
 }

@@ -60,4 +60,9 @@ interface UserRepository {
      * @param introduce 소개글
      */
     fun updateMyIntroduce(introduce: Introduce): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 로그아웃
+     */
+    fun logout(): Flow<Result<Unit, CommonErrorType>>
 }
