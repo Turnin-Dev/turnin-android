@@ -1,4 +1,4 @@
-package com.peekr.data.login.util
+package com.peekr.core.data.source.network.social
 
 import android.content.Context
 import com.kakao.sdk.auth.AuthApiClient
@@ -8,21 +8,21 @@ import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.core.common.coroutine.trySendAndClose
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.domain.auth.social.SocialAuthManager
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.ProviderId
-import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.util.SocialAuthManager
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-private typealias ProviderIdResult = Result<ProviderId, LoginErrorType>
+private typealias ProviderIdResult = Result<ProviderId, CommonErrorType>
 
 class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     private val tag = this::class.java.simpleName
 
-    override fun signIn(): Flow<Result<ProviderId, LoginErrorType>> = callbackFlow {
+    override fun signIn(): Flow<Result<ProviderId, CommonErrorType>> = callbackFlow {
         if (AuthApiClient.Companion.instance.hasToken()) {
             UserApiClient.Companion.instance.accessTokenInfo { tokenInfo, error ->
                 if (error != null) {
@@ -33,7 +33,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
                     } else {
                         // 2. another error
                         AppLogger.i(tag, "Weird error during Kakao sign-in")
-                        trySendAndClose(Result.Error(LoginErrorType.KakaoSignInError))
+                        trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoSignInError))
                     }
                 } else {
                     // 3. token validity check successful (renew if necessary)
@@ -50,28 +50,32 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
         awaitClose()
     }
 
-    override fun signOut(): Flow<Result<Unit, LoginErrorType>> = callbackFlow {
+    override fun signOut(): Flow<Result<Unit, CommonErrorType>> = callbackFlow {
         UserApiClient.Companion.instance.logout { e ->
             if (e == null) {
                 AppLogger.i(tag, "Kakao sign-out succeeded.")
                 trySendAndClose(Result.Success(Unit))
             } else {
                 AppLogger.e(tag, e, "Kakao sign-out failed.")
-                trySendAndClose(Result.Error(LoginErrorType.KakaoSignOutError, e.message))
+                trySendAndClose(
+                    Result.Error(CommonErrorType.SocialAuth.KakaoSignOutError, e.message),
+                )
             }
         }
 
         awaitClose()
     }
 
-    override fun deleteAccount(): Flow<Result<Unit, LoginErrorType>> = callbackFlow {
+    override fun deleteAccount(): Flow<Result<Unit, CommonErrorType>> = callbackFlow {
         UserApiClient.Companion.instance.unlink { e ->
             if (e == null) {
                 AppLogger.i(tag, "Kakao account deleted.")
                 trySendAndClose(Result.Success(Unit))
             } else {
                 AppLogger.e(tag, e, "Failed to delete Kakao account.")
-                trySendAndClose(Result.Error(LoginErrorType.KakaoDeleteAccountError, e.message))
+                trySendAndClose(
+                    Result.Error(CommonErrorType.SocialAuth.KakaoDeleteAccountError, e.message),
+                )
             }
         }
 
@@ -96,7 +100,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
                 AppLogger.i(tag, "'Login with KakaoTalk' succeeded.")
                 loginSuccess()
             } else {
-                trySendAndClose(Result.Error(LoginErrorType.Unexpected(error)))
+                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Unexpected(error)))
             }
         }
 
@@ -105,7 +109,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
         error: Throwable?,
     ) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySendAndClose(Result.Error(LoginErrorType.Cancellation))
+            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Cancellation))
         } else {
             loginWithKakaoAccount(context)
         }
@@ -120,13 +124,13 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
                 AppLogger.i(tag, "'Login with KakaoAccount' succeeded.")
                 loginSuccess()
             } else {
-                trySendAndClose(Result.Error(LoginErrorType.Unexpected(error)))
+                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Unexpected(error)))
             }
         }
 
     private fun ProducerScope<ProviderIdResult>.loginWithKakaoAccountError(error: Throwable?) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySendAndClose(Result.Error(LoginErrorType.Cancellation))
+            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Cancellation))
         } else {
             close()
         }
@@ -140,7 +144,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
                 trySendAndClose(Result.Success(providerId))
             } else {
                 AppLogger.i(tag, "Kakao user not found.")
-                trySendAndClose(Result.Error(LoginErrorType.UserNotFound))
+                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.UserNotFound))
             }
         }
     }

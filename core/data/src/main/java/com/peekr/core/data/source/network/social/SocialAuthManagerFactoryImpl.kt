@@ -1,10 +1,10 @@
-package com.peekr.data.login.util
+package com.peekr.core.data.source.network.social
 
+import com.peekr.core.data.di.GoogleAuth
+import com.peekr.core.data.di.KakaoAuth
+import com.peekr.core.domain.auth.social.SocialAuthManager
+import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.data.login.di.GoogleAuth
-import com.peekr.data.login.di.KakaoAuth
-import com.peekr.domain.login.util.SocialAuthManager
-import com.peekr.domain.login.util.SocialAuthManagerFactory
 import javax.inject.Inject
 
 class SocialAuthManagerFactoryImpl @Inject constructor(
