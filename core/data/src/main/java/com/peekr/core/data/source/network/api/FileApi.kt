@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.network.api
 
-import com.peekr.core.data.source.network.api.NetworkApiPath
 import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
 import retrofit2.Response
 import retrofit2.http.GET

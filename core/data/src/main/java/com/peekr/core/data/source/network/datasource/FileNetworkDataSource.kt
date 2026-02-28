@@ -2,7 +2,6 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.data.source.network.util.NetworkResult.Error
 
 /** File 네트워크 데이터 소스 */
 
