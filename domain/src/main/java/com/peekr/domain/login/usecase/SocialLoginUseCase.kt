@@ -4,7 +4,7 @@ import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.util.AuthManagerFactory
+import com.peekr.domain.login.util.SocialAuthManagerFactory
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
  * 소셜로그인
  */
 class SocialLoginUseCase @Inject constructor(
-    private val authManagerFactory: AuthManagerFactory,
+    private val socialAuthManagerFactory: SocialAuthManagerFactory,
 ) {
     /**
      * 소셜로그인 플랫폼에 맞게 로그인을 수행한다.
@@ -29,7 +29,7 @@ class SocialLoginUseCase @Inject constructor(
      * @return [Result] – 성공 시 [LoginCredentials], 실패 시 [LoginErrorType] 정보 포함
      */
     operator fun invoke(provider: SocialLoginProvider): Flow<Result<LoginCredentials, LoginErrorType>> {
-        val authManager = authManagerFactory.create(provider)
+        val authManager = socialAuthManagerFactory.create(provider)
         return authManager
             .signIn()
             .map { result ->

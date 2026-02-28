@@ -20,12 +20,12 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.data.BuildConfig
 import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.util.AuthManager
+import com.peekr.domain.login.util.SocialAuthManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class GoogleAuthManager(private val context: Context) : AuthManager {
+class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager {
     private val tag = this::class.java.simpleName
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.Companion.create(context)

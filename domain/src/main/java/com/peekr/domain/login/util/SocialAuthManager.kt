@@ -6,7 +6,7 @@ import com.peekr.domain.login.error.LoginErrorType
 import kotlinx.coroutines.flow.Flow
 
 /** 소셜로그인 인증을 관리한다. */
-interface AuthManager {
+interface SocialAuthManager {
     /** 해당하는 소셜로그인 플랫폼에 로그인 한다. */
     fun signIn(): Flow<Result<ProviderId, LoginErrorType>>
 

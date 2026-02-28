@@ -11,7 +11,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.util.AuthManager
+import com.peekr.domain.login.util.SocialAuthManager
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.callbackFlow
 
 private typealias ProviderIdResult = Result<ProviderId, LoginErrorType>
 
-class KakaoAuthManager(private val context: Context) : AuthManager {
+class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     private val tag = this::class.java.simpleName
 
     override fun signIn(): Flow<Result<ProviderId, LoginErrorType>> = callbackFlow {

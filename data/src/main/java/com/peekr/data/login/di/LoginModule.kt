@@ -1,9 +1,9 @@
 package com.peekr.data.login.di
 
 import android.content.Context
-import com.peekr.data.login.util.GoogleAuthManager
-import com.peekr.data.login.util.KakaoAuthManager
-import com.peekr.domain.login.util.AuthManager
+import com.peekr.data.login.util.GoogleSocialAuthManager
+import com.peekr.data.login.util.KakaoSocialAuthManager
+import com.peekr.domain.login.util.SocialAuthManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +20,14 @@ class LoginModule {
     @Provides
     fun provideGoogleAuthManager(
         @ApplicationContext context: Context,
-    ): AuthManager = GoogleAuthManager(context)
+    ): SocialAuthManager = GoogleSocialAuthManager(context)
 
     @KakaoAuth
     @Singleton
     @Provides
     fun provideKakaoAuthManager(
         @ApplicationContext context: Context,
-    ): AuthManager = KakaoAuthManager(context)
+    ): SocialAuthManager = KakaoSocialAuthManager(context)
 }
 
 // ------------------------------ Qualifier ------------------------------
