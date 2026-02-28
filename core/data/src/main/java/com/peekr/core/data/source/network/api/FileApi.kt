@@ -14,4 +14,11 @@ interface FileApi {
         @Query("fileName") fileName: String,
         @Query("mime") mime: String,
     ): Response<PresignedUrlResponse>
+
+    /** 파일 업데이트에 사용할 사전 정의된 URL 요청 */
+    @GET(NetworkApiPath.File.UPDATE)
+    suspend fun getFileUpdatePresignedUrl(
+        @Query("newFileName") newFileName: String,
+        @Query("mime") mime: String,
+    ): Response<PresignedUrlResponse>
 }

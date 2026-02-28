@@ -25,6 +25,12 @@ class FileNetworkDataSourceImpl @Inject constructor(
     ): NetworkResult<PresignedUrlResponse> =
         networkCall { fileApi.getFileUploadPresignedUrl(fileName, mime) }
 
+    override suspend fun getFileUpdatePresignedUrl(
+        newFileName: String,
+        mime: String,
+    ): NetworkResult<PresignedUrlResponse> =
+        networkCall { fileApi.getFileUpdatePresignedUrl(newFileName, mime) }
+
     override fun uploadFile(
         presignedUrl: String,
         file: ByteArray,

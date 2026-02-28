@@ -31,6 +31,7 @@ object NetworkApiPath {
     object File {
         private const val ROUTE = "$BASE/file"
         const val UPLOAD = "$ROUTE/upload"
+        const val UPDATE = "$ROUTE/update"
     }
 
     object User {
