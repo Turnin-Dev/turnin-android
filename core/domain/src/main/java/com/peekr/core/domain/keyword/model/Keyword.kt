@@ -15,7 +15,7 @@ import com.peekr.core.domain.model.KeywordName
 data class Keyword(
     val id: KeywordId,
     val keyword: KeywordName,
-    val createdBy: Long,
+    val createdBy: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )

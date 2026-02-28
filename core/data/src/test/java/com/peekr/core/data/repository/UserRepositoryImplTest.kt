@@ -26,6 +26,7 @@ import com.peekr.core.domain.model.Role
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreUserProfile
+import com.peekr.core.domain.user.model.ProfileImagePatch
 import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import io.mockk.Runs
@@ -437,15 +438,17 @@ class UserRepositoryImplTest {
             active = true,
         )
         private val TestUserPatchRequest = UserPatchRequest(
-            displayId = "id",
             name = "name",
-            profileImageUrl = null,
+            displayId = "id",
+            oldProfileImageUrl = null,
+            newProfileImageUrl = null,
             introduce = "hello",
         )
         private val TestUserPatch = UserPatch(
-            displayId = DisplayId("id"),
             name = Name("name"),
-            profileImageUrl = null,
+            displayId = DisplayId("id"),
+            oldProfileImageUrl = null,
+            profileImagePatch = ProfileImagePatch.Unchanged,
             introduce = Introduce("hello"),
         )
         private val TestIntroducePatchRequest = IntroducePatchRequest("hello")

@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream
 private val FORMAT = Bitmap.CompressFormat.JPEG
 private const val QUALITY = 100
 
-fun ImageBitmap.toByteArray(): ByteArray {
+fun ImageBitmap.toJpegByteArray(): ByteArray {
     val androidBitmap = this.asAndroidBitmap()
     val byteArrayOutputStream = ByteArrayOutputStream()
     androidBitmap.compress(FORMAT, QUALITY, byteArrayOutputStream)

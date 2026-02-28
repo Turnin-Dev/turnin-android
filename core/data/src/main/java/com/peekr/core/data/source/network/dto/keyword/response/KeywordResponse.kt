@@ -18,7 +18,7 @@ import com.squareup.moshi.JsonClass
 data class KeywordResponse(
     val id: Long,
     val keyword: String,
-    val createdBy: Long,
+    val createdBy: Long?,
     val createdAt: Long,
     val updatedAt: Long,
 )
