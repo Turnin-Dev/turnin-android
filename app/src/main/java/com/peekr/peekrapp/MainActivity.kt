@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     onEvent = {
                         coroutineScope.launch {
                             // 자원 정리
-                            mainViewModel.cleanUp()
+                            mainViewModel.logout()
                             // 로그인 화면으로 이동
                             appNavController.navigate(SubGraph.Login.Root) {
                                 popUpTo(0) { inclusive = true }

@@ -182,19 +182,4 @@ class UserRepositoryImpl @Inject constructor(
                 }
             }
         }
-
-    override fun logout(): Flow<Result<Unit, CommonErrorType>> =
-        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            emit(Result.Loading)
-            when (val result = userNetworkDataSource.logout()) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(Unit))
-                }
-
-                is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
-                }
-            }
-        }
 }

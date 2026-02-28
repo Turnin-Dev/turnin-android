@@ -1,10 +1,8 @@
 package com.peekr.core.data.di
 
-import com.peekr.core.data.repository.AccountRepositoryImpl
 import com.peekr.core.data.source.network.api.AccountApi
 import com.peekr.core.data.source.network.datasource.AccountNetworkDataSource
 import com.peekr.core.data.source.network.datasource.AccountNetworkDataSourceImpl
-import com.peekr.core.domain.account.repository.AccountRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -36,10 +34,4 @@ interface AccountBindModule {
     fun bindsAccountNetworkDataSource(
         impl: AccountNetworkDataSourceImpl,
     ): AccountNetworkDataSource
-
-    @Binds
-    @Singleton
-    fun bindsAccountRepository(
-        impl: AccountRepositoryImpl,
-    ): AccountRepository
 }

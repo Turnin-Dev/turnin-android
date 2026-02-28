@@ -1,4 +1,4 @@
-package com.peekr.domain.login.util
+package com.peekr.core.domain.auth.social
 
 import com.peekr.core.domain.model.SocialLoginProvider
 

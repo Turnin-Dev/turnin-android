@@ -1,11 +1,12 @@
 package com.peekr.core.data.repository
 
-import com.peekr.core.data.source.local.database.dao.MyKeywordDao
-import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.auth.AuthAppDataCleaner
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.error.WritingDataException
+import com.peekr.core.data.source.network.datasource.AccountNetworkDataSource
 import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
 import com.peekr.core.data.source.network.dto.auth.response.LoginResponse
 import com.peekr.core.data.source.network.dto.auth.response.RegisterResponse
@@ -38,21 +39,29 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AuthRepositoryImplTest {
-    private val dataSource: AuthNetworkDataSource = mockk()
+    private val authNetworkDataSource: AuthNetworkDataSource = mockk()
+    private val accountNetworkDataSource: AccountNetworkDataSource = mockk()
+    private val userNetworkDataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
-    private val myProfileDao: MyProfileDao = mockk()
-    private val myKeywordDao: MyKeywordDao = mockk()
+    private val authAppDataCleaner: AuthAppDataCleaner = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = UnconfinedTestDispatcher()
     private val repository: AuthRepository =
-        AuthRepositoryImpl(dataSource, dataStoreManager, myProfileDao, myKeywordDao, dispatcher)
+        AuthRepositoryImpl(
+            authNetworkDataSource = authNetworkDataSource,
+            accountNetworkDataSource = accountNetworkDataSource,
+            userNetworkDataSource = userNetworkDataSource,
+            dataStoreManager = dataStoreManager,
+            authAppDataCleaner = authAppDataCleaner,
+            ioDispatcher = dispatcher,
+        )
 
     @Test
     fun `login() 성공 테스트`() =
         runTest {
             // given
-            coEvery { dataSource.login(any()) } returns NetworkResult.Success(mockLoginResponse)
+            coEvery { authNetworkDataSource.login(any()) } returns NetworkResult.Success(mockLoginResponse)
             coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
 
             // when
@@ -69,7 +78,7 @@ class AuthRepositoryImplTest {
             // given
             val expectedError = NetworkErrorType.Unexpected(null)
             coEvery {
-                dataSource.login(any())
+                authNetworkDataSource.login(any())
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
@@ -88,7 +97,7 @@ class AuthRepositoryImplTest {
     fun `existsUser() 성공 테스트`() =
         runTest {
             // given
-            coEvery { dataSource.existsUser(any()) } returns NetworkResult.Success(mockExistsResponse)
+            coEvery { authNetworkDataSource.existsUser(any()) } returns NetworkResult.Success(mockExistsResponse)
 
             // when
             val result = repository.existsUser(mockExistsUser).last()
@@ -102,7 +111,7 @@ class AuthRepositoryImplTest {
     fun `existsUser() 성공 테스트 - 존재하지 않음(false)`() =
         runTest {
             // given
-            coEvery { dataSource.existsUser(any()) } returns NetworkResult.Success(ExistsResponse(false))
+            coEvery { authNetworkDataSource.existsUser(any()) } returns NetworkResult.Success(ExistsResponse(false))
 
             // when
             val result = repository.existsUser(mockExistsUser).last()
@@ -118,7 +127,7 @@ class AuthRepositoryImplTest {
             // given
             val expectedError = NetworkErrorType.Unexpected(null)
             coEvery {
-                dataSource.existsUser(any())
+                authNetworkDataSource.existsUser(any())
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
@@ -137,7 +146,7 @@ class AuthRepositoryImplTest {
     fun `existsDisplayId() 성공 테스트`() =
         runTest {
             // given
-            coEvery { dataSource.existsDisplayId(mockDisplayId) } returns NetworkResult.Success(mockExistsResponse)
+            coEvery { authNetworkDataSource.existsDisplayId(mockDisplayId) } returns NetworkResult.Success(mockExistsResponse)
 
             // when
             val result = repository.existsDisplayId(mockDisplayId).last()
@@ -151,7 +160,7 @@ class AuthRepositoryImplTest {
     fun `existsDisplayId() 성공 테스트 - 존재하지 않음(false)`() =
         runTest {
             // given
-            coEvery { dataSource.existsDisplayId(mockDisplayId) } returns NetworkResult.Success(ExistsResponse(false))
+            coEvery { authNetworkDataSource.existsDisplayId(mockDisplayId) } returns NetworkResult.Success(ExistsResponse(false))
 
             // when
             val result = repository.existsDisplayId(mockDisplayId).last()
@@ -167,7 +176,7 @@ class AuthRepositoryImplTest {
             // given
             val expectedError = NetworkErrorType.Unexpected(null)
             coEvery {
-                dataSource.existsDisplayId(mockDisplayId)
+                authNetworkDataSource.existsDisplayId(mockDisplayId)
             } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
             // when
@@ -186,7 +195,7 @@ class AuthRepositoryImplTest {
     fun `register() 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.register(any())
+            authNetworkDataSource.register(any())
         } returns NetworkResult.Success(mockRegisterResponse)
         coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
 
@@ -203,7 +212,7 @@ class AuthRepositoryImplTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.register(any())
+            authNetworkDataSource.register(any())
         } returns NetworkResult.Error(error = expectedError, message = mockErrorMessage)
 
         // when

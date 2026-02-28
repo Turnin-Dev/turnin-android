@@ -55,6 +55,41 @@ sealed interface CommonErrorType : BaseError {
         data object UploadFileFailed : Network
     }
 
+    sealed interface SocialAuth : CommonErrorType {
+        /** ID 토큰 파싱 에러 */
+        data object IdTokenParsing : SocialAuth
+
+        /** 인증 로직 취소 에러 */
+        data object Cancellation : SocialAuth
+
+        /** 유효하지 않은 토큰 타입 에러 */
+        data object TokenTypeInvalid : SocialAuth
+
+        /** 사용자를 찾을 수 없는 에러 */
+        data object UserNotFound : SocialAuth
+
+        /** 계정 삭제 실패 에러 */
+        data object DeleteAccountFailed : SocialAuth
+
+        /** 카카오 로그인 에러 */
+        data object KakaoSignInError : SocialAuth
+
+        /** 카카오 로그아웃 에러 */
+        data object KakaoSignOutError : SocialAuth
+
+        /** 카카오 계정 삭제 에러 */
+        data object KakaoDeleteAccountError : SocialAuth
+
+        /** 토큰 저장 실패 에러 */
+        data object SaveTokenFailed : SocialAuth
+
+        /** 로그인 실패 에러 */
+        data object SocialAuthFailed : SocialAuth
+
+        /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
+        data class Unexpected(val cause: Throwable?) : CommonErrorType
+    }
+
     /** 예외 타입 */
     enum class Exception : CommonErrorType {
         Json,

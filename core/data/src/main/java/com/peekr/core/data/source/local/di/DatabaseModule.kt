@@ -2,6 +2,7 @@ package com.peekr.core.data.source.local.di
 
 import android.content.Context
 import androidx.room.Room
+import com.peekr.core.data.auth.Clearable
 import com.peekr.core.data.source.local.database.PeekrDatabase
 import com.peekr.core.data.source.local.database.dao.FeedDao
 import com.peekr.core.data.source.local.database.dao.FeedRemoteKeyDao
@@ -12,11 +13,21 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.multibindings.IntoSet
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+    // Multi Binding
+    @Provides
+    @IntoSet
+    fun provideDatabaseClearable(
+        database: PeekrDatabase,
+    ): Clearable = Clearable {
+        database.clearAllTables()
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(

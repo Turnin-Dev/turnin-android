@@ -40,9 +40,16 @@ interface AuthRepository {
     ): Flow<Result<Unit, CommonErrorType>>
 
     /**
-     * 자원 정리
+     * 로그아웃
      *
-     * 로컬 데이터를 전부 삭제한다.
+     * **로그아웃 시 모든 앱 데이터를 삭제하므로 유의해야 한다.**
      */
-    suspend fun cleanUp()
+    fun logout(): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 계정 삭제
+     *
+     * **계정 삭제 시 모든 앱 데이터를 삭제하므로 유의해야 한다.**
+     */
+    fun deleteAccount(): Flow<Result<Unit, CommonErrorType>>
 }

@@ -9,6 +9,9 @@
     <!-- Login Screen -->
     <string name="login_screen_btn_google">Google 로그인</string>
     <string name="login_screen_btn_kakao">카카오 로그인</string>
+    <!-- Login Error -->
+    <string name="login_error_login_failed">로그인에 실패했습니다.</string>
+    <string name="login_error_unexpected">사용자 인증에 알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</string>
 
     <!-- Home Screen -->
     <string name="home_screen_notification">알림</string>

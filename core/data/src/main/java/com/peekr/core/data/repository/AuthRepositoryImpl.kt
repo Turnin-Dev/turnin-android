@@ -1,12 +1,13 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
-import com.peekr.core.data.source.local.database.dao.MyKeywordDao
-import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.auth.AuthAppDataCleaner
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.error.WritingDataException
+import com.peekr.core.data.source.network.datasource.AccountNetworkDataSource
 import com.peekr.core.data.source.network.datasource.AuthNetworkDataSource
+import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.request.toDataModel
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
 import com.peekr.core.data.source.network.dto.auth.response.toDomainModel
@@ -25,13 +26,13 @@ import com.peekr.core.domain.model.DisplayId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkDataSource: AuthNetworkDataSource,
+    private val accountNetworkDataSource: AccountNetworkDataSource,
+    private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
-    private val myProfileDao: MyProfileDao,
-    private val myKeywordDao: MyKeywordDao,
+    private val authAppDataCleaner: AuthAppDataCleaner,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
     override fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>> =
@@ -110,6 +111,38 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun logout(): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+            when (val result = userNetworkDataSource.logout()) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(Unit))
+                    authAppDataCleaner.clearAll()
+                }
+
+                is NetworkResult.Error -> {
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
+    override fun deleteAccount(): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+            when (val result = accountNetworkDataSource.deleteAccount()) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(Unit))
+                    authAppDataCleaner.clearAll()
+                }
+
+                is NetworkResult.Error -> {
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
     private fun mapExistsResult(result: NetworkResult<ExistsResponse>): Result<Boolean, CommonErrorType> =
         when (result) {
             is NetworkResult.Success -> Result.Success(result.data.exists)
@@ -118,10 +151,4 @@ class AuthRepositoryImpl @Inject constructor(
                 message = result.message,
             )
         }
-
-    override suspend fun cleanUp() = withContext(ioDispatcher) {
-        dataStoreManager.clearAll()
-        myProfileDao.deleteAll()
-        myKeywordDao.deleteAll()
-    }
 }

@@ -32,4 +32,16 @@ fun CommonErrorType.asUiText(): UiText = when (this) {
     CommonErrorType.Network.InternalServerError -> StringResource(R.string.common_error_network_internal_server_error)
     CommonErrorType.Network.GatewayTimeout -> StringResource(R.string.common_error_network_gateway_timeout)
     is CommonErrorType.Network.ServerError -> StringResource(R.string.common_error_network_server, this.status)
+    // ------------------------------ SocialAuth ------------------------------
+    CommonErrorType.SocialAuth.IdTokenParsing -> StringResource(R.string.common_error_social_auth_id_token_parsing)
+    CommonErrorType.SocialAuth.Cancellation -> StringResource(R.string.common_error_social_auth_cancellation)
+    CommonErrorType.SocialAuth.TokenTypeInvalid -> StringResource(R.string.common_error_social_auth_token_type_invalid)
+    CommonErrorType.SocialAuth.UserNotFound -> StringResource(R.string.common_error_social_auth_user_not_found)
+    CommonErrorType.SocialAuth.DeleteAccountFailed -> StringResource(R.string.common_error_social_auth_delete_account_failed)
+    CommonErrorType.SocialAuth.KakaoSignInError -> StringResource(R.string.common_error_social_auth_kakao_sign_in_error)
+    CommonErrorType.SocialAuth.KakaoSignOutError -> StringResource(R.string.common_error_social_auth_kakao_sign_out_error)
+    CommonErrorType.SocialAuth.KakaoDeleteAccountError -> StringResource(R.string.common_error_social_auth_kakao_delete_account_error)
+    CommonErrorType.SocialAuth.SaveTokenFailed -> StringResource(R.string.common_error_social_auth_save_token_failed)
+    CommonErrorType.SocialAuth.SocialAuthFailed -> StringResource(R.string.common_error_social_auth_failed)
+    is CommonErrorType.SocialAuth.Unexpected -> StringResource(R.string.common_error_social_auth_unexpected)
 }

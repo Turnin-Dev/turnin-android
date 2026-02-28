@@ -60,9 +60,9 @@ class MainViewModel @Inject constructor(
         }.first()
     }
 
-    fun cleanUp() {
+    fun logout() {
         viewModelScope.launch {
-            authRepository.cleanUp()
+            authRepository.logout()
         }
     }
 }

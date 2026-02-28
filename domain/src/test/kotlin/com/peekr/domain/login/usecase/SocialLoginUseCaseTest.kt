@@ -1,11 +1,11 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.LoginCredentials
+import com.peekr.core.domain.auth.social.SocialAuthManager
+import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.domain.login.util.SocialAuthManager
-import com.peekr.domain.login.util.SocialAuthManagerFactory
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
