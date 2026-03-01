@@ -116,8 +116,8 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = userNetworkDataSource.logout()) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(Unit))
                     appDataCleaner.clearAll()
+                    emit(Result.Success(Unit))
                 }
 
                 is NetworkResult.Error -> {
@@ -132,8 +132,8 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = accountNetworkDataSource.deleteAccount()) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(Unit))
                     appDataCleaner.clearAll()
+                    emit(Result.Success(Unit))
                 }
 
                 is NetworkResult.Error -> {
