@@ -1,6 +1,7 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.cleaner.AppDataCleaner
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
@@ -37,6 +38,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val appDataCleaner: AppDataCleaner,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
+    private val tag = this::class.java.simpleName
+
     override fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>> =
         safeResultFlow<LoginResult, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
@@ -134,7 +137,8 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = userNetworkDataSource.logout()) {
                 is NetworkResult.Success -> {
-                    appDataCleaner.clearAll()
+                    runCatching { appDataCleaner.clearAll() }
+                        .onFailure { AppLogger.e(tag, it, "Failed to clear app data.") }
                     emit(Result.Success(Unit))
                 }
 
@@ -150,7 +154,8 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = accountNetworkDataSource.deleteAccount()) {
                 is NetworkResult.Success -> {
-                    appDataCleaner.clearAll()
+                    runCatching { appDataCleaner.clearAll() }
+                        .onFailure { AppLogger.e(tag, it, "Failed to clear app data.") }
                     emit(Result.Success(Unit))
                 }
 
