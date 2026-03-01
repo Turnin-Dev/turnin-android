@@ -58,6 +58,8 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
                 if (e == null) {
                     AppLogger.i(tag, "Kakao sign-out succeeded.")
                 } else {
+                    // 카카오 로그아웃은 실패해도 로컬 토큰이 삭제되므로 항상 성공으로 처리한다.
+                    // https://developers.kakao.com/docs/latest/ko/kakaologin/android#logout
                     AppLogger.e(tag, e, "Kakao sign-out failed or already signed out.")
                 }
 
@@ -153,7 +155,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
             trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Cancellation))
         } else {
-            close()
+            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoSignInError, error?.message))
         }
     }
 

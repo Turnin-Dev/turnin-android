@@ -72,26 +72,16 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
 
     override suspend fun deleteAccount(): Result<Unit, CommonErrorType> {
         val currentUser = auth.currentUser
+            ?: return Result.Error(CommonErrorType.SocialAuth.UserNotFound)
 
-        if (currentUser == null) {
-            return Result.Error(CommonErrorType.SocialAuth.UserNotFound)
-        } else {
-            return try {
-                val task = currentUser.delete()
-
-                if (task.isComplete && task.isSuccessful) {
-                    credentialManager.clearCredentialState(
-                        ClearCredentialStateRequest(),
-                    )
-                    AppLogger.i(tag, "Google account deleted.")
-                    Result.Success(Unit)
-                } else {
-                    Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed)
-                }
-            } catch (e: Exception) {
-                AppLogger.e(tag, e, "Failed to delete Google account.")
-                return Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed, e.message)
-            }
+        return try {
+            currentUser.delete().await()
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            AppLogger.i(tag, "Google account deleted.")
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            AppLogger.e(tag, e, "Failed to delete Google account.")
+            Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed, e.message)
         }
     }
 

@@ -63,13 +63,14 @@ class AuthRepositoryImplTest {
             // given
             coEvery { authNetworkDataSource.login(any()) } returns NetworkResult.Success(mockLoginResponse)
             coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
+            coEvery { dataStoreManager.saveStringData(any(), any()) } just Runs
 
             // when
             val result = repository.login(mockLoginCredentials).last()
 
             // then
-            Assert.assertTrue(result is Result.Success)
-            Assert.assertEquals(mockLoginResponse.toDomainModel(), (result as Result.Success).data)
+            assertTrue(result is Result.Success)
+            assertEquals(mockLoginResponse.toDomainModel(), (result as Result.Success).data)
         }
 
     @Test
@@ -198,6 +199,7 @@ class AuthRepositoryImplTest {
             authNetworkDataSource.register(any())
         } returns NetworkResult.Success(mockRegisterResponse)
         coEvery { dataStoreManager.saveLongData(any(), any()) } just Runs
+        coEvery { dataStoreManager.saveStringData(any(), any()) } just Runs
 
         // when
         val result = repository.register(mockRegister).last()

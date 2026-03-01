@@ -149,7 +149,13 @@ class DataStoreManagerImpl(
     }
 
     override suspend fun isCleared(): Boolean =
-        dataStore.data.first().asMap().isEmpty()
+        try {
+            dataStore.data.first().asMap().isEmpty()
+        } catch (e: IOException) {
+            AppLogger.e(tag, e, "DataStore 데이터 확인 중 오류 발생")
+            // 예외 발생 시 비어있는 것으 간주
+            true
+        }
 
     // ------------------------------ 공통 메서드 ------------------------------
 
