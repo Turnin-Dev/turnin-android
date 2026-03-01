@@ -11,8 +11,8 @@ interface SocialAuthManager {
     fun signIn(): Flow<Result<ProviderId, CommonErrorType>>
 
     /** 해당하는 소셜로그인 플랫폼을 로그아웃 한다. */
-    fun signOut(): Flow<Result<Unit, CommonErrorType>>
+    suspend fun signOut(): Result<Unit, CommonErrorType>
 
     /** 해당하는 소셜로그인 플랫폼에서 계정을 삭제한다. */
-    fun deleteAccount(): Flow<Result<Unit, CommonErrorType>>
+    suspend fun deleteAccount(): Result<Unit, CommonErrorType>
 }

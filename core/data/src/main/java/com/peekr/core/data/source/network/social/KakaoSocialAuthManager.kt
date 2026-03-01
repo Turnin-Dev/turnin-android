@@ -16,6 +16,7 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 private typealias ProviderIdResult = Result<ProviderId, CommonErrorType>
 
@@ -23,8 +24,8 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     private val tag = this::class.java.simpleName
 
     override fun signIn(): Flow<Result<ProviderId, CommonErrorType>> = callbackFlow {
-        if (AuthApiClient.Companion.instance.hasToken()) {
-            UserApiClient.Companion.instance.accessTokenInfo { tokenInfo, error ->
+        if (AuthApiClient.instance.hasToken()) {
+            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                 if (error != null) {
                     if (error is KakaoSdkError && error.isInvalidTokenError()) {
                         // 1. Login Required
@@ -50,41 +51,39 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
         awaitClose()
     }
 
-    override fun signOut(): Flow<Result<Unit, CommonErrorType>> = callbackFlow {
-        UserApiClient.Companion.instance.logout { e ->
-            if (e == null) {
-                AppLogger.i(tag, "Kakao sign-out succeeded.")
-                trySendAndClose(Result.Success(Unit))
-            } else {
-                AppLogger.e(tag, e, "Kakao sign-out failed.")
-                trySendAndClose(
-                    Result.Error(CommonErrorType.SocialAuth.KakaoSignOutError, e.message),
-                )
+    override suspend fun signOut(): Result<Unit, CommonErrorType> =
+        suspendCancellableCoroutine { cont ->
+            UserApiClient.instance.logout { e ->
+                if (e == null) {
+                    AppLogger.i(tag, "Kakao sign-out succeeded.")
+                } else {
+                    AppLogger.e(tag, e, "Kakao sign-out failed or already signed out.")
+                }
+
+                cont.resumeWith(kotlin.Result.success(Result.Success(Unit)))
             }
         }
 
-        awaitClose()
-    }
-
-    override fun deleteAccount(): Flow<Result<Unit, CommonErrorType>> = callbackFlow {
-        UserApiClient.Companion.instance.unlink { e ->
-            if (e == null) {
-                AppLogger.i(tag, "Kakao account deleted.")
-                trySendAndClose(Result.Success(Unit))
-            } else {
-                AppLogger.e(tag, e, "Failed to delete Kakao account.")
-                trySendAndClose(
-                    Result.Error(CommonErrorType.SocialAuth.KakaoDeleteAccountError, e.message),
-                )
+    override suspend fun deleteAccount(): Result<Unit, CommonErrorType> =
+        suspendCancellableCoroutine { cont ->
+            UserApiClient.instance.unlink { e ->
+                if (e == null) {
+                    AppLogger.i(tag, "Kakao account deleted.")
+                    cont.resumeWith(kotlin.Result.success(Result.Success(Unit)))
+                } else {
+                    AppLogger.e(tag, e, "Failed to delete Kakao account.")
+                    cont.resumeWith(
+                        kotlin.Result.success(
+                            Result.Error(CommonErrorType.SocialAuth.KakaoDeleteAccountError, e.message),
+                        ),
+                    )
+                }
             }
         }
-
-        awaitClose()
-    }
 
     private fun ProducerScope<ProviderIdResult>.login(context: Context) {
         // 카카오톡 설치 확인
-        if (UserApiClient.Companion.instance.isKakaoTalkLoginAvailable(context)) {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             loginWithKakaoTalk(context)
         } else {
             loginWithKakaoAccount(context)
@@ -92,7 +91,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     }
 
     private fun ProducerScope<ProviderIdResult>.loginWithKakaoTalk(context: Context) =
-        UserApiClient.Companion.instance.loginWithKakaoTalk(context) { token, error ->
+        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
             if (error != null) { // 로그인 실패/에러
                 AppLogger.i(tag, "'Login with KakaoTalk' failed.")
                 loginWithKakaoTalkError(context, error)
@@ -116,7 +115,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     }
 
     private fun ProducerScope<ProviderIdResult>.loginWithKakaoAccount(context: Context) =
-        UserApiClient.Companion.instance.loginWithKakaoAccount(context) { token, error ->
+        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
             if (error != null) { // 로그인 실패/에러
                 AppLogger.i(tag, "'Login with KakaoAccount' failed.")
                 loginWithKakaoAccountError(error)
@@ -137,7 +136,7 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     }
 
     private fun ProducerScope<ProviderIdResult>.loginSuccess() {
-        UserApiClient.Companion.instance.me { user, error ->
+        UserApiClient.instance.me { user, error ->
             if (user?.id != null) {
                 AppLogger.i(tag, "Kakao Login succeeded")
                 val providerId = ProviderId(user.id.toString())

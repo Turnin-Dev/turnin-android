@@ -58,27 +58,25 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
         }
     }
 
-    override fun signOut(): Flow<Result<Unit, CommonErrorType>> = flow {
-        try {
-            auth.signOut()
-            credentialManager.clearCredentialState(
-                ClearCredentialStateRequest(),
-            )
-            AppLogger.i(tag, "Google sign-out Succeeded.")
-            emit(Result.Success(Unit))
-        } catch (e: Exception) {
-            AppLogger.e(tag, e, "Failed to Google sign-out")
-            emit(Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message))
-        }
+    override suspend fun signOut(): Result<Unit, CommonErrorType> = try {
+        auth.signOut()
+        credentialManager.clearCredentialState(
+            ClearCredentialStateRequest(),
+        )
+        AppLogger.i(tag, "Google sign-out Succeeded.")
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        AppLogger.e(tag, e, "Failed to Google sign-out")
+        Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message)
     }
 
-    override fun deleteAccount(): Flow<Result<Unit, CommonErrorType>> = flow {
+    override suspend fun deleteAccount(): Result<Unit, CommonErrorType> {
         val currentUser = auth.currentUser
 
         if (currentUser == null) {
-            emit(Result.Error(CommonErrorType.SocialAuth.UserNotFound))
+            return Result.Error(CommonErrorType.SocialAuth.UserNotFound)
         } else {
-            try {
+            return try {
                 val task = currentUser.delete()
 
                 if (task.isComplete && task.isSuccessful) {
@@ -86,13 +84,13 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
                         ClearCredentialStateRequest(),
                     )
                     AppLogger.i(tag, "Google account deleted.")
-                    emit(Result.Success(Unit))
+                    Result.Success(Unit)
                 } else {
-                    emit(Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed))
+                    Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed)
                 }
             } catch (e: Exception) {
                 AppLogger.e(tag, e, "Failed to delete Google account.")
-                emit(Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed, e.message))
+                return Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed, e.message)
             }
         }
     }
