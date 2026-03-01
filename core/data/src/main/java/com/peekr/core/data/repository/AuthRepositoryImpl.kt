@@ -1,7 +1,7 @@
 package com.peekr.core.data.repository
 
 import com.peekr.core.common.coroutine.IO
-import com.peekr.core.data.auth.AuthAppDataCleaner
+import com.peekr.core.data.cleaner.AppDataCleaner
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.error.WritingDataException
@@ -32,7 +32,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val accountNetworkDataSource: AccountNetworkDataSource,
     private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
-    private val authAppDataCleaner: AuthAppDataCleaner,
+    private val appDataCleaner: AppDataCleaner,
     @IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
     override fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>> =
@@ -117,7 +117,7 @@ class AuthRepositoryImpl @Inject constructor(
             when (val result = userNetworkDataSource.logout()) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(Unit))
-                    authAppDataCleaner.clearAll()
+                    appDataCleaner.clearAll()
                 }
 
                 is NetworkResult.Error -> {
@@ -133,7 +133,7 @@ class AuthRepositoryImpl @Inject constructor(
             when (val result = accountNetworkDataSource.deleteAccount()) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(Unit))
-                    authAppDataCleaner.clearAll()
+                    appDataCleaner.clearAll()
                 }
 
                 is NetworkResult.Error -> {

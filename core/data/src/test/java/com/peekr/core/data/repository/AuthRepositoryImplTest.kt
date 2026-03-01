@@ -1,6 +1,6 @@
 package com.peekr.core.data.repository
 
-import com.peekr.core.data.auth.AuthAppDataCleaner
+import com.peekr.core.data.cleaner.AppDataCleaner
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.error.WritingDataException
@@ -43,7 +43,7 @@ class AuthRepositoryImplTest {
     private val accountNetworkDataSource: AccountNetworkDataSource = mockk()
     private val userNetworkDataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
-    private val authAppDataCleaner: AuthAppDataCleaner = mockk()
+    private val appDataCleaner: AppDataCleaner = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = UnconfinedTestDispatcher()
@@ -53,7 +53,7 @@ class AuthRepositoryImplTest {
             accountNetworkDataSource = accountNetworkDataSource,
             userNetworkDataSource = userNetworkDataSource,
             dataStoreManager = dataStoreManager,
-            authAppDataCleaner = authAppDataCleaner,
+            appDataCleaner = appDataCleaner,
             ioDispatcher = dispatcher,
         )
 

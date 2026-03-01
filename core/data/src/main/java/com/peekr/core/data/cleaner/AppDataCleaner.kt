@@ -1,4 +1,4 @@
-package com.peekr.core.data.auth
+package com.peekr.core.data.cleaner
 
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.source.local.datastore.DataStoreManager
@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 /**
  * 로그아웃 또는 계정 탈퇴 시 앱 내 데이터 정리를 수행하는 클래스.
  */
-class AuthAppDataCleaner @Inject constructor(
+class AppDataCleaner @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val clearables: Set<@JvmSuppressWildcards Clearable>,
     @IO private val ioDispatcher: CoroutineDispatcher,

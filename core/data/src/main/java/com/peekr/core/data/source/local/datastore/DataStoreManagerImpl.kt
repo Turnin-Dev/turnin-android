@@ -14,6 +14,7 @@ import com.peekr.core.data.source.local.error.WritingDataException
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DataStoreManagerImpl(
@@ -146,6 +147,9 @@ class DataStoreManagerImpl(
             dataStore.edit { preferences -> preferences.clear() }
         }
     }
+
+    override suspend fun isCleared(): Boolean =
+        dataStore.data.first().asMap().isEmpty()
 
     // ------------------------------ 공통 메서드 ------------------------------
 

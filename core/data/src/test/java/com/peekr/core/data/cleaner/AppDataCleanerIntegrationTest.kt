@@ -1,4 +1,4 @@
-package com.peekr.core.data.auth
+package com.peekr.core.data.cleaner
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.peekr.core.data.source.local.database.PeekrDatabase
@@ -13,7 +13,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.Before
@@ -25,7 +24,7 @@ import org.robolectric.annotation.Config
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 @Config(application = HiltTestApplication::class)
-class AuthAppDataCleanerTest {
+class AppDataCleanerIntegrationTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
@@ -36,7 +35,7 @@ class AuthAppDataCleanerTest {
     lateinit var dataStoreManager: DataStoreManager
 
     @Inject
-    lateinit var appDataCleaner: AuthAppDataCleaner
+    lateinit var appDataCleaner: AppDataCleaner
 
     @Before
     fun init() {
@@ -44,13 +43,14 @@ class AuthAppDataCleanerTest {
     }
 
     @Test
-    fun `clearAll 하면 모든 로컬 데이터(DB, DataStore)가 삭제되어야 한다`() = runTest {
-        // 1. 더미 데이터 삽입
+    fun `clearAll 실행 시 모든 로컬 데이터(DB, DataStore)가 삭제되어야 한다`() = runTest {
+        // 1. 더미 데이터 삽입 (Room DB, DataStore)
+        // Room DB
         withContext(Dispatchers.IO) {
-            insertDummyData()
+            insertRoomDBDummyData()
         }
-        // DataStore는 내부적으로 IO 처리
-        dataStoreManager.saveStringData(DataStoreKey.Auth.AccessToken, "aaa.bbb.ccc")
+        // DataStore
+        insertDataStoreDummyData()
 
         // 2. 데이터가 실제로 삽입됐는지 검증 (테스트 신뢰성 확보)
         val tableNames = withContext(Dispatchers.IO) { getCustomTableNames() }
@@ -60,7 +60,7 @@ class AuthAppDataCleanerTest {
         assert(emptyTablesBeforeClear.isEmpty()) {
             "더미 데이터가 삽입되지 않은 테이블 발견: $emptyTablesBeforeClear"
         }
-        assert(dataStoreManager.getStringData(DataStoreKey.Auth.AccessToken).first() != null) {
+        assert(!dataStoreManager.isCleared()) {
             "DataStore 더미 데이터가 삽입되지 않았습니다."
         }
 
@@ -76,7 +76,7 @@ class AuthAppDataCleanerTest {
         }
 
         // 5. DataStore 검증
-        assert(dataStoreManager.getStringData(DataStoreKey.Auth.AccessToken).first() == null) {
+        assert(dataStoreManager.isCleared()) {
             "DataStore가 삭제되지 않았습니다."
         }
     }
@@ -85,7 +85,7 @@ class AuthAppDataCleanerTest {
      * 각 테이블에 더미 데이터를 삽입한다.
      * 새로운 엔티티가 추가되면 여기에도 추가해야 한다.
      */
-    private suspend fun insertDummyData() {
+    private suspend fun insertRoomDBDummyData() {
         database.feedRemoteKeyDao().upsert(
             FeedRemoteKeyEntity(
                 cursorScore = 1.0,
@@ -131,6 +131,10 @@ class AuthAppDataCleanerTest {
                 updatedAt = 1000L,
             ),
         )
+    }
+
+    private suspend fun insertDataStoreDummyData() {
+        dataStoreManager.saveStringData(DataStoreKey.Auth.AccessToken, "aaa.bbb.ccc")
     }
 
     private fun getCustomTableNames(): List<String> {

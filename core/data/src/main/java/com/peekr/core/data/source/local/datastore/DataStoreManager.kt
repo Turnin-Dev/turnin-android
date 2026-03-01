@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.local.datastore
 
-import com.peekr.core.data.source.local.datastore.DataStoreKey
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  * 1. `String`
  * 2. `Boolean`
  *
- * @see com.peekr.domain.DataStoreKey DataStore 키 값 집합
+ * @see DataStoreKey DataStore 키 값 집합
  */
 interface DataStoreManager {
     // ------------------------------ 일반 저장 & 읽기 메서드 ------------------------------
@@ -126,4 +125,11 @@ interface DataStoreManager {
      * @throws Exception 데이터 삭제 중 오류가 발생할 때
      */
     suspend fun clearAll()
+
+    // ------------------------------ 유틸 ------------------------------
+
+    /**
+     * DataStore 내 데이터가 비어있는지 확인한다.
+     */
+    suspend fun isCleared(): Boolean
 }

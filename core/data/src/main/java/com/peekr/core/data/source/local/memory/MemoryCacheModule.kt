@@ -1,6 +1,6 @@
 package com.peekr.core.data.source.local.memory
 
-import com.peekr.core.data.auth.Clearable
+import com.peekr.core.data.cleaner.Clearable
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.model.CoreUserProfile

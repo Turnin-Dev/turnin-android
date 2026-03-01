@@ -1,9 +1,9 @@
-package com.peekr.core.data.auth
+package com.peekr.core.data.cleaner
 
 /**
  * 로그아웃 또는 계정 탈퇴 시 데이터 정리를 수행하는 구성 요소에 대한 인터페이스.
  * * 이 인터페이스를 구현하고 Hilt 멀티바인딩(@IntoSet)으로 등록하면,
- * [AuthAppDataCleaner]에서 일괄적으로 호출되어 로컬 데이터를 초기화한다.
+ * [AppDataCleaner]에서 일괄적으로 호출되어 로컬 데이터를 초기화한다.
  */
 fun interface Clearable {
     /**
