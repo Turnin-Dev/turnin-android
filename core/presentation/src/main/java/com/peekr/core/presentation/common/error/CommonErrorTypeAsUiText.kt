@@ -40,7 +40,7 @@ fun CommonErrorType.asUiText(): UiText = when (this) {
     CommonErrorType.SocialAuth.DeleteAccountFailed -> StringResource(R.string.common_error_social_auth_delete_account_failed)
     CommonErrorType.SocialAuth.KakaoSignInError -> StringResource(R.string.common_error_social_auth_kakao_sign_in_error)
     CommonErrorType.SocialAuth.KakaoSignOutError -> StringResource(R.string.common_error_social_auth_kakao_sign_out_error)
-    CommonErrorType.SocialAuth.KakaoDeleteAccountError -> StringResource(R.string.common_error_social_auth_kakao_delete_account_error)
+    is CommonErrorType.SocialAuth.KakaoDeleteAccountError -> StringResource(R.string.common_error_social_auth_kakao_delete_account_error)
     CommonErrorType.SocialAuth.SaveTokenFailed -> StringResource(R.string.common_error_social_auth_save_token_failed)
     CommonErrorType.SocialAuth.SocialAuthFailed -> StringResource(R.string.common_error_social_auth_failed)
     is CommonErrorType.SocialAuth.Unexpected -> StringResource(R.string.common_error_social_auth_unexpected)

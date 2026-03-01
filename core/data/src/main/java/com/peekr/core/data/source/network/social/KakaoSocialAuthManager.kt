@@ -2,6 +2,7 @@ package com.peekr.core.data.source.network.social
 
 import android.content.Context
 import com.kakao.sdk.auth.AuthApiClient
+import com.kakao.sdk.common.model.ApiError
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
@@ -67,16 +68,37 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
     override suspend fun deleteAccount(): Result<Unit, CommonErrorType> =
         suspendCancellableCoroutine { cont ->
             UserApiClient.instance.unlink { e ->
-                if (e == null) {
-                    AppLogger.i(tag, "Kakao account deleted.")
-                    cont.resumeWith(kotlin.Result.success(Result.Success(Unit)))
-                } else {
-                    AppLogger.e(tag, e, "Failed to delete Kakao account.")
-                    cont.resumeWith(
-                        kotlin.Result.success(
-                            Result.Error(CommonErrorType.SocialAuth.KakaoDeleteAccountError, e.message),
-                        ),
-                    )
+                when {
+                    // 성공한 경우
+                    e == null -> {
+                        AppLogger.i(tag, "Kakao account deleted.")
+                        cont.resumeWith(kotlin.Result.success(Result.Success(Unit)))
+                    }
+
+                    // 등록된 카카오 계정이 없는 경우 (혹은 이미 탈퇴된 계정)
+                    e is ApiError && e.response.code == -101 -> {
+                        AppLogger.e(tag, e, "Kakao account already deleted.")
+                        cont.resumeWith(kotlin.Result.success(Result.Success(Unit)))
+                    }
+
+                    // 토큰이 만료된 경우
+                    e is KakaoSdkError && e.isInvalidTokenError() -> {
+                        AppLogger.e(tag, e, "Kakao token invalid.")
+                        cont.resumeWith(kotlin.Result.success(Result.Success(Unit)))
+                    }
+
+                    // 이 외 경우 (예: 네트워크 오류)
+                    else -> {
+                        AppLogger.e(tag, e, "Failed to delete Kakao account.")
+                        cont.resumeWith(
+                            kotlin.Result.success(
+                                Result.Error(
+                                    CommonErrorType.SocialAuth.KakaoDeleteAccountError,
+                                    e.message,
+                                ),
+                            ),
+                        )
+                    }
                 }
             }
         }

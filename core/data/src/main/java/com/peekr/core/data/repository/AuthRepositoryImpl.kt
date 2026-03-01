@@ -23,9 +23,11 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.SocialLoginProvider
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkDataSource: AuthNetworkDataSource,
@@ -40,9 +42,14 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = authNetworkDataSource.login(loginCredentials.toDataModel())) {
                 is NetworkResult.Success -> {
+                    // 성공 시 사용자 ID와 로그인 플랫폼을 저장한다.
                     dataStoreManager.saveLongData(
                         key = DataStoreKey.User.UserId,
                         value = result.data.userId,
+                    )
+                    dataStoreManager.saveStringData(
+                        key = DataStoreKey.User.LoginProvider,
+                        value = loginCredentials.provider.name,
                     )
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -75,9 +82,14 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = authNetworkDataSource.register(register.toDataModel())) {
                 is NetworkResult.Success -> {
+                    // 성공 시 사용자 ID와 로그인 플랫폼을 저장한다.
                     dataStoreManager.saveLongData(
                         key = DataStoreKey.User.UserId,
                         value = result.data.userId,
+                    )
+                    dataStoreManager.saveStringData(
+                        key = DataStoreKey.User.LoginProvider,
+                        value = register.provider.name,
                     )
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -110,6 +122,12 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Result.Error(CommonErrorType.Local.WritingDataFailed))
             }
         }
+
+    override suspend fun getLoginType(): SocialLoginProvider? {
+        val provider = dataStoreManager.getStringData(DataStoreKey.User.LoginProvider).firstOrNull()
+            ?: return null
+        return SocialLoginProvider.getType(provider)
+    }
 
     override fun logout(): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

@@ -8,6 +8,7 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.SocialLoginProvider
 import kotlinx.coroutines.flow.Flow
 
 /** Auth 리포지토리 */
@@ -38,6 +39,11 @@ interface AuthRepository {
         accessToken: String,
         refreshToken: String,
     ): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 로그인 타입 조회
+     */
+    suspend fun getLoginType(): SocialLoginProvider?
 
     /**
      * 로그아웃
