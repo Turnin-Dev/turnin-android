@@ -1,5 +1,6 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.cleaner.AppDataCleaner
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
@@ -27,15 +28,21 @@ import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class AuthRepositoryImplTest {
@@ -56,6 +63,16 @@ class AuthRepositoryImplTest {
             appDataCleaner = appDataCleaner,
             ioDispatcher = dispatcher,
         )
+
+    @Before
+    fun setUp() {
+        mockkObject(AppLogger)
+    }
+
+    @After
+    fun teardown() {
+        unmockkObject(AppLogger)
+    }
 
     @Test
     fun `login() 성공 테스트`() =
@@ -104,8 +121,8 @@ class AuthRepositoryImplTest {
             val result = repository.existsUser(mockExistsUser).last()
 
             // then
-            Assert.assertTrue(result is Result.Success)
-            Assert.assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
+            assertTrue(result is Result.Success)
+            assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
         }
 
     @Test
@@ -118,8 +135,8 @@ class AuthRepositoryImplTest {
             val result = repository.existsUser(mockExistsUser).last()
 
             // then
-            Assert.assertTrue(result is Result.Success)
-            Assert.assertEquals(false, (result as Result.Success).data)
+            assertTrue(result is Result.Success)
+            assertEquals(false, (result as Result.Success).data)
         }
 
     @Test
@@ -135,12 +152,12 @@ class AuthRepositoryImplTest {
             val result = repository.existsUser(mockExistsUser).last()
 
             // then
-            Assert.assertTrue(result is Result.Error)
-            Assert.assertEquals(
+            assertTrue(result is Result.Error)
+            assertEquals(
                 expectedError.toCommonErrorType(),
                 (result as Result.Error).error,
             )
-            Assert.assertEquals(result.message, mockErrorMessage)
+            assertEquals(result.message, mockErrorMessage)
         }
 
     @Test
@@ -153,8 +170,8 @@ class AuthRepositoryImplTest {
             val result = repository.existsDisplayId(mockDisplayId).last()
 
             // then
-            Assert.assertTrue(result is Result.Success)
-            Assert.assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
+            assertTrue(result is Result.Success)
+            assertEquals(mockExistsResponse.exists, (result as Result.Success).data)
         }
 
     @Test
@@ -167,8 +184,8 @@ class AuthRepositoryImplTest {
             val result = repository.existsDisplayId(mockDisplayId).last()
 
             // then
-            Assert.assertTrue(result is Result.Success)
-            Assert.assertEquals(false, (result as Result.Success).data)
+            assertTrue(result is Result.Success)
+            assertEquals(false, (result as Result.Success).data)
         }
 
     @Test
@@ -184,12 +201,12 @@ class AuthRepositoryImplTest {
             val result = repository.existsDisplayId(mockDisplayId).last()
 
             // then
-            Assert.assertTrue(result is Result.Error)
-            Assert.assertEquals(
+            assertTrue(result is Result.Error)
+            assertEquals(
                 expectedError.toCommonErrorType(),
                 (result as Result.Error).error,
             )
-            Assert.assertEquals(result.message, mockErrorMessage)
+            assertEquals(result.message, mockErrorMessage)
         }
 
     @Test
@@ -205,8 +222,8 @@ class AuthRepositoryImplTest {
         val result = repository.register(mockRegister).last()
 
         // then
-        Assert.assertTrue(result is Result.Success)
-        Assert.assertEquals(mockRegisterResponse.toDomainModel(), (result as Result.Success).data)
+        assertTrue(result is Result.Success)
+        assertEquals(mockRegisterResponse.toDomainModel(), (result as Result.Success).data)
     }
 
     @Test
@@ -275,6 +292,111 @@ class AuthRepositoryImplTest {
             errorResult.error,
             CommonErrorType.Local.WritingDataFailed,
         )
+    }
+
+    @Test
+    fun `getLoginType 성공 테스트`() = runTest {
+        // given
+        val expectedLoginProvider = "GOOGLE"
+        coEvery {
+            dataStoreManager.getStringData(any())
+        } returns flowOf(expectedLoginProvider)
+
+        // when
+        val loginProvider = repository.getLoginType()
+
+        // then
+        assertEquals(expectedLoginProvider, loginProvider?.name)
+    }
+
+    @Test
+    fun `logout 성공 테스트`() = runTest {
+        // given
+        coEvery { userNetworkDataSource.logout() } returns NetworkResult.Success(Unit)
+        coEvery { appDataCleaner.clearAll() } just Runs
+
+        // when
+        val result = repository.logout().last()
+
+        // then
+        assertTrue(result is Result.Success)
+        coVerify(exactly = 1) { appDataCleaner.clearAll() }
+    }
+
+    @Test
+    fun `logout 실패 테스트 - 에러가 발생하면 정상적으로 에러를 방출한다`() = runTest {
+        // given
+        val expectedError = NetworkErrorType.Unexpected(null)
+        coEvery { userNetworkDataSource.logout() } returns NetworkResult.Error(expectedError)
+        coEvery { appDataCleaner.clearAll() } just Runs
+
+        // when
+        val result = repository.logout().last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(expectedError.toCommonErrorType(), error.error)
+        coVerify(exactly = 0) { appDataCleaner.clearAll() }
+    }
+
+    @Test
+    fun `logout 실패 테스트 - 앱 데이터 삭제 시 에러가 발생하면 로그를 남기고 Success를 방출한다`() = runTest {
+        // given
+        coEvery { userNetworkDataSource.logout() } returns NetworkResult.Success(Unit)
+        coEvery { appDataCleaner.clearAll() } throws Exception("")
+
+        // when
+        val result = repository.logout().last()
+
+        // then
+        assertTrue(result is Result.Success)
+        coVerify(exactly = 1) { appDataCleaner.clearAll() }
+        verify(exactly = 1) { AppLogger.e(any(), any(), any()) }
+    }
+
+    @Test
+    fun `deleteAccount 성공 테스트`() = runTest {
+        // given
+        coEvery { accountNetworkDataSource.deleteAccount() } returns NetworkResult.Success(Unit)
+        coEvery { appDataCleaner.clearAll() } just Runs
+
+        // when
+        val result = repository.deleteAccount().last()
+
+        // then
+        assertTrue(result is Result.Success)
+        coVerify(exactly = 1) { appDataCleaner.clearAll() }
+    }
+
+    @Test
+    fun `deleteAccount 실패 테스트 - 에러가 발생하면 정상적으로 에러를 방출한다`() = runTest {
+        // given
+        val expectedError = NetworkErrorType.Unexpected(null)
+        coEvery { accountNetworkDataSource.deleteAccount() } returns NetworkResult.Error(expectedError)
+        coEvery { appDataCleaner.clearAll() } just Runs
+
+        // when
+        val result = repository.deleteAccount().last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(expectedError.toCommonErrorType(), error.error)
+        coVerify(exactly = 0) { appDataCleaner.clearAll() }
+    }
+
+    @Test
+    fun `deleteAccount 실패 테스트 - 앱 데이터 삭제 시 에러가 발생하면 로그를 남기고 Success를 방출한다`() = runTest {
+        // given
+        coEvery { accountNetworkDataSource.deleteAccount() } returns NetworkResult.Success(Unit)
+        coEvery { appDataCleaner.clearAll() } throws Exception("")
+
+        // when
+        val result = repository.deleteAccount().last()
+
+        // then
+        assertTrue(result is Result.Success)
+        coVerify(exactly = 1) { appDataCleaner.clearAll() }
+        verify(exactly = 1) { AppLogger.e(any(), any(), any()) }
     }
 
     companion object {
