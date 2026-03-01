@@ -8,6 +8,7 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.domain.model.SocialLoginProvider
 import kotlinx.coroutines.flow.Flow
 
 /** Auth 리포지토리 */
@@ -40,9 +41,21 @@ interface AuthRepository {
     ): Flow<Result<Unit, CommonErrorType>>
 
     /**
-     * 자원 정리
-     *
-     * 로컬 데이터를 전부 삭제한다.
+     * 로그인 타입 조회
      */
-    suspend fun cleanUp()
+    suspend fun getLoginType(): SocialLoginProvider?
+
+    /**
+     * 로그아웃
+     *
+     * **로그아웃 시 모든 앱 데이터를 삭제하므로 유의해야 한다.**
+     */
+    fun logout(): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 계정 삭제
+     *
+     * **계정 삭제 시 모든 앱 데이터를 삭제하므로 유의해야 한다.**
+     */
+    fun deleteAccount(): Flow<Result<Unit, CommonErrorType>>
 }

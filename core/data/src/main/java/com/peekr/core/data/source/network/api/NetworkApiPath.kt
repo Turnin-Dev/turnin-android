@@ -4,6 +4,10 @@ object NetworkApiPath {
     private const val VERSION = "/v1"
     private const val BASE = "/api$VERSION"
 
+    object Account {
+        const val ROUTE = "$BASE/account"
+    }
+
     object Auth {
         const val ROUTE = "$BASE/auth"
 
@@ -31,6 +35,7 @@ object NetworkApiPath {
     object File {
         private const val ROUTE = "$BASE/file"
         const val UPLOAD = "$ROUTE/upload"
+        const val UPDATE = "$ROUTE/update"
     }
 
     object User {
@@ -40,6 +45,7 @@ object NetworkApiPath {
         const val USER_PROFILE = "$ROUTE/{userId}/profile"
         const val MY_KEYWORDS = "$ROUTE/me/keywords"
         const val USER_KEYWORDS = "$ROUTE/{userId}/keywords"
+        const val LOGOUT = "$ROUTE/logout"
     }
 
     object Report {

@@ -1,11 +1,11 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.LoginCredentials
+import com.peekr.core.domain.auth.social.SocialAuthManager
+import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.domain.login.util.AuthManager
-import com.peekr.domain.login.util.AuthManagerFactory
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -20,13 +20,13 @@ import org.junit.Test
 class SocialLoginUseCaseTest {
     private lateinit var useCase: SocialLoginUseCase
 
-    private val authManagerFactory: AuthManagerFactory = mockk()
-    private val authManager: AuthManager = mockk()
+    private val socialAuthManagerFactory: SocialAuthManagerFactory = mockk()
+    private val socialAuthManager: SocialAuthManager = mockk()
 
     @Before
     fun setup() {
-        every { authManagerFactory.create(any()) } returns authManager
-        useCase = SocialLoginUseCase(authManagerFactory)
+        every { socialAuthManagerFactory.create(any()) } returns socialAuthManager
+        useCase = SocialLoginUseCase(socialAuthManagerFactory)
     }
 
     @Test
@@ -35,7 +35,7 @@ class SocialLoginUseCaseTest {
         val providerId = ProviderId("google-uid-123")
         val expectedLoginCredentials = LoginCredentials(SocialLoginProvider.GOOGLE, providerId)
         val flow = flowOf(Result.Success(providerId))
-        every { authManager.signIn() } returns flow
+        every { socialAuthManager.signIn() } returns flow
 
         // When
         val result = useCase(SocialLoginProvider.GOOGLE).first()
@@ -49,7 +49,7 @@ class SocialLoginUseCaseTest {
     fun `invoke catch exception when authManager throws exception`() = runTest {
         // Given
         val expectedErrorMessage = "Error!"
-        every { authManager.signIn() } returns flow {
+        every { socialAuthManager.signIn() } returns flow {
             throw IllegalStateException(expectedErrorMessage)
         }
 

@@ -1,7 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-import kotlin.apply
-
 plugins {
     alias(libs.plugins.peekr.android.library)
     alias(libs.plugins.ksp)
@@ -10,12 +6,6 @@ plugins {
 
 android {
     namespace = "com.peekr.data"
-
-    defaultConfig {
-        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
-        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
-        buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", properties.getProperty("CLOUD_STORAGE_SERVER_URL"))
-    }
 
     testOptions {
         unitTests {
@@ -54,20 +44,6 @@ dependencies {
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.kotlinx.coroutines.test)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
-    // Credential Manager
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
-    // Kakao SDK
-    implementation(libs.kakao.sdk.v2.all)
-    implementation(libs.kakao.sdk.v2.user)
-    implementation(libs.kakao.sdk.v2.talk)
-    implementation(libs.kakao.sdk.v2.share)
-    implementation(libs.kakao.sdk.v2.cert)
 
     // Retrofit & OkHttp
     implementation(libs.retrofit)

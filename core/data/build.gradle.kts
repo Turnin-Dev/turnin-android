@@ -8,20 +8,21 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+// Enable room auto-migrations
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 android {
     namespace = "com.peekr.core.data"
 
     defaultConfig {
-        // Enable room auto-migrations
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
         buildConfigField("String", "PEEKR_DATA_STORE", properties.getProperty("PEEKR_DATA_STORE"))
         buildConfigField("String", "PEEKR_MOCK_SERVER_URL", properties.getProperty("PEEKR_MOCK_SERVER_URL"))
         buildConfigField("String", "PEEKR_LOCAL_SERVER_URL", properties.getProperty("PEEKR_LOCAL_SERVER_URL"))
         buildConfigField("String", "PEEKR_REAL_SERVER_URL", properties.getProperty("PEEKR_REAL_SERVER_URL"))
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
         buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", properties.getProperty("CLOUD_STORAGE_SERVER_URL"))
     }
 
@@ -53,6 +54,8 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.android.compiler)
 
     // DataStore
     implementation(libs.androidx.dataStore.preference)
@@ -78,6 +81,20 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
     ksp(libs.room.compiler)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    // Credential Manager
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    // Kakao SDK
+    implementation(libs.kakao.sdk.v2.all)
+    implementation(libs.kakao.sdk.v2.user)
+    implementation(libs.kakao.sdk.v2.talk)
+    implementation(libs.kakao.sdk.v2.share)
+    implementation(libs.kakao.sdk.v2.cert)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)

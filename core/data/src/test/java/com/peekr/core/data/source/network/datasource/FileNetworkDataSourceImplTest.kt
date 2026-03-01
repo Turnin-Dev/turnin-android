@@ -71,6 +71,42 @@ class FileNetworkDataSourceImplTest {
     }
 
     @Test
+    fun `getFileUpdatePresignedUrl() 성공 테스트`() = runTest {
+        // given
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(mockPresignedResponseJson)
+            },
+        )
+
+        // when
+        val result = dataSource.getFileUpdatePresignedUrl("my-image.jpg", "image/jpeg")
+
+        // then
+        assertTrue(result is NetworkResult.Success)
+        assertEquals(
+            mockPresignUrlResponse,
+            (result as NetworkResult.Success).data,
+        )
+    }
+
+    @Test
+    fun `getFileUpdatePresignedUrl() 실패 테스트 (정의된 API 예외 발생)`() = runTest {
+        // given
+        val mockApi: FileApi = mockk()
+        dataSource = FileNetworkDataSourceImpl(mockApi, testOkHttpClient)
+        coEvery { mockApi.getFileUpdatePresignedUrl(any(), any()) } throws JsonDataException("smile")
+
+        // when
+        val result = dataSource.getFileUpdatePresignedUrl("asd", "asd")
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals((result as NetworkResult.Error).error, NetworkErrorType.Exception.JsonData)
+    }
+
+    @Test
     fun `uploadFile() 성공 테스트`() = runTest {
         // given
         val fileContent = "test file content".toByteArray()

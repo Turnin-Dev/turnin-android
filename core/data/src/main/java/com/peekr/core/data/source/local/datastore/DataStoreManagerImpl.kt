@@ -14,6 +14,7 @@ import com.peekr.core.data.source.local.error.WritingDataException
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DataStoreManagerImpl(
@@ -146,6 +147,15 @@ class DataStoreManagerImpl(
             dataStore.edit { preferences -> preferences.clear() }
         }
     }
+
+    override suspend fun isCleared(): Boolean =
+        try {
+            dataStore.data.first().asMap().isEmpty()
+        } catch (e: IOException) {
+            AppLogger.e(tag, e, "DataStore 데이터 확인 중 오류 발생")
+            // 예외 발생 시 비어있는 것으 간주
+            true
+        }
 
     // ------------------------------ 공통 메서드 ------------------------------
 

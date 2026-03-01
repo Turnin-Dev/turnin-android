@@ -20,6 +20,17 @@ interface FileRepository {
     ): Flow<Result<PresignedUrl, CommonErrorType>>
 
     /**
+     * 파일 업데이트에 사용할 사전 정의된 URL 가져오기
+     *
+     * @param newFileName 새로운 파일 이름
+     * @param mime 파일 타입
+     */
+    fun getFileUpdatePresignedUrl(
+        newFileName: String,
+        mime: Mime,
+    ): Flow<Result<PresignedUrl, CommonErrorType>>
+
+    /**
      * 파일 업로드
      *
      * @param presignedUrl 사전 정의된 URL

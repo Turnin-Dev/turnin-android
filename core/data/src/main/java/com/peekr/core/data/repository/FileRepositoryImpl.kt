@@ -35,6 +35,24 @@ class FileRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun getFileUpdatePresignedUrl(
+        newFileName: String,
+        mime: Mime,
+    ): Flow<Result<PresignedUrl, CommonErrorType>> =
+        safeResultFlow<PresignedUrl, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+            emit(Result.Loading)
+            when (val result = fileNetworkDataSource.getFileUpdatePresignedUrl(newFileName, mime.type)) {
+                is NetworkResult.Success -> {
+                    emit(Result.Success(result.data.toDomainModel()))
+                }
+
+                is NetworkResult.Error -> {
+                    val error = result.error.toCommonErrorType()
+                    emit(Result.Error(error = error, message = result.message))
+                }
+            }
+        }
+
     override fun uploadFile(
         presignedUrl: String,
         file: ByteArray,

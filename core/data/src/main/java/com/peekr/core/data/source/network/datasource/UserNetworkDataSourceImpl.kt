@@ -40,4 +40,7 @@ class UserNetworkDataSourceImpl @Inject constructor(
 
     override suspend fun updateIntroduce(patch: IntroducePatchRequest): NetworkResult<Unit> =
         networkCallWithoutResponse { userApi.updateIntroduce(patch) }
+
+    override suspend fun logout(): NetworkResult<Unit> =
+        networkCallWithoutResponse { userApi.logout() }
 }

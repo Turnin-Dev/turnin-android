@@ -8,4 +8,14 @@ package com.peekr.core.domain.model
 enum class SocialLoginProvider {
     GOOGLE,
     KAKAO,
+    ;
+
+    companion object {
+        fun getType(provider: String): SocialLoginProvider =
+            when (provider) {
+                GOOGLE.name -> GOOGLE
+                KAKAO.name -> KAKAO
+                else -> throw IllegalArgumentException("Unknown provider: $provider")
+            }
+    }
 }

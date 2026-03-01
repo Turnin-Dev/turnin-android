@@ -1,4 +1,4 @@
-package com.peekr.data.login.util
+package com.peekr.core.data.source.network.social
 
 import android.content.Context
 import androidx.credentials.ClearCredentialStateRequest
@@ -16,21 +16,21 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.data.BuildConfig
+import com.peekr.core.domain.auth.social.SocialAuthManager
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.ProviderId
-import com.peekr.data.BuildConfig
-import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.util.AuthManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class GoogleAuthManager(private val context: Context) : AuthManager {
+class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager {
     private val tag = this::class.java.simpleName
     private val auth = Firebase.auth
     private val credentialManager = CredentialManager.Companion.create(context)
 
-    override fun signIn(): Flow<Result<ProviderId, LoginErrorType>> = flow {
+    override fun signIn(): Flow<Result<ProviderId, CommonErrorType>> = flow {
         try {
             val googleIdOption: GetSignInWithGoogleOption = GetSignInWithGoogleOption
                 .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
@@ -49,58 +49,46 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
             emit(signInWithCredentialResponse(credentialResponse))
         } catch (e: GoogleIdTokenParsingException) {
             AppLogger.e(tag, "Failed to parse Google ID token.")
-            emit(Result.Error(LoginErrorType.IdTokenParsing, e.message))
+            emit(Result.Error(CommonErrorType.SocialAuth.IdTokenParsing, e.message))
         } catch (e: GetCredentialCancellationException) {
-            emit(Result.Error(LoginErrorType.Cancellation, e.message))
+            emit(Result.Error(CommonErrorType.SocialAuth.Cancellation, e.message))
         } catch (e: Exception) {
             AppLogger.e(tag, "Unexpected error during Google sign-in.")
-            emit(Result.Error(LoginErrorType.Unexpected(e), e.message))
+            emit(Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message))
         }
     }
 
-    override fun signOut(): Flow<Result<Unit, LoginErrorType>> = flow {
-        try {
-            auth.signOut()
-            credentialManager.clearCredentialState(
-                ClearCredentialStateRequest(),
-            )
-            AppLogger.i(tag, "Google sign-out Succeeded.")
-            emit(Result.Success(Unit))
-        } catch (e: Exception) {
-            AppLogger.e(tag, e, "Failed to Google sign-out")
-            emit(Result.Error(LoginErrorType.Unexpected(e), e.message))
-        }
+    override suspend fun signOut(): Result<Unit, CommonErrorType> = try {
+        auth.signOut()
+        credentialManager.clearCredentialState(
+            ClearCredentialStateRequest(),
+        )
+        AppLogger.i(tag, "Google sign-out Succeeded.")
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        AppLogger.e(tag, e, "Failed to Google sign-out")
+        Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message)
     }
 
-    override fun deleteAccount(): Flow<Result<Unit, LoginErrorType>> = flow {
+    override suspend fun deleteAccount(): Result<Unit, CommonErrorType> {
         val currentUser = auth.currentUser
+            ?: return Result.Error(CommonErrorType.SocialAuth.UserNotFound)
 
-        if (currentUser == null) {
-            emit(Result.Error(LoginErrorType.UserNotFound))
-        } else {
-            try {
-                val task = currentUser.delete()
-
-                if (task.isComplete && task.isSuccessful) {
-                    credentialManager.clearCredentialState(
-                        ClearCredentialStateRequest(),
-                    )
-                    AppLogger.i(tag, "Google account deleted.")
-                    emit(Result.Success(Unit))
-                } else {
-                    emit(Result.Error(LoginErrorType.DeleteAccountFailed))
-                }
-            } catch (e: Exception) {
-                AppLogger.e(tag, e, "Failed to delete Google account.")
-                emit(Result.Error(LoginErrorType.DeleteAccountFailed, e.message))
-            }
+        return try {
+            currentUser.delete().await()
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            AppLogger.i(tag, "Google account deleted.")
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            AppLogger.e(tag, e, "Failed to delete Google account.")
+            Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed, e.message)
         }
     }
 
     // CredentialResponse를 통해 로그인을 진행하고 결과 값(사용자 uid)을 반환한다.
     private suspend fun signInWithCredentialResponse(
         credentialResponse: GetCredentialResponse,
-    ): Result<ProviderId, LoginErrorType> =
+    ): Result<ProviderId, CommonErrorType> =
         when (val credential = credentialResponse.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -109,18 +97,18 @@ class GoogleAuthManager(private val context: Context) : AuthManager {
                         AppLogger.i(tag, "Firebase user fetched successfully.")
                         val providerId = ProviderId(firebaseUser.uid)
                         Result.Success(providerId)
-                    } ?: Result.Error(LoginErrorType.UserNotFound)
+                    } ?: Result.Error(CommonErrorType.SocialAuth.UserNotFound)
                 } else {
                     // 올바르지 않은 형태의 토큰
                     AppLogger.w(tag, "Google token type invalid.")
-                    Result.Error(LoginErrorType.TokenTypeInvalid)
+                    Result.Error(CommonErrorType.SocialAuth.TokenTypeInvalid)
                 }
             }
 
             else -> {
                 // 올바르지 않은 형태의 토큰
                 AppLogger.w(tag, "Google token type invalid.")
-                Result.Error(LoginErrorType.TokenTypeInvalid)
+                Result.Error(CommonErrorType.SocialAuth.TokenTypeInvalid)
             }
         }
 

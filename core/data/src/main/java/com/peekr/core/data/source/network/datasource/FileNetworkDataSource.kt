@@ -2,7 +2,6 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.core.data.source.network.util.NetworkResult.Error
 
 /** File 네트워크 데이터 소스 */
 
@@ -16,6 +15,18 @@ interface FileNetworkDataSource {
      */
     suspend fun getFileUploadPresignedUrl(
         fileName: String,
+        mime: String,
+    ): NetworkResult<PresignedUrlResponse>
+
+    /**
+     * 파일 업데이트에 사용할 사전 정의된 URL 요청
+     *
+     * @param newFileName 새로운 파일 이름
+     * @param mime 파일 형태
+     * @return 성공 시 [PresignedUrlResponse], 실패 시 [NetworkResult.Error]
+     */
+    suspend fun getFileUpdatePresignedUrl(
+        newFileName: String,
         mime: String,
     ): NetworkResult<PresignedUrlResponse>
 

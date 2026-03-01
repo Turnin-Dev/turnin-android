@@ -8,6 +8,7 @@ import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.PUT
@@ -50,4 +51,8 @@ interface UserApi {
     suspend fun updateIntroduce(
         @Body introducePathRequest: IntroducePatchRequest,
     ): Response<Unit>
+
+    /** 로그아웃 */
+    @DELETE(NetworkApiPath.User.LOGOUT)
+    suspend fun logout(): Response<Unit>
 }

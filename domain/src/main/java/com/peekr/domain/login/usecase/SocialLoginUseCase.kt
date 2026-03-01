@@ -1,20 +1,21 @@
 package com.peekr.domain.login.usecase
 
 import com.peekr.core.domain.auth.model.LoginCredentials
+import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.mapSuccess
+import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.util.AuthManagerFactory
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 
 /**
  * 소셜로그인
  */
 class SocialLoginUseCase @Inject constructor(
-    private val authManagerFactory: AuthManagerFactory,
+    private val socialAuthManagerFactory: SocialAuthManagerFactory,
 ) {
     /**
      * 소셜로그인 플랫폼에 맞게 로그인을 수행한다.
@@ -29,20 +30,16 @@ class SocialLoginUseCase @Inject constructor(
      * @return [Result] – 성공 시 [LoginCredentials], 실패 시 [LoginErrorType] 정보 포함
      */
     operator fun invoke(provider: SocialLoginProvider): Flow<Result<LoginCredentials, LoginErrorType>> {
-        val authManager = authManagerFactory.create(provider)
+        val authManager = socialAuthManagerFactory.create(provider)
         return authManager
             .signIn()
-            .map { result ->
-                when (result) {
-                    Result.Loading -> Result.Loading
-                    is Result.Success -> {
-                        val loginCredentials = LoginCredentials(provider = provider, providerId = result.data)
-                        Result.Success(loginCredentials)
-                    }
-
-                    is Result.Error -> result
-                }
-            }.catch { e ->
+            .mapSuccess { providerId ->
+                LoginCredentials(provider = provider, providerId = providerId)
+            }
+            .mapError { commonError ->
+                LoginErrorType.CommonError(commonError) as LoginErrorType
+            }
+            .catch { e ->
                 emit(Result.Error(error = LoginErrorType.Unexpected(e), message = e.message))
             }
     }

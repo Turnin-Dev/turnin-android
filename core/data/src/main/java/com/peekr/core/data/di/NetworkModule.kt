@@ -86,7 +86,7 @@ class NetworkModule {
         moshi: Moshi,
     ): Retrofit.Builder = Retrofit
         .Builder()
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(MoshiConverterFactory.create(moshi).withNullSerialization())
         .baseUrl(BuildConfig.PEEKR_LOCAL_SERVER_URL)
 
     @Singleton

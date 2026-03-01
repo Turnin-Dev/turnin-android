@@ -27,41 +27,74 @@ class FileRepositoryImplTest {
         FileRepositoryImpl(dataSource, dispatcher)
 
     @Test
-    fun `getFileUploadPresignedUrl() 성공 테스트`() =
-        runTest {
-            // given
-            coEvery {
-                dataSource.getFileUploadPresignedUrl(any(), any())
-            } returns NetworkResult.Success(mockPresignedUrlResponse)
+    fun `getFileUploadPresignedUrl() 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getFileUploadPresignedUrl(any(), any())
+        } returns NetworkResult.Success(mockPresignedUrlResponse)
 
-            // when
-            val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+        // when
+        val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
 
-            // then
-            Assert.assertTrue(result is Result.Success)
-            Assert.assertEquals(mockPresignedUrl, (result as Result.Success).data)
-        }
+        // then
+        Assert.assertTrue(result is Result.Success)
+        Assert.assertEquals(mockPresignedUrl, (result as Result.Success).data)
+    }
 
     @Test
-    fun `getFileUploadPresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() =
-        runTest {
-            // given
-            val expected = NetworkErrorType.Unexpected(null)
-            coEvery {
-                dataSource.getFileUploadPresignedUrl(any(), any())
-            } returns NetworkResult.Error(error = expected, message = mockErrorMessage)
+    fun `getFileUploadPresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
+        // given
+        val expected = NetworkErrorType.Unexpected(null)
+        coEvery {
+            dataSource.getFileUploadPresignedUrl(any(), any())
+        } returns NetworkResult.Error(error = expected, message = mockErrorMessage)
 
-            // when
-            val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+        // when
+        val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
 
-            // then
-            Assert.assertTrue(result is Result.Error)
-            Assert.assertEquals(
-                expected.toCommonErrorType(),
-                (result as Result.Error).error,
-            )
-            Assert.assertEquals(result.message, mockErrorMessage)
-        }
+        // then
+        Assert.assertTrue(result is Result.Error)
+        Assert.assertEquals(
+            expected.toCommonErrorType(),
+            (result as Result.Error).error,
+        )
+        Assert.assertEquals(result.message, mockErrorMessage)
+    }
+
+    @Test
+    fun `getFileUpdatePresignedUrl() 성공 테스트`() = runTest {
+        // given
+        coEvery {
+            dataSource.getFileUpdatePresignedUrl(any(), any())
+        } returns NetworkResult.Success(mockPresignedUrlResponse)
+
+        // when
+        val result = repository.getFileUpdatePresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+
+        // then
+        Assert.assertTrue(result is Result.Success)
+        Assert.assertEquals(mockPresignedUrl, (result as Result.Success).data)
+    }
+
+    @Test
+    fun `getFileUpdatePresignedUrl() 실패 테스트 - 데이터 소스에서 에러 방출 시 Error를 반환한다`() = runTest {
+        // given
+        val expected = NetworkErrorType.Unexpected(null)
+        coEvery {
+            dataSource.getFileUpdatePresignedUrl(any(), any())
+        } returns NetworkResult.Error(error = expected, message = mockErrorMessage)
+
+        // when
+        val result = repository.getFileUpdatePresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+
+        // then
+        Assert.assertTrue(result is Result.Error)
+        Assert.assertEquals(
+            expected.toCommonErrorType(),
+            (result as Result.Error).error,
+        )
+        Assert.assertEquals(result.message, mockErrorMessage)
+    }
 
     companion object {
         private val mockErrorMessage = "error world!"

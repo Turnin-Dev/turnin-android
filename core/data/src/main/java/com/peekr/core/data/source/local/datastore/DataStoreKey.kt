@@ -27,5 +27,12 @@ sealed class DataStoreKey(val name: String) {
          * `Value`: Long 타입의 값
          */
         object UserId : DataStoreKey("user_id")
+
+        /**
+         * `Key`: 로그인 플랫폼
+         *
+         * `Value`: String 타입의 값
+         */
+        object LoginProvider : DataStoreKey("login_provider")
     }
 }
