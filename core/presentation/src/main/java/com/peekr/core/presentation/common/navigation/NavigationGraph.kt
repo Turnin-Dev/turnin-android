@@ -117,6 +117,16 @@ sealed interface SubGraph {
         @Serializable
         data object BlockModalResult : BlockModal
     }
+
+    /** 설정 화면 그래프 */
+    sealed interface Setting : SubGraph {
+        /** 설정 화면 그래프 진입점 */
+        @Serializable
+        data object Root : Setting
+
+        @Serializable
+        data object AccountInfo : Setting
+    }
 }
 
 // ------------------------------ Screens (별도 화면 or 딥링크 지원 화면) ------------------------------
