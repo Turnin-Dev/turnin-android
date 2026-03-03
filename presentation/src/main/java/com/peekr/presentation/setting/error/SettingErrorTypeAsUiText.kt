@@ -9,6 +9,8 @@ import com.peekr.presentation.R
 fun SettingErrorType.asUiText(): UiText = when (this) {
     SettingErrorType.LoginProviderNotFound -> StringResource(R.string.setting_error_login_provider_not_found)
     SettingErrorType.MyProfileNotFound -> StringResource(R.string.setting_error_login_my_profile_not_found)
+    SettingErrorType.DisplayIdNotAvailable -> StringResource(R.string.setting_error_login_display_id_not_available)
     is SettingErrorType.Unexpected -> StringResource(R.string.setting_error_unexpected)
     is SettingErrorType.CommonError -> this.error.asUiText()
+    is SettingErrorType.ValidationError -> this.error.asUiText()
 }

@@ -21,4 +21,8 @@ class SettingUseCases @Inject constructor(
      * @see GetAccountInfoUseCase
      */
     val getAccountInfo: GetAccountInfoUseCase,
+    // ------------------------------ Validation ------------------------------
+    val validateDisplayId: ValidateDisplayIdRemoteUseCase,
+    val validateName: ValidationNameFormatUseCase,
+    val validateIntroduce: ValidationIntroduceFormatUseCase,
 )
