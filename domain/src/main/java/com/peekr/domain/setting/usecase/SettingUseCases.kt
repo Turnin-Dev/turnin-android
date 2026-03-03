@@ -15,4 +15,10 @@ class SettingUseCases @Inject constructor(
      * @see deleteAccountUseCase
      */
     val deleteAccountUseCase: DeleteAccountUseCase,
+    /**
+     * 계정 정보 조회
+     *
+     * @see GetAccountInfoUseCase
+     */
+    val getAccountInfo: GetAccountInfoUseCase,
 )

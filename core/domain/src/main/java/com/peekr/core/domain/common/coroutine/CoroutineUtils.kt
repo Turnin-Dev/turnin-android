@@ -44,3 +44,19 @@ inline fun <T, E : BaseError, R> Flow<Result<T, E>>.mapSuccess(
         Result.Loading -> Result.Loading
     }
 }
+
+/**
+ * 성공 시에만 데이터를 [T]에서 [R]로 변환한다.
+ *
+ * @param transform 성공 데이터 [T]를 받아 변환할 데이터 [R]을 반환하는 람다.
+ */
+inline fun <T, E : BaseError, R> Result<T, E>.mapSuccess(
+    transform: (T) -> R,
+): Result<R, E> = when (this) {
+    Result.Loading -> Result.Loading
+    is Result.Error -> this // 이미 에러이므로 타입을 맞춰서 그대로 반환
+    is Result.Success -> {
+        val transformedData = transform(this.data)
+        Result.Success(transformedData)
+    }
+}
