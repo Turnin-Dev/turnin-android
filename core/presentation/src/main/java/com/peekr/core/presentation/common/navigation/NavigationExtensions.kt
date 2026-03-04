@@ -41,6 +41,11 @@ fun NavController.navigateToBlockList() {
     navigate(Screens.BlockList)
 }
 
+// ------------------------------ Setting ------------------------------
+fun NavController.navigateToSetting() {
+    navigate(SubGraph.Setting.Root)
+}
+
 // ------------------------------ KeywordEdit ------------------------------
 fun NavController.navigateToKeywordEdit(userKeywordId: Long?) {
     navigate(Screens.KeywordEdit(userKeywordId))

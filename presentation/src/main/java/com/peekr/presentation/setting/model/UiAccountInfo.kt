@@ -20,7 +20,18 @@ data class UiAccountInfo(
     val profileImageUrl: String?,
     val introduce: String,
     val loginProvider: SocialLoginProvider,
-)
+) {
+    companion object {
+        val sample = UiAccountInfo(
+            userId = 1,
+            displayId = "DisplayID",
+            name = "Name",
+            profileImageUrl = null,
+            introduce = "Introduce, Introduce, Introduce",
+            loginProvider = SocialLoginProvider.GOOGLE,
+        )
+    }
+}
 
 fun AccountInfo.toUiModel(): UiAccountInfo =
     UiAccountInfo(

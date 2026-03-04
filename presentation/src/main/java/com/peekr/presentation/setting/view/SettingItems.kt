@@ -82,7 +82,7 @@ private fun SettingItemContainer(
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = PeekrTheme.colorScheme.lineDivider,
+            color = PeekrTheme.colorScheme.lineDivider.copy(0.5f),
         )
     }
 }

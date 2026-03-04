@@ -11,7 +11,25 @@ import androidx.navigation.NavController
 /**
  * 네비게이션에서 여러 컴포저블 사이에 ViewModel을 공유할 때 사용한다.
  *
- * 대부분은 화면과 뷰모델 1:1 관계가 권장되지만, 회원가입과 같은 경우처럼 특수케이스에서만 사용한다.
+ * 백스택 엔트리의 부모를 기준으로 생성하기 때문에,
+ * 이 함수를 통해 뷰모델을 공유하려면 처음 생성하는 뷰모델도 이 함수로 생성해야 한다.
+ *
+ * ```
+ * navigation<Root>() {
+ *  composable<First> { backStackEntry ->
+ *      // 처음 생성하는 뷰모델도 backStackEntry를 사용해서 생성해야 한다.
+ *      val viewModel: MyViewModel =
+ *                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+ *  }
+ *
+ *  composable<Second> { backStackEntry ->
+ *      val viewModel: MyViewModel =
+ *                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+ *  }
+ * }
+ * ```
+ *
+ * (대부분은 화면과 뷰모델 1:1 관계가 권장되지만, 회원가입과 같은 경우처럼 특수케이스에서만 사용한다.)
  *
  * @param navController 네비게이션 컨트롤러
  * @param useHiltViewModel [hiltViewModel] 사용 여부 (false 시 기본 viewModel() 사용)

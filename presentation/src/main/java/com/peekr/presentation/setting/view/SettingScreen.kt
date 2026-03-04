@@ -40,11 +40,13 @@ private fun SettingScreenFrame(
  * 설정 화면
  *
  * @param modifier [Modifier]
+ * @param onNavigateToAccountInfo 계정 정보로 이동 콜백
  * @param onBackPressed 뒤로 가기 시 콜백
  */
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
+    onNavigateToAccountInfo: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     SettingScreenFrame(
@@ -60,7 +62,7 @@ fun SettingScreen(
         settings = {
             // 정보 항목
             informationItem(
-                onAccountInfoClick = {},
+                onAccountInfoClick = onNavigateToAccountInfo,
             )
             // 알림 항목
             notificationItem(
@@ -109,6 +111,7 @@ private fun SettingScreenPreview() {
     PeekrAppTheme {
         SettingScreen(
             modifier = Modifier.fillMaxSize(),
+            onNavigateToAccountInfo = {},
             onBackPressed = {},
         )
     }

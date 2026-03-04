@@ -127,6 +127,10 @@ sealed interface SubGraph {
         /** 설정 메인 화면 */
         @Serializable
         data object Main : Setting
+
+        /** 계정 정보 화면 */
+        @Serializable
+        data object AccountInfo : Setting
     }
 }
 
