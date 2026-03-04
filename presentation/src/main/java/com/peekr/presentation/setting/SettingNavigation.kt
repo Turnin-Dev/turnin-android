@@ -37,20 +37,21 @@ fun NavGraphBuilder.settingNavigation(
             val viewModel: SettingViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
 
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            val accountInfoState by viewModel.accountInfoState.collectAsStateWithLifecycle()
 
             AccountInfoScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(PeekrTheme.colorScheme.backgroundNormal),
-                accountInfo = uiState.accountInfo,
-                isAccountInfoEdited = uiState.isAccountInfoEdited,
+                accountInfo = accountInfoState.accountInfo,
+                isAccountInfoEdited = accountInfoState.isAccountInfoEdited,
                 displayIdState = viewModel.displayIdState,
                 isDisplayIdValid = viewModel.isDisplayIdState,
                 nameState = viewModel.nameState,
                 isNameValid = viewModel.isNameValid,
                 introduceState = viewModel.introduceState,
                 isIntroduceValid = viewModel.isIntroduceValid,
+                onUiEvent = viewModel::processEvent,
                 onBackPressed = { navController.popBackStack() },
             )
         }

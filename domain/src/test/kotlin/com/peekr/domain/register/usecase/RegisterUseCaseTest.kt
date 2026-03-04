@@ -5,6 +5,7 @@ import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
@@ -13,7 +14,6 @@ import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.domain.register.error.RegisterErrorType
-import com.peekr.domain.register.model.ImageFileDetail
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

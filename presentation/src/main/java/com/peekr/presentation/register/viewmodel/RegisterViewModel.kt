@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.validation.ValidationResult
+import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.feature.image.toJpegByteArray
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
@@ -17,8 +18,6 @@ import com.peekr.domain.register.usecase.ValidateIntroduceUseCase
 import com.peekr.domain.register.usecase.ValidateNameUseCase
 import com.peekr.presentation.login.mapper.toDomainModel
 import com.peekr.presentation.register.error.asUiText
-import com.peekr.presentation.register.model.UiImageFileDetail
-import com.peekr.presentation.register.model.toDomainModel
 import com.peekr.presentation.register.state.RegisterDisplayIdState
 import com.peekr.presentation.register.state.RegisterEventState
 import com.peekr.presentation.register.state.RegisterNameState
@@ -101,10 +100,9 @@ class RegisterViewModel @Inject constructor(
         providerId: String,
         image: ImageBitmap?,
     ) {
-        val imageFileDetail = image
-            ?.let {
-                UiImageFileDetail.create(image.toJpegByteArray(), nameState.value.name)
-            }?.toDomainModel()
+        val imageFileDetail = image?.let {
+            ImageFileDetail.create(image.toJpegByteArray(), nameState.value.name)
+        }
         registerIntegrationUseCase(
             provider = provider.toDomainModel(),
             providerId = providerId,

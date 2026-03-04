@@ -51,6 +51,7 @@ import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.presentation.R
 import com.peekr.presentation.setting.error.asUiText
 import com.peekr.presentation.setting.model.UiAccountInfo
+import com.peekr.presentation.setting.state.SettingContract
 
 /**
  * 계정 정보 화면 프레임
@@ -126,6 +127,7 @@ fun AccountInfoScreen(
     isNameValid: ValidationResult<Name, ValidationErrorType>,
     introduceState: TextFieldState,
     isIntroduceValid: ValidationResult<Introduce, ValidationErrorType>,
+    onUiEvent: (SettingContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     AccountInfoScreenFrame(
@@ -136,7 +138,7 @@ fun AccountInfoScreen(
                     .fillMaxWidth()
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                 isAccountInfoEdited = isAccountInfoEdited,
-                onSave = {},
+                onSave = { onUiEvent(SettingContract.UiEvent.OnSaveAccountInfo) },
                 onBackPressed = onBackPressed,
             )
         },
@@ -192,7 +194,7 @@ private fun TopBar(
         optionSlot = {
             if (isAccountInfoEdited) {
                 PeekrIconButton(
-                    icon = PeekrIcons.Default.Normal.Check,
+                    icon = PeekrIcons.Default.Bold.Check,
                     iconSize = PeekrIconSize.Small,
                     contentDescription = stringResource(R.string.setting_detail_account_info_top_bar_save),
                     onClick = onSave,
@@ -404,6 +406,7 @@ private fun SettingScreenPreview() {
             isNameValid = ValidationResult.Invalid(ValidationErrorType.Unexpected),
             introduceState = TextFieldState(UiAccountInfo.sample.introduce),
             isIntroduceValid = ValidationResult.Valid(Introduce("introduce")),
+            onUiEvent = {},
             onBackPressed = {},
         )
     }

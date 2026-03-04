@@ -190,10 +190,13 @@
     <string name="setting_detail_account_info_text_field_id_label">ID</string>
     <string name="setting_detail_account_info_text_field_name_label">이름</string>
     <string name="setting_detail_account_info_text_field_introduce_label">소개글</string>
+    <!-- Setting Success -->
+    <string name="setting_success_update_account_info">계정 정보를 업데이트했습니다.</string>
     <!-- Setting Error -->
     <string name="setting_error_login_provider_not_found">로그인 정보를 찾을 수 없어요. 재로그인 해주세요.</string>
-    <string name="setting_error_login_my_profile_not_found">내 정보 조회에 실패했어요. 다시 시도해주세요.</string>
-    <string name="setting_error_login_display_id_not_available">이미 사용중인 ID입니다.</string>
+    <string name="setting_error_my_profile_not_found">내 정보 조회에 실패했어요. 다시 시도해주세요.</string>
+    <string name="setting_error_display_id_not_available">이미 사용중인 ID입니다.</string>
+    <string name="setting_error_upload_image_failed">사진 업로드에 실패했어요. 잠시 후 다시 시도해주세요.</string>
     <string name="setting_error_unexpected">문제가 발생했어요. 다시 시도해주세요.</string>
 
     <!-- Error Code -->
