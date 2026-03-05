@@ -16,6 +16,7 @@ import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.setting.error.SettingErrorType
+import com.peekr.domain.setting.model.SettingProfileImagePatch
 import com.peekr.domain.setting.usecase.SettingUseCases
 import com.peekr.presentation.R
 import com.peekr.presentation.setting.error.asUiText
@@ -84,9 +85,8 @@ class SettingViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: SettingContract.UiEvent) {
         when (event) {
-            SettingContract.UiEvent.OnSaveAccountInfo -> {
-                saveAccountInfo()
-            }
+            SettingContract.UiEvent.OnSaveAccountInfo -> saveAccountInfo()
+            is SettingContract.UiEvent.OnProfileImageUpdated -> updateProfileImage(event.imageBytes)
         }
     }
 
@@ -176,6 +176,19 @@ class SettingViewModel @Inject constructor(
             }
                 .onCompletion { updateState { copy(fullScreenLoading = false) } }
                 .launchIn(viewModelScope)
+        }
+    }
+
+    // 프로필 사진 업데이트
+    // 업데이트 시에는 ByteArray만 가지고 있다가
+    // 계정 정보 저장 시 파일명과 함께 ImageFileDetail을 만들어 저장 폼에 포함시킨다.
+    private fun updateProfileImage(imageBytes: ByteArray) {
+        updateState {
+            copy(
+                accountInfoState = accountInfoState.copy(
+                    profileImagePatch = SettingProfileImagePatch.Update(imageBytes),
+                ),
+            )
         }
     }
 

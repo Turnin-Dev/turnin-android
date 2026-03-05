@@ -8,6 +8,11 @@ import java.io.ByteArrayOutputStream
 private val FORMAT = Bitmap.CompressFormat.JPEG
 private const val QUALITY = 100
 
+/**
+ * [ImageBitmap] 타입을 JPEG 압축 형식의 [ByteArray]를 생성한다.
+ *
+ * 이 작업은 무거운 작업이므로 주의해서 사용해야 한다. 혹은 IO 스레드에서 수행한다.
+ */
 fun ImageBitmap.toJpegByteArray(): ByteArray {
     val androidBitmap = this.asAndroidBitmap()
     val byteArrayOutputStream = ByteArrayOutputStream()

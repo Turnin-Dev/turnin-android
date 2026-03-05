@@ -111,7 +111,7 @@ fun NavGraphBuilder.registerNavigation(
 
             SinglePhotoPicker(
                 open = photoPickerOpen,
-                onSelected = { selectedImage ->
+                onSelected = { selectedImage, uri ->
                     if (selectedImage != null) {
                         registerViewModel.selectOriginalImage(selectedImage)
                     }

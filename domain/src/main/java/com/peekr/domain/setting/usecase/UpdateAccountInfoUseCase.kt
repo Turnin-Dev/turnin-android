@@ -62,16 +62,24 @@ class UpdateAccountInfoUseCase @Inject constructor(
             profileImagePatch = ProfileImagePatch.Remove,
         )
 
-        is SettingProfileImagePatch.Update -> uploadImageFile(profileImagePatch.imageFileDetail)
-            .flatMapResult { newUrl ->
-                updateProfile(
-                    displayId = displayId,
-                    name = name,
-                    introduce = introduce,
-                    oldProfileImageUrl = oldProfileImageUrl,
-                    profileImagePatch = ProfileImagePatch.Update(newUrl),
-                )
-            }
+        is SettingProfileImagePatch.Update -> {
+            val imageFileDetail = ImageFileDetail.create(
+                bytes = profileImagePatch.imageBytes,
+                username = name,
+                mime = Mime.IMAGE_JPEG,
+            )
+
+            uploadImageFile(imageFileDetail)
+                .flatMapResult { newUrl ->
+                    updateProfile(
+                        displayId = displayId,
+                        name = name,
+                        introduce = introduce,
+                        oldProfileImageUrl = oldProfileImageUrl,
+                        profileImagePatch = ProfileImagePatch.Update(newUrl),
+                    )
+                }
+        }
     }
 
     // 프로필 저장

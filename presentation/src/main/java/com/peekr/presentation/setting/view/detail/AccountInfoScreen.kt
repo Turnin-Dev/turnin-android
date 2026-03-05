@@ -36,6 +36,7 @@ import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.Edit
 import com.peekr.core.designsystem.util.icon.PeekrIcons
@@ -114,6 +115,8 @@ private fun AccountInfoScreenFrame(
  * @param isNameValid 사용자 명 유효성 검사 결과
  * @param introduceState 소개글 상태
  * @param isIntroduceValid 사용자 표시 ID 유효성 검사 결과
+ * @param onUiEvent UI 이벤트 발행
+ * @param onProfileImageClick 프로필 사진 클릭 시 콜백
  * @param onBackPressed 뒤로 가기 시 콜백
  */
 @Composable
@@ -128,6 +131,7 @@ fun AccountInfoScreen(
     introduceState: TextFieldState,
     isIntroduceValid: ValidationResult<Introduce, ValidationErrorType>,
     onUiEvent: (SettingContract.UiEvent) -> Unit,
+    onProfileImageClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     AccountInfoScreenFrame(
@@ -146,6 +150,7 @@ fun AccountInfoScreen(
             ProfileImage(
                 profileImageUrl = accountInfo?.profileImageUrl,
                 name = accountInfo?.name,
+                onClick = onProfileImageClick,
             )
         },
         displayIdTextField = {
@@ -211,14 +216,16 @@ private fun TopBar(
  * @param modifier [Modifier]
  * @param profileImageUrl 프로필 사진 URL
  * @param name 사용자 명 (이미지 설명용)
+ * @param onClick 프로필 사진 클릭 시 콜백
  */
 @Composable
 private fun ProfileImage(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     name: String?,
+    onClick: () -> Unit,
 ) {
-    Box(modifier) {
+    Box(modifier.clickableSingleWithoutRipple(onClick = onClick)) {
         PeekrAvatar(
             modifier = Modifier.size(84.dp),
             model = profileImageUrl,
@@ -362,6 +369,7 @@ private fun ProfileImagePreview() {
         ProfileImage(
             profileImageUrl = null,
             name = "name",
+            onClick = {},
         )
     }
 }
@@ -407,6 +415,7 @@ private fun SettingScreenPreview() {
             introduceState = TextFieldState(UiAccountInfo.sample.introduce),
             isIntroduceValid = ValidationResult.Valid(Introduce("introduce")),
             onUiEvent = {},
+            onProfileImageClick = {},
             onBackPressed = {},
         )
     }

@@ -16,13 +16,15 @@ import androidx.compose.ui.platform.LocalContext
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.feature.image.cropper.uriToBitmap
 import kotlin.math.ceil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * 이미지 선택기
  *
  * @param open 이미지 선택기 활성화 여부
  * @param maxFileSizeBytes 이미지 최대 크기
- * @param onSelected 이미지 선택시 ([ImageBitmap]타입)
+ * @param onSelected 이미지 선택 시 콜백 ([ImageBitmap], [Uri])
  * @param onClose 이미지 선택시 닫을 시 수행할 작업 (Ex. open = false)
  * @param onError 에러 발생 시 수행할 작업
  */
@@ -30,7 +32,7 @@ import kotlin.math.ceil
 fun SinglePhotoPicker(
     open: Boolean,
     maxFileSizeBytes: Long = MAX_FILE_SIZE_BYTES,
-    onSelected: (ImageBitmap?) -> Unit,
+    onSelected: (imageBitmap: ImageBitmap?, uri: Uri?) -> Unit,
     onClose: () -> Unit,
     onError: ((Exception) -> Unit)? = null,
 ) {
@@ -67,14 +69,16 @@ fun SinglePhotoPicker(
                             ),
                             Toast.LENGTH_SHORT,
                         ).show()
-                    onSelected(null)
+                    onSelected(null, null)
                     selectedImageUri = null
                     return@let
                 }
 
                 // 파일 변환 및 선택 수행
-                val imageBitmap = uriToBitmap(context, uri)
-                onSelected(imageBitmap)
+                val imageBitmap = withContext(Dispatchers.IO) {
+                    uriToBitmap(context, uri)
+                }
+                onSelected(imageBitmap, uri)
                 selectedImageUri = null
             } catch (e: Exception) {
                 onError?.invoke(e) ?: Toast
@@ -83,7 +87,7 @@ fun SinglePhotoPicker(
                         context.getText(R.string.single_photo_picker_invalid_image_format),
                         Toast.LENGTH_SHORT,
                     ).show()
-                onSelected(null)
+                onSelected(null, null)
             } finally {
                 onClose()
             }

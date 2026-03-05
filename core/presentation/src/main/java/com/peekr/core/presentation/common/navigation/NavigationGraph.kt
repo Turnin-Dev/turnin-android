@@ -131,6 +131,16 @@ sealed interface SubGraph {
         /** 계정 정보 화면 */
         @Serializable
         data object AccountInfo : Setting
+
+        /**
+         * 프로필 사진 편집 화면
+         *
+         * @property uri 사진 URI
+         */
+        @Serializable
+        data class CropProfileImage(
+            val uri: String,
+        ) : Setting
     }
 }
 
