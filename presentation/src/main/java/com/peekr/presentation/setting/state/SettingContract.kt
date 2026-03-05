@@ -29,9 +29,18 @@ class SettingContract {
         /**
          * 프로필 사진 변경 이벤트
          *
-         * @property imageBytes [ByteArray]타입의 프로필 사진
+         * @property imageBytes 변경할 프로필 사진의 [ByteArray]
          */
-        class OnProfileImageUpdated(val imageBytes: ByteArray) : UiEvent
+        class OnProfileImageUpdated(
+            val imageBytes: ByteArray,
+        ) : UiEvent
+
+        /**
+         * 프로필 사진 삭제 이벤트
+         */
+        data object OnProfileImageDeleted : UiEvent
+
+        data object OnAccountInfoStateCleared : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect

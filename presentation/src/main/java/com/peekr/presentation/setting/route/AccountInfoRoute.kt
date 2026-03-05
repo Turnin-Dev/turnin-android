@@ -12,8 +12,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.feature.image.SinglePhotoPicker
+import com.peekr.presentation.setting.state.SettingContract
 import com.peekr.presentation.setting.view.detail.AccountInfoScreen
 import com.peekr.presentation.setting.view.detail.ProfileImageUpdateModal
 import com.peekr.presentation.setting.viewmodel.SettingViewModel
@@ -26,12 +28,20 @@ fun AccountInfoRoute(
     onNavigateToCropProfileImage: (uri: String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val accountInfoState by viewModel.accountInfoState.collectAsStateWithLifecycle()
+    val localProfileImage by viewModel.localProfileImage.collectAsStateWithLifecycle()
     var isProfileImageUpdateModalOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var photoPickerOpen by remember { mutableStateOf(false) }
 
+    // ------------------------------ LoadingScreen ------------------------------
+    if (uiState.fullScreenLoading) {
+        PeekrLoadingScreen()
+    }
+
+    // ------------------------------ PhotoPicker & Modal ------------------------------
     SinglePhotoPicker(
         open = photoPickerOpen,
         onSelected = { selectedImage, uri ->
@@ -44,7 +54,8 @@ fun AccountInfoRoute(
 
     if (isProfileImageUpdateModalOpen) {
         ProfileImageUpdateModal(
-            existsProfileImage = accountInfoState.accountInfo?.profileImageUrl != null,
+            existsProfileImage = localProfileImage != null ||
+                accountInfoState.accountInfo?.profileImageUrl != null,
             sheetState = sheetState,
             onDismissRequest = {
                 scope.launch {
@@ -62,7 +73,10 @@ fun AccountInfoRoute(
                 photoPickerOpen = true
                 isProfileImageUpdateModalOpen = false
             },
-            onImageChangeToDefault = { },
+            onImageChangeToDefault = {
+                viewModel.processEvent(SettingContract.UiEvent.OnProfileImageDeleted)
+                isProfileImageUpdateModalOpen = false
+            },
             onImageAdd = {
                 photoPickerOpen = true
                 isProfileImageUpdateModalOpen = false
@@ -70,11 +84,13 @@ fun AccountInfoRoute(
         )
     }
 
+    // ------------------------------ Screen ------------------------------
     AccountInfoScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
         accountInfo = accountInfoState.accountInfo,
+        localProfileImage = localProfileImage,
         isAccountInfoEdited = accountInfoState.isAccountInfoEdited,
         displayIdState = viewModel.displayIdState,
         isDisplayIdValid = viewModel.isDisplayIdState,
@@ -87,6 +103,3 @@ fun AccountInfoRoute(
         onBackPressed = onBackPressed,
     )
 }
-
-// TODO: 1. 프사 변경 시 임시 반영되어야 함.
-// TODO: 2. 이미지 편집기에서 해상도, 크기 작은 이미지 선택 시 버그 수정

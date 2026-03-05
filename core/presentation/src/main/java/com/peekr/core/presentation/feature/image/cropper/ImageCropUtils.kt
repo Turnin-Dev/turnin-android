@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
  *
  * @return CropImageResult
  */
-fun cropImage(
+internal fun cropImage(
     density: Density,
     imageBitmap: ImageBitmap?,
     scale: Float = 1f,

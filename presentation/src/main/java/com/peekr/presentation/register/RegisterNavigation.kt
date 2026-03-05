@@ -28,9 +28,9 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.util.LaunchedUiEffectHandler
 import com.peekr.core.presentation.common.viewmodel.sharedViewModel
+import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.SinglePhotoPicker
 import com.peekr.presentation.R
-import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import kotlin.reflect.KType
@@ -176,7 +176,7 @@ fun NavGraphBuilder.registerNavigation(
                 }
             }
 
-            CropProfileImageScreen(
+            SimpleImageCropper(
                 modifier = Modifier.fillMaxSize(),
                 image = profileState.originalImage,
                 onCrop = { croppedImage ->

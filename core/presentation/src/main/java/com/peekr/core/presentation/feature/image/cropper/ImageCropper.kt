@@ -47,7 +47,7 @@ import com.peekr.core.presentation.R
  * @see uriToBitmap
  */
 @Composable
-fun ImageCropper(
+internal fun ImageCropper(
     modifier: Modifier = Modifier,
     imageBitmap: ImageBitmap?,
     onCrop: (ImageBitmap) -> Unit,
@@ -106,7 +106,8 @@ fun ImageCropper(
                                 scaleY = scale,
                                 translationX = offset.x * scale,
                                 translationY = offset.y * scale,
-                            ).transformable(imageTransformState),
+                            )
+                            .transformable(imageTransformState),
                 )
             }
         }

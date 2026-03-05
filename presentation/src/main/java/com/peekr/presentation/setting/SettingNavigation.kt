@@ -21,9 +21,9 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
 import com.peekr.core.presentation.common.viewmodel.sharedViewModel
+import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.rememberImageBitmap
 import com.peekr.core.presentation.feature.image.toJpegByteArray
-import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.setting.route.AccountInfoRoute
 import com.peekr.presentation.setting.state.SettingContract
 import com.peekr.presentation.setting.view.SettingScreen
@@ -54,12 +54,18 @@ fun NavGraphBuilder.settingNavigation(
             val viewModel: SettingViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
 
+            BackHandler {
+                viewModel.processEvent(SettingContract.UiEvent.OnAccountInfoStateCleared)
+                navController.popBackStack()
+            }
+
             AccountInfoRoute(
                 viewModel = viewModel,
                 onNavigateToCropProfileImage = { uri ->
                     navController.navigateToCropProfileImage(uri)
                 },
                 onBackPressed = {
+                    viewModel.processEvent(SettingContract.UiEvent.OnAccountInfoStateCleared)
                     navController.popBackStack()
                 },
             )
@@ -86,7 +92,7 @@ fun NavGraphBuilder.settingNavigation(
                 PeekrLoadingScreen()
             }
 
-            CropProfileImageScreen(
+            SimpleImageCropper(
                 modifier = Modifier.fillMaxSize(),
                 image = imageBitmap,
                 onCrop = { croppedImage ->
@@ -96,7 +102,9 @@ fun NavGraphBuilder.settingNavigation(
                             val bytes = withContext(Dispatchers.IO) {
                                 croppedImage.toJpegByteArray()
                             }
-                            viewModel.processEvent(SettingContract.UiEvent.OnProfileImageUpdated(bytes))
+                            viewModel.processEvent(
+                                SettingContract.UiEvent.OnProfileImageUpdated(bytes),
+                            )
                             navController.popBackStack()
                         } finally {
                             screenLoading = false

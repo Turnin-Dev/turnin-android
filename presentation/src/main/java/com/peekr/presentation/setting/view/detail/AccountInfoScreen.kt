@@ -123,6 +123,7 @@ private fun AccountInfoScreenFrame(
 fun AccountInfoScreen(
     modifier: Modifier = Modifier,
     accountInfo: UiAccountInfo?,
+    localProfileImage: ByteArray?,
     isAccountInfoEdited: Boolean,
     displayIdState: TextFieldState,
     isDisplayIdValid: ValidationResult<DisplayId, SettingErrorType>,
@@ -148,7 +149,7 @@ fun AccountInfoScreen(
         },
         profileImage = {
             ProfileImage(
-                profileImageUrl = accountInfo?.profileImageUrl,
+                profileImageUrl = localProfileImage ?: accountInfo?.profileImageUrl,
                 name = accountInfo?.name,
                 onClick = onProfileImageClick,
             )
@@ -214,14 +215,14 @@ private fun TopBar(
  * 프로필 사진
  *
  * @param modifier [Modifier]
- * @param profileImageUrl 프로필 사진 URL
+ * @param profileImageUrl 프로필 사진
  * @param name 사용자 명 (이미지 설명용)
  * @param onClick 프로필 사진 클릭 시 콜백
  */
 @Composable
 private fun ProfileImage(
     modifier: Modifier = Modifier,
-    profileImageUrl: String?,
+    profileImageUrl: Any?,
     name: String?,
     onClick: () -> Unit,
 ) {
@@ -407,6 +408,7 @@ private fun SettingScreenPreview() {
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             accountInfo = UiAccountInfo.sample,
+            localProfileImage = null,
             isAccountInfoEdited = true,
             displayIdState = TextFieldState(UiAccountInfo.sample.displayId),
             isDisplayIdValid = ValidationResult.Valid(DisplayId("displayId")),
