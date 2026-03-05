@@ -4,6 +4,7 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.domain.model.DisplayId
@@ -46,8 +47,11 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             val refreshToken = registerResult.refreshToken
             authRepository
                 .saveTokens(accessToken, refreshToken)
-                .mapError { authErrorType ->
-                    RegisterErrorType.CommonError(authErrorType)
+                .mapError { commonError ->
+                    when (commonError) {
+                        is CommonErrorType.Network.Conflict -> RegisterErrorType.DuplicateUser
+                        else -> RegisterErrorType.CommonError(commonError)
+                    }
                 }
         }
     }.getOrElse { e -> flowOf(Result.Error(RegisterErrorType.Unexpected(e))) }

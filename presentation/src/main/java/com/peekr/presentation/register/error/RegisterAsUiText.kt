@@ -10,6 +10,7 @@ internal fun RegisterErrorType.asUiText(): UiText = when (this) {
     RegisterErrorType.CantUseEmptyOrBlank -> StringResource(R.string.register_error_cant_use_empty_or_blank)
     RegisterErrorType.DisplayIdNotAvailable -> StringResource(R.string.register_error_cant_use_display_id)
     RegisterErrorType.ImageFileIsNull -> StringResource(R.string.register_error_image_file_is_null)
+    RegisterErrorType.DuplicateUser -> StringResource(R.string.register_error_duplicate_user)
     is RegisterErrorType.CommonError -> this.error.asUiText()
     is RegisterErrorType.Unexpected -> {
         StringResource(R.string.register_error_unexpected)
