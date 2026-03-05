@@ -113,7 +113,7 @@ class RegisterUseCaseTest {
         private val TestIntroduce = Introduce("hello!")
         private val TestJWTToken = JWTToken("a", "b")
         private const val TEST_FILE_URL = "https://example.com/test.jpg"
-        private val TestImageFileDetail = ImageFileDetail("123".toByteArray(), "", Mime.IMAGE_JPEG)
+        private val TestImageFileDetail = ImageFileDetail.create("123".toByteArray(), "", Mime.IMAGE_JPEG)
         private val TestRegister = Register(
             provider = TestProvider,
             providerId = TestProviderId,

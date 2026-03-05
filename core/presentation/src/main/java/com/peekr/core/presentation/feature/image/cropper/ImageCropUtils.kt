@@ -47,31 +47,43 @@ fun cropImage(
     } else {
         val imageWidth = imageBitmap.width
         val imageHeight = imageBitmap.height
-        val widthRatio = imageBitmap.width / viewWidth.toFloat()
-        val heightRatio = imageBitmap.height / viewHeight.toFloat()
+        val widthRatio = imageWidth / viewWidth.toFloat()
+        val heightRatio = imageHeight / viewHeight.toFloat()
 
-        val maxRatio = max(widthRatio, heightRatio)
-        val radiusPx = with(density) { HOLE_RADIUS.dp.toPx() } * maxRatio
+        val cropRatio = max(widthRatio, heightRatio)
+        val radiusPx = with(density) { HOLE_RADIUS.dp.toPx() } * cropRatio
 
         val centerX = imageWidth / 2f
         val centerY = imageHeight / 2f
 
-        val srcOffsetX = (centerX - radiusPx / scale) + (-offsetChanged.x * maxRatio)
-        val srcOffsetY = (centerY - radiusPx / scale) + (-offsetChanged.y * maxRatio)
+        // scale이 클수록 즉, 확대 시 src 영역은 작아져야 함
+        val srcRadius = radiusPx / scale
+        val srcSize = (srcRadius * 2).toInt()
 
-        val width = (radiusPx * 2).toInt()
-        val height = (radiusPx * 2).toInt()
+        // offset을 이미지 픽셀 좌표로 변환할 때도 cropRatio 사용
+        val srcOffsetX = (centerX - srcRadius) + (-offsetChanged.x * cropRatio)
+        val srcOffsetY = (centerY - srcRadius) + (-offsetChanged.y * cropRatio)
 
-        val croppedImage = ImageBitmap(width, height)
+        // dst는 항상 홀 지름 고정
+        val dstSize = (radiusPx * 2).toInt()
+
+        // 이미지 범위 밖으로 나간 경우 클램핑
+        val clampedSrcOffsetX = srcOffsetX.toInt().coerceIn(0, (imageWidth - srcSize).coerceAtLeast(0))
+        val clampedSrcOffsetY = srcOffsetY.toInt().coerceIn(0, (imageHeight - srcSize).coerceAtLeast(0))
+
+        // 클램핑 후 실제 잘라낼 수 있는 크기 재계산
+        val actualSrcWidth = srcSize.coerceAtMost(imageWidth - clampedSrcOffsetX)
+        val actualSrcHeight = srcSize.coerceAtMost(imageHeight - clampedSrcOffsetY)
+
+        val croppedImage = ImageBitmap(dstSize, dstSize)
         val canvas = Canvas(croppedImage)
 
-        canvas.scale(scale, scale)
         canvas.drawImageRect(
             image = imageBitmap,
-            srcOffset = IntOffset(srcOffsetX.toInt(), srcOffsetY.toInt()),
-            srcSize = IntSize(width, height),
+            srcOffset = IntOffset(clampedSrcOffsetX, clampedSrcOffsetY),
+            srcSize = IntSize(actualSrcWidth, actualSrcHeight),
             dstOffset = IntOffset(0, 0),
-            dstSize = IntSize(width, height),
+            dstSize = IntSize(dstSize, dstSize),
             paint = Paint(),
         )
         ImageCropResult.Success(croppedImage)

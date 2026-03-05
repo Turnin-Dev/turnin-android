@@ -57,14 +57,24 @@ fun ImageCropper(
     var viewWidth by remember { mutableIntStateOf(0) }
     var viewHeight by remember { mutableIntStateOf(0) }
 
-    var scale by remember { mutableFloatStateOf(1.5f) }
+    var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
     val imageTransformState =
         rememberTransformableState { zoomChange, offsetChange, _ ->
             val newScale = (scale * zoomChange).coerceIn(1f, 3f)
-            val maxX = (viewWidth.toFloat() * (newScale - 1f) / 2f) / newScale
-            val maxY = (viewHeight.toFloat() * (newScale - 1f) / 2f) / newScale
+
+            val imageWidth = imageBitmap?.width?.toFloat() ?: viewWidth.toFloat()
+            val imageHeight = imageBitmap?.height?.toFloat() ?: viewHeight.toFloat()
+
+            val fitScale = minOf(viewWidth / imageWidth, viewHeight / imageHeight)
+
+            val renderedWidth = imageWidth * fitScale
+            val renderedHeight = imageHeight * fitScale
+
+            val maxX = (renderedWidth * (newScale - 1f) / 2f) / newScale
+            val maxY = (renderedHeight * (newScale - 1f) / 2f) / newScale
+
             scale = newScale
             offset = Offset(
                 x = (offset.x + offsetChange.x).coerceIn(-maxX, maxX),
@@ -88,6 +98,7 @@ fun ImageCropper(
                     contentScale = ContentScale.Fit,
                     modifier =
                         Modifier
+                            .fillMaxSize()
                             .align(Alignment.Center)
                             .clipToBounds()
                             .graphicsLayer(
