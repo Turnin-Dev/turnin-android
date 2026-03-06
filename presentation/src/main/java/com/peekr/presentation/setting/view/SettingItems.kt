@@ -6,13 +6,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,12 +50,14 @@ private data class SettingItem(
  * @param modifier [Modifier]
  * @param title 컨테이너 타이틀
  * @param settingItems 설정 항목 리스트
+ * @param loading 로딩 여부
  */
 @Composable
 private fun SettingItemContainer(
     modifier: Modifier = Modifier,
     title: String,
     settingItems: List<SettingItem>,
+    loading: Boolean = false,
 ) {
     Column(modifier) {
         // 항목 타이틀
@@ -72,9 +77,14 @@ private fun SettingItemContainer(
                 Item(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickableSingle(onClick = item.onClick)
+                        .clickableSingle {
+                            if (!loading) {
+                                item.onClick()
+                            }
+                        }
                         .padding(ContainerItemPadding),
                     title = item.title,
+                    loading = loading,
                 )
             }
         }
@@ -87,11 +97,20 @@ private fun SettingItemContainer(
     }
 }
 
+/**
+ * 설정 항목
+ *
+ * @param modifier [Modifier]
+ * @param title 설정 항목 타이틀
+ * @param titleColor 설정 항목 타이틀 색상
+ * @param loading 로딩 여부
+ */
 @Composable
 private fun Item(
     modifier: Modifier = Modifier,
     title: String,
     titleColor: Color = PeekrTheme.colorScheme.textNormal,
+    loading: Boolean = false,
 ) {
     Row(
         modifier = modifier,
@@ -104,21 +123,32 @@ private fun Item(
             fontWeight = FontWeight.Normal,
             color = titleColor,
         )
-        PeekrIcon(
-            icon = PeekrIcons.Default.Normal.Arrow1Right,
-            iconSize = PeekrIconSize.Small,
-            contentDescription = title,
-            tint = PeekrTheme.colorScheme.lineNormal,
-        )
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(15.dp),
+                strokeCap = StrokeCap.Round,
+                strokeWidth = 2.5.dp,
+                color = PeekrTheme.colorScheme.primary,
+            )
+        } else {
+            PeekrIcon(
+                icon = PeekrIcons.Default.Normal.Arrow1Right,
+                iconSize = PeekrIconSize.Small,
+                contentDescription = title,
+                tint = PeekrTheme.colorScheme.lineNormal,
+            )
+        }
     }
 }
 
 /**
  * 정보 항목
  *
+ * @param loading 로딩 여부
  * @param onAccountInfoClick 계정 정보 클릭 시 콜백
  */
 fun LazyListScope.informationItem(
+    loading: Boolean = false,
     onAccountInfoClick: () -> Unit,
 ) {
     item {
@@ -131,6 +161,7 @@ fun LazyListScope.informationItem(
                     onClick = onAccountInfoClick,
                 ),
             ),
+            loading = loading,
         )
     }
 }

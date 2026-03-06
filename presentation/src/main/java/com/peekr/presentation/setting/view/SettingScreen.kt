@@ -1,14 +1,22 @@
 package com.peekr.presentation.setting.view
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.peekr.core.designsystem.component.loading.PeekrLoadingIndicator
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
@@ -40,17 +48,19 @@ private fun SettingScreenFrame(
  * 설정 화면
  *
  * @param modifier [Modifier]
+ * @param accountInfoLoading 계정 정보 로딩 여부
  * @param onNavigateToAccountInfo 계정 정보로 이동 콜백
  * @param onBackPressed 뒤로 가기 시 콜백
  */
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
+    accountInfoLoading: Boolean,
     onNavigateToAccountInfo: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     SettingScreenFrame(
-        modifier = modifier,
+        modifier = Modifier,
         topBar = {
             TopBar(
                 modifier = Modifier
@@ -62,6 +72,7 @@ fun SettingScreen(
         settings = {
             // 정보 항목
             informationItem(
+                loading = accountInfoLoading,
                 onAccountInfoClick = onNavigateToAccountInfo,
             )
             // 알림 항목
@@ -104,6 +115,25 @@ private fun TopBar(
     )
 }
 
+@Composable
+private fun SettingLoading() {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = { },
+            ),
+    ) {
+        PeekrLoadingIndicator(
+            Modifier
+                .align(Alignment.Center)
+                .size(30.dp),
+        )
+    }
+}
+
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
 @Composable
@@ -111,6 +141,7 @@ private fun SettingScreenPreview() {
     PeekrAppTheme {
         SettingScreen(
             modifier = Modifier.fillMaxSize(),
+            accountInfoLoading = true,
             onNavigateToAccountInfo = {},
             onBackPressed = {},
         )

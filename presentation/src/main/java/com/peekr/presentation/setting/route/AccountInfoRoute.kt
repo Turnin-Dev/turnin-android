@@ -15,21 +15,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.feature.image.SinglePhotoPicker
-import com.peekr.presentation.setting.state.SettingContract
+import com.peekr.presentation.setting.state.AccountInfoContract
 import com.peekr.presentation.setting.view.detail.AccountInfoScreen
 import com.peekr.presentation.setting.view.detail.ProfileImageUpdateModal
-import com.peekr.presentation.setting.viewmodel.SettingViewModel
+import com.peekr.presentation.setting.viewmodel.AccountInfoViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountInfoRoute(
-    viewModel: SettingViewModel,
+    viewModel: AccountInfoViewModel,
     onNavigateToCropProfileImage: (uri: String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val accountInfoState by viewModel.accountInfoState.collectAsStateWithLifecycle()
     val localProfileImage by viewModel.localProfileImage.collectAsStateWithLifecycle()
     var isProfileImageUpdateModalOpen by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -55,7 +54,7 @@ fun AccountInfoRoute(
     if (isProfileImageUpdateModalOpen) {
         ProfileImageUpdateModal(
             existsProfileImage = localProfileImage != null ||
-                accountInfoState.accountInfo?.profileImageUrl != null,
+                uiState.accountInfo?.profileImageUrl != null,
             sheetState = sheetState,
             onDismissRequest = {
                 scope.launch {
@@ -74,7 +73,7 @@ fun AccountInfoRoute(
                 isProfileImageUpdateModalOpen = false
             },
             onImageChangeToDefault = {
-                viewModel.processEvent(SettingContract.UiEvent.OnProfileImageDeleted)
+                viewModel.processEvent(AccountInfoContract.UiEvent.OnProfileImageDeleted)
                 isProfileImageUpdateModalOpen = false
             },
             onImageAdd = {
@@ -89,9 +88,9 @@ fun AccountInfoRoute(
         modifier = Modifier
             .fillMaxSize()
             .background(PeekrTheme.colorScheme.backgroundNormal),
-        accountInfo = accountInfoState.accountInfo,
+        accountInfo = uiState.accountInfo,
         localProfileImage = localProfileImage,
-        isAccountInfoEdited = accountInfoState.isAccountInfoEdited,
+        isAccountInfoEdited = uiState.isAccountInfoEdited,
         displayIdState = viewModel.displayIdState,
         isDisplayIdValid = viewModel.isDisplayIdState,
         nameState = viewModel.nameState,

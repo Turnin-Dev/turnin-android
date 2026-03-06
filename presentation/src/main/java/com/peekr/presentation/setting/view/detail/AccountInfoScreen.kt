@@ -52,7 +52,8 @@ import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.presentation.R
 import com.peekr.presentation.setting.error.asUiText
 import com.peekr.presentation.setting.model.UiAccountInfo
-import com.peekr.presentation.setting.state.SettingContract
+import com.peekr.presentation.setting.model.UiEditableAccountInfo
+import com.peekr.presentation.setting.state.AccountInfoContract
 
 /**
  * 계정 정보 화면 프레임
@@ -122,7 +123,7 @@ private fun AccountInfoScreenFrame(
 @Composable
 fun AccountInfoScreen(
     modifier: Modifier = Modifier,
-    accountInfo: UiAccountInfo?,
+    accountInfo: UiEditableAccountInfo?,
     localProfileImage: ByteArray?,
     isAccountInfoEdited: Boolean,
     displayIdState: TextFieldState,
@@ -131,7 +132,7 @@ fun AccountInfoScreen(
     isNameValid: ValidationResult<Name, ValidationErrorType>,
     introduceState: TextFieldState,
     isIntroduceValid: ValidationResult<Introduce, ValidationErrorType>,
-    onUiEvent: (SettingContract.UiEvent) -> Unit,
+    onUiEvent: (AccountInfoContract.UiEvent) -> Unit,
     onProfileImageClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -143,7 +144,7 @@ fun AccountInfoScreen(
                     .fillMaxWidth()
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                 isAccountInfoEdited = isAccountInfoEdited,
-                onSave = { onUiEvent(SettingContract.UiEvent.OnSaveAccountInfo) },
+                onSave = { onUiEvent(AccountInfoContract.UiEvent.OnSaveAccountInfo) },
                 onBackPressed = onBackPressed,
             )
         },
@@ -407,7 +408,7 @@ private fun SettingScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
-            accountInfo = UiAccountInfo.sample,
+            accountInfo = UiEditableAccountInfo.sample,
             localProfileImage = null,
             isAccountInfoEdited = true,
             displayIdState = TextFieldState(UiAccountInfo.sample.displayId),

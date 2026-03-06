@@ -130,7 +130,12 @@ sealed interface SubGraph {
 
         /** 계정 정보 화면 */
         @Serializable
-        data object AccountInfo : Setting
+        data class AccountInfo(
+            val displayId: String?,
+            val name: String?,
+            val introduce: String?,
+            val profileImageUrl: String?,
+        ) : Setting
 
         /**
          * 프로필 사진 편집 화면
