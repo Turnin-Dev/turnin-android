@@ -38,9 +38,9 @@ class AccountInfoContract {
          * @property imageBytes 변경할 프로필 사진의 [ByteArray]
          */
         class OnProfileImageUpdated(
-            imageBytes: ByteArray,
+            imageBytes: ByteArray?,
         ) : UiEvent {
-            val imageBytes: ByteArray = imageBytes.copyOf()
+            val imageBytes: ByteArray? = imageBytes?.copyOf()
         }
 
         /** 프로필 사진 삭제 이벤트 */

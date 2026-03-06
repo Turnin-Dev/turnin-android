@@ -199,7 +199,14 @@ class AccountInfoViewModel @Inject constructor(
     // 프로필 사진 업데이트
     // 업데이트 시에는 ByteArray만 가지고 있다가
     // 계정 정보 저장 시 파일명과 함께 ImageFileDetail을 만들어 저장 폼에 포함시킨다.
-    private fun updateProfileImage(imageBytes: ByteArray) {
+    private fun updateProfileImage(imageBytes: ByteArray?) {
+        if (imageBytes == null) {
+            viewModelScope.launch {
+                showSnackbar(UiText.StringResource(R.string.setting_error_updated_image_not_found))
+            }
+            return
+        }
+
         _localProfileImage.update { imageBytes }
         updateState {
             copy(

@@ -33,8 +33,10 @@ class SettingViewModel @Inject constructor(
     override suspend fun handleEvent(event: SettingContract.UiEvent) {
         when (event) {
             SettingContract.UiEvent.OnNavigateToAccountInfo -> {
-                sendEffect {
-                    SettingContract.UiEffect.NavigateToAccountInfo(initialAccountInfo)
+                if (initialAccountInfo != null) {
+                    sendEffect {
+                        SettingContract.UiEffect.NavigateToAccountInfo(initialAccountInfo)
+                    }
                 }
             }
         }
