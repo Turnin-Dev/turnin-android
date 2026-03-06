@@ -52,45 +52,55 @@ fun SinglePhotoPicker(
         )
 
     LaunchedEffect(selectedImageUri) {
-        selectedImageUri?.let { uri ->
-            try {
-                // 파일 크기 확인 및 에러 처리
-                val fileSize = context.contentResolver.openFileDescriptor(uri, "r")
-                    ?.use { it.statSize } ?: -1L
-                if (fileSize > maxFileSizeBytes || fileSize < 0) {
-                    val maxFileSizeMbForMessage =
-                        ceil(maxFileSizeBytes / (1024.0 * 1024.0)).toInt()
-                    Toast
-                        .makeText(
-                            context,
-                            context.getString(
-                                R.string.single_photo_picker_invalid_max_size_exceed,
-                                maxFileSizeMbForMessage,
-                            ),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    onSelected(null, null)
-                    selectedImageUri = null
-                    return@let
-                }
+        val uri = selectedImageUri ?: return@LaunchedEffect
 
-                // 파일 변환 및 선택 수행
-                val imageBitmap = withContext(Dispatchers.IO) {
-                    uriToBitmap(context, uri)
-                }
-                onSelected(imageBitmap, uri)
-                selectedImageUri = null
-            } catch (e: Exception) {
-                onError?.invoke(e) ?: Toast
+        try {
+            // 파일 크기 확인
+            val fileSize = withContext(Dispatchers.IO) {
+                context.contentResolver.openFileDescriptor(uri, "r")
+                    ?.use { it.statSize } ?: -1L
+            }
+
+            if (fileSize > maxFileSizeBytes || fileSize < 0) {
+                val maxFileSizeMbForMessage =
+                    ceil(maxFileSizeBytes / (1024.0 * 1024.0)).toInt()
+                Toast
                     .makeText(
                         context,
-                        context.getText(R.string.single_photo_picker_invalid_image_format),
+                        context.getString(
+                            R.string.single_photo_picker_invalid_max_size_exceed,
+                            maxFileSizeMbForMessage,
+                        ),
                         Toast.LENGTH_SHORT,
                     ).show()
                 onSelected(null, null)
-            } finally {
-                onClose()
+                return@LaunchedEffect
             }
+
+            // 파일 변환(URI -> ImageBitmap)
+            val imageBitmap = withContext(Dispatchers.IO) {
+                uriToBitmap(context, uri)
+            }
+
+            // 파일 변환 실패 시
+            if (imageBitmap == null) {
+                onSelected(null, null)
+                return@LaunchedEffect
+            }
+
+            // 파일 변환 성공 시
+            onSelected(imageBitmap, uri)
+        } catch (e: Exception) {
+            onError?.invoke(e) ?: Toast
+                .makeText(
+                    context,
+                    context.getText(R.string.single_photo_picker_invalid_image_format),
+                    Toast.LENGTH_SHORT,
+                ).show()
+            onSelected(null, null)
+        } finally {
+            selectedImageUri = null
+            onClose()
         }
     }
 

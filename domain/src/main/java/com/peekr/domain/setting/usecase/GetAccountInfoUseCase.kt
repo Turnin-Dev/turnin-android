@@ -33,7 +33,11 @@ class GetAccountInfoUseCase @Inject constructor(
     operator fun invoke(): Flow<Result<AccountInfo, SettingErrorType>> = flow {
         // 1. 로컬 데이터가 없는 경우 리프레쉬 트리거를 수행한다.
         if (userRepository.getMyProfile().first() == null) {
-            userRepository.getMyProfileRefresh().first { it != Result.Loading }
+            val refreshResult = userRepository.getMyProfileRefresh().first { it != Result.Loading }
+            if (refreshResult is Result.Error) {
+                emit(Result.Error(SettingErrorType.CommonError(refreshResult.error)))
+                return@flow
+            }
         }
 
         // 2. 로그인 타입과 로컬 데이터를 combine으로 결합한 후 AccountInfo를 방출한다.

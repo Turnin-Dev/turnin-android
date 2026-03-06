@@ -1,5 +1,6 @@
 package com.peekr.presentation.register
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.SizeTransform
@@ -108,6 +109,7 @@ fun NavGraphBuilder.registerNavigation(
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
             var photoPickerOpen by remember { mutableStateOf(false) }
+            val context = LocalContext.current
 
             SinglePhotoPicker(
                 open = photoPickerOpen,
@@ -119,7 +121,6 @@ fun NavGraphBuilder.registerNavigation(
                 onClose = { photoPickerOpen = false },
             )
 
-            val context = LocalContext.current
             LaunchedUiEffectHandler(
                 effectFlow = registerViewModel.registerEventState,
                 onConsumeEffect = { registerViewModel.onConsumeEventState() },
@@ -133,6 +134,12 @@ fun NavGraphBuilder.registerNavigation(
                             navController.navigate(
                                 SubGraph.Register.CropProfileImage,
                             )
+                        }
+
+                        event.error != null -> {
+                            Toast
+                                .makeText(context, event.error.asString(context), Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 },

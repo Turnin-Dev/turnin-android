@@ -5,6 +5,7 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.domain.model.DisplayId
@@ -15,6 +16,7 @@ import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.domain.register.error.RegisterErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * 회원가입 기능을 수행한다.
@@ -32,32 +34,28 @@ internal class RegisterUseCase @Inject internal constructor(
         name: Name,
         imageFileDetail: ImageFileDetail?,
         introduce: Introduce?,
-    ): Flow<Result<RegisterResult, RegisterErrorType>> = if (imageFileDetail != null) {
-        getFileUrlUseCase(imageFileDetail.bytes, imageFileDetail.name, imageFileDetail.mime)
-            .flatMapResult { profileImageUrl ->
-                val register = Register(
-                    provider = provider,
-                    providerId = providerId,
-                    displayId = displayId,
-                    name = name,
-                    profileImageUrl = profileImageUrl,
-                    introduce = introduce,
-                )
-                authRepository
-                    .register(register)
-                    .mapError { authErrorType -> RegisterErrorType.CommonError(authErrorType) }
-            }
-    } else {
-        val register = Register(
-            provider = provider,
-            providerId = providerId,
-            displayId = displayId,
-            name = name,
-            profileImageUrl = null,
-            introduce = introduce,
-        )
-        authRepository
-            .register(register)
-            .mapError { authErrorType -> RegisterErrorType.CommonError(authErrorType) }
+    ): Flow<Result<RegisterResult, RegisterErrorType>> {
+        val getImageUrlFlow = imageFileDetail?.let {
+            getFileUrlUseCase(it.bytes, it.name, it.mime)
+        } ?: flowOf(Result.Success(null))
+
+        return getImageUrlFlow.flatMapResult { profileImageUrl ->
+            val register = Register(
+                provider = provider,
+                providerId = providerId,
+                displayId = displayId,
+                name = name,
+                profileImageUrl = profileImageUrl,
+                introduce = introduce,
+            )
+            authRepository
+                .register(register)
+                .mapError { commonError ->
+                    when (commonError) {
+                        is CommonErrorType.Network.Conflict -> RegisterErrorType.DuplicateUser
+                        else -> RegisterErrorType.CommonError(commonError)
+                    }
+                }
+        }
     }
 }

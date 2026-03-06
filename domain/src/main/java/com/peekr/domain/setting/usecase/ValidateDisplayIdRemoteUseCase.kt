@@ -9,6 +9,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.domain.setting.error.SettingErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -57,7 +58,8 @@ class ValidateDisplayIdRemoteUseCase @Inject constructor(
                                 }
                             }
                         }
-                    },
+                    }
+                    .catch { emit(ValidationResult.Invalid(SettingErrorType.Unexpected(it))) },
             )
         }
 }

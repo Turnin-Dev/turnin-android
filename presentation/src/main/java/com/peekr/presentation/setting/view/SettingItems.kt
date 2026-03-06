@@ -134,7 +134,7 @@ private fun Item(
             PeekrIcon(
                 icon = PeekrIcons.Default.Normal.Arrow1Right,
                 iconSize = PeekrIconSize.Small,
-                contentDescription = title,
+                contentDescription = null,
                 tint = PeekrTheme.colorScheme.lineNormal,
             )
         }

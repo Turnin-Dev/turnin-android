@@ -75,7 +75,7 @@ fun AccountInfoRoute(
     SinglePhotoPicker(
         open = photoPickerOpen,
         onSelected = { selectedImage, uri ->
-            if (selectedImage != null) {
+            if (selectedImage != null && uri != null) {
                 onNavigateToCropProfileImage(uri.toString())
             }
         },

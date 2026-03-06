@@ -44,6 +44,8 @@ internal fun cropImage(
 ): ImageCropResult =
     if (imageBitmap == null) {
         ImageCropResult.Failure("다른 사진으로 시도 해 주세요.")
+    } else if (viewWidth <= 0 || viewHeight <= 0 || scale <= 0f || !scale.isFinite()) {
+        ImageCropResult.Failure("이미지 자르기 값이 올바르지 않습니다.")
     } else {
         val imageWidth = imageBitmap.width
         val imageHeight = imageBitmap.height
@@ -58,14 +60,14 @@ internal fun cropImage(
 
         // scale이 클수록 즉, 확대 시 src 영역은 작아져야 함
         val srcRadius = radiusPx / scale
-        val srcSize = (srcRadius * 2).toInt()
+        val srcSize = (srcRadius * 2).toInt().coerceAtLeast(1)
 
         // offset을 이미지 픽셀 좌표로 변환할 때도 cropRatio 사용
         val srcOffsetX = (centerX - srcRadius) + (-offsetChanged.x * cropRatio)
         val srcOffsetY = (centerY - srcRadius) + (-offsetChanged.y * cropRatio)
 
         // dst는 항상 홀 지름 고정
-        val dstSize = (radiusPx * 2).toInt()
+        val dstSize = (radiusPx * 2).toInt().coerceAtLeast(1)
 
         // 이미지 범위 밖으로 나간 경우 클램핑
         val clampedSrcOffsetX = srcOffsetX.toInt().coerceIn(0, (imageWidth - srcSize).coerceAtLeast(0))
@@ -109,7 +111,7 @@ internal fun cropImage(
  *
  * @param imageUri 이미지의 Uri
  *
- * @return ImageBitmap(nullable)
+ * @return 성공 시 [ImageBitmap], 실패 시 `null`을 반환한다.
  */
 suspend fun uriToBitmap(
     context: Context,

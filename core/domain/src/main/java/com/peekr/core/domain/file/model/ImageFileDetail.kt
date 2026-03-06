@@ -49,7 +49,7 @@ class ImageFileDetail private constructor(
         ): ImageFileDetail {
             val fileName =
                 "${FileNameGenerator.generate(username)}.${mime.extension}"
-            return ImageFileDetail(bytes, fileName, mime)
+            return ImageFileDetail(bytes.copyOf(), fileName, mime)
         }
     }
 }
