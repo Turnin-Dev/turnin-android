@@ -43,10 +43,16 @@ class AccountInfoContract {
 
         /** 프로필 사진 삭제 이벤트 */
         data object OnProfileImageDeleted : UiEvent
+
+        /** 안전하게 뒤로가기 이벤트 */
+        data object SafeBackPressed : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
         /** 화면 닫기 일회성 이벤트 */
         data object CloseScreen : UiEffect
+
+        /** 취소 경고 모달 열기 */
+        data object OpenSafeCancelModal : UiEffect
     }
 }

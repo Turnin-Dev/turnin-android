@@ -14,7 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.feature.image.SinglePhotoPicker
+import com.peekr.core.presentation.ui.component.modal.PeekrSimpleModal
+import com.peekr.presentation.R
 import com.peekr.presentation.setting.state.AccountInfoContract
 import com.peekr.presentation.setting.view.detail.AccountInfoScreen
 import com.peekr.presentation.setting.view.detail.ProfileImageUpdateModal
@@ -34,11 +37,39 @@ fun AccountInfoRoute(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var photoPickerOpen by remember { mutableStateOf(false) }
+    var isOpenSafeCancelModal by remember { mutableStateOf(false) }
+
+    // ------------------------------ UiEffect ------------------------------
+    ObserveAsEvents(viewModel.effect) { effect ->
+        when (effect) {
+            AccountInfoContract.UiEffect.CloseScreen -> {
+                onBackPressed()
+            }
+
+            AccountInfoContract.UiEffect.OpenSafeCancelModal -> {
+                isOpenSafeCancelModal = true
+            }
+        }
+    }
 
     // ------------------------------ LoadingScreen ------------------------------
     if (uiState.fullScreenLoading) {
         PeekrLoadingScreen()
     }
+
+    // ------------------------------ SafeCancelModal ------------------------------
+    PeekrSimpleModal(
+        modifier = Modifier.fillMaxSize(),
+        isOpen = isOpenSafeCancelModal,
+        title = R.string.setting_detail_account_info_safe_cancel_title,
+        onAcceptClick = {
+            onBackPressed()
+            isOpenSafeCancelModal = false
+        },
+        onCancelClick = {
+            isOpenSafeCancelModal = false
+        },
+    )
 
     // ------------------------------ PhotoPicker & Modal ------------------------------
     SinglePhotoPicker(
@@ -99,6 +130,5 @@ fun AccountInfoRoute(
         isIntroduceValid = viewModel.isIntroduceValid,
         onUiEvent = viewModel::processEvent,
         onProfileImageClick = { isProfileImageUpdateModalOpen = true },
-        onBackPressed = onBackPressed,
     )
 }

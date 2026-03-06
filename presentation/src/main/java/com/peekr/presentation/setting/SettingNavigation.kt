@@ -78,6 +78,10 @@ fun NavGraphBuilder.settingNavigation(
         composable<SubGraph.Setting.AccountInfo> {
             val viewModel: AccountInfoViewModel = hiltViewModel()
 
+            BackHandler {
+                viewModel.processEvent(AccountInfoContract.UiEvent.SafeBackPressed)
+            }
+
             AccountInfoRoute(
                 viewModel = viewModel,
                 onNavigateToCropProfileImage = { uri ->

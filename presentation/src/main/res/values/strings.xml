@@ -194,6 +194,7 @@
     <string name="setting_detail_account_info_modal_change_image">사진 변경</string>
     <string name="setting_detail_account_info_modal_change_default">기본 이미지로 변경</string>
     <string name="setting_detail_account_info_modal_add_image">사진 추가</string>
+    <string name="setting_detail_account_info_safe_cancel_title">변경사항을 버리시겠습니까?</string>
     <!-- Setting Success -->
     <string name="setting_success_update_account_info">계정 정보를 업데이트했습니다.</string>
     <!-- Setting Error -->

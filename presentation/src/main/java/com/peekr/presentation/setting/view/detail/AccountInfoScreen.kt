@@ -118,7 +118,6 @@ private fun AccountInfoScreenFrame(
  * @param isIntroduceValid 사용자 표시 ID 유효성 검사 결과
  * @param onUiEvent UI 이벤트 발행
  * @param onProfileImageClick 프로필 사진 클릭 시 콜백
- * @param onBackPressed 뒤로 가기 시 콜백
  */
 @Composable
 fun AccountInfoScreen(
@@ -134,7 +133,6 @@ fun AccountInfoScreen(
     isIntroduceValid: ValidationResult<Introduce, ValidationErrorType>,
     onUiEvent: (AccountInfoContract.UiEvent) -> Unit,
     onProfileImageClick: () -> Unit,
-    onBackPressed: () -> Unit,
 ) {
     AccountInfoScreenFrame(
         modifier = modifier,
@@ -145,7 +143,7 @@ fun AccountInfoScreen(
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
                 isAccountInfoEdited = isAccountInfoEdited,
                 onSave = { onUiEvent(AccountInfoContract.UiEvent.OnSaveAccountInfo) },
-                onBackPressed = onBackPressed,
+                onBackPressed = { onUiEvent(AccountInfoContract.UiEvent.SafeBackPressed) },
             )
         },
         profileImage = {
@@ -419,7 +417,6 @@ private fun SettingScreenPreview() {
             isIntroduceValid = ValidationResult.Valid(Introduce("introduce")),
             onUiEvent = {},
             onProfileImageClick = {},
-            onBackPressed = {},
         )
     }
 }

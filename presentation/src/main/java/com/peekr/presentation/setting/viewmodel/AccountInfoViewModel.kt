@@ -116,6 +116,7 @@ class AccountInfoViewModel @Inject constructor(
             AccountInfoContract.UiEvent.OnSaveAccountInfo -> saveAccountInfo()
             is AccountInfoContract.UiEvent.OnProfileImageUpdated -> updateProfileImage(event.imageBytes)
             AccountInfoContract.UiEvent.OnProfileImageDeleted -> deleteProfileImage()
+            AccountInfoContract.UiEvent.SafeBackPressed -> safeBackPressed()
         }
     }
 
@@ -221,6 +222,14 @@ class AccountInfoViewModel @Inject constructor(
                 profileImagePatch = SettingProfileImagePatch.Remove,
                 isAccountInfoEdited = checkAccountInfoEdited(profileImageUrl = null),
             )
+        }
+    }
+
+    private fun safeBackPressed() {
+        if (currentUiState.isAccountInfoEdited) {
+            sendEffect { AccountInfoContract.UiEffect.OpenSafeCancelModal }
+        } else {
+            sendEffect { AccountInfoContract.UiEffect.CloseScreen }
         }
     }
 
