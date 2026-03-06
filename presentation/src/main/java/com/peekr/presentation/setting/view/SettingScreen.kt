@@ -60,7 +60,7 @@ fun SettingScreen(
     onBackPressed: () -> Unit,
 ) {
     SettingScreenFrame(
-        modifier = Modifier,
+        modifier = modifier,
         topBar = {
             TopBar(
                 modifier = Modifier

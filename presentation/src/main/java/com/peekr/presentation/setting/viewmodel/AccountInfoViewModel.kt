@@ -38,22 +38,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AccountInfoViewModel @Inject constructor(
     private val usecases: AccountInfoUseCases,
     private val snackbarController: SnackbarController,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<AccountInfoContract.UiState, AccountInfoContract.UiEvent, AccountInfoContract.UiEffect>() {
     override fun createInitialState(): AccountInfoContract.UiState =
-        AccountInfoContract.UiState(
-//            accountInfo = UiEditableAccountInfo(
-//                displayId = savedStateHandle.get<String>("displayId") ?: "",
-//                name = savedStateHandle.get<String>("name") ?: "",
-//                introduce = savedStateHandle.get<String>("introduce") ?: "",
-//                profileImageUrl = savedStateHandle.get<String>("profileImageUrl"),
-//            ),
-        )
+        AccountInfoContract.UiState()
 
     private val initialDisplayId: String? = savedStateHandle.get<String>("displayId")
     private val initialName: String? = savedStateHandle.get<String>("name")
@@ -87,9 +81,11 @@ class AccountInfoViewModel @Inject constructor(
     init {
         // 넘어온 인자 값 체크
         if (initialDisplayId == null || initialName == null || initialIntroduce == null) {
-//            sendEffect { AccountInfoContract.UiEffect.CloseScreen }
-            // TODO: 일시적으로 정보를 불러올 수 없다는 에러 문구 표시
+            viewModelScope.launch {
+                showSnackbar(UiText.StringResource(R.string.setting_error_my_profile_not_found))
+            }
         } else {
+            // 계정 정보 초기 값 설정
             updateState {
                 copy(
                     accountInfo = UiEditableAccountInfo(

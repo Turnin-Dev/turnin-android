@@ -24,7 +24,6 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.common.viewmodel.sharedViewModel
 import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.rememberImageBitmap
 import com.peekr.core.presentation.feature.image.toJpegByteArray
@@ -44,8 +43,7 @@ fun NavGraphBuilder.settingNavigation(
 ) {
     navigation<SubGraph.Setting.Root>(startDestination = SubGraph.Setting.Main) {
         composable<SubGraph.Setting.Main> { backStackEntry ->
-            val viewModel: SettingViewModel =
-                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val viewModel: SettingViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             ObserveAsEvents(viewModel.effect) { effect ->
