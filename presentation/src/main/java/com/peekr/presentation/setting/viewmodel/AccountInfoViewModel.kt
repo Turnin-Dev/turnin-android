@@ -1,28 +1,25 @@
 package com.peekr.presentation.setting.viewmodel
 
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.validation.ValidationResult
 import com.peekr.core.domain.model.DisplayId
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
+import com.peekr.core.presentation.common.viewmodel.setTextFieldValidation
 import com.peekr.core.presentation.ui.util.UiText
-import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.domain.setting.model.SettingProfileImagePatch
 import com.peekr.domain.setting.usecase.AccountInfoUseCases
 import com.peekr.presentation.R
 import com.peekr.presentation.setting.error.asUiText
 import com.peekr.presentation.setting.model.UiEditableAccountInfo
 import com.peekr.presentation.setting.state.AccountInfoContract
+import com.peekr.presentation.setting.state.AccountInfoDisplayIdState
+import com.peekr.presentation.setting.state.AccountInfoIntroduceState
+import com.peekr.presentation.setting.state.AccountInfoNameState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,6 +32,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -54,24 +52,15 @@ class AccountInfoViewModel @Inject constructor(
     private val initialIntroduce: String? = savedStateHandle.get<String>("introduce")
     private val initialProfileImageUrl: String? = savedStateHandle.get<String>("profileImageUrl")
 
-    val displayIdState = TextFieldState()
-    val nameState = TextFieldState()
-    val introduceState = TextFieldState()
+    // StateFlow 기반의 텍스트 필드 상태
+    private val _displayIdFieldState = MutableStateFlow(AccountInfoDisplayIdState())
+    val displayIdFieldState = _displayIdFieldState.asStateFlow()
 
-    var isDisplayIdState by mutableStateOf<ValidationResult<DisplayId, SettingErrorType>>(
-        if (initialDisplayId != null) {
-            ValidationResult.Valid(DisplayId(initialDisplayId))
-        } else {
-            ValidationResult.Loading
-        },
-    )
-        private set
-    val isNameValid by derivedStateOf {
-        usecases.validateName(nameState.text.toString())
-    }
-    val isIntroduceValid by derivedStateOf {
-        usecases.validateIntroduce(introduceState.text.toString())
-    }
+    private val _nameFieldState = MutableStateFlow(AccountInfoNameState())
+    val nameFieldState = _nameFieldState.asStateFlow()
+
+    private val _introduceFieldState = MutableStateFlow(AccountInfoIntroduceState())
+    val introduceFieldState = _introduceFieldState.asStateFlow()
 
     private val _localProfileImage = MutableStateFlow<ByteArray?>(null)
 
@@ -85,6 +74,17 @@ class AccountInfoViewModel @Inject constructor(
                 showSnackbar(UiText.StringResource(R.string.setting_error_my_profile_not_found))
             }
         } else {
+            // 텍스트 필드 초기값 설정
+            _displayIdFieldState.update {
+                it.copy(displayId = initialDisplayId, isDisplayIdValid = true)
+            }
+            _nameFieldState.update {
+                it.copy(name = initialName, isNameValid = true)
+            }
+            _introduceFieldState.update {
+                it.copy(introduce = initialIntroduce, isIntroduceValid = true)
+            }
+
             // 계정 정보 초기 값 설정
             updateState {
                 copy(
@@ -97,12 +97,9 @@ class AccountInfoViewModel @Inject constructor(
                 )
             }
 
-            // TextFieldState 초기값 설정
-            displayIdState.setTextAndPlaceCursorAtEnd(initialDisplayId)
-            nameState.setTextAndPlaceCursorAtEnd(initialName)
-            introduceState.setTextAndPlaceCursorAtEnd(initialIntroduce)
-
             observeDisplayIdValidation()
+            observeNameValidation()
+            observeIntroduceValidation()
             observeTextFieldChanges()
         }
     }
@@ -113,14 +110,29 @@ class AccountInfoViewModel @Inject constructor(
             is AccountInfoContract.UiEvent.OnProfileImageUpdated -> updateProfileImage(event.imageBytes)
             AccountInfoContract.UiEvent.OnProfileImageDeleted -> deleteProfileImage()
             AccountInfoContract.UiEvent.SafeBackPressed -> safeBackPressed()
+            is AccountInfoContract.UiEvent.OnDisplayIdChanged ->
+                _displayIdFieldState.update { it.copy(displayId = event.displayId) }
+
+            is AccountInfoContract.UiEvent.OnNameChanged ->
+                _nameFieldState.update { it.copy(name = event.name) }
+
+            is AccountInfoContract.UiEvent.OnIntroduceChanged ->
+                _introduceFieldState.update { it.copy(introduce = event.introduce) }
         }
     }
 
     // 사용자 표시 ID 유효성 검사
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun observeDisplayIdValidation() {
-        snapshotFlow { displayIdState.text.toString() }
+        _displayIdFieldState
+            .map { it.displayId }
             .distinctUntilChanged()
+            .onEach {
+                // 입력 즉시 로딩 상태 부여
+                _displayIdFieldState.update {
+                    it.copy(isDisplayIdValid = false, displayIdError = null, loading = true)
+                }
+            }
             .debounce(300)
             .flatMapLatest { text ->
                 when {
@@ -129,16 +141,74 @@ class AccountInfoViewModel @Inject constructor(
                     else -> usecases.validateDisplayId(text)
                 }
             }
-            .onEach { isDisplayIdState = it }
+            .onEach { result ->
+                when (result) {
+                    ValidationResult.Loading -> _displayIdFieldState.update {
+                        it.copy(isDisplayIdValid = false, displayIdError = null, loading = true)
+                    }
+
+                    is ValidationResult.Valid -> _displayIdFieldState.update {
+                        it.copy(isDisplayIdValid = true, displayIdError = null, loading = false)
+                    }
+
+                    is ValidationResult.Invalid -> _displayIdFieldState.update {
+                        it.copy(
+                            isDisplayIdValid = false,
+                            displayIdError = result.error.asUiText(),
+                            loading = false,
+                        )
+                    }
+                }
+            }
             .launchIn(viewModelScope)
     }
 
-    // 텍스트 필드 값을 관찰하여 상태를 업데이트하고 정보가 수정됐는지 판단한다.
+    // 사용자 명 유효성 검사
+    private fun observeNameValidation() {
+        _nameFieldState.setTextFieldValidation(
+            scope = viewModelScope,
+            value = { it.name },
+            validator = { usecases.validateName(it) },
+            onLoading = { _nameFieldState.update { it.copy(loading = true) } },
+            onValid = {
+                _nameFieldState.update {
+                    it.copy(isNameValid = true, nameError = null, loading = false)
+                }
+            },
+            onInvalid = { error ->
+                _nameFieldState.update {
+                    it.copy(isNameValid = false, nameError = error.asUiText(), loading = false)
+                }
+            },
+        )
+    }
+
+    // 소개글 유효성 검사
+    private fun observeIntroduceValidation() {
+        _introduceFieldState.setTextFieldValidation(
+            scope = viewModelScope,
+            value = { it.introduce },
+            validator = { usecases.validateIntroduce(it) },
+            onLoading = { _introduceFieldState.update { it.copy(loading = true) } },
+            onValid = {
+                _introduceFieldState.update {
+                    it.copy(isIntroduceValid = true, introduceError = null, loading = false)
+                }
+            },
+            onInvalid = { error ->
+                _introduceFieldState.update {
+                    it.copy(isIntroduceValid = false, introduceError = error.asUiText(), loading = false)
+                }
+            },
+        )
+    }
+
+    // 텍스트 필드 변경 감지 → UiState의 accountInfo, isAccountInfoEdited 업데이트
     private fun observeTextFieldChanges() {
         combine(
-            snapshotFlow { displayIdState.text.toString() },
-            snapshotFlow { nameState.text.toString() },
-            snapshotFlow { introduceState.text.toString() },
+            _displayIdFieldState.map { it.displayId },
+            _nameFieldState.map { it.name },
+            _introduceFieldState.map { it.introduce },
         ) { displayId, name, introduce ->
             Triple(displayId, name, introduce)
         }
@@ -161,13 +231,10 @@ class AccountInfoViewModel @Inject constructor(
     private fun saveAccountInfo() {
         val accountInfo = currentUiState.accountInfo ?: return
 
-        // 1. isAccountInfoEdited 가 true 인지 확인
-        // 2. 모든 텍스트 필드 유효성 검사 상태가 Valid 인지 확인
-        // 3. 위 과정이 모두 완료되면 최종적으로 계정 정보 저장 수행
         if (currentUiState.isAccountInfoEdited &&
-            isDisplayIdState is ValidationResult.Valid &&
-            isNameValid is ValidationResult.Valid &&
-            isIntroduceValid is ValidationResult.Valid
+            _displayIdFieldState.value.isDisplayIdValid &&
+            _nameFieldState.value.isNameValid &&
+            _introduceFieldState.value.isIntroduceValid
         ) {
             usecases.updateAccountInfo(
                 displayId = accountInfo.displayId,
@@ -252,3 +319,5 @@ class AccountInfoViewModel @Inject constructor(
         snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }
+
+private const val DEBOUNCE_300 = 300L

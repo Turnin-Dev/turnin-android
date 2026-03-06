@@ -18,10 +18,10 @@ class ValidationNameFormatUseCase @Inject constructor() {
      *
      * @param name 사용자 명
      */
-    operator fun invoke(name: String): ValidationResult<Name, ValidationErrorType> =
+    operator fun invoke(name: String): ValidationResult<String, ValidationErrorType> =
         try {
             val result = Name(name)
-            ValidationResult.Valid(result)
+            ValidationResult.Valid(result.value)
         } catch (e: CommonValidationException) {
             ValidationResult.Invalid(e.toValidationErrorType())
         }

@@ -18,10 +18,10 @@ class ValidationIntroduceFormatUseCase @Inject constructor() {
      *
      * @param introduce 소개글
      */
-    operator fun invoke(introduce: String): ValidationResult<Introduce, ValidationErrorType> =
+    operator fun invoke(introduce: String): ValidationResult<String, ValidationErrorType> =
         try {
             val result = Introduce(introduce)
-            ValidationResult.Valid(result)
+            ValidationResult.Valid(result.value)
         } catch (e: CommonValidationException) {
             ValidationResult.Invalid(e.toValidationErrorType())
         }

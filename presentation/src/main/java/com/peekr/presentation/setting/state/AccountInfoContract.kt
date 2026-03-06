@@ -48,6 +48,13 @@ class AccountInfoContract {
 
         /** 안전하게 뒤로가기 이벤트 */
         data object SafeBackPressed : UiEvent
+
+        // 텍스트 필드 변경 이벤트
+        data class OnDisplayIdChanged(val displayId: String) : UiEvent
+
+        data class OnNameChanged(val name: String) : UiEvent
+
+        data class OnIntroduceChanged(val introduce: String) : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {

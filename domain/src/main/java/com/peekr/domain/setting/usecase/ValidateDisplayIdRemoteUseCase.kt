@@ -29,7 +29,7 @@ class ValidateDisplayIdRemoteUseCase @Inject constructor(
      *
      * @param displayId 사용자 표시 ID
      */
-    operator fun invoke(displayId: String): Flow<ValidationResult<DisplayId, SettingErrorType>> =
+    operator fun invoke(displayId: String): Flow<ValidationResult<String, SettingErrorType>> =
         flow {
             val displayId = try {
                 DisplayId(displayId)
@@ -54,7 +54,7 @@ class ValidateDisplayIdRemoteUseCase @Inject constructor(
                                 if (result.data) {
                                     ValidationResult.Invalid(SettingErrorType.DisplayIdNotAvailable)
                                 } else {
-                                    ValidationResult.Valid(displayId)
+                                    ValidationResult.Valid(displayId.value)
                                 }
                             }
                         }

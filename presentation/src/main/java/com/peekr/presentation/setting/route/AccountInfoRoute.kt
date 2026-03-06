@@ -33,9 +33,14 @@ fun AccountInfoRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val localProfileImage by viewModel.localProfileImage.collectAsStateWithLifecycle()
-    var isProfileImageUpdateModalOpen by remember { mutableStateOf(false) }
+    val displayIdFieldState by viewModel.displayIdFieldState.collectAsStateWithLifecycle()
+    val nameFieldState by viewModel.nameFieldState.collectAsStateWithLifecycle()
+    val introduceFieldState by viewModel.introduceFieldState.collectAsStateWithLifecycle()
+
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+
+    var isProfileImageUpdateModalOpen by remember { mutableStateOf(false) }
     var photoPickerOpen by remember { mutableStateOf(false) }
     var isOpenSafeCancelModal by remember { mutableStateOf(false) }
 
@@ -122,12 +127,9 @@ fun AccountInfoRoute(
         accountInfo = uiState.accountInfo,
         localProfileImage = localProfileImage,
         isAccountInfoEdited = uiState.isAccountInfoEdited,
-        displayIdState = viewModel.displayIdState,
-        isDisplayIdValid = viewModel.isDisplayIdState,
-        nameState = viewModel.nameState,
-        isNameValid = viewModel.isNameValid,
-        introduceState = viewModel.introduceState,
-        isIntroduceValid = viewModel.isIntroduceValid,
+        displayIdFieldState = displayIdFieldState,
+        nameFieldState = nameFieldState,
+        introduceFieldState = introduceFieldState,
         onUiEvent = viewModel::processEvent,
         onProfileImageClick = { isProfileImageUpdateModalOpen = true },
     )

@@ -12,15 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldLabelPosition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -41,19 +38,13 @@ import com.peekr.core.designsystem.util.icon.Check
 import com.peekr.core.designsystem.util.icon.Edit
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.domain.common.validation.ValidationErrorType
-import com.peekr.core.domain.common.validation.ValidationResult
-import com.peekr.core.domain.model.DisplayId
-import com.peekr.core.domain.model.Introduce
-import com.peekr.core.domain.model.Name
-import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
-import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.presentation.R
-import com.peekr.presentation.setting.error.asUiText
-import com.peekr.presentation.setting.model.UiAccountInfo
 import com.peekr.presentation.setting.model.UiEditableAccountInfo
 import com.peekr.presentation.setting.state.AccountInfoContract
+import com.peekr.presentation.setting.state.AccountInfoDisplayIdState
+import com.peekr.presentation.setting.state.AccountInfoIntroduceState
+import com.peekr.presentation.setting.state.AccountInfoNameState
 
 /**
  * 계정 정보 화면 프레임
@@ -110,12 +101,9 @@ private fun AccountInfoScreenFrame(
  * @param modifier [Modifier]
  * @param accountInfo 계정 정보
  * @param isAccountInfoEdited 계정 정보 수정 여부
- * @param displayIdState 사용자 표시 ID 상태
- * @param isDisplayIdValid 사용자 표시 ID 유효성 검사 결과
- * @param nameState 사용자 명 상태
- * @param isNameValid 사용자 명 유효성 검사 결과
- * @param introduceState 소개글 상태
- * @param isIntroduceValid 사용자 표시 ID 유효성 검사 결과
+ * @param displayIdFieldState 사용자 표시 ID 텍스트 필드 상태
+ * @param nameFieldState 사용자 명 텍스트 필드 상태
+ * @param introduceFieldState 소개글 텍스트 필드 상태
  * @param onUiEvent UI 이벤트 발행
  * @param onProfileImageClick 프로필 사진 클릭 시 콜백
  */
@@ -125,12 +113,9 @@ fun AccountInfoScreen(
     accountInfo: UiEditableAccountInfo?,
     localProfileImage: ByteArray?,
     isAccountInfoEdited: Boolean,
-    displayIdState: TextFieldState,
-    isDisplayIdValid: ValidationResult<DisplayId, SettingErrorType>,
-    nameState: TextFieldState,
-    isNameValid: ValidationResult<Name, ValidationErrorType>,
-    introduceState: TextFieldState,
-    isIntroduceValid: ValidationResult<Introduce, ValidationErrorType>,
+    displayIdFieldState: AccountInfoDisplayIdState,
+    nameFieldState: AccountInfoNameState,
+    introduceFieldState: AccountInfoIntroduceState,
     onUiEvent: (AccountInfoContract.UiEvent) -> Unit,
     onProfileImageClick: () -> Unit,
 ) {
@@ -156,22 +141,28 @@ fun AccountInfoScreen(
         displayIdTextField = {
             DisplayIdTextField(
                 modifier = Modifier.fillMaxWidth(),
-                displayIdState = displayIdState,
-                isDisplayIdValid = isDisplayIdValid,
+                displayIdState = displayIdFieldState,
+                onDisplayIdChanged = {
+                    onUiEvent(AccountInfoContract.UiEvent.OnDisplayIdChanged(it))
+                },
             )
         },
         nameTextField = {
             NameTextField(
                 modifier = Modifier.fillMaxWidth(),
-                nameState = nameState,
-                isNameValid = isNameValid,
+                nameState = nameFieldState,
+                onNameChanged = {
+                    onUiEvent(AccountInfoContract.UiEvent.OnNameChanged(it))
+                },
             )
         },
         introduceTextField = {
             IntroduceTextField(
                 modifier = Modifier.fillMaxWidth(),
-                introduceState = introduceState,
-                isIntroduceValid = isIntroduceValid,
+                introduceState = introduceFieldState,
+                onIntroduceChanged = {
+                    onUiEvent(AccountInfoContract.UiEvent.OnIntroduceChanged(it))
+                },
             )
         },
     )
@@ -250,25 +241,26 @@ private fun ProfileImage(
  *
  * @param modifier [Modifier]
  * @param displayIdState 사용자 표시 ID 텍스트 필드 상태
- * @param isDisplayIdValid 사용자 표시 ID 유효성 검사 결과
+ * @param onDisplayIdChanged 사용자 표시 ID 변경 시 콜백
  */
 @Composable
 private fun DisplayIdTextField(
     modifier: Modifier = Modifier,
-    displayIdState: TextFieldState,
-    isDisplayIdValid: ValidationResult<DisplayId, SettingErrorType>,
+    displayIdState: AccountInfoDisplayIdState,
+    onDisplayIdChanged: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = modifier,
-        state = displayIdState,
-        isError = isDisplayIdValid is ValidationResult.Invalid,
+        value = displayIdState.displayId,
+        onValueChange = onDisplayIdChanged,
+        isError = displayIdState.displayIdError != null,
         supportingText = {
-            if (isDisplayIdValid is ValidationResult.Invalid) {
-                Text(isDisplayIdValid.error.asUiText().asString())
+            if (displayIdState.displayIdError != null) {
+                Text(displayIdState.displayIdError.asString())
             }
         },
         trailingIcon = {
-            if (isDisplayIdValid is ValidationResult.Loading) {
+            if (displayIdState.loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(15.dp),
                     strokeCap = StrokeCap.Round,
@@ -278,8 +270,7 @@ private fun DisplayIdTextField(
             }
         },
         label = { Text(stringResource(R.string.setting_detail_account_info_text_field_id_label)) },
-        lineLimits = TextFieldLineLimits.SingleLine,
-        labelPosition = TextFieldLabelPosition.Above(),
+        singleLine = true,
         colors = getTextFieldColors(),
     )
 }
@@ -289,26 +280,26 @@ private fun DisplayIdTextField(
  *
  * @param modifier [Modifier]
  * @param nameState 사용자 명 텍스트 필드 상태
- * @param isNameValid 사용자 명 유효성 검사 결과
+ * @param onNameChanged 사용자 명 변경 시 콜백
  */
 @Composable
 private fun NameTextField(
     modifier: Modifier = Modifier,
-    nameState: TextFieldState,
-    isNameValid: ValidationResult<Name, ValidationErrorType>,
+    nameState: AccountInfoNameState,
+    onNameChanged: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = modifier,
-        state = nameState,
-        isError = isNameValid is ValidationResult.Invalid,
+        value = nameState.name,
+        onValueChange = onNameChanged,
+        isError = nameState.nameError != null,
         supportingText = {
-            if (isNameValid is ValidationResult.Invalid) {
-                Text(isNameValid.error.asUiText().asString())
+            if (nameState.nameError != null) {
+                Text(nameState.nameError.asString())
             }
         },
         label = { Text(stringResource(R.string.setting_detail_account_info_text_field_name_label)) },
-        lineLimits = TextFieldLineLimits.SingleLine,
-        labelPosition = TextFieldLabelPosition.Above(),
+        singleLine = true,
         colors = getTextFieldColors(),
     )
 }
@@ -318,28 +309,27 @@ private fun NameTextField(
  *
  * @param modifier [Modifier]
  * @param introduceState 소개글 텍스트 필드 상태
- * @param isIntroduceValid 소개글 유효성 검사 결과
+ * @param onIntroduceChanged 소개글 변경 시 콜백
  */
 @Composable
 private fun IntroduceTextField(
     modifier: Modifier = Modifier,
-    introduceState: TextFieldState,
-    isIntroduceValid: ValidationResult<Introduce, ValidationErrorType>,
+    introduceState: AccountInfoIntroduceState,
+    onIntroduceChanged: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = modifier,
-        state = introduceState,
-        isError = isIntroduceValid is ValidationResult.Invalid,
+        value = introduceState.introduce,
+        onValueChange = onIntroduceChanged,
+        isError = introduceState.introduceError != null,
         supportingText = {
-            if (isIntroduceValid is ValidationResult.Invalid) {
-                Text(isIntroduceValid.error.asUiText().asString())
+            if (introduceState.introduceError != null) {
+                Text(introduceState.introduceError.asString())
             }
         },
         label = {
             Text(stringResource(R.string.setting_detail_account_info_text_field_introduce_label))
         },
-        lineLimits = TextFieldLineLimits.MultiLine(),
-        labelPosition = TextFieldLabelPosition.Above(),
         colors = getTextFieldColors(),
     )
 }
@@ -381,18 +371,18 @@ private fun DisplayIdTextFieldPreview() {
         Column(verticalArrangement = Arrangement.spacedBy(50.dp)) {
             NameTextField(
                 modifier = Modifier.fillMaxWidth(),
-                nameState = TextFieldState(),
-                isNameValid = ValidationResult.Valid(Name("name")),
+                nameState = AccountInfoNameState(),
+                onNameChanged = {},
             )
             NameTextField(
                 modifier = Modifier.fillMaxWidth(),
-                nameState = TextFieldState("Name"),
-                isNameValid = ValidationResult.Valid(Name("name")),
+                nameState = AccountInfoNameState(),
+                onNameChanged = {},
             )
             NameTextField(
                 modifier = Modifier.fillMaxWidth(),
-                nameState = TextFieldState("Name"),
-                isNameValid = ValidationResult.Invalid(ValidationErrorType.Unexpected),
+                nameState = AccountInfoNameState(),
+                onNameChanged = {},
             )
         }
     }
@@ -409,12 +399,9 @@ private fun SettingScreenPreview() {
             accountInfo = UiEditableAccountInfo.sample,
             localProfileImage = null,
             isAccountInfoEdited = true,
-            displayIdState = TextFieldState(UiAccountInfo.sample.displayId),
-            isDisplayIdValid = ValidationResult.Valid(DisplayId("displayId")),
-            nameState = TextFieldState(UiAccountInfo.sample.name),
-            isNameValid = ValidationResult.Invalid(ValidationErrorType.Unexpected),
-            introduceState = TextFieldState(UiAccountInfo.sample.introduce),
-            isIntroduceValid = ValidationResult.Valid(Introduce("introduce")),
+            displayIdFieldState = AccountInfoDisplayIdState(),
+            nameFieldState = AccountInfoNameState(),
+            introduceFieldState = AccountInfoIntroduceState(),
             onUiEvent = {},
             onProfileImageClick = {},
         )
