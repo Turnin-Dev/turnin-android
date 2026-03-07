@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 
@@ -126,8 +127,12 @@ abstract class MVIBaseViewModelTest<
                 viewModel.uiState.toList(states)
             }
 
+        yield()
+
         // Send intent
         intents.forEach { intent -> viewModel.processEvent(intent) }
+
+        advanceUntilIdle()
 
         // States assertion
         if (assertAllState) {
@@ -240,6 +245,8 @@ abstract class MVIBaseViewModelTest<
                 viewModel.effect.toList(effects)
             }
 
+        yield()
+
         // Send intent
         intents.forEach { intent -> viewModel.processEvent(intent) }
 
@@ -290,6 +297,8 @@ abstract class MVIBaseViewModelTest<
             viewModel.viewModelScope.launch {
                 viewModel.effect.toList(effects)
             }
+
+        yield()
 
         // Send intent
         intents.forEach { intent -> viewModel.processEvent(intent) }
