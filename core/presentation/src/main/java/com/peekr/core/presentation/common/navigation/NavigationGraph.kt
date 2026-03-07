@@ -117,6 +117,36 @@ sealed interface SubGraph {
         @Serializable
         data object BlockModalResult : BlockModal
     }
+
+    /** 설정 화면 그래프 */
+    sealed interface Setting : SubGraph {
+        /** 설정 화면 그래프 진입점 */
+        @Serializable
+        data object Root : Setting
+
+        /** 설정 메인 화면 */
+        @Serializable
+        data object Main : Setting
+
+        /** 계정 정보 화면 */
+        @Serializable
+        data class AccountInfo(
+            val displayId: String?,
+            val name: String?,
+            val introduce: String?,
+            val profileImageUrl: String?,
+        ) : Setting
+
+        /**
+         * 프로필 사진 편집 화면
+         *
+         * @property uri 사진 URI
+         */
+        @Serializable
+        data class CropProfileImage(
+            val uri: String,
+        ) : Setting
+    }
 }
 
 // ------------------------------ Screens (별도 화면 or 딥링크 지원 화면) ------------------------------

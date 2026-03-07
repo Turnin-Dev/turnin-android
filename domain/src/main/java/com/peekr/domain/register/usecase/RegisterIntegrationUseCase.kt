@@ -5,13 +5,13 @@ import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.common.error.mapError
+import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.domain.register.error.RegisterErrorType
-import com.peekr.domain.register.model.ImageFileDetail
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -46,9 +46,7 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             val refreshToken = registerResult.refreshToken
             authRepository
                 .saveTokens(accessToken, refreshToken)
-                .mapError { authErrorType ->
-                    RegisterErrorType.CommonError(authErrorType)
-                }
+                .mapError { commonError -> RegisterErrorType.CommonError(commonError) }
         }
     }.getOrElse { e -> flowOf(Result.Error(RegisterErrorType.Unexpected(e))) }
 }

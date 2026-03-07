@@ -31,6 +31,7 @@ import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
 import com.peekr.presentation.register.registerNavigation
 import com.peekr.presentation.report.reportNavigation
+import com.peekr.presentation.setting.settingNavigation
 
 /**
  * Peekr의 앱 네비게이션
@@ -111,6 +112,9 @@ fun AppNavigation(
 
             // 차단 목록 네비게이션
             blockListScreen(appNavController)
+
+            // 설정 네비게이션
+            settingNavigation(appNavController)
 
             // 임시 화면
             composable<Screens.TempMain> {

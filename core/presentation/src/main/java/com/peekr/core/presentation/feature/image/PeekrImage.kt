@@ -8,11 +8,21 @@ import java.io.ByteArrayOutputStream
 private val FORMAT = Bitmap.CompressFormat.JPEG
 private const val QUALITY = 100
 
-fun ImageBitmap.toJpegByteArray(): ByteArray {
+/**
+ * [ImageBitmap] 타입을 JPEG 압축 형식의 [ByteArray]를 생성한다.
+ *
+ * 이 작업은 비교적 무거운 작업이므로 주의해서 사용해야 한다. 혹은 IO 스레드에서 수행한다.
+ */
+fun ImageBitmap.toJpegByteArray(): ByteArray? {
     val androidBitmap = this.asAndroidBitmap()
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    androidBitmap.compress(FORMAT, QUALITY, byteArrayOutputStream)
-    return byteArrayOutputStream.toByteArray()
+    return ByteArrayOutputStream().use { outputStream ->
+        val compressed = androidBitmap.compress(FORMAT, QUALITY, outputStream)
+        if (compressed) {
+            outputStream.toByteArray()
+        } else {
+            null
+        }
+    }
 }
 
 // class PeekrImage {

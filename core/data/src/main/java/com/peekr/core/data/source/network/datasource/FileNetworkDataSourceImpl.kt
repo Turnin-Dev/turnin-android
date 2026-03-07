@@ -42,9 +42,12 @@ class FileNetworkDataSourceImpl @Inject constructor(
         }
 
         val requestBody = file.toRequestBody(mediaType)
+        // 서버에서 Presigned URL 생성 시 사용한 스펙과 통일되어야 한다.
         val request = Request
             .Builder()
             .url(presignedUrl)
+            .addHeader("Content-Type", mime)
+            .addHeader("Cache-Control", "public, max-age=31536000, immutable")
             .put(requestBody)
             .build()
 

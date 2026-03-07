@@ -1,17 +1,15 @@
-package com.peekr.presentation.register.model
+package com.peekr.core.domain.file.model
 
-import com.peekr.core.domain.file.model.Mime
-import com.peekr.core.presentation.common.util.FileNameGenerator
-import com.peekr.domain.register.model.ImageFileDetail
+import com.peekr.core.domain.file.FileNameGenerator
 
 /**
- * UI용 이미지 파일 세부 사항
+ * 이미지 파일 래퍼 클래스
  *
  * @property bytes [ByteArray]타입의 이미지 파일
  * @property name 이미지 파일 이름
  * @property mime 이미지 파일 유형 (기본 값은 image/jpeg)
  */
-data class UiImageFileDetail(
+class ImageFileDetail private constructor(
     private val _bytes: ByteArray,
     val name: String,
     val mime: Mime = Mime.IMAGE_JPEG,
@@ -24,7 +22,7 @@ data class UiImageFileDetail(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as UiImageFileDetail
+        other as ImageFileDetail
 
         if (!_bytes.contentEquals(other._bytes)) return false
         if (name != other.name) return false
@@ -41,24 +39,17 @@ data class UiImageFileDetail(
     }
 
     override fun toString(): String =
-        "UiImageFileDetail(name=$name, mime=$mime, bytesSize=${_bytes.size})"
+        "ImageFileDetail(name=$name, mime=$mime, bytesSize=${_bytes.size})"
 
     companion object {
         fun create(
             bytes: ByteArray,
             username: String,
             mime: Mime = Mime.IMAGE_JPEG,
-        ): UiImageFileDetail {
+        ): ImageFileDetail {
             val fileName =
                 "${FileNameGenerator.generate(username)}.${mime.extension}"
-            return UiImageFileDetail(bytes, fileName, mime)
+            return ImageFileDetail(bytes.copyOf(), fileName, mime)
         }
     }
 }
-
-fun UiImageFileDetail.toDomainModel(): ImageFileDetail =
-    ImageFileDetail(
-        bytes,
-        name = name,
-        mime = mime,
-    )

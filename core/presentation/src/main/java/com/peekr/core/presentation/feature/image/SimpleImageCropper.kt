@@ -1,4 +1,4 @@
-package com.peekr.presentation.register.view
+package com.peekr.core.presentation.feature.image
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,11 +16,11 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.icon.Cancel
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.R
 import com.peekr.core.presentation.feature.image.cropper.ImageCropper
-import com.peekr.presentation.R
 
 /**
- * 회원가입 - 프로필 사진 자르기 화면
+ * 기본 사진 편집기
  *
  * @param modifier [Modifier]
  * @param image [ImageBitmap]타입의 자를 원본 이미지
@@ -28,7 +28,7 @@ import com.peekr.presentation.R
  * @param onCrop 이미지를 자르고 자른 이미지를 제공
  */
 @Composable
-fun CropProfileImageScreen(
+fun SimpleImageCropper(
     modifier: Modifier = Modifier,
     image: ImageBitmap?,
     onCancel: () -> Unit,
@@ -51,7 +51,7 @@ fun CropProfileImageScreen(
                 .padding(ScreenTokens.HorizontalPaddingWithTouchTarget),
             icon = PeekrIcons.Default.Normal.Cancel,
             iconSize = PeekrIconSize.Small,
-            contentDescription = stringResource(R.string.common_btn_cancel),
+            contentDescription = stringResource(R.string.simple_image_cropper_cancel),
             tint = PeekrTheme.colorScheme.staticWhite,
             onClick = onCancel,
         )
@@ -60,9 +60,9 @@ fun CropProfileImageScreen(
 
 @Preview
 @Composable
-private fun CropProfileImageScreenPreview() {
+private fun SimpleImageCropperPreview() {
     PeekrAppTheme {
-        CropProfileImageScreen(
+        SimpleImageCropper(
             modifier = Modifier.fillMaxSize(),
             image = null,
             onCancel = {},

@@ -1,5 +1,7 @@
 package com.peekr.presentation.register.state
 
+import com.peekr.core.presentation.ui.util.UiText
+
 /**
  * 회원가입 이벤트 상태 클래스
  *
@@ -10,4 +12,6 @@ data class RegisterEventState(
     val navigateToNextScreen: Boolean = false,
     /** 사진 편집 화면으로 이동 이벤트 */
     val navigateToCropImageScreen: Boolean = false,
+    /** 에러 이벤트 */
+    val error: UiText? = null,
 )

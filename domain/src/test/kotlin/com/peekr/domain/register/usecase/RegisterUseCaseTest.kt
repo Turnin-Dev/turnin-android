@@ -5,6 +5,7 @@ import com.peekr.core.domain.auth.model.Register
 import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.domain.file.model.Mime
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
@@ -13,7 +14,6 @@ import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.domain.register.error.RegisterErrorType
-import com.peekr.domain.register.model.ImageFileDetail
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
@@ -113,7 +113,7 @@ class RegisterUseCaseTest {
         private val TestIntroduce = Introduce("hello!")
         private val TestJWTToken = JWTToken("a", "b")
         private const val TEST_FILE_URL = "https://example.com/test.jpg"
-        private val TestImageFileDetail = ImageFileDetail("123".toByteArray(), "", Mime.IMAGE_JPEG)
+        private val TestImageFileDetail = ImageFileDetail.create("123".toByteArray(), "", Mime.IMAGE_JPEG)
         private val TestRegister = Register(
             provider = TestProvider,
             providerId = TestProviderId,

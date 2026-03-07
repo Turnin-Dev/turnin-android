@@ -41,6 +41,15 @@ fun NavController.navigateToBlockList() {
     navigate(Screens.BlockList)
 }
 
+// ------------------------------ Setting ------------------------------
+fun NavController.navigateToSetting() {
+    navigate(SubGraph.Setting.Root)
+}
+
+fun NavController.navigateToCropProfileImage(uri: String) {
+    navigate(SubGraph.Setting.CropProfileImage(uri))
+}
+
 // ------------------------------ KeywordEdit ------------------------------
 fun NavController.navigateToKeywordEdit(userKeywordId: Long?) {
     navigate(Screens.KeywordEdit(userKeywordId))

@@ -3,8 +3,11 @@ package com.peekr.presentation.register.viewmodel
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.common.coroutine.IO
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.validation.ValidationResult
+import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.feature.image.toJpegByteArray
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
@@ -17,14 +20,14 @@ import com.peekr.domain.register.usecase.ValidateIntroduceUseCase
 import com.peekr.domain.register.usecase.ValidateNameUseCase
 import com.peekr.presentation.login.mapper.toDomainModel
 import com.peekr.presentation.register.error.asUiText
-import com.peekr.presentation.register.model.UiImageFileDetail
-import com.peekr.presentation.register.model.toDomainModel
 import com.peekr.presentation.register.state.RegisterDisplayIdState
 import com.peekr.presentation.register.state.RegisterEventState
 import com.peekr.presentation.register.state.RegisterNameState
 import com.peekr.presentation.register.state.RegisterProfileState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.lang.Exception
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +39,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -44,7 +49,10 @@ class RegisterViewModel @Inject constructor(
     private val validateIntroduceUseCase: ValidateIntroduceUseCase,
     private val checkDisplayIdExistsUseCase: CheckDisplayIdExistsUseCase,
     private val registerIntegrationUseCase: RegisterIntegrationUseCase,
+    @IO private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
+    private val tag = this::class.java.simpleName
+
     private val _displayIdState = MutableStateFlow(RegisterDisplayIdState())
     val displayIdState = _displayIdState.asStateFlow()
 
@@ -101,35 +109,38 @@ class RegisterViewModel @Inject constructor(
         providerId: String,
         image: ImageBitmap?,
     ) {
-        val imageFileDetail = image
-            ?.let {
-                UiImageFileDetail.create(image.toJpegByteArray(), nameState.value.name)
-            }?.toDomainModel()
-        registerIntegrationUseCase(
-            provider = provider.toDomainModel(),
-            providerId = providerId,
-            displayId = displayIdState.value.displayId,
-            name = nameState.value.name,
-            imageFileDetail = imageFileDetail,
-            introduce = profileState.value.introduce,
-        ).onEach { result ->
-            when (result) {
-                Result.Loading -> {
-                    _profileState.update { it.copy(loading = true) }
-                }
+        viewModelScope.launch {
+            val imageFileDetail = createImageFileDetail(image)
+            // 이미지는 null이 아니지만 변환 실패 시 (에러 처리는 createImageFileDetail 내부에서 수행)
+            if (imageFileDetail == null && image != null) return@launch
 
-                is Result.Error<RegisterErrorType> -> {
-                    _profileState.update {
-                        it.copy(introduceError = result.error.asUiText(), loading = false)
+            registerIntegrationUseCase(
+                provider = provider.toDomainModel(),
+                providerId = providerId,
+                displayId = displayIdState.value.displayId,
+                name = nameState.value.name,
+                imageFileDetail = imageFileDetail,
+                introduce = profileState.value.introduce,
+            ).onEach { result ->
+                when (result) {
+                    Result.Loading -> {
+                        _profileState.update { it.copy(loading = true) }
+                    }
+
+                    is Result.Error<RegisterErrorType> -> {
+                        _profileState.update { it.copy(loading = false) }
+                        _registerEventState.update {
+                            it.copy(error = result.error.asUiText())
+                        }
+                    }
+
+                    is Result.Success -> {
+                        _profileState.update { it.copy(loading = false) }
+                        _registerEventState.update { it.copy(navigateToNextScreen = true) }
                     }
                 }
-
-                is Result.Success -> {
-                    _profileState.update { it.copy(loading = false) }
-                    _registerEventState.update { it.copy(navigateToNextScreen = true) }
-                }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
 
     /**
@@ -179,6 +190,31 @@ class RegisterViewModel @Inject constructor(
                     loading = false,
                 )
             }
+        }
+    }
+
+    // 이미지 파일 변환 및 ImageFileDetail 생성 작업
+    private suspend fun createImageFileDetail(image: ImageBitmap?): ImageFileDetail? {
+        try {
+            if (image == null) return null
+
+            val imageBytes = withContext(ioDispatcher) {
+                image.toJpegByteArray()
+            }
+            if (imageBytes == null) {
+                _registerEventState.update {
+                    it.copy(error = RegisterErrorType.ImageFileCompressFailed.asUiText())
+                }
+                return null
+            }
+
+            return ImageFileDetail.create(imageBytes, nameState.value.name)
+        } catch (e: Exception) {
+            AppLogger.e(tag, e, "Register Failed.")
+            _registerEventState.update {
+                it.copy(error = RegisterErrorType.Unexpected(e).asUiText())
+            }
+            return null
         }
     }
 
@@ -253,6 +289,7 @@ class RegisterViewModel @Inject constructor(
             it.copy(
                 navigateToNextScreen = false,
                 navigateToCropImageScreen = false,
+                error = null,
             )
         }
     }

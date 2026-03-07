@@ -10,8 +10,11 @@ sealed interface RegisterErrorType : BaseError {
     /** 빈칸은 허용하지 않는다는 에러 */
     data object CantUseEmptyOrBlank : RegisterErrorType
 
-    /** 변환된 사진이 null인 상황에 대한 에러 */
-    data object ImageFileIsNull : RegisterErrorType
+    /** 사진 파일 압축 에러 */
+    data object ImageFileCompressFailed : RegisterErrorType
+
+    /** 이미 계정이 존재하는 사용자 */
+    data object DuplicateUser : RegisterErrorType
 
     /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
     data class Unexpected(val cause: Throwable?) : RegisterErrorType

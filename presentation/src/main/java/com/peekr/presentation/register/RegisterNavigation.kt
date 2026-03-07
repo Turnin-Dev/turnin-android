@@ -1,5 +1,6 @@
 package com.peekr.presentation.register
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.SizeTransform
@@ -28,9 +29,9 @@ import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.util.LaunchedUiEffectHandler
 import com.peekr.core.presentation.common.viewmodel.sharedViewModel
+import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.SinglePhotoPicker
 import com.peekr.presentation.R
-import com.peekr.presentation.register.view.CropProfileImageScreen
 import com.peekr.presentation.register.view.RegisterCommonScreen
 import com.peekr.presentation.register.viewmodel.RegisterViewModel
 import kotlin.reflect.KType
@@ -108,10 +109,11 @@ fun NavGraphBuilder.registerNavigation(
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
             var photoPickerOpen by remember { mutableStateOf(false) }
+            val context = LocalContext.current
 
             SinglePhotoPicker(
                 open = photoPickerOpen,
-                onSelected = { selectedImage ->
+                onSelected = { selectedImage, uri ->
                     if (selectedImage != null) {
                         registerViewModel.selectOriginalImage(selectedImage)
                     }
@@ -119,7 +121,6 @@ fun NavGraphBuilder.registerNavigation(
                 onClose = { photoPickerOpen = false },
             )
 
-            val context = LocalContext.current
             LaunchedUiEffectHandler(
                 effectFlow = registerViewModel.registerEventState,
                 onConsumeEffect = { registerViewModel.onConsumeEventState() },
@@ -133,6 +134,12 @@ fun NavGraphBuilder.registerNavigation(
                             navController.navigate(
                                 SubGraph.Register.CropProfileImage,
                             )
+                        }
+
+                        event.error != null -> {
+                            Toast
+                                .makeText(context, event.error.asString(context), Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 },
@@ -176,7 +183,7 @@ fun NavGraphBuilder.registerNavigation(
                 }
             }
 
-            CropProfileImageScreen(
+            SimpleImageCropper(
                 modifier = Modifier.fillMaxSize(),
                 image = profileState.originalImage,
                 onCrop = { croppedImage ->

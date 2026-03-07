@@ -45,9 +45,10 @@
     <string name="register_screen_btn_next">다음</string>
     <string name="register_screen_btn_start">시작하기</string>
     <!-- Register Error -->
-    <string name="register_error_cant_use_display_id">이미 존재하는 ID입니다.</string>
+    <string name="register_error_cant_use_display_id">이미 사용 중인 ID입니다.</string>
     <string name="register_error_cant_use_empty_or_blank">공백은 허용되지 않습니다.</string>
-    <string name="register_error_image_file_is_null">사진을 불러오지 못했습니다. 다시 시도해주세요.</string>
+    <string name="register_error_image_file_compress_failed">파일 압축과정에서 오류가 발생했어요. 다시 시도하거나 다른 사진으로 시도해주세요.</string>
+    <string name="register_error_duplicate_user">이미 계정이 존재합니다. 앱 종료 후 다시 로그인해주세요.</string>
     <string name="register_error_unexpected">회원가입 중 오류가 발생했습니다. 다시 시도해주세요.</string>
 
     <!-- Profile -->
@@ -170,8 +171,38 @@
     <string name="friend_error_not_same_requester_id_and_my_id">잘못된 접근입니다.</string>
 
     <!-- Setting -->
+    <!-- Setting Screen -->
+    <string name="setting_screen_top_bar_title">설정</string>
+    <string name="setting_screen_item_info_title">정보</string>
+    <string name="setting_screen_item_info_account">계정 정보</string>
+    <string name="setting_screen_item_notification_title">알림</string>
+    <string name="setting_screen_item_notification_setting">알림 설정</string>
+    <string name="setting_screen_item_account_title">계정</string>
+    <string name="setting_screen_item_account_blocked_list">차단 사용자 관리</string>
+    <string name="setting_screen_item_account_logout">로그아웃</string>
+    <string name="setting_screen_item_etc_title">기타</string>
+    <string name="setting_screen_item_etc_version">버전 정보</string>
+    <string name="setting_screen_item_etc_qna">문의</string>
+    <string name="setting_screen_item_delete_account">계정 삭제</string>
+    <!-- Setting Detail - AccountInfo -->
+    <string name="setting_detail_account_info_top_bar_title">계정 정보</string>
+    <string name="setting_detail_account_info_top_bar_save">저장</string>
+    <string name="setting_detail_account_info_profile_image_edit">프로필 사진 수정</string>
+    <string name="setting_detail_account_info_text_field_id_label">ID</string>
+    <string name="setting_detail_account_info_text_field_name_label">이름</string>
+    <string name="setting_detail_account_info_text_field_introduce_label">소개글</string>
+    <string name="setting_detail_account_info_modal_change_image">사진 변경</string>
+    <string name="setting_detail_account_info_modal_change_default">기본 이미지로 변경</string>
+    <string name="setting_detail_account_info_modal_add_image">사진 추가</string>
+    <string name="setting_detail_account_info_safe_cancel_title">변경사항을 버리시겠습니까?</string>
+    <!-- Setting Success -->
+    <string name="setting_success_update_account_info">계정 정보를 업데이트했습니다.</string>
     <!-- Setting Error -->
     <string name="setting_error_login_provider_not_found">로그인 정보를 찾을 수 없어요. 재로그인 해주세요.</string>
+    <string name="setting_error_my_profile_not_found">내 정보 조회에 실패했어요. 다시 시도해주세요.</string>
+    <string name="setting_error_display_id_not_available">이미 사용중인 ID입니다.</string>
+    <string name="setting_error_upload_image_failed">사진 업로드에 실패했어요. 잠시 후 다시 시도해주세요.</string>
+    <string name="setting_error_updated_image_not_found">업데이트할 사진을 찾지 못했어요. 다시 시도해주세요.</string>
     <string name="setting_error_unexpected">문제가 발생했어요. 다시 시도해주세요.</string>
 
     <!-- Error Code -->

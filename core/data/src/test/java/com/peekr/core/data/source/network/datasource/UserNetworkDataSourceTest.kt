@@ -18,7 +18,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -54,9 +53,9 @@ class UserNetworkDataSourceTest {
         val response = dataSource.getUser()
 
         // then
-        Assert.assertTrue(response is NetworkResult.Success)
-        Assert.assertEquals(TestUserResponse.id, (response as NetworkResult.Success).data.id)
-        Assert.assertEquals(TestUserResponse.displayId, response.data.displayId)
+        assertTrue(response is NetworkResult.Success)
+        assertEquals(TestUserResponse.id, (response as NetworkResult.Success).data.id)
+        assertEquals(TestUserResponse.displayId, response.data.displayId)
     }
 
     @Test
@@ -73,8 +72,8 @@ class UserNetworkDataSourceTest {
         val response = dataSource.getUser()
 
         // then
-        Assert.assertTrue(response is NetworkResult.Error)
-        Assert.assertEquals(
+        assertTrue(response is NetworkResult.Error)
+        assertEquals(
             NetworkErrorType.Exception.JsonData,
             (response as NetworkResult.Error).error,
         )
@@ -92,8 +91,8 @@ class UserNetworkDataSourceTest {
         val response = dataSource.getUser()
 
         // then
-        Assert.assertTrue(response is NetworkResult.Error)
-        Assert.assertEquals(
+        assertTrue(response is NetworkResult.Error)
+        assertEquals(
             NetworkErrorType.Unexpected(exception),
             (response as NetworkResult.Error).error,
         )
@@ -355,6 +354,38 @@ class UserNetworkDataSourceTest {
         // then
         val error = (response as NetworkResult.Error).error as NetworkErrorType.Network.HttpError
         assertEquals(404, error.status)
+    }
+
+    @Test
+    fun `로그아웃 - 성공 테스트`() = runTest {
+        // given
+        testRule.server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+            },
+        )
+
+        // when
+        val response = dataSource.logout()
+
+        // then
+        assertTrue(response is NetworkResult.Success)
+    }
+
+    @Test
+    fun `로그아웃 - 알 수 없는 예외 발생 시 Unexpected 에러를 반환한다`() = runTest {
+        // given
+        val mockApi: UserApi = mockk()
+        val exception = Exception()
+        dataSource = UserNetworkDataSourceImpl(mockApi)
+        coEvery { mockApi.logout() } throws exception
+
+        // when
+        val response = dataSource.logout()
+
+        // then
+        val errorResponse = response as NetworkResult.Error
+        assertEquals(NetworkErrorType.Unexpected(exception), errorResponse.error)
     }
 
     companion object {
