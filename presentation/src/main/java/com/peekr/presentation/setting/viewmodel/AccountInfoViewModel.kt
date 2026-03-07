@@ -133,7 +133,7 @@ class AccountInfoViewModel @Inject constructor(
                     it.copy(isDisplayIdValid = false, displayIdError = null, loading = true)
                 }
             }
-            .debounce(300)
+            .debounce(DEBOUNCE_300)
             .flatMapLatest { text ->
                 when {
                     text.isBlank() -> flowOf(ValidationResult.Loading)
