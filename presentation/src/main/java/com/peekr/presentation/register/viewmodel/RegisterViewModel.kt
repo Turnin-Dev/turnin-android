@@ -128,8 +128,9 @@ class RegisterViewModel @Inject constructor(
                     }
 
                     is Result.Error<RegisterErrorType> -> {
-                        _profileState.update {
-                            it.copy(introduceError = result.error.asUiText(), loading = false)
+                        _profileState.update { it.copy(loading = false) }
+                        _registerEventState.update {
+                            it.copy(error = result.error.asUiText())
                         }
                     }
 

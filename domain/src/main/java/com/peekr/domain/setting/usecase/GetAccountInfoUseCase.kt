@@ -6,7 +6,6 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.domain.setting.model.AccountInfo
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.onStart
  *
  * @see invoke
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class GetAccountInfoUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,

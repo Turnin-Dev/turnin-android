@@ -38,6 +38,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+// TODO: 이미지 변경 여부를 profileImagePatch 기준으로 계산하도록 개선 필요
+// 현재 accountInfo.profileImageUrl 기준으로 계산하여
+// 이미지 변경 후 텍스트 원복, 이미지 추가 후 저장 전 삭제 등의
+// 엣지 케이스에서 isAccountInfoEdited가 어긋날 수 있음
 @HiltViewModel
 class AccountInfoViewModel @Inject constructor(
     private val usecases: AccountInfoUseCases,

@@ -142,7 +142,7 @@ class AccountInfoViewModelTest :
     // =====================================================================
 
     @Test
-    fun `텍스트 필드 변경 시 UiState의 accountInfo와 isAccountInfoEdited가 업데이트된다`() = runTest {
+    fun `텍스트 필드 변경 시 UiState의 accountInfo와 isAccountInfoEdited가 업데이트된다`() {
         testState(
             viewModel = viewModel,
             intents = listOf(
@@ -165,7 +165,7 @@ class AccountInfoViewModelTest :
     }
 
     @Test
-    fun `텍스트 필드가 초기값으로 돌아오면 isAccountInfoEdited가 false이다`() = runTest {
+    fun `텍스트 필드가 초기값으로 돌아오면 isAccountInfoEdited가 false이다`() {
         testState(
             viewModel = viewModel,
             intents = listOf(
@@ -372,7 +372,7 @@ class AccountInfoViewModelTest :
 
     // 엣지 케이스: 수정 안 했을 때 저장 불가
     @Test
-    fun `isAccountInfoEdited가 false인 경우 저장 이벤트를 보내도 updateAccountInfo가 호출되지 않는다`() = runTest {
+    fun `isAccountInfoEdited가 false인 경우 저장 이벤트를 보내도 updateAccountInfo가 호출되지 않는다`() {
         testState(
             viewModel = viewModel,
             intents = listOf(AccountInfoContract.UiEvent.OnSaveAccountInfo),
@@ -498,7 +498,7 @@ class AccountInfoViewModelTest :
 
     // 엣지 케이스: 초기 이미지 유무에 따른 isAccountInfoEdited 차이
     @Test
-    fun `초기 profileImageUrl이 있는 경우 이미지 삭제 시 isAccountInfoEdited가 true이다`() = runTest {
+    fun `초기 profileImageUrl이 있는 경우 이미지 삭제 시 isAccountInfoEdited가 true이다`() {
         testState(
             viewModel = viewModel,
             intents = listOf(AccountInfoContract.UiEvent.OnProfileImageDeleted),
@@ -518,7 +518,7 @@ class AccountInfoViewModelTest :
     }
 
     @Test
-    fun `초기 profileImageUrl이 null인 경우 이미지 삭제 시 isAccountInfoEdited가 false이다`() = runTest {
+    fun `초기 profileImageUrl이 null인 경우 이미지 삭제 시 isAccountInfoEdited가 false이다`() {
         // given
         viewModel = AccountInfoViewModel(
             usecases = usecases,
@@ -572,7 +572,7 @@ class AccountInfoViewModelTest :
     }
 
     @Test
-    fun `프로필 이미지 수정 후 뒤로가기 시 OpenSafeCancelModal 이펙트가 발생한다`() = runTest {
+    fun `프로필 이미지 수정 후 뒤로가기 시 OpenSafeCancelModal 이펙트가 발생한다`() {
         testEffect(
             viewModel = viewModel,
             intents = listOf(

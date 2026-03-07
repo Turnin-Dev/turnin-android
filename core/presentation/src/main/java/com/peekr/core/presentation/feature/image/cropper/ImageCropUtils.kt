@@ -17,6 +17,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import java.lang.Exception
 import kotlin.math.max
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -67,7 +68,11 @@ internal fun cropImage(
         val srcOffsetY = (centerY - srcRadius) + (-offsetChanged.y * cropRatio)
 
         // dst는 항상 홀 지름 고정
-        val dstSize = (radiusPx * 2).toInt().coerceAtLeast(1)
+        val dstSize =
+            (radiusPx * 2)
+                .toInt()
+                .coerceAtLeast(1)
+                .coerceAtMost(MAX_CROP_OUTPUT_SIZE)
 
         // 이미지 범위 밖으로 나간 경우 클램핑
         val clampedSrcOffsetX = srcOffsetX.toInt().coerceIn(0, (imageWidth - srcSize).coerceAtLeast(0))
@@ -132,7 +137,11 @@ suspend fun uriToBitmap(
             }
         }
         null
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         null
     }
 }
+
+private const val MAX_CROP_OUTPUT_SIZE = 2048
