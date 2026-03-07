@@ -47,10 +47,10 @@ class AccountInfoViewModel @Inject constructor(
     override fun createInitialState(): AccountInfoContract.UiState =
         AccountInfoContract.UiState()
 
-    private val initialDisplayId: String? = savedStateHandle.get<String>("displayId")
-    private val initialName: String? = savedStateHandle.get<String>("name")
-    private val initialIntroduce: String? = savedStateHandle.get<String>("introduce")
-    private val initialProfileImageUrl: String? = savedStateHandle.get<String>("profileImageUrl")
+    private var initialDisplayId: String? = savedStateHandle.get<String>("displayId")
+    private var initialName: String? = savedStateHandle.get<String>("name")
+    private var initialIntroduce: String? = savedStateHandle.get<String>("introduce")
+    private var initialProfileImageUrl: String? = savedStateHandle.get<String>("profileImageUrl")
 
     // StateFlow 기반의 텍스트 필드 상태
     private val _displayIdFieldState = MutableStateFlow(AccountInfoDisplayIdState())
@@ -68,30 +68,34 @@ class AccountInfoViewModel @Inject constructor(
     val localProfileImage = _localProfileImage.asStateFlow()
 
     init {
+        val localInitialDisplayId = initialDisplayId
+        val localInitialName = initialName
+        val localInitialIntroduce = initialIntroduce
+
         // 넘어온 인자 값 체크
-        if (initialDisplayId == null || initialName == null || initialIntroduce == null) {
+        if (localInitialDisplayId == null || localInitialName == null || localInitialIntroduce == null) {
             viewModelScope.launch {
                 showSnackbar(UiText.StringResource(R.string.setting_error_my_profile_not_found))
             }
         } else {
             // 텍스트 필드 초기값 설정
             _displayIdFieldState.update {
-                it.copy(displayId = initialDisplayId, isDisplayIdValid = true)
+                it.copy(displayId = localInitialDisplayId, isDisplayIdValid = true)
             }
             _nameFieldState.update {
-                it.copy(name = initialName, isNameValid = true)
+                it.copy(name = localInitialName, isNameValid = true)
             }
             _introduceFieldState.update {
-                it.copy(introduce = initialIntroduce, isIntroduceValid = true)
+                it.copy(introduce = localInitialIntroduce, isIntroduceValid = true)
             }
 
             // 계정 정보 초기 값 설정
             updateState {
                 copy(
                     accountInfo = UiEditableAccountInfo(
-                        displayId = initialDisplayId,
-                        name = initialName,
-                        introduce = initialIntroduce,
+                        displayId = localInitialDisplayId,
+                        name = localInitialName,
+                        introduce = localInitialIntroduce,
                         profileImageUrl = initialProfileImageUrl,
                     ),
                 )
@@ -220,7 +224,11 @@ class AccountInfoViewModel @Inject constructor(
                             name = name,
                             introduce = introduce,
                         ),
-                        isAccountInfoEdited = checkAccountInfoEdited(displayId, name, introduce),
+                        isAccountInfoEdited = checkAccountInfoEdited(
+                            displayId = displayId,
+                            name = name,
+                            introduce = introduce,
+                        ),
                     )
                 }
             }
@@ -248,6 +256,13 @@ class AccountInfoViewModel @Inject constructor(
                     is Result.Error -> showSnackbar(result.error.asUiText())
                     is Result.Success -> {
                         showSnackbar(UiText.StringResource(R.string.setting_success_update_account_info))
+
+                        // 초기 값 갱신
+                        initialDisplayId = _displayIdFieldState.value.displayId
+                        initialName = _nameFieldState.value.name
+                        initialIntroduce = _introduceFieldState.value.introduce
+                        initialProfileImageUrl = currentUiState.accountInfo?.profileImageUrl
+
                         updateState {
                             copy(
                                 profileImagePatch = SettingProfileImagePatch.Unchanged,
@@ -305,9 +320,9 @@ class AccountInfoViewModel @Inject constructor(
 
     // 계정 정보 변경 여부 확인
     private fun checkAccountInfoEdited(
-        displayId: String = currentUiState.accountInfo?.displayId ?: "",
-        name: String = currentUiState.accountInfo?.name ?: "",
-        introduce: String = currentUiState.accountInfo?.introduce ?: "",
+        displayId: String = _displayIdFieldState.value.displayId,
+        name: String = _nameFieldState.value.name,
+        introduce: String = _introduceFieldState.value.introduce,
         profileImageUrl: String? = currentUiState.accountInfo?.profileImageUrl,
     ): Boolean =
         initialDisplayId != displayId ||
