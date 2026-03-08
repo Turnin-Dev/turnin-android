@@ -22,6 +22,7 @@ import androidx.navigation.compose.navigation
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
+import com.peekr.core.presentation.common.navigation.navigateToBlockList
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.feature.image.SimpleImageCropper
@@ -42,7 +43,7 @@ fun NavGraphBuilder.settingNavigation(
     navController: NavHostController,
 ) {
     navigation<SubGraph.Setting.Root>(startDestination = SubGraph.Setting.Main) {
-        composable<SubGraph.Setting.Main> { backStackEntry ->
+        composable<SubGraph.Setting.Main> {
             val viewModel: SettingViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -58,6 +59,10 @@ fun NavGraphBuilder.settingNavigation(
                             ),
                         )
                     }
+
+                    SettingContract.UiEffect.NavigateToBlockList -> {
+                        navController.navigateToBlockList()
+                    }
                 }
             }
 
@@ -66,9 +71,7 @@ fun NavGraphBuilder.settingNavigation(
                     .fillMaxSize()
                     .background(PeekrTheme.colorScheme.backgroundNormal),
                 accountInfoLoading = uiState.accountInfoLoading,
-                onNavigateToAccountInfo = {
-                    viewModel.processEvent(SettingContract.UiEvent.OnNavigateToAccountInfo)
-                },
+                onUiEvent = viewModel::processEvent,
                 onBackPressed = { navController.popBackStack() },
             )
         }

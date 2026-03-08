@@ -14,6 +14,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
+import com.peekr.presentation.setting.state.SettingContract
 
 /**
  * 설정 화면 프레임
@@ -41,14 +42,14 @@ private fun SettingScreenFrame(
  *
  * @param modifier [Modifier]
  * @param accountInfoLoading 계정 정보 로딩 여부
- * @param onNavigateToAccountInfo 계정 정보로 이동 콜백
+ * @param onUiEvent 설정 UI 이벤트
  * @param onBackPressed 뒤로 가기 시 콜백
  */
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
     accountInfoLoading: Boolean,
-    onNavigateToAccountInfo: () -> Unit,
+    onUiEvent: (SettingContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     SettingScreenFrame(
@@ -65,7 +66,9 @@ fun SettingScreen(
             // 정보 항목
             informationItem(
                 loading = accountInfoLoading,
-                onAccountInfoClick = onNavigateToAccountInfo,
+                onAccountInfoClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToAccountInfo)
+                },
             )
             // 알림 항목
             notificationItem(
@@ -73,7 +76,9 @@ fun SettingScreen(
             )
             // 계정 항목
             accountItem(
-                onBlockListClick = {},
+                onBlockListClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToBlockList)
+                },
                 onLogoutClick = {},
             )
             // 기타 항목
@@ -115,7 +120,7 @@ private fun SettingScreenPreview() {
         SettingScreen(
             modifier = Modifier.fillMaxSize(),
             accountInfoLoading = true,
-            onNavigateToAccountInfo = {},
+            onUiEvent = {},
             onBackPressed = {},
         )
     }

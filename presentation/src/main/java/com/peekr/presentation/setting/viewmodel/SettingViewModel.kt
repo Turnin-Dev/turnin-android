@@ -39,6 +39,12 @@ class SettingViewModel @Inject constructor(
                     }
                 }
             }
+
+            SettingContract.UiEvent.OnNavigateToBlockList -> {
+                sendEffect {
+                    SettingContract.UiEffect.NavigateToBlockList
+                }
+            }
         }
     }
 

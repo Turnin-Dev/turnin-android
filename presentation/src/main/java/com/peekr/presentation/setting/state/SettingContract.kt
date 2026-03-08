@@ -23,6 +23,9 @@ class SettingContract {
     sealed interface UiEvent : BaseUiEvent {
         /** 계정 정보 화면 이동 이벤트 */
         data object OnNavigateToAccountInfo : UiEvent
+
+        /** 차단 사용자 관리 화면 이동 이벤트 */
+        data object OnNavigateToBlockList : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
@@ -30,5 +33,8 @@ class SettingContract {
         data class NavigateToAccountInfo(
             val accountInfo: UiAccountInfo?,
         ) : UiEffect
+
+        /** 차단 사용자 관리 화면 이동 일회성 이벤트 */
+        data object NavigateToBlockList : UiEffect
     }
 }
