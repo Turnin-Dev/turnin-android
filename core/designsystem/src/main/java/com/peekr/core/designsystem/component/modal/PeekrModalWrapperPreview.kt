@@ -23,18 +23,18 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 private fun PeekrModalWrapperPreview() {
     var isOpen by remember { mutableStateOf(false) }
 
-    Box(Modifier.fillMaxSize()) {
-        Button(onClick = { isOpen = true }) { Text("Open modal!") }
-
-        PeekrModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(Color.LightGray),
-            )
-        }
-    }
     PeekrAppTheme {
+        Box(Modifier.fillMaxSize()) {
+            Button(onClick = { isOpen = true }) { Text("Open modal!") }
+
+            PeekrModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(Color.LightGray),
+                )
+            }
+        }
     }
 }

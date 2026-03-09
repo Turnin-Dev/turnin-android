@@ -13,10 +13,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
+import com.peekr.core.designsystem.component.modal.PeekrSimpleModal
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.core.presentation.feature.image.SinglePhotoPicker
-import com.peekr.core.presentation.ui.component.modal.PeekrSimpleModal
 import com.peekr.presentation.R
 import com.peekr.presentation.setting.state.AccountInfoContract
 import com.peekr.presentation.setting.view.detail.AccountInfoScreen

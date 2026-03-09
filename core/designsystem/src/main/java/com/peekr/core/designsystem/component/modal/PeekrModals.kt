@@ -1,4 +1,4 @@
-package com.peekr.core.presentation.ui.component.modal
+package com.peekr.core.designsystem.component.modal
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +14,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.peekr.core.designsystem.R
 import com.peekr.core.designsystem.component.button.PeekrButtonStyle
 import com.peekr.core.designsystem.component.button.PeekrNegativeButton
 import com.peekr.core.designsystem.component.button.PeekrSolidButton
-import com.peekr.core.designsystem.component.modal.PeekrModalWrapper
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.presentation.R
 
 /**
  * 기본 모달
@@ -58,6 +57,51 @@ fun PeekrSimpleModal(
                     .padding(top = 10.dp, bottom = 40.dp),
                 text = stringResource(title),
             )
+            Buttons(
+                modifier = Modifier.fillMaxWidth(),
+                acceptLabel = acceptLabel,
+                cancelLabel = cancelLabel,
+                onAcceptClick = onAcceptClick,
+                onCancelClick = onCancelClick,
+            )
+        }
+    }
+}
+
+/**
+ * 커스텀 모달
+ *
+ * 컨텐츠 부분을 자유롭게 구성할 수 있다.
+ *
+ * @param modifier [Modifier]
+ * @param isOpen 모달 활성화 여부
+ * @param acceptLabel 확인 버튼 라벨
+ * @param cancelLabel 취소 버튼 라벨
+ * @param onAcceptClick 확인 클릭 시 수행할 작업
+ * @param onCancelClick 취소 클릭 시 수행할 작업
+ * @param onAnimationFinished 모달 사라지는 애니메이션이 끝나고 나서 수행할 작업
+ * @param content 자유롭게 구성 가능한 모달 내부 컨텐츠
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PeekrCustomModal(
+    modifier: Modifier = Modifier,
+    isOpen: Boolean,
+    @StringRes acceptLabel: Int = R.string.simple_modal_btn_accept,
+    @StringRes cancelLabel: Int = R.string.simple_modal_btn_cancel,
+    onAcceptClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    onAnimationFinished: (() -> Unit)? = null,
+    content: @Composable () -> Unit,
+) {
+    PeekrModalWrapper(
+        isOpen = isOpen,
+        animated = true,
+        onDismissRequest = onCancelClick,
+        onAnimationFinished = { onAnimationFinished?.invoke() },
+    ) {
+        Column {
+            content()
             Buttons(
                 modifier = Modifier.fillMaxWidth(),
                 acceptLabel = acceptLabel,
