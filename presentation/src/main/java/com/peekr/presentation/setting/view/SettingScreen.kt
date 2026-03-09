@@ -79,7 +79,9 @@ fun SettingScreen(
                 onBlockListClick = {
                     onUiEvent(SettingContract.UiEvent.OnNavigateToBlockList)
                 },
-                onLogoutClick = {},
+                onLogoutClick = {
+                    onUiEvent(SettingContract.UiEvent.OnLogoutClick)
+                },
             )
             // 기타 항목
             etcItem(

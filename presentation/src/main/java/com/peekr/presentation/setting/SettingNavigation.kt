@@ -1,7 +1,6 @@
 package com.peekr.presentation.setting
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
@@ -14,65 +13,52 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
-import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToBlockList
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
-import com.peekr.core.presentation.common.util.ObserveAsEvents
+import com.peekr.core.presentation.common.navigation.navigateToLogin
 import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.rememberImageBitmap
 import com.peekr.core.presentation.feature.image.toJpegByteArray
 import com.peekr.presentation.setting.route.AccountInfoRoute
+import com.peekr.presentation.setting.route.SettingRoute
 import com.peekr.presentation.setting.state.AccountInfoContract
-import com.peekr.presentation.setting.state.SettingContract
-import com.peekr.presentation.setting.view.SettingScreen
 import com.peekr.presentation.setting.viewmodel.AccountInfoViewModel
-import com.peekr.presentation.setting.viewmodel.SettingViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.settingNavigation(
-    navController: NavHostController,
+    appNavController: NavHostController,
 ) {
     navigation<SubGraph.Setting.Root>(startDestination = SubGraph.Setting.Main) {
         composable<SubGraph.Setting.Main> {
-            val viewModel: SettingViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            ObserveAsEvents(viewModel.effect) { effect ->
-                when (effect) {
-                    is SettingContract.UiEffect.NavigateToAccountInfo -> {
-                        navController.navigate(
-                            SubGraph.Setting.AccountInfo(
-                                displayId = effect.accountInfo?.displayId,
-                                name = effect.accountInfo?.name,
-                                introduce = effect.accountInfo?.introduce,
-                                profileImageUrl = effect.accountInfo?.profileImageUrl,
-                            ),
-                        )
-                    }
-
-                    SettingContract.UiEffect.NavigateToBlockList -> {
-                        navController.navigateToBlockList()
-                    }
-                }
-            }
-
-            SettingScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
-                accountInfoLoading = uiState.accountInfoLoading,
-                onUiEvent = viewModel::processEvent,
-                onBackPressed = { navController.popBackStack() },
+            SettingRoute(
+                onNavigateToAccountInfo = { accountInfo ->
+                    appNavController.navigate(
+                        SubGraph.Setting.AccountInfo(
+                            displayId = accountInfo?.displayId,
+                            name = accountInfo?.name,
+                            introduce = accountInfo?.introduce,
+                            profileImageUrl = accountInfo?.profileImageUrl,
+                        ),
+                    )
+                },
+                onNavigateToBlockList = {
+                    appNavController.navigateToBlockList()
+                },
+                onNavigateToLogin = {
+                    appNavController.navigateToLogin()
+                },
+                onBackPressed = {
+                    appNavController.popBackStack()
+                },
             )
         }
 
@@ -86,17 +72,17 @@ fun NavGraphBuilder.settingNavigation(
             AccountInfoRoute(
                 viewModel = viewModel,
                 onNavigateToCropProfileImage = { uri ->
-                    navController.navigateToCropProfileImage(uri)
+                    appNavController.navigateToCropProfileImage(uri)
                 },
                 onBackPressed = {
-                    navController.popBackStack()
+                    appNavController.popBackStack()
                 },
             )
         }
 
         composable<SubGraph.Setting.CropProfileImage> { backStackEntry ->
             val accountInfoEntry = remember(backStackEntry) {
-                navController.getBackStackEntry<SubGraph.Setting.AccountInfo>()
+                appNavController.getBackStackEntry<SubGraph.Setting.AccountInfo>()
             }
             val viewModel: AccountInfoViewModel = hiltViewModel(accountInfoEntry)
             val scope = rememberCoroutineScope()
@@ -109,7 +95,7 @@ fun NavGraphBuilder.settingNavigation(
 
             LaunchedEffect(uri) {
                 if (uri == null) {
-                    navController.popBackStack()
+                    appNavController.popBackStack()
                 }
             }
 
@@ -130,13 +116,13 @@ fun NavGraphBuilder.settingNavigation(
                             viewModel.processEvent(
                                 AccountInfoContract.UiEvent.OnProfileImageUpdated(bytes),
                             )
-                            navController.popBackStack()
+                            appNavController.popBackStack()
                         } finally {
                             screenLoading = false
                         }
                     }
                 },
-                onCancel = { navController.popBackStack() },
+                onCancel = { appNavController.popBackStack() },
             )
         }
     }

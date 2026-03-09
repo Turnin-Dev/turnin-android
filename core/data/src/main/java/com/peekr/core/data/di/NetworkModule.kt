@@ -1,11 +1,11 @@
 package com.peekr.core.data.di
 
 import com.peekr.core.data.BuildConfig
-import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
 import com.peekr.core.data.source.network.retrofit.TokenAuthenticator
 import com.peekr.core.data.source.network.retrofit.TokenInterceptor
+import com.peekr.core.domain.eventBus.AuthEventBus
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

@@ -26,12 +26,12 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
+import com.peekr.core.presentation.common.navigation.navigateToLogin
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.peekrapp.navigation.AppNavigation
@@ -42,9 +42,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var authEventBus: AuthEventBus
-
     @Inject
     lateinit var snackbarController: SnackbarController
 
@@ -77,20 +74,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
             if (!isAuthScreen) {
-                ObserveAsEvents(
-                    flow = authEventBus.logoutEvent,
-                    onEvent = {
-                        coroutineScope.launch {
-                            // 자원 정리
-                            mainViewModel.logout()
-                            // 로그인 화면으로 이동
-                            appNavController.navigate(SubGraph.Login.Root) {
-                                popUpTo(0) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        }
-                    },
-                )
+                ObserveAsEvents(mainViewModel.navigateToLogin) {
+                    // 로그인 화면으로 이동
+                    appNavController.navigateToLogin()
+                }
             }
 
             // ------------------------------ Snackbar ------------------------------

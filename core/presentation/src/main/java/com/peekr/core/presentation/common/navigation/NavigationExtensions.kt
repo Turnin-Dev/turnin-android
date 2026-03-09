@@ -2,6 +2,14 @@ package com.peekr.core.presentation.common.navigation
 
 import androidx.navigation.NavController
 
+// ------------------------------ Login ------------------------------
+fun NavController.navigateToLogin() {
+    navigate(SubGraph.Login.Root) {
+        popUpTo(0) { inclusive = true }
+        launchSingleTop = true
+    }
+}
+
 // ------------------------------ MyProfile ------------------------------
 fun NavController.navigateToMyProfile() {
     navigate(Screens.MyProfile)

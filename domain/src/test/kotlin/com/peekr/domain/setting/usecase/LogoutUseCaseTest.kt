@@ -3,6 +3,7 @@ package com.peekr.domain.setting.usecase
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.social.SocialAuthManager
 import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
+import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider

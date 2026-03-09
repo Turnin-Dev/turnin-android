@@ -1,12 +1,12 @@
 package com.peekr.core.data.source.network.retrofit
 
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.BEARER
+import com.peekr.core.domain.eventBus.AuthEventBus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex

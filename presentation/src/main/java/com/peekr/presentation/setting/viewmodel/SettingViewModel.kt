@@ -2,6 +2,7 @@ package com.peekr.presentation.setting.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.common.Result
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
@@ -45,6 +46,14 @@ class SettingViewModel @Inject constructor(
                     SettingContract.UiEffect.NavigateToBlockList
                 }
             }
+
+            SettingContract.UiEvent.Logout -> logout()
+
+            SettingContract.UiEvent.OnLogoutClick -> {
+                sendEffect {
+                    SettingContract.UiEffect.OpenLogoutModal
+                }
+            }
         }
     }
 
@@ -63,6 +72,25 @@ class SettingViewModel @Inject constructor(
                     val accountInfo = result.data.toUiModel()
                     initialAccountInfo = accountInfo
                     updateState { copy(accountInfoLoading = false) }
+                }
+            }
+        }
+            .launchIn(viewModelScope)
+    }
+
+    // 로그아웃
+    private fun logout() {
+        usecases.logout().onEach { result ->
+            when (result) {
+                Result.Loading -> updateState { copy(fullScreenLoading = true) }
+                is Result.Error -> {
+                    showSnackbar(result.error.asUiText())
+                    updateState { copy(fullScreenLoading = false) }
+                }
+
+                is Result.Success -> {
+                    sendEffect { SettingContract.UiEffect.NavigateToLogin }
+                    updateState { copy(fullScreenLoading = false) }
                 }
             }
         }
