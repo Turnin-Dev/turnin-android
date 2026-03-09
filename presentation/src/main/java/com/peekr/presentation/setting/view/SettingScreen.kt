@@ -85,7 +85,9 @@ fun SettingScreen(
             )
             // 기타 항목
             etcItem(
-                onVersionClick = {},
+                onVersionClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToVersionInfo)
+                },
                 onQnaClick = {},
             )
             // 계정 삭제 항목

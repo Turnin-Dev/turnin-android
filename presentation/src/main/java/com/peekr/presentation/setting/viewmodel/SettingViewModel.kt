@@ -54,6 +54,12 @@ class SettingViewModel @Inject constructor(
                     SettingContract.UiEffect.OpenLogoutModal
                 }
             }
+
+            SettingContract.UiEvent.OnNavigateToVersionInfo -> {
+                sendEffect {
+                    SettingContract.UiEffect.NavigateToVersionInfo
+                }
+            }
         }
     }
 

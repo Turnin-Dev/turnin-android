@@ -27,6 +27,9 @@ class SettingContract {
         /** 차단 사용자 관리 화면 이동 이벤트 */
         data object OnNavigateToBlockList : UiEvent
 
+        /** 버전 정보 화면 이동 이벤트 */
+        data object OnNavigateToVersionInfo : UiEvent
+
         /** 로그아웃 클릭 이벤트 */
         data object OnLogoutClick : UiEvent
 
@@ -45,6 +48,9 @@ class SettingContract {
 
         /** 로그인 화면 이동 일회성 이벤트 */
         data object NavigateToLogin : UiEffect
+
+        /** 버전 정보 화면 이동 일회성 이벤트 */
+        data object NavigateToVersionInfo : UiEffect
 
         /** 로그아웃 모달 열기 일회성 이벤트 */
         data object OpenLogoutModal : UiEffect

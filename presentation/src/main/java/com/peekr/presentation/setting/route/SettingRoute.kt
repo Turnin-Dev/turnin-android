@@ -25,6 +25,7 @@ fun SettingRoute(
     onNavigateToAccountInfo: (UiAccountInfo?) -> Unit,
     onNavigateToBlockList: () -> Unit,
     onNavigateToLogin: () -> Unit,
+    onNaivgateToVersionInfo: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val viewModel: SettingViewModel = hiltViewModel()
@@ -47,6 +48,10 @@ fun SettingRoute(
 
             SettingContract.UiEffect.OpenLogoutModal -> {
                 isLogoutModalOpen = true
+            }
+
+            SettingContract.UiEffect.NavigateToVersionInfo -> {
+                onNaivgateToVersionInfo()
             }
         }
     }

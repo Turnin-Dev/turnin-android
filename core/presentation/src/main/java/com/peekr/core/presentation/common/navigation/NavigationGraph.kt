@@ -146,6 +146,10 @@ sealed interface SubGraph {
         data class CropProfileImage(
             val uri: String,
         ) : Setting
+
+        /** 버전 정보 화면 */
+        @Serializable
+        data object VersionInfo : Setting
     }
 }
 

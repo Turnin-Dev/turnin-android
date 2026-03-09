@@ -22,13 +22,16 @@ import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToBlockList
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
 import com.peekr.core.presentation.common.navigation.navigateToLogin
+import com.peekr.core.presentation.common.navigation.navigateToVersionInfo
 import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.rememberImageBitmap
 import com.peekr.core.presentation.feature.image.toJpegByteArray
 import com.peekr.presentation.setting.route.AccountInfoRoute
 import com.peekr.presentation.setting.route.SettingRoute
 import com.peekr.presentation.setting.state.AccountInfoContract
+import com.peekr.presentation.setting.view.detail.VersionInfoScreen
 import com.peekr.presentation.setting.viewmodel.AccountInfoViewModel
+import com.peekr.presentation.setting.viewmodel.VersionInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,6 +58,9 @@ fun NavGraphBuilder.settingNavigation(
                 },
                 onNavigateToLogin = {
                     appNavController.navigateToLogin()
+                },
+                onNaivgateToVersionInfo = {
+                    appNavController.navigateToVersionInfo()
                 },
                 onBackPressed = {
                     appNavController.popBackStack()
@@ -123,6 +129,17 @@ fun NavGraphBuilder.settingNavigation(
                     }
                 },
                 onCancel = { appNavController.popBackStack() },
+            )
+        }
+
+        composable<SubGraph.Setting.VersionInfo> {
+            val viewModel: VersionInfoViewModel = hiltViewModel()
+
+            VersionInfoScreen(
+                versionName = viewModel.appVersion,
+                onServiceTermClick = { },
+                onPrivacyPolicyClick = { },
+                onBackPressed = { appNavController.popBackStack() },
             )
         }
     }

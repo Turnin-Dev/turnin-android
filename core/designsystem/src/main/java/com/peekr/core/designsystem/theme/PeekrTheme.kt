@@ -44,6 +44,7 @@ fun PeekrAppTheme(
 ) {
     val colorScheme = if (darkTheme) peekrDarkColor else peekrLightColor
     val typography = PeekrTypography(
+        display1 = display1(),
         title1 = title1(),
         title2 = title2(),
         headline1 = headline1(),
