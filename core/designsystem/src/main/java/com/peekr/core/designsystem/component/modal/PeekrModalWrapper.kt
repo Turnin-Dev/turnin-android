@@ -22,7 +22,7 @@ import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 /**
  * Modal Wrapper
  *
- * 다이어로그 형태의 모달창을 사용하기 위해 사용한다.
+ * 다이얼로그 형태의 모달창을 사용하기 위해 사용한다.
  *
  * ```
  * /** Usage */
@@ -50,7 +50,7 @@ import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
  * @param content 모달 컨텐츠
  */
 @Composable
-fun PeekrModalWrapper(
+internal fun PeekrModalWrapper(
     isOpen: Boolean,
     animated: Boolean = true,
     loading: Boolean = false,
@@ -107,6 +107,7 @@ private fun ModalContent(
 ) {
     Box(
         modifier = modifier
+            .pointerInput(Unit) { detectTapGestures { /* 이벤트 소비 - 스크림으로 전파 방지 */ } }
             .clip(ModalShape)
             .background(PeekrTheme.colorScheme.backgroundNormal, ModalShape)
             .padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 30.dp),

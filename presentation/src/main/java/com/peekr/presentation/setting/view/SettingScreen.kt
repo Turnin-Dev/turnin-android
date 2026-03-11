@@ -1,6 +1,7 @@
 package com.peekr.presentation.setting.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
@@ -31,7 +33,10 @@ private fun SettingScreenFrame(
 ) {
     Column(modifier) {
         topBar()
-        LazyColumn(Modifier.fillMaxWidth()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(bottom = 60.dp),
+        ) {
             settings()
         }
     }
@@ -92,7 +97,9 @@ fun SettingScreen(
             )
             // 계정 삭제 항목
             deleteAccountItem(
-                onDeleteAccountClick = {},
+                onDeleteAccountClick = {
+                    onUiEvent(SettingContract.UiEvent.OnDeleteAccountClick)
+                },
             )
         },
     )

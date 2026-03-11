@@ -3,6 +3,7 @@ package com.peekr.presentation.setting.route
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -11,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
+import com.peekr.core.designsystem.component.modal.PeekrSimpleModal
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.util.ObserveAsEvents
-import com.peekr.core.presentation.ui.component.modal.PeekrSimpleModal
 import com.peekr.presentation.R
 import com.peekr.presentation.setting.model.UiAccountInfo
 import com.peekr.presentation.setting.state.SettingContract
 import com.peekr.presentation.setting.view.SettingScreen
+import com.peekr.presentation.setting.view.detail.DeleteAccountModal
 import com.peekr.presentation.setting.viewmodel.SettingViewModel
 
 @Composable
@@ -31,7 +33,16 @@ fun SettingRoute(
     val viewModel: SettingViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isLogoutModalOpen by remember { mutableStateOf(false) }
+    var isDeleteAccountModalOpen by remember { mutableStateOf(false) }
 
+    // 계정 삭제 모달이 사라질 때마다 텍스트 초기화
+    LaunchedEffect(isDeleteAccountModalOpen) {
+        if (!isDeleteAccountModalOpen) {
+            viewModel.processEvent(SettingContract.UiEvent.OnDeletionStateCleared)
+        }
+    }
+
+    // 일회성 이벤트 처리
     ObserveAsEvents(viewModel.effect) { effect ->
         when (effect) {
             is SettingContract.UiEffect.NavigateToAccountInfo -> {
@@ -53,13 +64,23 @@ fun SettingRoute(
             SettingContract.UiEffect.NavigateToVersionInfo -> {
                 onNaivgateToVersionInfo()
             }
+
+            SettingContract.UiEffect.OpenDeleteAccountModal -> {
+                isDeleteAccountModalOpen = true
+            }
+
+            SettingContract.UiEffect.CloseDeleteAccountModal -> {
+                isDeleteAccountModalOpen = false
+            }
         }
     }
 
+    // 로딩 화면
     if (uiState.fullScreenLoading) {
         PeekrLoadingScreen()
     }
 
+    // 로그아웃 모달
     PeekrSimpleModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isLogoutModalOpen,
@@ -72,6 +93,24 @@ fun SettingRoute(
         },
     )
 
+    // 계정 삭제 모달
+    DeleteAccountModal(
+        modifier = Modifier.fillMaxSize(),
+        isOpen = isDeleteAccountModalOpen,
+        isDeletionEnabled = uiState.isDeletionEnabled,
+        confirmText = uiState.deletionConfirmText,
+        onConfirmTextChanged = {
+            viewModel.processEvent(SettingContract.UiEvent.OnDeletionConfirmTextChanged(it))
+        },
+        onAcceptClick = {
+            viewModel.processEvent(SettingContract.UiEvent.DeleteAccount)
+        },
+        onCancelClick = {
+            isDeleteAccountModalOpen = false
+        },
+    )
+
+    // 설정 화면
     SettingScreen(
         modifier = Modifier
             .fillMaxSize()

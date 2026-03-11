@@ -12,10 +12,14 @@ class SettingContract {
     /**
      * 설정 화면 UI 상태
      *
-     * @property fullScreenLoading 전체 화면 로딩 여부
+     * @property deletionConfirmText 삭제 확인 텍스트
+     * @property isDeletionEnabled 삭제 버튼 활성화 여부
+     * @property accountInfoLoading 계정 정보 로딩 여부
      * @property accountInfoLoading 계정 정보 로딩 여부
      */
     data class UiState(
+        val deletionConfirmText: String = "",
+        val isDeletionEnabled: Boolean = false,
         val fullScreenLoading: Boolean = false,
         val accountInfoLoading: Boolean = false,
     ) : BaseUiState
@@ -35,6 +39,20 @@ class SettingContract {
 
         /** 로그아웃 이벤트 */
         data object Logout : UiEvent
+
+        /** 삭제 확인 텍스트 변경 이벤트 */
+        data class OnDeletionConfirmTextChanged(
+            val text: String,
+        ) : UiEvent
+
+        /** 삭제 확인 상태 값 초기화 이벤트 */
+        data object OnDeletionStateCleared : UiEvent
+
+        /** 계정 삭제 클릭 이벤트 */
+        data object OnDeleteAccountClick : UiEvent
+
+        /** 계정 삭제 */
+        data object DeleteAccount : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {
@@ -54,5 +72,11 @@ class SettingContract {
 
         /** 로그아웃 모달 열기 일회성 이벤트 */
         data object OpenLogoutModal : UiEffect
+
+        /** 계정 삭제 모달 열기 일회성 이벤트 */
+        data object OpenDeleteAccountModal : UiEffect
+
+        /** 계정 삭제 모달 닫기 일회성 이벤트 */
+        data object CloseDeleteAccountModal : UiEffect
     }
 }

@@ -184,7 +184,7 @@
     <string name="setting_screen_item_etc_version">버전 정보</string>
     <string name="setting_screen_item_etc_qna">문의</string>
     <string name="setting_screen_item_delete_account">계정 삭제</string>
-    <string name="setting_screen_modal_logout_title">로그아웃 하실건가요?</string>
+    <string name="setting_screen_modal_logout_title">정말 로그아웃 하실건가요?</string>
     <!-- Setting Detail - AccountInfo -->
     <string name="setting_detail_account_info_top_bar_title">계정 정보</string>
     <string name="setting_detail_account_info_top_bar_save">저장</string>
@@ -200,6 +200,16 @@
     <string name="setting_detail_version_info_policy_service_term">서비스 이용약관</string>
     <string name="setting_detail_version_info_policy_privacy_policy">개인정보 처리방침</string>
     <string name="setting_detail_version_info_top_bar_title">버전 정보</string>
+    <!-- Setting Detail - DeleteAccount -->
+    <string name="setting_detail_delete_account_modal_delete">삭제</string>
+    <string name="setting_detail_delete_account_modal_cancel">취소</string>
+    <string name="setting_detail_delete_account_modal_placeholder_prefix">위 내용에 동의하면</string>
+    <string name="setting_detail_delete_account_modal_placeholder_bold">\'삭제\'</string>
+    <string name="setting_detail_delete_account_modal_placeholder_suffix">를 입력해주세요.</string>
+    <string name="setting_detail_delete_account_modal_title">계정을 삭제하실건가요?</string>
+    <string name="setting_detail_delete_account_modal_content_1">계정을 삭제하면 다시 복구할 수 없습니다.</string>
+    <string name="setting_detail_delete_account_modal_content_2">• 프로필 및 모든 활동 데이터는 즉시 삭제됩니다.</string>
+    <string name="setting_detail_delete_account_modal_content_3">• 신고 관련 데이터(프로필, 키워드 일부)는 운영 정책에 따라 1년간 보관 후 삭제됩니다.</string>
     <!-- Setting Success -->
     <string name="setting_success_update_account_info">계정 정보를 업데이트했습니다.</string>
     <!-- Setting Error -->

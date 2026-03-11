@@ -27,6 +27,7 @@ import com.peekr.presentation.register.state.RegisterProfileState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -209,6 +210,8 @@ class RegisterViewModel @Inject constructor(
             }
 
             return ImageFileDetail.create(imageBytes, nameState.value.name)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             AppLogger.e(tag, e, "Register Failed.")
             _registerEventState.update {

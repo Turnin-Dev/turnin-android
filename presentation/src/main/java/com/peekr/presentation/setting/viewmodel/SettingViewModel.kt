@@ -60,6 +60,25 @@ class SettingViewModel @Inject constructor(
                     SettingContract.UiEffect.NavigateToVersionInfo
                 }
             }
+
+            is SettingContract.UiEvent.OnDeletionConfirmTextChanged -> {
+                updateState { copy(deletionConfirmText = event.text) }
+                if (event.text == DELETION_CONFIRM_TEXT) {
+                    updateState { copy(isDeletionEnabled = true) }
+                }
+            }
+
+            SettingContract.UiEvent.OnDeletionStateCleared -> {
+                updateState { copy(deletionConfirmText = "", isDeletionEnabled = false) }
+            }
+
+            SettingContract.UiEvent.OnDeleteAccountClick -> {
+                sendEffect {
+                    SettingContract.UiEffect.OpenDeleteAccountModal
+                }
+            }
+
+            SettingContract.UiEvent.DeleteAccount -> deleteAccount()
         }
     }
 
@@ -103,7 +122,29 @@ class SettingViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    // 계정 삭제
+    private fun deleteAccount() {
+        usecases.deleteAccount().onEach { result ->
+            when (result) {
+                Result.Loading -> updateState { copy(fullScreenLoading = true) }
+                is Result.Error -> {
+                    sendEffect { SettingContract.UiEffect.CloseDeleteAccountModal }
+                    updateState { copy(fullScreenLoading = false) }
+                    showSnackbar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    sendEffect { SettingContract.UiEffect.NavigateToLogin }
+                    updateState { copy(fullScreenLoading = false) }
+                }
+            }
+        }
+            .launchIn(viewModelScope)
+    }
+
     private suspend fun showSnackbar(message: UiText) {
         snackbarController.sendEvent(SnackbarEvent(message = message))
     }
 }
+
+private const val DELETION_CONFIRM_TEXT = "삭제"

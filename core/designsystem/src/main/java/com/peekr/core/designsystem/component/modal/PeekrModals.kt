@@ -77,6 +77,7 @@ fun PeekrSimpleModal(
  * @param isOpen 모달 활성화 여부
  * @param acceptLabel 확인 버튼 라벨
  * @param cancelLabel 취소 버튼 라벨
+ * @param enabledAcceptButton 확인 버튼 활성화 여부
  * @param onAcceptClick 확인 클릭 시 수행할 작업
  * @param onCancelClick 취소 클릭 시 수행할 작업
  * @param onAnimationFinished 모달 사라지는 애니메이션이 끝나고 나서 수행할 작업
@@ -87,6 +88,7 @@ fun PeekrSimpleModal(
 fun PeekrCustomModal(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
+    enabledAcceptButton: Boolean = true,
     @StringRes acceptLabel: Int = R.string.simple_modal_btn_accept,
     @StringRes cancelLabel: Int = R.string.simple_modal_btn_cancel,
     onAcceptClick: () -> Unit,
@@ -108,6 +110,7 @@ fun PeekrCustomModal(
                 cancelLabel = cancelLabel,
                 onAcceptClick = onAcceptClick,
                 onCancelClick = onCancelClick,
+                enabledAcceptButton = enabledAcceptButton,
             )
         }
     }
@@ -142,6 +145,7 @@ private fun Title(
  * @param cancelLabel 취소 버튼 라벨
  * @param onAcceptClick `확인` 클릭 시 수행할 작업
  * @param onCancelClick `취소` 클릭 시 수행할 작업
+ * @param enabledAcceptButton 확인 버튼 활성화 여부
  */
 @Composable
 private fun Buttons(
@@ -150,6 +154,7 @@ private fun Buttons(
     @StringRes cancelLabel: Int,
     onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit,
+    enabledAcceptButton: Boolean = true,
 ) {
     Row(
         modifier = modifier,
@@ -165,6 +170,7 @@ private fun Buttons(
             modifier = Modifier.weight(1f),
             text = stringResource(acceptLabel),
             style = PeekrButtonStyle.Medium,
+            enabled = enabledAcceptButton,
             onClick = onAcceptClick,
         )
     }
