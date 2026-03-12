@@ -186,6 +186,7 @@
     <string name="setting_screen_item_delete_account">계정 삭제</string>
     <string name="setting_screen_modal_logout_title">정말 로그아웃 하실건가요?</string>
     <!-- Setting Detail - NotificationSetting -->
+    <string name="setting_detail_notification_setting_top_bar">알림 설정</string>
     <string name="setting_detail_notification_setting_title">일반</string>
     <string name="setting_detail_notification_setting_push_title">푸시 알림</string>
     <string name="setting_detail_notification_setting_push_desc">앱의 모든 알림을 받습니다.</string>

@@ -88,3 +88,7 @@ fun NavController.navigateToVersionInfo() {
 fun NavController.navigateToQna(qnaUrl: String) {
     navigate(SubGraph.Setting.Qna(qnaUrl))
 }
+
+fun NavController.navigateToNotificationSetting() {
+    navigate(SubGraph.Setting.NotificationSetting)
+}

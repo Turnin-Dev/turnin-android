@@ -77,7 +77,9 @@ fun SettingScreen(
             )
             // 알림 항목
             notificationItem(
-                onNotificationSettingClick = {},
+                onNotificationSettingClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToNotification)
+                },
             )
             // 계정 항목
             accountItem(

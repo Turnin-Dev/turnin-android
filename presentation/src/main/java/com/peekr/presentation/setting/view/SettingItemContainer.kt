@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -104,6 +105,7 @@ internal fun SettingItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .heightIn(min = ItemMinHeightDp)
             .clickableSingle(onClick = onClick)
             .padding(ContainerItemPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -157,6 +159,8 @@ private val ContainerItemPadding =
         horizontal = ScreenTokens.HorizontalPadding,
         vertical = 10.dp,
     )
+
+private val ItemMinHeightDp = 57.dp
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground

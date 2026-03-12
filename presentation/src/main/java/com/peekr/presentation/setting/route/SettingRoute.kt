@@ -29,6 +29,7 @@ fun SettingRoute(
     onNavigateToLogin: () -> Unit,
     onNavigateToVersionInfo: () -> Unit,
     onNavigateToQna: (qnaUrl: String) -> Unit,
+    onNavigateToNotification: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val viewModel: SettingViewModel = hiltViewModel()
@@ -76,6 +77,10 @@ fun SettingRoute(
 
             is SettingContract.UiEffect.NavigateToQna -> {
                 onNavigateToQna(effect.qnaUrl)
+            }
+
+            SettingContract.UiEffect.NavigateToNotification -> {
+                onNavigateToNotification()
             }
         }
     }

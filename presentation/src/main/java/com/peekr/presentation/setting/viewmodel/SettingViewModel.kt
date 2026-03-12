@@ -68,6 +68,12 @@ class SettingViewModel @Inject constructor(
                 }
             }
 
+            SettingContract.UiEvent.OnNavigateToNotification -> {
+                sendEffect {
+                    SettingContract.UiEffect.NavigateToNotification
+                }
+            }
+
             is SettingContract.UiEvent.OnDeletionConfirmTextChanged -> {
                 updateState { copy(deletionConfirmText = event.text) }
                 if (event.text == DELETION_CONFIRM_TEXT) {

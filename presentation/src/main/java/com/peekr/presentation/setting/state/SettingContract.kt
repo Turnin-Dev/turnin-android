@@ -43,6 +43,9 @@ class SettingContract {
         /** 문의 화면 이동 이벤트 */
         data object OnNavigateToQna : UiEvent
 
+        /** 알림 화면 이동 이벤트 */
+        data object OnNavigateToNotification : UiEvent
+
         /** 삭제 확인 텍스트 변경 이벤트 */
         data class OnDeletionConfirmTextChanged(
             val text: String,
@@ -72,6 +75,9 @@ class SettingContract {
 
         /** 버전 정보 화면 이동 일회성 이벤트 */
         data object NavigateToVersionInfo : UiEffect
+
+        /** 알림 화면 이동 일회성 이벤트 */
+        data object NavigateToNotification : UiEffect
 
         /** 문의 화면 이동 일회성 이벤트 */
         data class NavigateToQna(

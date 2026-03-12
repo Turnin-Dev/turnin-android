@@ -1,6 +1,7 @@
 package com.peekr.presentation.setting
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
@@ -13,15 +14,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.peekr.core.designsystem.component.loading.PeekrLoadingScreen
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToBlockList
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
 import com.peekr.core.presentation.common.navigation.navigateToLogin
+import com.peekr.core.presentation.common.navigation.navigateToNotificationSetting
 import com.peekr.core.presentation.common.navigation.navigateToQna
 import com.peekr.core.presentation.common.navigation.navigateToVersionInfo
 import com.peekr.core.presentation.feature.image.SimpleImageCropper
@@ -30,9 +34,11 @@ import com.peekr.core.presentation.feature.image.toJpegByteArray
 import com.peekr.presentation.setting.route.AccountInfoRoute
 import com.peekr.presentation.setting.route.SettingRoute
 import com.peekr.presentation.setting.state.AccountInfoContract
+import com.peekr.presentation.setting.view.detail.NotificationSettingScreen
 import com.peekr.presentation.setting.view.detail.QnaScreen
 import com.peekr.presentation.setting.view.detail.VersionInfoScreen
 import com.peekr.presentation.setting.viewmodel.AccountInfoViewModel
+import com.peekr.presentation.setting.viewmodel.NotificationSettingViewModel
 import com.peekr.presentation.setting.viewmodel.VersionInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,6 +72,9 @@ fun NavGraphBuilder.settingNavigation(
                 },
                 onNavigateToQna = { qnaUrl ->
                     appNavController.navigateToQna(qnaUrl)
+                },
+                onNavigateToNotification = {
+                    appNavController.navigateToNotificationSetting()
                 },
                 onBackPressed = {
                     appNavController.popBackStack()
@@ -141,6 +150,9 @@ fun NavGraphBuilder.settingNavigation(
             val viewModel: VersionInfoViewModel = hiltViewModel()
 
             VersionInfoScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
                 versionName = viewModel.appVersion,
                 onServiceTermClick = { },
                 onPrivacyPolicyClick = { },
@@ -160,6 +172,20 @@ fun NavGraphBuilder.settingNavigation(
             QnaScreen(
                 modifier = Modifier.fillMaxSize(),
                 formUrl = qnaUrl,
+                onBackPressed = { appNavController.popBackStack() },
+            )
+        }
+
+        composable<SubGraph.Setting.NotificationSetting> {
+            val viewModel: NotificationSettingViewModel = hiltViewModel()
+            val appSetting by viewModel.appSetting.collectAsStateWithLifecycle()
+
+            NotificationSettingScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                isPushEnabled = appSetting.pushNotificationEnabled,
+                togglePush = viewModel::togglePushNotification,
                 onBackPressed = { appNavController.popBackStack() },
             )
         }

@@ -156,6 +156,10 @@ sealed interface SubGraph {
         data class Qna(
             val qnaUrl: String,
         ) : Setting
+
+        /** 알림 설정 화면 */
+        @Serializable
+        data object NotificationSetting : Setting
     }
 }
 
