@@ -35,4 +35,20 @@ sealed class DataStoreKey(val name: String) {
          */
         object LoginProvider : DataStoreKey("login_provider")
     }
+
+    object Setting {
+        /**
+         * `Key`: 푸시 알림 활성화 여부
+         *
+         * `Value`: Boolean 타입의 값
+         */
+        object PushNotification : DataStoreKey("push_notification")
+
+        /**
+         * `Key`: 테마 모드
+         *
+         * `Value`: String 타입의 값
+         */
+        object ThemeMode : DataStoreKey("theme_mode")
+    }
 }
