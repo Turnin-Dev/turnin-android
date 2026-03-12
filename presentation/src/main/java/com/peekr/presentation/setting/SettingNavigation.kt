@@ -22,6 +22,7 @@ import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToBlockList
 import com.peekr.core.presentation.common.navigation.navigateToCropProfileImage
 import com.peekr.core.presentation.common.navigation.navigateToLogin
+import com.peekr.core.presentation.common.navigation.navigateToQna
 import com.peekr.core.presentation.common.navigation.navigateToVersionInfo
 import com.peekr.core.presentation.feature.image.SimpleImageCropper
 import com.peekr.core.presentation.feature.image.rememberImageBitmap
@@ -29,6 +30,7 @@ import com.peekr.core.presentation.feature.image.toJpegByteArray
 import com.peekr.presentation.setting.route.AccountInfoRoute
 import com.peekr.presentation.setting.route.SettingRoute
 import com.peekr.presentation.setting.state.AccountInfoContract
+import com.peekr.presentation.setting.view.detail.QnaScreen
 import com.peekr.presentation.setting.view.detail.VersionInfoScreen
 import com.peekr.presentation.setting.viewmodel.AccountInfoViewModel
 import com.peekr.presentation.setting.viewmodel.VersionInfoViewModel
@@ -59,8 +61,11 @@ fun NavGraphBuilder.settingNavigation(
                 onNavigateToLogin = {
                     appNavController.navigateToLogin()
                 },
-                onNaivgateToVersionInfo = {
+                onNavigateToVersionInfo = {
                     appNavController.navigateToVersionInfo()
+                },
+                onNavigateToQna = { qnaUrl ->
+                    appNavController.navigateToQna(qnaUrl)
                 },
                 onBackPressed = {
                     appNavController.popBackStack()
@@ -139,6 +144,22 @@ fun NavGraphBuilder.settingNavigation(
                 versionName = viewModel.appVersion,
                 onServiceTermClick = { },
                 onPrivacyPolicyClick = { },
+                onBackPressed = { appNavController.popBackStack() },
+            )
+        }
+
+        composable<SubGraph.Setting.Qna> { backStackEntry ->
+            val qnaUrl = backStackEntry.arguments?.getString("qnaUrl")
+
+            LaunchedEffect(qnaUrl) {
+                if (qnaUrl == null) {
+                    appNavController.popBackStack()
+                }
+            }
+
+            QnaScreen(
+                modifier = Modifier.fillMaxSize(),
+                formUrl = qnaUrl,
                 onBackPressed = { appNavController.popBackStack() },
             )
         }

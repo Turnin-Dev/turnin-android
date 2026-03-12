@@ -93,7 +93,9 @@ fun SettingScreen(
                 onVersionClick = {
                     onUiEvent(SettingContract.UiEvent.OnNavigateToVersionInfo)
                 },
-                onQnaClick = {},
+                onQnaClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToQna)
+                },
             )
             // 계정 삭제 항목
             deleteAccountItem(

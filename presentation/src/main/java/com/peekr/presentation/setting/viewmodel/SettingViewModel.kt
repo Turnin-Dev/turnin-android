@@ -8,6 +8,7 @@ import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
 import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.setting.usecase.SettingUseCases
+import com.peekr.presentation.BuildConfig
 import com.peekr.presentation.setting.error.asUiText
 import com.peekr.presentation.setting.model.UiAccountInfo
 import com.peekr.presentation.setting.model.toUiModel
@@ -58,6 +59,12 @@ class SettingViewModel @Inject constructor(
             SettingContract.UiEvent.OnNavigateToVersionInfo -> {
                 sendEffect {
                     SettingContract.UiEffect.NavigateToVersionInfo
+                }
+            }
+
+            SettingContract.UiEvent.OnNavigateToQna -> {
+                sendEffect {
+                    SettingContract.UiEffect.NavigateToQna(BuildConfig.QNA_URL)
                 }
             }
 

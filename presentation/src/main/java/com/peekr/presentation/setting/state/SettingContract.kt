@@ -40,6 +40,9 @@ class SettingContract {
         /** 로그아웃 이벤트 */
         data object Logout : UiEvent
 
+        /** 문의 화면 이동 이벤트 */
+        data object OnNavigateToQna : UiEvent
+
         /** 삭제 확인 텍스트 변경 이벤트 */
         data class OnDeletionConfirmTextChanged(
             val text: String,
@@ -69,6 +72,11 @@ class SettingContract {
 
         /** 버전 정보 화면 이동 일회성 이벤트 */
         data object NavigateToVersionInfo : UiEffect
+
+        /** 문의 화면 이동 일회성 이벤트 */
+        data class NavigateToQna(
+            val qnaUrl: String,
+        ) : UiEffect
 
         /** 로그아웃 모달 열기 일회성 이벤트 */
         data object OpenLogoutModal : UiEffect

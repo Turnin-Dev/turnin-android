@@ -150,6 +150,12 @@ sealed interface SubGraph {
         /** 버전 정보 화면 */
         @Serializable
         data object VersionInfo : Setting
+
+        /** 문의 화면 */
+        @Serializable
+        data class Qna(
+            val qnaUrl: String,
+        ) : Setting
     }
 }
 

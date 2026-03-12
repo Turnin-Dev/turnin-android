@@ -27,7 +27,8 @@ fun SettingRoute(
     onNavigateToAccountInfo: (UiAccountInfo?) -> Unit,
     onNavigateToBlockList: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onNaivgateToVersionInfo: () -> Unit,
+    onNavigateToVersionInfo: () -> Unit,
+    onNavigateToQna: (qnaUrl: String) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val viewModel: SettingViewModel = hiltViewModel()
@@ -62,7 +63,7 @@ fun SettingRoute(
             }
 
             SettingContract.UiEffect.NavigateToVersionInfo -> {
-                onNaivgateToVersionInfo()
+                onNavigateToVersionInfo()
             }
 
             SettingContract.UiEffect.OpenDeleteAccountModal -> {
@@ -71,6 +72,10 @@ fun SettingRoute(
 
             SettingContract.UiEffect.CloseDeleteAccountModal -> {
                 isDeleteAccountModalOpen = false
+            }
+
+            is SettingContract.UiEffect.NavigateToQna -> {
+                onNavigateToQna(effect.qnaUrl)
             }
         }
     }

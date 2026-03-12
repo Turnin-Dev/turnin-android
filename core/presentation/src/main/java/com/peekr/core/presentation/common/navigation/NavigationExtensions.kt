@@ -84,3 +84,7 @@ fun NavController.navigateToCropProfileImage(uri: String) {
 fun NavController.navigateToVersionInfo() {
     navigate(SubGraph.Setting.VersionInfo)
 }
+
+fun NavController.navigateToQna(qnaUrl: String) {
+    navigate(SubGraph.Setting.Qna(qnaUrl))
+}
