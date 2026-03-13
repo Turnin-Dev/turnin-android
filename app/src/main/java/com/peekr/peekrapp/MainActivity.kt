@@ -37,7 +37,6 @@ import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.getValue
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -69,6 +68,7 @@ class MainActivity : ComponentActivity() {
                 derivedStateOf {
                     currentDestination?.hierarchy?.any {
                         currentDestination.hasRoute(SubGraph.Login.Root::class) ||
+                            currentDestination.hasRoute(SubGraph.Login.Main::class) ||
                             currentDestination.hasRoute(SubGraph.Register.Root::class)
                     } == true
                 }
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
 
             // ------------------------------ Snackbar ------------------------------
             val context = LocalContext.current
-            val snackbarHostState = remember { SnackbarHostState() }
+            val snackbarHostState = remember(isAuthScreen) { SnackbarHostState() }
             val snackbarBottomPadding = remember {
                 derivedStateOf {
                     if (navBackStackEntry?.destination?.hasRoute<SubGraph.BottomNav.Root>() == true) {
@@ -120,10 +120,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     containerColor = PeekrTheme.colorScheme.backgroundNormal,
                     snackbarHost = {
-                        PeekrSnackbar(
-                            modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
-                            snackbarHostState = snackbarHostState,
-                        )
+                        if (!isAuthScreen) {
+                            PeekrSnackbar(
+                                modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
+                                snackbarHostState = snackbarHostState,
+                            )
+                        }
                     },
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->

@@ -73,38 +73,30 @@ fun MyProfileScreen(
             isRefreshing = uiState.myProfileLoading || uiState.myKeywordsLoading,
             onRefresh = { onUiEvent(MyProfileContract.UiEvent.Refresh) },
             topBar = {
-                if (uiState.myProfileLoading) {
-                    TopBarSkeleton()
-                } else {
-                    uiState.myProfile?.let {
-                        TopBar(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    start = ScreenTokens.HorizontalPadding,
-                                    end = ScreenTokens.HorizontalPaddingWithTouchTarget,
-                                ),
-                            title = it.displayId,
-                            onSettingClick = onSettingClick,
-                        )
-                    }
-                }
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = ScreenTokens.HorizontalPadding,
+                            end = ScreenTokens.HorizontalPaddingWithTouchTarget,
+                        ),
+                    title = uiState.myProfile?.displayId ?: "",
+                    onSettingClick = onSettingClick,
+                )
             },
             profile = {
-                if (uiState.myProfileLoading) {
+                if (uiState.myProfileLoading || uiState.myProfile == null) {
                     ProfileSkeleton()
                 } else {
-                    uiState.myProfile?.let {
-                        Profile(
-                            modifier = Modifier.fillMaxWidth(),
-                            profileImageUrl = it.profileImageUrl,
-                            name = it.name,
-                            friendsCount = it.friendsCount,
-                            introduce = it.introduce,
-                            onProfileImageClick = {},
-                            onFriendsCountClick = { onFriendsCountClick(it.userId) },
-                        )
-                    }
+                    Profile(
+                        modifier = Modifier.fillMaxWidth(),
+                        profileImageUrl = uiState.myProfile.profileImageUrl,
+                        name = uiState.myProfile.name,
+                        friendsCount = uiState.myProfile.friendsCount,
+                        introduce = uiState.myProfile.introduce,
+                        onProfileImageClick = {},
+                        onFriendsCountClick = { onFriendsCountClick(uiState.myProfile.userId) },
+                    )
                 }
             },
             keywordsTitle = {
