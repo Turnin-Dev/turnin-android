@@ -2,6 +2,7 @@ package com.peekr.peekrapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
@@ -26,6 +27,8 @@ class MainViewModel @Inject constructor(
     private val authEventBus: AuthEventBus,
     private val logoutUseCase: LogoutUseCase,
 ) : ViewModel() {
+    private val tag = this::class.java.simpleName
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
@@ -82,6 +85,9 @@ class MainViewModel @Inject constructor(
             runCatching {
                 logoutUseCase().collect()
             }
+                .onFailure {
+                    AppLogger.e(tag, "Failed to logout in MainViewModel.")
+                }
             _navigateToLogin.send(Unit)
         }
     }

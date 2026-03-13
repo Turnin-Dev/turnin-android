@@ -1,9 +1,9 @@
 package com.peekr.core.domain.eventBus
 
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.Flow
 
 interface AuthEventBus {
-    val logoutEvent: SharedFlow<Unit>
+    val logoutEvent: Flow<Unit>
 
-    suspend fun emitLogout()
+    fun emitLogout()
 }

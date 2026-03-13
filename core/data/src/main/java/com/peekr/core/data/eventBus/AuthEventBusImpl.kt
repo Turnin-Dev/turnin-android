@@ -2,20 +2,15 @@ package com.peekr.core.data.eventBus
 
 import com.peekr.core.domain.eventBus.AuthEventBus
 import javax.inject.Inject
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class AuthEventBusImpl @Inject constructor() : AuthEventBus {
-    private val _logoutEvent = MutableSharedFlow<Unit>(
-        replay = 0,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
-    )
-    override val logoutEvent: SharedFlow<Unit> = _logoutEvent.asSharedFlow()
+    private val _logoutEvent = Channel<Unit>(Channel.CONFLATED)
+    override val logoutEvent: Flow<Unit> = _logoutEvent.receiveAsFlow()
 
-    override suspend fun emitLogout() {
-        _logoutEvent.emit(Unit)
+    override fun emitLogout() {
+        _logoutEvent.trySend(Unit)
     }
 }
