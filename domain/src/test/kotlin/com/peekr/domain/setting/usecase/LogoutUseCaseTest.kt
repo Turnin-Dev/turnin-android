@@ -7,7 +7,6 @@ import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider
-import com.peekr.domain.setting.error.SettingErrorType
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -50,7 +49,7 @@ class LogoutUseCaseTest {
 
         // then
         val error = result as Result.Error
-        assertEquals(SettingErrorType.LoginProviderNotFound, error.error)
+        assertEquals(CommonErrorType.SocialAuth.LoginProviderNotFound, error.error)
 
         // 이 후 로직은 실행되지 않아야 한다.
         coVerify(exactly = 0) { authRepository.logout() }
@@ -85,9 +84,6 @@ class LogoutUseCaseTest {
 
         // then
         val actualError = (result as Result.Error).error
-        assertEquals(
-            SettingErrorType.CommonError(expectedError),
-            actualError,
-        )
+        assertEquals(expectedError, actualError)
     }
 }
