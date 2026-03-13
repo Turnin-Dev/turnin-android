@@ -12,8 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.peekr.core.designsystem.component.modal.PeekrSimpleModal
 import com.peekr.core.designsystem.theme.PeekrAppTheme
-import com.peekr.core.presentation.ui.component.modal.PeekrSimpleModal
 import com.peekr.presentation.R
 
 /**

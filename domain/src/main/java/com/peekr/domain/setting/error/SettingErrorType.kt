@@ -5,9 +5,6 @@ import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.validation.ValidationErrorType
 
 sealed interface SettingErrorType : BaseError {
-    /** 로그인 타입을 찾을 수 없음 */
-    data object LoginProviderNotFound : SettingErrorType
-
     /** 나의 프로필 정보 조회 실패 */
     data object MyProfileNotFound : SettingErrorType
 

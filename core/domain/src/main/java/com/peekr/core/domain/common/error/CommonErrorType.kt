@@ -88,6 +88,9 @@ sealed interface CommonErrorType : BaseError {
         /** 로그인 실패 에러 */
         data object SocialAuthFailed : SocialAuth
 
+        /** 소셜 로그인 공급자를 찾을 수 없는 경우 */
+        data object LoginProviderNotFound : SocialAuth
+
         /** 알 수 없는 에러로 자세한 사항은 [cause] 파라미터에 [Throwable]형태로 담는다. */
         data class Unexpected(val cause: Throwable?) : SocialAuth
     }

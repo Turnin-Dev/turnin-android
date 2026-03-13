@@ -7,7 +7,6 @@ import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.presentation.R
 
 fun SettingErrorType.asUiText(): UiText = when (this) {
-    SettingErrorType.LoginProviderNotFound -> StringResource(R.string.setting_error_login_provider_not_found)
     SettingErrorType.MyProfileNotFound -> StringResource(R.string.setting_error_my_profile_not_found)
     SettingErrorType.DisplayIdNotAvailable -> StringResource(R.string.setting_error_display_id_not_available)
     SettingErrorType.UploadImageFailed -> StringResource(R.string.setting_error_upload_image_failed)

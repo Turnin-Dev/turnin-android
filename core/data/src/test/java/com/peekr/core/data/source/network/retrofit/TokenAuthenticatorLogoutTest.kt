@@ -1,9 +1,11 @@
 package com.peekr.core.data.source.network.retrofit
 
-import com.peekr.core.data.eventBus.AuthEventBus
+import com.peekr.core.data.eventBus.AuthEventBusImpl
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.api.NetworkApiPath
 import com.peekr.core.data.source.network.api.RefreshTokenApi
+import com.peekr.core.domain.eventBus.AuthEventBus
 import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -35,7 +37,7 @@ import org.junit.Test
 class TokenAuthenticatorLogoutTest {
     private val dataStoreManager: DataStoreManager = mockk()
     private val refreshTokenApi: RefreshTokenApi = mockk()
-    private val authEventBus: AuthEventBus = AuthEventBus()
+    private val authEventBus: AuthEventBus = AuthEventBusImpl()
     private lateinit var tokenAuthenticator: TokenAuthenticator
     private lateinit var mockWebServer: MockWebServer
     private lateinit var unauthorizedResponse: Response
@@ -254,35 +256,40 @@ class TokenAuthenticatorLogoutTest {
     }
 
     @Test
-    fun `여러 구독자가 동시에 로그아웃 이벤트를 받는다`() = runTest {
-        // Given
-        val events1 = mutableListOf<Unit>()
-        val events2 = mutableListOf<Unit>()
-        val events3 = mutableListOf<Unit>()
-
-        val job1 = launch(UnconfinedTestDispatcher(testScheduler)) {
-            authEventBus.logoutEvent.collect { events1.add(it) }
-        }
-        val job2 = launch(UnconfinedTestDispatcher(testScheduler)) {
-            authEventBus.logoutEvent.collect { events2.add(it) }
-        }
-        val job3 = launch(UnconfinedTestDispatcher(testScheduler)) {
-            authEventBus.logoutEvent.collect { events3.add(it) }
+    fun `로그아웃 요청에서 401이 발생해도 인증 루프를 중단하고 null을 반환한다`() = runTest {
+        // given
+        val logoutEvents = mutableListOf<Unit>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            authEventBus.logoutEvent.collect {
+                logoutEvents.add(it)
+            }
         }
 
-        setFailure()
+        val logoutRequest = Request
+            .Builder()
+            .url(mockWebServer.url(NetworkApiPath.User.LOGOUT))
+            .header("Authorization", "Bearer $OLD_ACCESS_TOKEN")
+            .build()
 
-        // When
-        tokenAuthenticator.authenticate(null, unauthorizedResponse)
+        val logoutUnauthorizedResponse = Response
+            .Builder()
+            .request(logoutRequest)
+            .protocol(Protocol.HTTP_1_1)
+            .code(401)
+            .message("Unauthorized")
+            .build()
 
-        // Then: 모든 구독자가 이벤트 수신
-        assertTrue(events1.size == 1)
-        assertTrue(events2.size == 1)
-        assertTrue(events3.size == 1)
+        // when
+        val result = tokenAuthenticator.authenticate(null, logoutUnauthorizedResponse)
 
-        job1.cancel()
-        job2.cancel()
-        job3.cancel()
+        // then
+        assertNull(result)
+        assertTrue("로그아웃 요청 중 401은 루프를 유발하지 않아야 한다", logoutEvents.isEmpty())
+        coVerify(exactly = 0) { dataStoreManager.deleteStringData(any()) }
+        coVerify(exactly = 0) { dataStoreManager.deleteLongData(any()) }
+
+        // cleanup
+        job.cancel()
     }
 
     // 기존 리프레쉬 토큰을 없도록 설정하여 실패를 유도한다.

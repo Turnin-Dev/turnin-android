@@ -1,6 +1,7 @@
 package com.peekr.presentation.setting.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,11 +10,13 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
+import com.peekr.presentation.setting.state.SettingContract
 
 /**
  * 설정 화면 프레임
@@ -30,7 +33,10 @@ private fun SettingScreenFrame(
 ) {
     Column(modifier) {
         topBar()
-        LazyColumn(Modifier.fillMaxWidth()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(bottom = 60.dp),
+        ) {
             settings()
         }
     }
@@ -41,14 +47,14 @@ private fun SettingScreenFrame(
  *
  * @param modifier [Modifier]
  * @param accountInfoLoading 계정 정보 로딩 여부
- * @param onNavigateToAccountInfo 계정 정보로 이동 콜백
+ * @param onUiEvent 설정 UI 이벤트
  * @param onBackPressed 뒤로 가기 시 콜백
  */
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
     accountInfoLoading: Boolean,
-    onNavigateToAccountInfo: () -> Unit,
+    onUiEvent: (SettingContract.UiEvent) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     SettingScreenFrame(
@@ -65,25 +71,39 @@ fun SettingScreen(
             // 정보 항목
             informationItem(
                 loading = accountInfoLoading,
-                onAccountInfoClick = onNavigateToAccountInfo,
+                onAccountInfoClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToAccountInfo)
+                },
             )
             // 알림 항목
             notificationItem(
-                onNotificationSettingClick = {},
+                onNotificationSettingClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToNotification)
+                },
             )
             // 계정 항목
             accountItem(
-                onBlockListClick = {},
-                onLogoutClick = {},
+                onBlockListClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToBlockList)
+                },
+                onLogoutClick = {
+                    onUiEvent(SettingContract.UiEvent.OnLogoutClick)
+                },
             )
             // 기타 항목
             etcItem(
-                onVersionClick = {},
-                onQnaClick = {},
+                onVersionClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToVersionInfo)
+                },
+                onQnaClick = {
+                    onUiEvent(SettingContract.UiEvent.OnNavigateToQna)
+                },
             )
             // 계정 삭제 항목
             deleteAccountItem(
-                onDeleteAccountClick = {},
+                onDeleteAccountClick = {
+                    onUiEvent(SettingContract.UiEvent.OnDeleteAccountClick)
+                },
             )
         },
     )
@@ -115,7 +135,7 @@ private fun SettingScreenPreview() {
         SettingScreen(
             modifier = Modifier.fillMaxSize(),
             accountInfoLoading = true,
-            onNavigateToAccountInfo = {},
+            onUiEvent = {},
             onBackPressed = {},
         )
     }

@@ -1,3 +1,6 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.peekr.android.library)
     alias(libs.plugins.peekr.android.library.compose)
@@ -8,6 +11,14 @@ plugins {
 
 android {
     namespace = "com.peekr.presentation"
+
+    defaultConfig {
+        val properties = Properties().apply {
+            rootProject.file("local.properties").inputStream().use { load(it) }
+        }
+        val qnaUrl = properties.getProperty("QNA_URL") ?: "\"\""
+        buildConfigField("String", "QNA_URL", qnaUrl)
+    }
 }
 
 kotlin {

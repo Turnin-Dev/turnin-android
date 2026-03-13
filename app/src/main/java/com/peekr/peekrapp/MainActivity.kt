@@ -26,25 +26,21 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.designsystem.component.snackbar.PeekrSnackbar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
+import com.peekr.core.presentation.common.navigation.navigateToLogin
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.peekrapp.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.getValue
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var authEventBus: AuthEventBus
-
     @Inject
     lateinit var snackbarController: SnackbarController
 
@@ -70,32 +66,22 @@ class MainActivity : ComponentActivity() {
             // ------------------------------ Auth Logout ------------------------------
             val isAuthScreen by remember(currentDestination?.route) {
                 derivedStateOf {
-                    currentDestination?.hierarchy?.any {
-                        currentDestination.hasRoute(SubGraph.Login.Root::class) ||
-                            currentDestination.hasRoute(SubGraph.Register.Root::class)
+                    currentDestination?.hierarchy?.any { destination ->
+                        destination.hasRoute(SubGraph.Login.Root::class) ||
+                            destination.hasRoute(SubGraph.Register.Root::class)
                     } == true
                 }
             }
             if (!isAuthScreen) {
-                ObserveAsEvents(
-                    flow = authEventBus.logoutEvent,
-                    onEvent = {
-                        coroutineScope.launch {
-                            // 자원 정리
-                            mainViewModel.logout()
-                            // 로그인 화면으로 이동
-                            appNavController.navigate(SubGraph.Login.Root) {
-                                popUpTo(0) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        }
-                    },
-                )
+                ObserveAsEvents(mainViewModel.navigateToLogin) {
+                    // 로그인 화면으로 이동
+                    appNavController.navigateToLogin()
+                }
             }
 
             // ------------------------------ Snackbar ------------------------------
             val context = LocalContext.current
-            val snackbarHostState = remember { SnackbarHostState() }
+            val snackbarHostState = remember(isAuthScreen) { SnackbarHostState() }
             val snackbarBottomPadding = remember {
                 derivedStateOf {
                     if (navBackStackEntry?.destination?.hasRoute<SubGraph.BottomNav.Root>() == true) {
@@ -133,10 +119,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     containerColor = PeekrTheme.colorScheme.backgroundNormal,
                     snackbarHost = {
-                        PeekrSnackbar(
-                            modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
-                            snackbarHostState = snackbarHostState,
-                        )
+                        if (!isAuthScreen) {
+                            PeekrSnackbar(
+                                modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
+                                snackbarHostState = snackbarHostState,
+                            )
+                        }
                     },
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->

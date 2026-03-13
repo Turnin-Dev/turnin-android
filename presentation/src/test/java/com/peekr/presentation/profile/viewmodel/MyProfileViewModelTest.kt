@@ -1,5 +1,6 @@
 package com.peekr.presentation.profile.viewmodel
 
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
@@ -22,11 +23,15 @@ import com.peekr.presentation.profile.model.toUiModel
 import com.peekr.presentation.profile.state.MyProfileContract
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -59,6 +64,13 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         } returns flowOf(Result.Success(Unit))
 
         viewModel = MyProfileViewModel(snackbarController, usecases)
+
+        mockkObject(AppLogger)
+    }
+
+    @After
+    fun teardown() {
+        unmockkObject(AppLogger)
     }
 
     @Test
@@ -76,7 +88,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
     }
 
     @Test
-    fun `나의 프로필을 로컬에서 조회 시 예외가 발생하는 경우 에러 발생 후 나의 키워드 리스트는 정상적으로 업데이트 된다`() = runTest {
+    fun `나의 프로필을 로컬에서 조회 시 예외가 발생하는 경우 로깅 후 나의 키워드 리스트는 정상적으로 업데이트 된다`() = runTest {
         // given
         every {
             usecases.getMyProfile()
@@ -100,15 +112,15 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
         )
 
         // then: 스낵바 이벤트 검증
-        assertTrue(snackbarList.isNotEmpty())
-        assertEquals(ProfileErrorType.ProfileLoadFailed.asUiText(), snackbarList.last().message)
+        assertTrue(snackbarList.isEmpty())
+        verify(exactly = 1) { AppLogger.e(any(), any(), any()) }
 
         // clean up
         snackbarJob.cancel()
     }
 
     @Test
-    fun `나의 키워드 리스트를 로컬에서 조회 시 예외가 발생하는 경우 에러 발생 후 나의 프로필은 정상적으로 업데이트 된다`() = runTest {
+    fun `나의 키워드 리스트를 로컬에서 조회 시 예외가 발생하는 경우 로깅 후 나의 프로필은 정상적으로 업데이트 된다`() = runTest {
         // given
         every {
             usecases.getMyKeywords()
@@ -131,9 +143,9 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
             ),
         )
 
-        // then: 스낵바 이벤트 검증
-        assertTrue(snackbarList.isNotEmpty())
-        assertEquals(ProfileErrorType.KeywordsLoadFailed.asUiText(), snackbarList.last().message)
+        // then
+        assertTrue(snackbarList.isEmpty())
+        verify(exactly = 1) { AppLogger.e(any(), any(), any()) }
 
         // clean up
         snackbarJob.cancel()

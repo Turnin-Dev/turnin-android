@@ -3,6 +3,7 @@ package com.peekr.domain.setting.usecase
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.domain.setting.error.SettingErrorType
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class DeleteAccountUseCase @Inject constructor(
         // 1. 소셜 로그인 연동 해제
         val loginProvider = authRepository.getLoginType()
         if (loginProvider == null) {
-            emit(Result.Error(SettingErrorType.LoginProviderNotFound))
+            emit(Result.Error(SettingErrorType.CommonError(CommonErrorType.SocialAuth.LoginProviderNotFound)))
             return@flow
         }
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)

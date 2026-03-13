@@ -60,7 +60,6 @@ class MyProfileViewModel @Inject constructor(
             }
             .catch { e ->
                 AppLogger.e(tag, e, "getMyProfile() failed. (cause: ${e.message})")
-                showSnackBar(ProfileErrorType.ProfileLoadFailed.asUiText())
             }
             .launchIn(viewModelScope)
     }
@@ -78,7 +77,6 @@ class MyProfileViewModel @Inject constructor(
             }
             .catch { e ->
                 AppLogger.e(tag, e, "getMyKeywords() failed. (cause: ${e.message})")
-                showSnackBar(ProfileErrorType.KeywordsLoadFailed.asUiText())
             }
             .launchIn(viewModelScope)
     }

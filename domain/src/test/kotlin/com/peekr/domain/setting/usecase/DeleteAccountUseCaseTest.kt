@@ -49,7 +49,10 @@ class DeleteAccountUseCaseTest {
 
         // then
         val error = result as Result.Error
-        assertEquals(SettingErrorType.LoginProviderNotFound, error.error)
+        assertEquals(
+            SettingErrorType.CommonError(CommonErrorType.SocialAuth.LoginProviderNotFound),
+            error.error,
+        )
 
         // 이 후 로직은 실행되지 않아야 한다.
         coVerify(exactly = 0) { authRepository.deleteAccount() }

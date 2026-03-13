@@ -2,6 +2,7 @@ package com.peekr.domain.setting.usecase
 
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.setting.error.SettingErrorType
 import com.peekr.domain.setting.model.AccountInfo
@@ -45,7 +46,9 @@ class GetAccountInfoUseCase @Inject constructor(
                 userRepository.getMyProfile(),
             ) { loginType, myProfile ->
                 when {
-                    loginType == null -> Result.Error(SettingErrorType.LoginProviderNotFound)
+                    loginType == null -> Result.Error(
+                        SettingErrorType.CommonError(CommonErrorType.SocialAuth.LoginProviderNotFound),
+                    )
                     myProfile == null -> Result.Error(SettingErrorType.MyProfileNotFound)
                     else -> {
                         Result.Success(

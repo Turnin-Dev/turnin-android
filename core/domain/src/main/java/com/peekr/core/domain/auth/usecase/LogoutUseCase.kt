@@ -1,10 +1,9 @@
-package com.peekr.domain.setting.usecase
+package com.peekr.core.domain.auth.usecase
 
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
-import com.peekr.core.domain.common.error.mapError
-import com.peekr.domain.setting.error.SettingErrorType
+import com.peekr.core.domain.common.error.CommonErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -27,13 +26,13 @@ class LogoutUseCase @Inject constructor(
      *
      * 자세한 내용은 기능명세서 `RQ-2`를 참고한다.
      */
-    operator fun invoke(): Flow<Result<Unit, SettingErrorType>> = flow {
+    operator fun invoke(): Flow<Result<Unit, CommonErrorType>> = flow {
         emit(Result.Loading)
 
         // 1. 소셜 로그인 연동 해제
         val loginProvider = authRepository.getLoginType()
         if (loginProvider == null) {
-            emit(Result.Error(SettingErrorType.LoginProviderNotFound))
+            emit(Result.Error(CommonErrorType.SocialAuth.LoginProviderNotFound))
             return@flow
         }
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)
@@ -43,11 +42,6 @@ class LogoutUseCase @Inject constructor(
         socialAuthManager.signOut()
 
         // 2. 로그아웃 API 호출 및 앱 데이터 정리
-        emitAll(
-            authRepository.logout()
-                .mapError { commonError ->
-                    SettingErrorType.CommonError(commonError)
-                },
-        )
+        emitAll(authRepository.logout())
     }
 }

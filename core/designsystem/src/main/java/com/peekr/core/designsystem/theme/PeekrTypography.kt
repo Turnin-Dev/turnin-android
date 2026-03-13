@@ -15,6 +15,7 @@ import com.peekr.core.designsystem.R
 
 @Immutable
 data class PeekrTypography(
+    val display1: TextStyle = TextStyle(),
     val title1: TextStyle = TextStyle(),
     val title2: TextStyle = TextStyle(),
     val headline1: TextStyle = TextStyle(),
@@ -34,6 +35,17 @@ data class PeekrTypography(
     val caption1: TextStyle = TextStyle(),
     val caption2: TextStyle = TextStyle(),
     val caption3: TextStyle = TextStyle(),
+)
+
+@Composable
+fun display1(): TextStyle = TextStyle(
+    fontSize = 28.sp,
+    lineHeight = 42.sp,
+    letterSpacing = 0.06.em,
+    fontWeight = FontWeight.Normal,
+    fontFamily = pretendard,
+    lineHeightStyle = lineHeightStyle,
+    platformStyle = platformTextStyle,
 )
 
 @Composable

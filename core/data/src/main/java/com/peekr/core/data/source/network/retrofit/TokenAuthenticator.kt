@@ -1,12 +1,13 @@
 package com.peekr.core.data.source.network.retrofit
 
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.eventBus.AuthEventBus
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.data.source.network.api.NetworkApiPath
 import com.peekr.core.data.source.network.api.RefreshTokenApi
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.BEARER
+import com.peekr.core.domain.eventBus.AuthEventBus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -29,6 +30,13 @@ class TokenAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? = runBlocking {
         AppLogger.d(tag, "TokenAuthenticator Triggered!")
+
+        // 로그아웃 요청이라면 401 에러 무시
+        val currentPath = response.request.url.encodedPath
+        if (currentPath.contains(NetworkApiPath.User.LOGOUT)) {
+            AppLogger.w(tag, "401 detected during logout. Stopping authentication loop.")
+            return@runBlocking null // 루프 중단
+        }
 
         // 1) Mutex 락
         mutex.withLock {
