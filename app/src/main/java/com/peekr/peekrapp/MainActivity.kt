@@ -66,10 +66,9 @@ class MainActivity : ComponentActivity() {
             // ------------------------------ Auth Logout ------------------------------
             val isAuthScreen by remember(currentDestination?.route) {
                 derivedStateOf {
-                    currentDestination?.hierarchy?.any {
-                        currentDestination.hasRoute(SubGraph.Login.Root::class) ||
-                            currentDestination.hasRoute(SubGraph.Login.Main::class) ||
-                            currentDestination.hasRoute(SubGraph.Register.Root::class)
+                    currentDestination?.hierarchy?.any { destination ->
+                        destination.hasRoute(SubGraph.Login.Root::class) ||
+                            destination.hasRoute(SubGraph.Register.Root::class)
                     } == true
                 }
             }

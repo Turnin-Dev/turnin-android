@@ -46,7 +46,6 @@ import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
  * @param isOpen 모달 활성화 여부
  * @param animated 모달 애니메이션 활성화 여부
  * @param onDismissRequest 모달이 사라질 때 수행할 작업
- * @param onAnimationFinished 모달이 사라지는 애니메이션이 끝난 직후 수행할 작업
  * @param content 모달 컨텐츠
  */
 @Composable
@@ -55,7 +54,6 @@ internal fun PeekrModalWrapper(
     animated: Boolean = true,
     loading: Boolean = false,
     onDismissRequest: () -> Unit,
-    onAnimationFinished: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     if (isOpen) {

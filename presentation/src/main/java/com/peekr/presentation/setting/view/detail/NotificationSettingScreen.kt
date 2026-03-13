@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +35,7 @@ fun NotificationSettingScreen(
     togglePush: (Boolean) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    Column(modifier.wrapContentHeight()) {
+    Column(modifier) {
         // 탑바
         PeekrTopBar(
             modifier = Modifier
@@ -48,17 +47,17 @@ fun NotificationSettingScreen(
 
         // 일반 항목
         SettingItemContainer(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             title = stringResource(R.string.setting_detail_notification_setting_title),
             settingItems = {
                 SettingItem(
                     title = stringResource(R.string.setting_detail_notification_setting_push_title),
                     description = stringResource(R.string.setting_detail_notification_setting_push_desc),
-                    onClick = { togglePush(isPushEnabled) },
+                    onClick = { togglePush(!isPushEnabled) },
                     option = {
                         PeekrSwitch(
                             checked = isPushEnabled,
-                            onCheckedChanged = { _ -> togglePush(isPushEnabled) },
+                            onCheckedChanged = { checked -> togglePush(checked) },
                             size = PeekrSwitchSize.Small,
                         )
                     },

@@ -136,25 +136,27 @@ class AuthRepositoryImpl @Inject constructor(
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
-            // 1. 로컬 데이터 삭제
-            runCatching { appDataCleaner.clearAll() }
-                .onFailure { AppLogger.e(tag, it, "Failed to clear app data.") }
-
-            // 2. 로그아웃 API 호출
-            when (val result = userNetworkDataSource.logout()) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(Unit))
-                }
+            // 1. 로그아웃 API 호출
+            val shouldClear = when (val result = userNetworkDataSource.logout()) {
+                is NetworkResult.Success -> true
 
                 is NetworkResult.Error -> {
                     // 401 발생 시 이미 토큰이 만료된 상태이므로 로그아웃 계속 진행
                     if (result.error.toCommonErrorType() == CommonErrorType.Network.Unauthorized) {
-                        emit(Result.Success(Unit))
+                        true
                     } else {
                         val error = result.error.toCommonErrorType()
                         emit(Result.Error(error = error, message = result.message))
+                        false
                     }
                 }
+            }
+
+            // 2. 로컬 데이터 삭제
+            if (shouldClear) {
+                runCatching { appDataCleaner.clearAll() }
+                    .onFailure { AppLogger.e(tag, it, "Failed to clear app data.") }
+                emit(Result.Success(Unit))
             }
         }
 

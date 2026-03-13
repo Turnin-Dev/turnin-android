@@ -38,13 +38,11 @@ import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
  * @param modifier [Modifier]
  * @param title 컨테이너 타이틀
  * @param settingItems 설정 항목 리스트
- * @param loading 로딩 여부
  */
 @Composable
 internal fun SettingItemContainer(
     modifier: Modifier = Modifier,
     title: String,
-    loading: Boolean = false,
     settingItems: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier) {
@@ -60,7 +58,7 @@ internal fun SettingItemContainer(
             textAlign = TextAlign.Start,
         )
         // 항목 아이템들
-        Column(modifier) {
+        Column {
             settingItems()
         }
         // 구분선
@@ -106,7 +104,7 @@ internal fun SettingItem(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = ItemMinHeightDp)
-            .clickableSingle(onClick = onClick)
+            .clickableSingle(onClick = onClick, enabled = !loading)
             .padding(ContainerItemPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

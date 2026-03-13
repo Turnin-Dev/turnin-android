@@ -30,7 +30,6 @@ import com.peekr.core.designsystem.theme.PeekrTheme
  * @param cancelLabel 취소 버튼 라벨
  * @param onAcceptClick 확인 클릭 시 수행할 작업
  * @param onCancelClick 취소 클릭 시 수행할 작업
- * @param onAnimationFinished 모달 사라지는 애니메이션이 끝나고 나서 수행할 작업
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,13 +41,11 @@ fun PeekrSimpleModal(
     @StringRes cancelLabel: Int = R.string.simple_modal_btn_cancel,
     onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit,
-    onAnimationFinished: (() -> Unit)? = null,
 ) {
     PeekrModalWrapper(
         isOpen = isOpen,
         animated = true,
         onDismissRequest = onCancelClick,
-        onAnimationFinished = { onAnimationFinished?.invoke() },
     ) {
         Column {
             Title(
@@ -80,7 +77,6 @@ fun PeekrSimpleModal(
  * @param enabledAcceptButton 확인 버튼 활성화 여부
  * @param onAcceptClick 확인 클릭 시 수행할 작업
  * @param onCancelClick 취소 클릭 시 수행할 작업
- * @param onAnimationFinished 모달 사라지는 애니메이션이 끝나고 나서 수행할 작업
  * @param content 자유롭게 구성 가능한 모달 내부 컨텐츠
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,14 +89,12 @@ fun PeekrCustomModal(
     @StringRes cancelLabel: Int = R.string.simple_modal_btn_cancel,
     onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit,
-    onAnimationFinished: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     PeekrModalWrapper(
         isOpen = isOpen,
         animated = true,
         onDismissRequest = onCancelClick,
-        onAnimationFinished = { onAnimationFinished?.invoke() },
     ) {
         Column {
             content()

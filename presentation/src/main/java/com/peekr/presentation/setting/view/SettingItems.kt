@@ -28,7 +28,6 @@ fun LazyListScope.informationItem(
                     loading = loading,
                 )
             },
-            loading = loading,
         )
     }
 }

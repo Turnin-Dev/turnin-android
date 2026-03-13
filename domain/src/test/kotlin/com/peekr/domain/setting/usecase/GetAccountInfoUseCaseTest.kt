@@ -2,6 +2,7 @@ package com.peekr.domain.setting.usecase
 
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -85,7 +86,10 @@ class GetAccountInfoUseCaseTest {
 
         // then
         val error = (result as Result.Error).error
-        assertEquals(SettingErrorType.LoginProviderNotFound, error)
+        assertEquals(
+            SettingErrorType.CommonError(CommonErrorType.SocialAuth.LoginProviderNotFound),
+            error,
+        )
     }
 
     @Test

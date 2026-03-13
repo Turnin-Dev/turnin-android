@@ -1,4 +1,3 @@
-import java.io.FileInputStream
 import java.util.Properties
 import kotlin.apply
 
@@ -14,8 +13,11 @@ android {
     namespace = "com.peekr.presentation"
 
     defaultConfig {
-        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
-        buildConfigField("String", "QNA_URL", properties.getProperty("QNA_URL"))
+        val properties = Properties().apply {
+            rootProject.file("local.properties").inputStream().use { load(it) }
+        }
+        val qnaUrl = properties.getProperty("QNA_URL") ?: "\"\""
+        buildConfigField("String", "QNA_URL", qnaUrl)
     }
 }
 

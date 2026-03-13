@@ -75,9 +75,11 @@ class SettingViewModel @Inject constructor(
             }
 
             is SettingContract.UiEvent.OnDeletionConfirmTextChanged -> {
-                updateState { copy(deletionConfirmText = event.text) }
-                if (event.text == DELETION_CONFIRM_TEXT) {
-                    updateState { copy(isDeletionEnabled = true) }
+                updateState {
+                    copy(
+                        deletionConfirmText = event.text,
+                        isDeletionEnabled = event.text == DELETION_CONFIRM_TEXT,
+                    )
                 }
             }
 

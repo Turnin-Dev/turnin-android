@@ -14,7 +14,7 @@ class SettingContract {
      *
      * @property deletionConfirmText 삭제 확인 텍스트
      * @property isDeletionEnabled 삭제 버튼 활성화 여부
-     * @property accountInfoLoading 계정 정보 로딩 여부
+     * @property fullScreenLoading 전체 화면 로딩 여부
      * @property accountInfoLoading 계정 정보 로딩 여부
      */
     data class UiState(

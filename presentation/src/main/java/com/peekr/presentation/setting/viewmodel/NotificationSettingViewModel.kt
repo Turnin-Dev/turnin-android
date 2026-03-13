@@ -31,7 +31,7 @@ class NotificationSettingViewModel @Inject constructor(
     // 3. 네트워크가 불안정해도 무조건 성공해야하는 경우: WorkManager 사용.
     fun togglePushNotification(enabled: Boolean) {
         viewModelScope.launch {
-            settingRepository.setPushNotificationEnabled(!enabled)
+            runCatching { settingRepository.setPushNotificationEnabled(enabled) }
 
             // TODO: 실제로 서버에서도 FCM 토큰을 제거하는 작업을 수행해야 한다.
         }
