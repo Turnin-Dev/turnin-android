@@ -3,11 +3,12 @@ package com.peekr.core.domain.auth.usecase
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.error.CommonErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.lastOrNull
 
 /**
  * 로그아웃
@@ -29,19 +30,34 @@ class LogoutUseCase @Inject constructor(
     operator fun invoke(): Flow<Result<Unit, CommonErrorType>> = flow {
         emit(Result.Loading)
 
-        // 1. 소셜 로그인 연동 해제
+        // 0. 데이터 준비
         val loginProvider = authRepository.getLoginType()
         if (loginProvider == null) {
             emit(Result.Error(CommonErrorType.SocialAuth.LoginProviderNotFound))
             return@flow
         }
+
+        // 1. 로그아웃
+        when (val logoutResult = authRepository.logout().lastOrNull()) {
+            is Result.Success -> Unit
+            is Result.Error -> {
+                emit(logoutResult)
+                return@flow
+            }
+
+            else -> {
+                emit(Result.Error(CommonErrorType.Unexpected(null)))
+                return@flow
+            }
+        }
+
+        // 2. 소셜 로그인 연동 해제
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)
 
         // 로그아웃 단계에서는 소셜 로그아웃 에러 처리를 직접적으로 하지 않고,
         // 사용자 경험을 더 우선시한다.
-        socialAuthManager.signOut()
+        runCatchingSafe { socialAuthManager.signOut() }
 
-        // 2. 로그아웃 API 호출 및 앱 데이터 정리
-        emitAll(authRepository.logout())
+        emit(Result.Success(Unit))
     }
 }

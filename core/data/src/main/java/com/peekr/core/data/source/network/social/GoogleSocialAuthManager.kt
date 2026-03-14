@@ -21,6 +21,7 @@ import com.peekr.core.domain.auth.social.SocialAuthManager
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.ProviderId
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -53,6 +54,7 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
         } catch (e: GetCredentialCancellationException) {
             emit(Result.Error(CommonErrorType.SocialAuth.Cancellation, e.message))
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             AppLogger.e(tag, "Unexpected error during Google sign-in.")
             emit(Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message))
         }
@@ -66,6 +68,7 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
         AppLogger.i(tag, "Google sign-out Succeeded.")
         Result.Success(Unit)
     } catch (e: Exception) {
+        if (e is CancellationException) throw e
         AppLogger.e(tag, e, "Failed to Google sign-out")
         Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message)
     }
@@ -80,6 +83,7 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
             AppLogger.i(tag, "Google account deleted.")
             Result.Success(Unit)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             AppLogger.e(tag, e, "Failed to delete Google account.")
             Result.Error(CommonErrorType.SocialAuth.DeleteAccountFailed, e.message)
         }

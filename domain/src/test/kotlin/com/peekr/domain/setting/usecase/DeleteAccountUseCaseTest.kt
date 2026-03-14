@@ -37,6 +37,9 @@ class DeleteAccountUseCaseTest {
     fun `계정 삭제 성공 테스트`() = runTest {
         val result = usecase().last()
         assertTrue(result is Result.Success)
+
+        coVerify(exactly = 1) { authRepository.deleteAccount() }
+        coVerify(exactly = 1) { socialAuthManager.deleteAccount() }
     }
 
     @Test
@@ -60,7 +63,7 @@ class DeleteAccountUseCaseTest {
     }
 
     @Test
-    fun `소셜 계정 삭제 시 에러가 발생하면 그대로 에러를 방출한다`() = runTest {
+    fun `소셜 계정 삭제 시 에러가 발생해도 그대로 계정 삭제를 진행한다`() = runTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
         coEvery { socialAuthManager.deleteAccount() } returns Result.Error(expectedError)
@@ -69,13 +72,10 @@ class DeleteAccountUseCaseTest {
         val result = usecase().last()
 
         // then
-        val actualError = (result as Result.Error).error
-        assertEquals(
-            SettingErrorType.CommonError(expectedError),
-            actualError,
-        )
+        assertTrue(result is Result.Success)
 
-        coVerify(exactly = 0) { authRepository.deleteAccount() }
+        coVerify(exactly = 1) { authRepository.deleteAccount() }
+        coVerify(exactly = 1) { socialAuthManager.deleteAccount() }
     }
 
     @Test
@@ -93,5 +93,7 @@ class DeleteAccountUseCaseTest {
             SettingErrorType.CommonError(expectedError),
             actualError,
         )
+
+        coVerify(exactly = 0) { socialAuthManager.deleteAccount() }
     }
 }

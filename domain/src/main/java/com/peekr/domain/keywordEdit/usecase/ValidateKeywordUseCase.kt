@@ -6,6 +6,7 @@ import com.peekr.core.domain.common.validation.ValidationResult
 import com.peekr.core.domain.common.validation.toValidationErrorType
 import com.peekr.core.domain.model.KeywordName
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 
 /** 키워드 유효성 검사 */
 class ValidateKeywordUseCase @Inject constructor() {
@@ -15,7 +16,8 @@ class ValidateKeywordUseCase @Inject constructor() {
             ValidationResult.Valid(keyword.value)
         } catch (e: CommonValidationException) {
             ValidationResult.Invalid(e.toValidationErrorType())
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
             ValidationResult.Invalid(ValidationErrorType.Unexpected)
         }
 }
