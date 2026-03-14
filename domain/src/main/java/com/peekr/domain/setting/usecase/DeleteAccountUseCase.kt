@@ -3,6 +3,7 @@ package com.peekr.domain.setting.usecase
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.domain.setting.error.SettingErrorType
@@ -42,14 +43,22 @@ class DeleteAccountUseCase @Inject constructor(
             }
             .lastOrNull()
 
-        if (deleteAccountResult is Result.Error) {
-            emit(deleteAccountResult)
-            return@flow
+        when (deleteAccountResult) {
+            is Result.Success -> Unit
+            is Result.Error -> {
+                emit(deleteAccountResult)
+                return@flow
+            }
+
+            else -> {
+                emit(Result.Error(SettingErrorType.Unexpected(null)))
+                return@flow
+            }
         }
 
         // 2. 소셜 로그인 연동 해제 (해당 단계가 실패해도 계정은 이미 삭제된 상태)
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)
-        runCatching { socialAuthManager.deleteAccount() }
+        runCatchingSafe { socialAuthManager.deleteAccount() }
 
         emit(Result.Success(Unit))
     }
