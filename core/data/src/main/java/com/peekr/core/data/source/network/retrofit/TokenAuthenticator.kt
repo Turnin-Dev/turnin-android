@@ -8,6 +8,7 @@ import com.peekr.core.data.source.network.api.RefreshTokenApi
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.peekr.core.data.source.network.retrofit.RetrofitConstants.BEARER
 import com.peekr.core.domain.eventBus.AuthEventBus
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -67,6 +68,7 @@ class TokenAuthenticator(
                 AppLogger.e(tag, e, "Token refresh request failed")
                 return@runBlocking null
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 // IO 예외 이 외에는 보안상 토큰 삭제 후 로그아웃 처리
                 AppLogger.e(tag, e, "Token refresh request failed")
                 resetAuthDataAndLogout()

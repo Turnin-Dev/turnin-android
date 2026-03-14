@@ -7,6 +7,7 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 import kotlin.math.pow
 import kotlin.random.Random
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
 
@@ -55,6 +56,8 @@ suspend fun <T> retry(
         try {
             return block()
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
+
             // 인증 관련 요청인 경우 즉시 실패 처리
             if (e is HttpException && e.code() in NetworkRetryPolicy.NON_RETRYABLE_STATUS_CODES) {
                 AppLogger.w(TAG, "Authentication failed with status ${e.code()}, not retrying")

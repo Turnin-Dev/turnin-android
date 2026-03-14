@@ -8,6 +8,7 @@ import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -61,6 +62,7 @@ class FileNetworkDataSourceImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             AppLogger.e(tag, e, "File upload failed")
             NetworkResult.Error(NetworkErrorType.Network.UploadFileFailed)
         }

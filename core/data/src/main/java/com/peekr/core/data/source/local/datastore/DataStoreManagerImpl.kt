@@ -12,6 +12,7 @@ import com.peekr.core.data.crypto.CryptoException
 import com.peekr.core.data.crypto.CryptoManager
 import com.peekr.core.data.source.local.error.WritingDataException
 import java.io.IOException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -108,6 +109,7 @@ class DataStoreManagerImpl(
                     AppLogger.e(tag, e, "DataStoreManager에서 복호화 과정 실패")
                     null
                 } catch (e: Exception) {
+                    if (e is CancellationException) throw e
                     AppLogger.e(tag, e, "DataStoreManager에서 복호화 과정 실패(정의된 이 외의 예외 발생)")
                     null
                 }

@@ -13,9 +13,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.peekr.core.presentation.R
 import com.peekr.core.presentation.feature.image.cropper.uriToBitmap
 import kotlin.math.ceil
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -39,6 +41,13 @@ fun SinglePhotoPicker(
     val context = LocalContext.current
     var selectedImageUri: Uri? by rememberSaveable { mutableStateOf(null) }
 
+    val maxFileSizeMbForMessage = ceil(maxFileSizeBytes / (1024.0 * 1024.0)).toInt()
+    val maxSizeErrorMessage = stringResource(
+        R.string.single_photo_picker_invalid_max_size_exceed,
+        maxFileSizeMbForMessage,
+    )
+    val imageFormatErrorMessage = stringResource(R.string.single_photo_picker_invalid_image_format)
+
     val singlePhotoPickerLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickVisualMedia(),
@@ -61,18 +70,8 @@ fun SinglePhotoPicker(
                     ?.use { it.statSize } ?: -1L
             }
 
-            if (fileSize > maxFileSizeBytes || fileSize < 0) {
-                val maxFileSizeMbForMessage =
-                    ceil(maxFileSizeBytes / (1024.0 * 1024.0)).toInt()
-                Toast
-                    .makeText(
-                        context,
-                        context.getString(
-                            R.string.single_photo_picker_invalid_max_size_exceed,
-                            maxFileSizeMbForMessage,
-                        ),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+            if (fileSize !in 0L..maxFileSizeBytes) {
+                Toast.makeText(context, maxSizeErrorMessage, Toast.LENGTH_SHORT).show()
                 onSelected(null, null)
                 return@LaunchedEffect
             }
@@ -91,12 +90,9 @@ fun SinglePhotoPicker(
             // 파일 변환 성공 시
             onSelected(imageBitmap, uri)
         } catch (e: Exception) {
-            onError?.invoke(e) ?: Toast
-                .makeText(
-                    context,
-                    context.getText(R.string.single_photo_picker_invalid_image_format),
-                    Toast.LENGTH_SHORT,
-                ).show()
+            if (e is CancellationException) throw e
+            onError?.invoke(e)
+                ?: Toast.makeText(context, imageFormatErrorMessage, Toast.LENGTH_SHORT).show()
             onSelected(null, null)
         } finally {
             selectedImageUri = null

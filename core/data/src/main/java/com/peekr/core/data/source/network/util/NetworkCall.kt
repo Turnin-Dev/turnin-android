@@ -11,6 +11,7 @@ import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
+import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -75,6 +76,7 @@ private suspend fun <T, R> executeNetworkCall(
 } catch (e: TimeoutException) {
     handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: Exception) {
+    if (e is CancellationException) throw e
     handleException(NetworkErrorType.Unexpected(e), e)
 }
 
