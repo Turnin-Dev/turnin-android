@@ -22,15 +22,21 @@ class BlockModalViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<BlockModalContract.UiState, BlockModalContract.UiEvent, BlockModalContract.UiEffect>() {
     /** 차단할 사용자 ID */
-    private val blockedId: Long? by lazy {
-        savedStateHandle.get<Long>("userId")
-    }
+    private val blockedId: Long? = savedStateHandle.get<Long>("userId")
 
     /** 선택된 차단 사유 */
     private var selectedBlockReason: UiBlockReason? = null
 
     override fun createInitialState(): BlockModalContract.UiState =
         BlockModalContract.UiState()
+
+    init {
+        if (blockedId == null) {
+            sendEffect {
+                BlockModalContract.UiEffect.CloseBlockModal
+            }
+        }
+    }
 
     override suspend fun handleEvent(event: BlockModalContract.UiEvent) {
         when (event) {
@@ -47,22 +53,6 @@ class BlockModalViewModel @Inject constructor(
             }
         }
     }
-
-    override suspend fun loadInitialData() {
-        val initResult = initNavArgumentData()
-        if (!initResult) return
-    }
-
-    // 초기 데이터 로드: 이전 백스택에서 넘어온 인자 값 로드
-    private fun initNavArgumentData(): Boolean =
-        if (blockedId == null) {
-            sendEffect {
-                BlockModalContract.UiEffect.CloseBlockModal
-            }
-            false
-        } else {
-            true
-        }
 
     // 차단 사유 목록 조회
     private fun getBlockReasons() {
