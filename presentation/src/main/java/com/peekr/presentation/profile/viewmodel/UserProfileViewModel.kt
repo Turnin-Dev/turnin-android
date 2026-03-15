@@ -31,7 +31,7 @@ class UserProfileViewModel @Inject constructor(
     }
 
     /** 차단 ID */
-    private val blockedId: Long? = savedStateHandle.get<Long>("blockedId")
+    private val blockId: Long? = savedStateHandle.get<Long>("blockId")
 
     override fun createInitialState(): UserProfileContract.UiState =
         UserProfileContract.UiState()
@@ -206,12 +206,12 @@ class UserProfileViewModel @Inject constructor(
 
     // 차단 해제
     private suspend fun unblock() {
-        if (blockedId == null) {
+        if (blockId == null) {
             showSnackBar(ProfileErrorType.MissingUnblockTarget.asUiText())
             return
         }
 
-        usecases.deleteBlock(blockedId).onEach { result ->
+        usecases.deleteBlock(blockId).onEach { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {

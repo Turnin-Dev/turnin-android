@@ -10,7 +10,7 @@ enum class ThemeMode {
     ;
 
     companion object {
-        fun find(name: String?): ThemeMode =
+        fun find(name: String): ThemeMode =
             entries.find { it.name == name } ?: SYSTEM
     }
 }

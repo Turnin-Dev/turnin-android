@@ -35,23 +35,25 @@ abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect
 
     // ------------------------------ UI State ------------------------------
 
-    /** UI State 초기 값 */
-    private val initialState: State by lazy { createInitialState() }
-
     protected abstract fun createInitialState(): State
 
     // UI State
-    private val _uiState: MutableStateFlow<State> = MutableStateFlow(initialState)
+    // lazy를 사용하여 서브클래스의 프로퍼티 초기화(userId 등)가 완료된 후
+    // createInitialState()가 호출되도록 초기화 순서를 보장
+    private val _uiState: MutableStateFlow<State> by lazy {
+        MutableStateFlow(createInitialState())
+    }
 
     /** UI State */
-    val uiState: StateFlow<State> =
+    val uiState: StateFlow<State> by lazy {
         _uiState
             .onStart { loadInitialData() }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
-                initialValue = initialState,
+                initialValue = _uiState.value,
             )
+    }
 
     /** 단순히 UI State 값을 읽을 때 사용한다. */
     protected val currentUiState: State
