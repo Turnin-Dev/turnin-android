@@ -33,7 +33,7 @@ data class MyProfileEntity(
     val active: Boolean,
 )
 
-fun MyProfileEntity.toUserKeywordDetail(): CoreMyProfile =
+fun MyProfileEntity.toDomainModel(): CoreMyProfile =
     CoreMyProfile(
         userId = UserId(userId),
         displayId = DisplayId(displayId),

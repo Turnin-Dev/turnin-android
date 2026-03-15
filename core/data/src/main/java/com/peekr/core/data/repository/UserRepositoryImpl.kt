@@ -3,8 +3,8 @@ package com.peekr.core.data.repository
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
-import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
@@ -74,7 +74,7 @@ class UserRepositoryImpl @Inject constructor(
                 flowOf(null)
             } else {
                 myProfileDao.getByUserId(userId).map {
-                    it?.toUserKeywordDetail()
+                    it?.toDomainModel()
                 }
             }
         }

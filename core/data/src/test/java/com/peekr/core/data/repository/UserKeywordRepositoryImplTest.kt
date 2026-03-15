@@ -6,7 +6,7 @@ import com.peekr.core.data.source.local.database.dao.MyProfileDao
 import com.peekr.core.data.source.local.database.entity.FeedEntity
 import com.peekr.core.data.source.local.database.entity.MyKeywordEntity
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
-import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.UserKeywordNetworkDataSource
@@ -221,7 +221,7 @@ class UserKeywordRepositoryImplTest {
 
         // then
         assertEquals(expectedCount, result.size)
-        assertEquals(expectedList.map { it.toUserKeywordDetail() }, result)
+        assertEquals(expectedList.map { it.toDomainModel() }, result)
     }
 
     // ------------------------------ getMyKeywordsRefresh() ------------------------------

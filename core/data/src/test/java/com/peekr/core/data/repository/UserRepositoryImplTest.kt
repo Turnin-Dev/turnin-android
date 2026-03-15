@@ -2,7 +2,7 @@ package com.peekr.core.data.repository
 
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
-import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
@@ -132,7 +132,7 @@ class UserRepositoryImplTest {
         val result = repository.getMyProfile().last()
 
         // then
-        assertEquals(TestMyProfileEntity.toUserKeywordDetail(), result)
+        assertEquals(TestMyProfileEntity.toDomainModel(), result)
     }
 
     @Test

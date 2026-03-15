@@ -5,6 +5,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.database.dao.FeedDao
 import com.peekr.core.data.source.local.database.dao.MyKeywordDao
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
 import com.peekr.core.data.source.local.datastore.DataStoreKey
@@ -160,7 +161,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
     override fun getMyKeywords(): Flow<List<UserKeyword>> =
         myKeywordDao.getAll()
-            .map { it.map { it.toUserKeywordDetail() } }
+            .map { it.map { it.toDomainModel() } }
             .flowOn(ioDispatcher)
 
     override fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>> =
