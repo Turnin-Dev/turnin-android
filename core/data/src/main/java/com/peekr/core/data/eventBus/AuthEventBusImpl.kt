@@ -10,7 +10,14 @@ class AuthEventBusImpl @Inject constructor() : AuthEventBus {
     private val _logoutEvent = Channel<Unit>(Channel.CONFLATED)
     override val logoutEvent: Flow<Unit> = _logoutEvent.receiveAsFlow()
 
+    private val _loginEvent = Channel<Unit>(Channel.CONFLATED)
+    override val loginEvent: Flow<Unit> = _loginEvent.receiveAsFlow()
+
     override fun emitLogout() {
         _logoutEvent.trySend(Unit)
+    }
+
+    override fun emitLogin() {
+        _loginEvent.trySend(Unit)
     }
 }

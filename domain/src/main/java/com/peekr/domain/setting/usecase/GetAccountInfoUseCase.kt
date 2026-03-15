@@ -9,11 +9,8 @@ import com.peekr.domain.setting.model.AccountInfo
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
 
 /**
  * 계정 정보 조회
@@ -30,8 +27,10 @@ class GetAccountInfoUseCase @Inject constructor(
      * 로컬 데이터를 우선적으로 조회하고 없는 경우 네트워크 리프레쉬를 수행한다.
      */
     operator fun invoke(): Flow<Result<AccountInfo, SettingErrorType>> = flow {
+        emit(Result.Loading)
+
         // 1. 로컬 데이터가 없는 경우 리프레쉬 트리거를 수행한다.
-        if (userRepository.getMyProfile().first() == null) {
+        if (userRepository.myProfile.value == null) {
             val refreshResult = userRepository.getMyProfileRefresh().first { it != Result.Loading }
             if (refreshResult is Result.Error) {
                 emit(Result.Error(SettingErrorType.CommonError(refreshResult.error)))
@@ -39,33 +38,29 @@ class GetAccountInfoUseCase @Inject constructor(
             }
         }
 
-        // 2. 로그인 타입과 로컬 데이터를 combine으로 결합한 후 AccountInfo를 방출한다.
-        emitAll(
-            combine(
-                flow { emit(authRepository.getLoginType()) },
-                userRepository.getMyProfile(),
-            ) { loginType, myProfile ->
-                when {
-                    loginType == null -> Result.Error(
-                        SettingErrorType.CommonError(CommonErrorType.SocialAuth.LoginProviderNotFound),
-                    )
-                    myProfile == null -> Result.Error(SettingErrorType.MyProfileNotFound)
-                    else -> {
-                        Result.Success(
-                            AccountInfo(
-                                userId = myProfile.userId,
-                                displayId = myProfile.displayId,
-                                name = myProfile.name,
-                                profileImageUrl = myProfile.profileImageUrl,
-                                introduce = myProfile.introduce,
-                                loginProvider = loginType,
-                            ),
-                        )
-                    }
-                }
-            },
-        )
+        // 2. 로그인 타입과 로컬 데이터를 조합한다.
+        val loginType = authRepository.getLoginType()
+        val myProfile = userRepository.myProfile.value
+
+        val result = when {
+            loginType == null -> Result.Error(
+                SettingErrorType.CommonError(CommonErrorType.SocialAuth.LoginProviderNotFound),
+            )
+
+            myProfile == null -> Result.Error(SettingErrorType.MyProfileNotFound)
+            else -> Result.Success(
+                AccountInfo(
+                    userId = myProfile.userId,
+                    displayId = myProfile.displayId,
+                    name = myProfile.name,
+                    profileImageUrl = myProfile.profileImageUrl,
+                    introduce = myProfile.introduce,
+                    loginProvider = loginType,
+                ),
+            )
+        }
+
+        emit(result)
     }
-        .onStart { emit(Result.Loading) }
         .catch { emit(Result.Error(SettingErrorType.Unexpected(it))) }
 }

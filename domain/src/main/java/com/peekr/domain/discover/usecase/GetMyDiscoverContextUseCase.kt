@@ -23,10 +23,8 @@ class GetMyDiscoverContextUseCase @Inject constructor(
      * 나의 프로필 조회에 실패하거나 존재하지 않으면 `null`을 반환한다.
      */
     suspend operator fun invoke(): DiscoverContext? {
-        val coreMyProfile = userRepository.getMyProfile().firstOrNull()
-        if (coreMyProfile == null) return null
-        val myKeywords = userKeywordRepository.getMyKeywords().firstOrNull()
-        if (myKeywords == null) return null
+        val coreMyProfile = userRepository.myProfile.value ?: return null
+        val myKeywords = userKeywordRepository.getMyKeywords().firstOrNull() ?: return null
         return DiscoverContext(
             user = DiscoverUser(
                 userId = coreMyProfile.userId,

@@ -7,11 +7,13 @@ import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.eventBus.AuthEventBus
+import com.peekr.core.domain.user.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -26,6 +28,7 @@ class MainViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val authEventBus: AuthEventBus,
     private val logoutUseCase: LogoutUseCase,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -45,19 +48,39 @@ class MainViewModel @Inject constructor(
                 // TODO: In debug mode
                 val result = checkLoggedIn()
                 _loggedIn.update { result }
+                if (result) preloadUserData() // 사용자 데이터 미리 로드
                 _isLoading.update { false }
             } else {
                 // TODO: In production mode
                 val result = checkLoggedIn()
                 _loggedIn.update { result }
+                if (result) preloadUserData() // 사용자 데이터 미리 로드
                 _isLoading.update { false }
             }
         }
 
-        // 로그아웃 체크
+        // 로그아웃 감지
         authEventBus.logoutEvent
             .onEach { logout() }
             .launchIn(viewModelScope)
+
+        // 로그인 감지
+        authEventBus.loginEvent
+            .onEach { preloadUserData() }
+            .launchIn(viewModelScope)
+    }
+
+    // 로그아웃
+    fun logout() {
+        viewModelScope.launch {
+            runCatching {
+                logoutUseCase().collect()
+            }
+                .onFailure {
+                    AppLogger.e(tag, "Failed to logout in MainViewModel.")
+                }
+            _navigateToLogin.send(Unit)
+        }
     }
 
     /**
@@ -79,16 +102,15 @@ class MainViewModel @Inject constructor(
         }.first()
     }
 
-    // 로그아웃
-    fun logout() {
-        viewModelScope.launch {
-            runCatching {
-                logoutUseCase().collect()
-            }
-                .onFailure {
-                    AppLogger.e(tag, "Failed to logout in MainViewModel.")
-                }
-            _navigateToLogin.send(Unit)
+    /**
+     * 사용자 데이터를 미리 로드한다.
+     */
+    private fun preloadUserData() {
+        AppLogger.d("PreloadUserData", "Triggered!")
+        if (userRepository.myProfile.value == null) {
+            userRepository.getMyProfileRefresh()
+                .catch { e -> AppLogger.e(tag, e, "Failed to preload user data.") }
+                .launchIn(viewModelScope)
         }
     }
 }

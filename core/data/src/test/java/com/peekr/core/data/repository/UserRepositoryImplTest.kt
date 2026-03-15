@@ -31,11 +31,14 @@ import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -50,14 +53,17 @@ class UserRepositoryImplTest {
     private val myProfileDao: MyProfileDao = mockk()
     private val memoryCache: MemoryCache<Long, CoreUserProfile> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository: UserRepository =
-        UserRepositoryImpl(dataSource, dataStoreManager, memoryCache, myProfileDao, dispatcher)
+    private val scope = TestScope()
+    private lateinit var repository: UserRepository
 
     @Before
     fun setUp() {
         coEvery {
             dataStoreManager.getLongData(DataStoreKey.User.UserId)
         } returns flowOf(TestUserId.value)
+
+        repository =
+            UserRepositoryImpl(dataSource, dataStoreManager, memoryCache, myProfileDao, dispatcher, scope)
     }
 
     @Test
@@ -121,15 +127,21 @@ class UserRepositoryImplTest {
     @Test
     fun `나의 프로필 조회 - 성공 테스트`() = runTest {
         // given
-        coEvery {
-            dataStoreManager.getLongData(any())
-        } returns flowOf(TestMyUserId.value)
-        coEvery {
-            myProfileDao.getByUserId(any())
-        } returns flowOf(TestMyProfileEntity)
+        every { dataStoreManager.getLongData(any()) } returns flowOf(TestMyUserId.value)
+        coEvery { myProfileDao.getByUserId(any()) } returns flowOf(TestMyProfileEntity)
+
+        repository =
+            UserRepositoryImpl(
+                dataSource,
+                dataStoreManager,
+                memoryCache,
+                myProfileDao,
+                dispatcher,
+                backgroundScope,
+            )
 
         // when
-        val result = repository.getMyProfile().last()
+        val result = repository.myProfile.first { it != null }
 
         // then
         assertEquals(TestMyProfileEntity.toDomainModel(), result)

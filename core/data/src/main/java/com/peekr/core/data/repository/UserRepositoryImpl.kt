@@ -1,5 +1,6 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.common.coroutine.ApplicationScope
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
@@ -27,13 +28,18 @@ import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,9 +48,27 @@ class UserRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val memoryCache: MemoryCache<Long, CoreUserProfile>,
     private val myProfileDao: MyProfileDao,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
+    @param:ApplicationScope private val applicationScope: CoroutineScope,
 ) : UserRepository {
     private val tag = this::class.java.simpleName
+
+    override val myProfile: StateFlow<CoreMyProfile?> = dataStoreManager
+        .getLongData(DataStoreKey.User.UserId)
+        .flatMapLatest { userId ->
+            if (userId == null) {
+                flowOf(null)
+            } else {
+                myProfileDao.getByUserId(userId).map { it?.toDomainModel() }
+            }
+        }
+        .onEach { AppLogger.d("PreloadUserData(Repo)", "Triggered!: $it") }
+        .flowOn(ioDispatcher)
+        .stateIn(
+            scope = applicationScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     override suspend fun getMyUserId(): UserId? = withContext(ioDispatcher) {
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
@@ -66,19 +90,6 @@ class UserRepositoryImpl @Inject constructor(
                 }
             }
         }
-
-    override fun getMyProfile(): Flow<CoreMyProfile?> = dataStoreManager
-        .getLongData(DataStoreKey.User.UserId)
-        .flatMapLatest { userId ->
-            if (userId == null) {
-                flowOf(null)
-            } else {
-                myProfileDao.getByUserId(userId).map {
-                    it?.toDomainModel()
-                }
-            }
-        }
-        .flowOn(ioDispatcher)
 
     override fun getMyProfileRefresh(): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

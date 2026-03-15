@@ -5,6 +5,7 @@ import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
 import com.peekr.core.domain.common.error.mapError
+import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.domain.login.error.LoginErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.flowOf
 class LoginIntegrationUseCase @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val authRepository: AuthRepository,
+    private val authEventBus: AuthEventBus,
 ) {
     operator fun invoke(loginCredentials: LoginCredentials): Flow<Result<Unit, LoginErrorType>> =
         // 1. 로그인
@@ -34,6 +36,10 @@ class LoginIntegrationUseCase @Inject constructor(
                         // 2. 액세스 토큰 & 리프레쉬 토큰 저장
                         val accessToken = loginResult.data.accessToken
                         val refreshToken = loginResult.data.refreshToken
+
+                        // 3. 로그인 이벤트 발행
+                        authEventBus.emitLogin()
+
                         authRepository.saveTokens(accessToken, refreshToken)
                             .mapError { commonError ->
                                 LoginErrorType.CommonError(commonError)

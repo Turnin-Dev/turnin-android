@@ -6,11 +6,14 @@ import com.peekr.core.domain.auth.model.LoginResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.domain.login.error.LoginErrorType
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
@@ -28,12 +31,16 @@ class LoginIntegrationUseCaseTest {
     private lateinit var loginIntegrationUseCase: LoginIntegrationUseCase
     private val loginUseCase: LoginUseCase = mockk()
     private val authRepository: AuthRepository = mockk()
+    private val authEventBus: AuthEventBus = mockk()
 
     @Before
     fun setUp() {
+        every { authEventBus.emitLogin() } just Runs
+
         loginIntegrationUseCase = LoginIntegrationUseCase(
             loginUseCase,
             authRepository,
+            authEventBus,
         )
     }
 
