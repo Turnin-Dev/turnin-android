@@ -66,7 +66,6 @@ class UserRepositoryImpl @Inject constructor(
                     myProfileDao.getByUserId(userId).map { it?.toDomainModel() }
                 }
             }
-            .onEach { AppLogger.d("PreloadUserData(Repo)", "Triggered!: $it") }
             .flowOn(ioDispatcher)
             .onEach { _myProfile.value = it }
             .launchIn(applicationScope)

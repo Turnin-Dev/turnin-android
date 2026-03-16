@@ -106,7 +106,6 @@ class MainViewModel @Inject constructor(
      * 사용자 데이터를 미리 로드한다.
      */
     private fun preloadUserData() {
-        AppLogger.d("PreloadUserData", "Triggered!")
         if (userRepository.myProfile.value == null) {
             userRepository.getMyProfileRefresh()
                 .catch { e -> AppLogger.e(tag, e, "Failed to preload user data.") }
