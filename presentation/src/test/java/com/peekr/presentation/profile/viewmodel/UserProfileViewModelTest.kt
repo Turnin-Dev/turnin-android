@@ -320,7 +320,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
         savedStateHandle = SavedStateHandle(
             mapOf(
                 "userId" to TestUserId.value,
-                "blockedId" to 1L,
+                "blockId" to 1L,
             ),
         )
         viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)

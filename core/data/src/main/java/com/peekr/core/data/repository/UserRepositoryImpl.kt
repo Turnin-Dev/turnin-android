@@ -31,15 +31,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,26 +53,28 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
     private val tag = this::class.java.simpleName
 
-    override val myProfile: StateFlow<CoreMyProfile?> = dataStoreManager
-        .getLongData(DataStoreKey.User.UserId)
-        .flatMapLatest { userId ->
-            if (userId == null) {
-                flowOf(null)
-            } else {
-                myProfileDao.getByUserId(userId).map { it?.toDomainModel() }
+    private val _myProfile: MutableStateFlow<CoreMyProfile?> = MutableStateFlow(null)
+    override val myProfile: StateFlow<CoreMyProfile?> = _myProfile
+
+    init {
+        dataStoreManager
+            .getLongData(DataStoreKey.User.UserId)
+            .flatMapLatest { userId ->
+                if (userId == null) {
+                    flowOf(null)
+                } else {
+                    myProfileDao.getByUserId(userId).map { it?.toDomainModel() }
+                }
             }
-        }
-        .onEach { AppLogger.d("PreloadUserData(Repo)", "Triggered!: $it") }
-        .flowOn(ioDispatcher)
-        .stateIn(
-            scope = applicationScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
+            .onEach { AppLogger.d("PreloadUserData(Repo)", "Triggered!: $it") }
+            .flowOn(ioDispatcher)
+            .onEach { _myProfile.value = it }
+            .launchIn(applicationScope)
+    }
 
     override suspend fun getMyUserId(): UserId? = withContext(ioDispatcher) {
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-        if (userId == null) return@withContext null
+            ?: return@withContext null
         UserId(userId)
     }
 
@@ -99,6 +101,8 @@ class UserRepositoryImpl @Inject constructor(
                     AppLogger.d(tag, "My profile refresh successful")
                     val myProfile = result.data.toDomainModel()
                     myProfileDao.upsert(myProfile.toEntity())
+                    // StateFlow에 반영
+                    _myProfile.value = myProfile
                     emit(Result.Success(Unit))
                 }
 

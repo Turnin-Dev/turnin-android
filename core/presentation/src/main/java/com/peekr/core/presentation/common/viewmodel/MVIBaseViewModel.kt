@@ -52,7 +52,7 @@ abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
-                initialValue = initialState,
+                initialValue = _uiState.value,
             )
     }
 

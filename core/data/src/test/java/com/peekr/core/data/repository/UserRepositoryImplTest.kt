@@ -3,6 +3,7 @@ package com.peekr.core.data.repository
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
 import com.peekr.core.data.source.local.database.entity.MyProfileEntity
 import com.peekr.core.data.source.local.database.entity.toDomainModel
+import com.peekr.core.data.source.local.database.entity.toEntity
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
@@ -31,6 +32,7 @@ import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -162,6 +164,42 @@ class UserRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
+        // _myProfile.value가 즉시 업데이트되는지 검증
+        assertEquals(TestMyProfileResponse.toDomainModel(), repository.myProfile.value)
+    }
+
+    @Test
+    fun `나의 프로필 새로고침 - StateFlow가 즉시 업데이트된다`() = runTest {
+        // given
+        coEvery {
+            dataSource.getMyProfile()
+        } returns NetworkResult.Success(TestMyProfileResponse)
+        coEvery {
+            myProfileDao.upsert(any())
+        } just Runs
+
+        // when
+        repository.getMyProfileRefresh().last()
+
+        // then: advanceUntilIdle() 없이 즉시 반영됐는지 확인
+        assertEquals(TestMyProfileResponse.toDomainModel(), repository.myProfile.value)
+    }
+
+    @Test
+    fun `나의 프로필 새로고침 - upsert가 호출된다`() = runTest {
+        // given
+        coEvery {
+            dataSource.getMyProfile()
+        } returns NetworkResult.Success(TestMyProfileResponse)
+        coEvery {
+            myProfileDao.upsert(any())
+        } just Runs
+
+        // when
+        repository.getMyProfileRefresh().last()
+
+        // then
+        coVerify { myProfileDao.upsert(TestMyProfileResponse.toDomainModel().toEntity()) }
     }
 
     @Test

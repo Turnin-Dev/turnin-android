@@ -35,7 +35,7 @@ import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -119,6 +119,10 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
 
         viewModel = DiscoverViewModel(usecases, getMyUserIdUseCase, snackbarController)
 
+        val actualPagingData = async {
+            viewModel.discoverContexts.first()
+        }
+
         advanceUntilIdle()
 
         val expectedPagingData = TestPagingDataFlow.first()
@@ -130,13 +134,13 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
 
         // when: 실제 페이징 데이터 수집
         // 첫 데이터는 빈 페이징 데이터이므로 두 번째 데이터부터 수집한다.
-        val actualPagingData = viewModel.discoverContexts.drop(1).first()
-        val actualList = actualPagingData.collectDataForTest(
+        val actualList = actualPagingData.await().collectDataForTest(
             mainDispatcherRule.testDispatcher,
             mainDispatcherRule.testDispatcher,
         )
 
         // then
+        assertTrue(actualList.isNotEmpty())
         assertEquals(expectedList.size, actualList.size)
         assertEquals(expectedList, actualList)
     }
@@ -176,11 +180,14 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
 
         viewModel = DiscoverViewModel(usecases, getMyUserIdUseCase, snackbarController)
 
+        val actualPagingData = async {
+            viewModel.discoverContexts.first()
+        }
+
         advanceUntilIdle()
 
         // when: 실제 페이징 데이터 수집
-        val pagingData = viewModel.discoverContexts.drop(1).first()
-        val pagingList = pagingData.collectDataForTest(
+        val pagingList = actualPagingData.await().collectDataForTest(
             mainDispatcherRule.testDispatcher,
             mainDispatcherRule.testDispatcher,
         )

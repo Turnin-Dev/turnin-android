@@ -4,6 +4,7 @@ import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
+import com.peekr.core.domain.common.coroutine.mapSuccess
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.domain.login.error.LoginErrorType
@@ -37,10 +38,11 @@ class LoginIntegrationUseCase @Inject constructor(
                         val accessToken = loginResult.data.accessToken
                         val refreshToken = loginResult.data.refreshToken
 
-                        // 3. 로그인 이벤트 발행
-                        authEventBus.emitLogin()
-
                         authRepository.saveTokens(accessToken, refreshToken)
+                            .mapSuccess {
+                                // 3. 로그인 이벤트 발행
+                                authEventBus.emitLogin()
+                            }
                             .mapError { commonError ->
                                 LoginErrorType.CommonError(commonError)
                             }
