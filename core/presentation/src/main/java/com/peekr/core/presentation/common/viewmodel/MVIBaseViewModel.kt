@@ -25,11 +25,13 @@ abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect
     // ------------------------------ Init ------------------------------
 
     /**
-     * 초기 데이터 로드 시 사용한다.
+     * 초기 데이터 로드 함수로, View가 [uiState]를 구독하는 시점에 자동으로 호출된다.
      *
-     * 이 함수에서는 가벼운 작업을 수행하는 것을 권장한다.
+     * View 구독이 5초 이상 끊겼다가 재구독 시 다시 호출되므로,
+     * 구현 시 멱등성을 보장해야 한다.
      *
-     * 비교적 무거운 작업은 직접 뷰모델 클래스의 init 블록 내부에서 수행하는 것을 권장한다.
+     * 외부 의존성(SavedStateHandle 등) 검증이나 ViewModel 생성 시점에
+     * 반드시 수행되어야 하는 작업은 init 블록에서 수행한다.
      */
     protected open suspend fun loadInitialData() {}
 
@@ -41,17 +43,18 @@ abstract class MVIBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect
     protected abstract fun createInitialState(): State
 
     // UI State
-    private val _uiState: MutableStateFlow<State> = MutableStateFlow(initialState)
+    private val _uiState: MutableStateFlow<State> by lazy { MutableStateFlow(initialState) }
 
     /** UI State */
-    val uiState: StateFlow<State> =
+    val uiState: StateFlow<State> by lazy {
         _uiState
             .onStart { loadInitialData() }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000L),
-                initialValue = initialState,
+                initialValue = _uiState.value,
             )
+    }
 
     /** 단순히 UI State 값을 읽을 때 사용한다. */
     protected val currentUiState: State

@@ -14,7 +14,7 @@ fun NavGraphBuilder.blockListScreen(
             onNavigateToUserProfile = { blockedUser ->
                 navController.navigateToUserProfile(
                     userId = blockedUser.userId,
-                    blockedId = blockedUser.id,
+                    blockId = blockedUser.id,
                 )
             },
             onBackPressed = {

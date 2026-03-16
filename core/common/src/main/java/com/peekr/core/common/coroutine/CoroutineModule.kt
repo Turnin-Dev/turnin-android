@@ -24,6 +24,7 @@ class CoroutineModule {
     @Singleton
     fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
+    @ApplicationScope
     @Provides
     @Singleton
     fun provideCoroutineScope(
@@ -38,3 +39,7 @@ annotation class IO
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Default
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApplicationScope

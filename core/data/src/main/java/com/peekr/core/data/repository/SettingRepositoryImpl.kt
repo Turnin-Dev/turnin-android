@@ -18,8 +18,10 @@ class SettingRepositoryImpl @Inject constructor(
             dataStoreManager.getStringData(DataStoreKey.Setting.ThemeMode),
         ) { pushNotification, themeMode ->
             AppSetting(
-                pushNotificationEnabled = pushNotification ?: false,
-                themeMode = ThemeMode.find(themeMode),
+                pushNotificationEnabled = pushNotification ?: true,
+                themeMode = themeMode?.let {
+                    ThemeMode.find(themeMode)
+                } ?: ThemeMode.SYSTEM,
             )
         }
 

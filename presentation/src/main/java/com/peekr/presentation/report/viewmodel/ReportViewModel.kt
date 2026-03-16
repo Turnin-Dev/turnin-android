@@ -21,18 +21,22 @@ class ReportViewModel @Inject constructor(
     private val getReportReasonsUseCase: GetReportReasonsUseCase,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<ReportContract.UiState, ReportContract.UiEvent, ReportContract.UiEffect>() {
-    private val reportedId: Long? by lazy {
-        savedStateHandle.get<Long>("userId")
-    }
+    private val reportedId: Long? = savedStateHandle.get<Long>("userId")
 
-    private val reportedUserKeywordId: Long? by lazy {
-        savedStateHandle.get<Long>("userKeywordId")
-    }
+    private val reportedUserKeywordId: Long? = savedStateHandle.get<Long>("userKeywordId")
 
     private var selectedReportReason: UiReportReason? = null
 
     override fun createInitialState(): ReportContract.UiState =
         ReportContract.UiState()
+
+    init {
+        if (reportedId == null && reportedUserKeywordId == null) {
+            sendEffect {
+                ReportContract.UiEffect.CloseReportModal
+            }
+        }
+    }
 
     override suspend fun handleEvent(event: ReportContract.UiEvent) {
         when (event) {
@@ -49,22 +53,6 @@ class ReportViewModel @Inject constructor(
             }
         }
     }
-
-    override suspend fun loadInitialData() {
-        val initResult = initNavArgumentData()
-        if (!initResult) return
-    }
-
-    // 초기 데이터 로드: 이전 백스택에서 넘어온 인자 값 로드
-    private fun initNavArgumentData(): Boolean =
-        if (reportedId == null && reportedUserKeywordId == null) {
-            sendEffect {
-                ReportContract.UiEffect.CloseReportModal
-            }
-            false
-        } else {
-            true
-        }
 
     // 신고
     private fun report(customReason: String?) {

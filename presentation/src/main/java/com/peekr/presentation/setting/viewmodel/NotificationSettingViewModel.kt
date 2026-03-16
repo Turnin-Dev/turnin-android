@@ -20,7 +20,7 @@ class NotificationSettingViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = AppSetting(
-                pushNotificationEnabled = false,
+                pushNotificationEnabled = true,
                 themeMode = ThemeMode.SYSTEM,
             ),
         )

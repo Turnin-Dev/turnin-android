@@ -1,10 +1,11 @@
 package com.peekr.core.data.repository
 
+import com.peekr.core.common.coroutine.ApplicationScope
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.database.dao.MyProfileDao
+import com.peekr.core.data.source.local.database.entity.toDomainModel
 import com.peekr.core.data.source.local.database.entity.toEntity
-import com.peekr.core.data.source.local.database.entity.toUserKeywordDetail
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.local.memory.MemoryCache
@@ -27,13 +28,18 @@ import com.peekr.core.domain.user.model.UserPatch
 import com.peekr.core.domain.user.repository.UserRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,13 +48,33 @@ class UserRepositoryImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val memoryCache: MemoryCache<Long, CoreUserProfile>,
     private val myProfileDao: MyProfileDao,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
+    @param:ApplicationScope private val applicationScope: CoroutineScope,
 ) : UserRepository {
     private val tag = this::class.java.simpleName
 
+    private val _myProfile: MutableStateFlow<CoreMyProfile?> = MutableStateFlow(null)
+    override val myProfile: StateFlow<CoreMyProfile?> = _myProfile
+
+    init {
+        dataStoreManager
+            .getLongData(DataStoreKey.User.UserId)
+            .flatMapLatest { userId ->
+                if (userId == null) {
+                    flowOf(null)
+                } else {
+                    myProfileDao.getByUserId(userId).map { it?.toDomainModel() }
+                }
+            }
+            .onEach { AppLogger.d("PreloadUserData(Repo)", "Triggered!: $it") }
+            .flowOn(ioDispatcher)
+            .onEach { _myProfile.value = it }
+            .launchIn(applicationScope)
+    }
+
     override suspend fun getMyUserId(): UserId? = withContext(ioDispatcher) {
         val userId = dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-        if (userId == null) return@withContext null
+            ?: return@withContext null
         UserId(userId)
     }
 
@@ -67,19 +93,6 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun getMyProfile(): Flow<CoreMyProfile?> = dataStoreManager
-        .getLongData(DataStoreKey.User.UserId)
-        .flatMapLatest { userId ->
-            if (userId == null) {
-                flowOf(null)
-            } else {
-                myProfileDao.getByUserId(userId).map {
-                    it?.toUserKeywordDetail()
-                }
-            }
-        }
-        .flowOn(ioDispatcher)
-
     override fun getMyProfileRefresh(): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
@@ -88,6 +101,8 @@ class UserRepositoryImpl @Inject constructor(
                     AppLogger.d(tag, "My profile refresh successful")
                     val myProfile = result.data.toDomainModel()
                     myProfileDao.upsert(myProfile.toEntity())
+                    // StateFlow에 반영
+                    _myProfile.value = myProfile
                     emit(Result.Success(Unit))
                 }
 

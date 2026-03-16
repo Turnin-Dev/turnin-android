@@ -87,7 +87,7 @@ class LoginViewModel @Inject constructor(
     private fun proceedWithLoginAndNavigateToMain(loginCredentials: LoginCredentials) {
         loginIntegrationUseCase(loginCredentials)
             .onEach { result ->
-                updateLoginState(result) { success ->
+                updateLoginState(result) { _ ->
                     _loginState.update { it.copy(loading = false, event = LoginUiEvent.NavigateToMain) }
                 }
             }.launchIn(viewModelScope)

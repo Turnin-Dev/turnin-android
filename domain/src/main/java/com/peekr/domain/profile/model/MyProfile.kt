@@ -4,6 +4,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreMyProfile
 
 /**
  * 나의 프로필
@@ -27,3 +28,15 @@ data class MyProfile(
     val lastLoginAt: Long,
     val active: Boolean,
 )
+
+fun CoreMyProfile.toMyProfile(): MyProfile =
+    MyProfile(
+        userId = userId,
+        displayId = displayId,
+        name = name,
+        profileImageUrl = profileImageUrl,
+        introduce = introduce,
+        friendsCount = friendsCount,
+        lastLoginAt = lastLoginAt,
+        active = active,
+    )

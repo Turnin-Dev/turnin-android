@@ -4,7 +4,9 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.flatMapResult
+import com.peekr.core.domain.common.coroutine.mapSuccess
 import com.peekr.core.domain.common.error.mapError
+import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.core.domain.file.model.ImageFileDetail
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 class RegisterIntegrationUseCase @Inject internal constructor(
     private val registerUseCase: RegisterUseCase,
     private val authRepository: AuthRepository,
+    private val authEventBus: AuthEventBus,
 ) {
     operator fun invoke(
         provider: SocialLoginProvider,
@@ -42,10 +45,16 @@ class RegisterIntegrationUseCase @Inject internal constructor(
             imageFileDetail = imageFileDetail,
             introduce = introduce?.let { Introduce(it) },
         ).flatMapResult { registerResult: RegisterResult ->
+            // 1. 토큰 저장
             val accessToken = registerResult.accessToken
             val refreshToken = registerResult.refreshToken
+
             authRepository
                 .saveTokens(accessToken, refreshToken)
+                .mapSuccess {
+                    // 2. 로그인 이벤트 발행
+                    authEventBus.emitLogin()
+                }
                 .mapError { commonError -> RegisterErrorType.CommonError(commonError) }
         }
     }.getOrElse { e -> flowOf(Result.Error(RegisterErrorType.Unexpected(e))) }

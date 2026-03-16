@@ -8,8 +8,8 @@ import com.peekr.core.domain.user.model.CoreMyProfile
 import com.peekr.core.domain.user.repository.UserRepository
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -22,12 +22,10 @@ class GetMyProfileUseCaseTest {
     @Test
     fun `나의 프로필 조회 성공 테스트`() = runTest {
         // given
-        every {
-            userRepository.getMyProfile()
-        } returns flowOf(TestCoreMyProfile)
+        every { userRepository.myProfile } returns MutableStateFlow(TestCoreMyProfile)
 
         // when
-        val result = usecase().last()
+        val result = usecase().first { it != null }
         assertNotNull(result)
         val actual = CoreMyProfile(
             userId = result!!.userId,

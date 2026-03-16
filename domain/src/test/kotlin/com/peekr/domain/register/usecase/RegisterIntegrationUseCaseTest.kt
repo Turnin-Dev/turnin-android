@@ -5,6 +5,7 @@ import com.peekr.core.domain.auth.model.RegisterResult
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
@@ -12,19 +13,28 @@ import com.peekr.core.domain.model.ProviderId
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.model.UserId
 import com.peekr.domain.register.error.RegisterErrorType
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class RegisterIntegrationUseCaseTest {
     private val registerUseCase: RegisterUseCase = mockk()
     private val authRepository: AuthRepository = mockk()
-    private val usecase = RegisterIntegrationUseCase(registerUseCase, authRepository)
+    private val authEventBus: AuthEventBus = mockk()
+    private val usecase = RegisterIntegrationUseCase(registerUseCase, authRepository, authEventBus)
+
+    @Before
+    fun setUp() {
+        every { authEventBus.emitLogin() } just Runs
+    }
 
     @Test
     fun `회원가입 성공 테스트`() = runTest {

@@ -51,6 +51,9 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
     fun setUp() {
         // Mock
         every {
+            usecases.getCurrentMyProfile()
+        } returns TestMyProfile
+        every {
             usecases.getMyProfile()
         } returns flowOf(TestMyProfile)
         every {
@@ -90,6 +93,7 @@ class MyProfileViewModelTest : MVIBaseViewModelTest<
     @Test
     fun `나의 프로필을 로컬에서 조회 시 예외가 발생하는 경우 로깅 후 나의 키워드 리스트는 정상적으로 업데이트 된다`() = runTest {
         // given
+        every { usecases.getCurrentMyProfile() } returns null
         every {
             usecases.getMyProfile()
         } returns flow { throw Exception() }

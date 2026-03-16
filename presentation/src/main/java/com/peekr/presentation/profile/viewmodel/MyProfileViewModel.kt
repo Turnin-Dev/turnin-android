@@ -28,7 +28,9 @@ class MyProfileViewModel @Inject constructor(
     private val tag = this::class.java.simpleName
 
     override fun createInitialState(): MyProfileContract.UiState =
-        MyProfileContract.UiState()
+        MyProfileContract.UiState(
+            myProfile = usecases.getCurrentMyProfile()?.toUiModel(),
+        )
 
     init {
         // 각각 viewModelScope 내에서 병렬 수행
