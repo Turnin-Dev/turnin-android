@@ -6,6 +6,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.core.domain.user.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,9 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -72,15 +71,19 @@ class MainViewModel @Inject constructor(
 
     // 로그아웃
     fun logout() {
-        viewModelScope.launch {
-            runCatching {
-                logoutUseCase().collect()
-            }
-                .onFailure {
+        logoutUseCase().onEach { result ->
+            when (result) {
+                Result.Loading -> {}
+                is Result.Error -> {
                     AppLogger.e(tag, "Failed to logout in MainViewModel.")
                 }
-            _navigateToLogin.send(Unit)
+
+                is Result.Success -> {
+                    _navigateToLogin.send(Unit)
+                }
+            }
         }
+            .launchIn(viewModelScope)
     }
 
     /**
@@ -93,13 +96,15 @@ class MainViewModel @Inject constructor(
      */
     private suspend fun checkLoggedIn(): Boolean {
         // 로그인 여부 판단 로직, 추후 캡슐화 예정
-        return combine(
-            dataStoreManager.getLongData(DataStoreKey.User.UserId),
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken),
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken),
-        ) { userId, accessToken, refreshToken ->
-            userId != null && accessToken != null && refreshToken != null
-        }.first()
+        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+            ?: return false
+
+        val accessToken =
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken).firstOrNull()
+        val refreshToken =
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken).firstOrNull()
+
+        return accessToken != null && refreshToken != null
     }
 
     /**

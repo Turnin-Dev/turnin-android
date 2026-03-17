@@ -7,8 +7,9 @@ import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.error.CommonErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.lastOrNull
 
 /**
  * 로그아웃
@@ -38,17 +39,12 @@ class LogoutUseCase @Inject constructor(
         }
 
         // 1. 로그아웃
-        when (val logoutResult = authRepository.logout().lastOrNull()) {
-            is Result.Success -> Unit
-            is Result.Error -> {
-                emit(logoutResult)
-                return@flow
-            }
-
-            else -> {
-                emit(Result.Error(CommonErrorType.Unexpected(null)))
-                return@flow
-            }
+        val logoutResult = authRepository.logout()
+            .filter { it !is Result.Loading }
+            .first()
+        if (logoutResult is Result.Error) {
+            emit(logoutResult)
+            return@flow
         }
 
         // 2. 소셜 로그인 연동 해제
