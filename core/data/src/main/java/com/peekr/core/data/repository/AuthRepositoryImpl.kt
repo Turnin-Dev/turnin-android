@@ -36,9 +36,21 @@ class AuthRepositoryImpl @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
     private val appDataCleaner: AppDataCleaner,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository {
     private val tag = this::class.java.simpleName
+
+    override suspend fun isLoggedIn(): Boolean {
+        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
+            ?: return false
+
+        val accessToken =
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken).firstOrNull()
+        val refreshToken =
+            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken).firstOrNull()
+
+        return accessToken != null && refreshToken != null
+    }
 
     override fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>> =
         safeResultFlow<LoginResult, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

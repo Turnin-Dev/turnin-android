@@ -3,8 +3,8 @@ package com.peekr.peekrapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.eventBus.AuthEventBus
@@ -15,7 +15,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -28,6 +27,7 @@ class MainViewModel @Inject constructor(
     private val authEventBus: AuthEventBus,
     private val logoutUseCase: LogoutUseCase,
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -94,18 +94,8 @@ class MainViewModel @Inject constructor(
      * - 3개의 데이터 중 하나라도 없는 경우
      * - 암호화된 데이터를 복호화하는 과정에서 오류가 발생한 경우
      */
-    private suspend fun checkLoggedIn(): Boolean {
-        // 로그인 여부 판단 로직, 추후 캡슐화 예정
-        dataStoreManager.getLongData(DataStoreKey.User.UserId).firstOrNull()
-            ?: return false
-
-        val accessToken =
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken).firstOrNull()
-        val refreshToken =
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken).firstOrNull()
-
-        return accessToken != null && refreshToken != null
-    }
+    private suspend fun checkLoggedIn(): Boolean =
+        authRepository.isLoggedIn()
 
     /**
      * 사용자 데이터를 미리 로드한다.

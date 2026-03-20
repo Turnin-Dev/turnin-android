@@ -13,6 +13,20 @@ import kotlinx.coroutines.flow.Flow
 
 /** Auth 리포지토리 */
 interface AuthRepository {
+    // TODO: 로그인 여부 조건 수정 예정
+
+    /**
+     * 로그인 여부를 확인한다.
+     *
+     * 로그인 성공 조건:
+     * - userId, accessToken, refreshToken 모두 존재하며 정상적으로 복호화에 성공한 경우
+     *
+     * 로그인 실패 조건:
+     * - 3개의 데이터 중 하나라도 없는 경우
+     * - 암호화된 데이터를 복호화하는 과정에서 오류가 발생한 경우
+     */
+    suspend fun isLoggedIn(): Boolean
+
     /** 로그인 */
     fun login(loginCredentials: LoginCredentials): Flow<Result<LoginResult, CommonErrorType>>
 

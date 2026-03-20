@@ -1,0 +1,32 @@
+package com.peekr.data.notification.datasource
+
+import com.peekr.core.data.source.network.util.CursorPageResponse
+import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.data.source.network.util.networkCall
+import com.peekr.core.data.source.network.util.networkCallWithoutResponse
+import com.peekr.data.notification.NotificationApi
+import com.peekr.data.notification.dto.FcmTokenResponse
+import com.peekr.data.notification.dto.NotificationResponse
+import com.peekr.data.notification.dto.RegisterFcmTokenRequest
+import javax.inject.Inject
+
+class NotificationNetworkDataSourceImpl @Inject constructor(
+    private val notificationApi: NotificationApi,
+) : NotificationNetworkDataSource {
+    override suspend fun registerFcmToken(token: String): NetworkResult<FcmTokenResponse> =
+        networkCall { notificationApi.registerFcmToken(RegisterFcmTokenRequest(token)) }
+
+    override suspend fun deactivateFcmToken(token: String): NetworkResult<Unit> =
+        networkCallWithoutResponse {
+            notificationApi.deactivateFcmToken(RegisterFcmTokenRequest(token))
+        }
+
+    override suspend fun getNotifications(
+        cursor: Long?,
+        size: Int,
+    ): NetworkResult<CursorPageResponse<NotificationResponse, Long>> =
+        networkCall { notificationApi.getNotifications(cursor, size) }
+
+    override suspend fun markAsRead(notificationId: Long): NetworkResult<Unit> =
+        networkCallWithoutResponse { notificationApi.markAsRead(notificationId) }
+}
