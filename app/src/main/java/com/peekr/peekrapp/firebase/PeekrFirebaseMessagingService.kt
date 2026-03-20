@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.app.NotificationCompat
 import coil.Coil
@@ -81,6 +80,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    // 알림 표시
     private fun showNotification(
         title: String,
         body: String,
@@ -89,6 +89,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
     ) {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
+        // 알림 유형에 따른 채널 설정
         val notiType = data[FcmDataKey.NOTI_TYPE]
             ?.let { runCatching { NotificationType.valueOf(it) }.getOrNull() }
 
@@ -101,51 +102,58 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
             PeekrNotificationChannel.HIGH_ID -> NotificationManager.IMPORTANCE_HIGH
             else -> NotificationManager.IMPORTANCE_DEFAULT
         }
+        notificationManager.createNotificationChannel(NotificationChannel(channelId, channelName, importance))
 
-        val channel = NotificationChannel(channelId, channelName, importance)
-        notificationManager.createNotificationChannel(channel)
-
-        val intent = createDeepLinkIntent(data)
+        // 딥링크 인텐트 생성
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
-            intent,
+            createDeepLinkIntent(data),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
+        // 알림 빌드
+        val priority = when (channelId) {
+            PeekrNotificationChannel.HIGH_ID -> NotificationCompat.PRIORITY_HIGH
+            else -> NotificationCompat.PRIORITY_DEFAULT
+        }
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_notification) // 흰색 단색 (상태바용)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(priority)
 
-        if (imageUrl != null) {
-            // 프로필 사진 있는 경우 → 프로필 사진을 largeIcon으로
-            applicationScope.launch {
-                val bitmap = loadBitmapFromUrl(imageUrl)
-                notificationBuilder.setLargeIcon(bitmap)
-                notificationManager.notify(
-                    System.currentTimeMillis().toInt(),
-                    notificationBuilder.build(),
-                )
-            }
-        } else {
-            // 프로필 사진 없는 경우 → 앱 로고를 largeIcon으로
-            val appLogoBitmap =
-                BitmapFactory.decodeResource(resources, com.peekr.core.designsystem.R.drawable.logo_icon)
-            notificationBuilder.setLargeIcon(appLogoBitmap)
-            notificationManager.notify(
-                System.currentTimeMillis().toInt(),
-                notificationBuilder.build(),
-            )
-        }
+        // 알림 수행
+        notificationManager.notify(
+            System.currentTimeMillis().toInt(),
+            notificationBuilder.build(),
+        )
+
+        // TODO: 초기 버전에선 알림에 이미지가 포함되지 않음.
+        //  추후 이미지 포함 시 백그라운드 지원 방식(data-only message)과 함께 구현 필요.
+        // 프로필 사진 여부에 따라 largeIcon 설정 후 알림 표시
+//        if (imageUrl != null) {
+//            applicationScope.launch {
+//                val bitmap = loadBitmapFromUrl(imageUrl)
+//                if (bitmap != null) {
+//                    notificationBuilder.setLargeIcon(bitmap)
+//                }
+//                notificationManager.notify(
+//                    System.currentTimeMillis().toInt(),
+//                    notificationBuilder.build(),
+//                )
+//            }
+//        } else {
+//            notificationManager.notify(
+//                System.currentTimeMillis().toInt(),
+//                notificationBuilder.build(),
+//            )
+//        }
     }
 
-    /**
-     * noti_type, ref_type, ref_id 기반으로 딥링크 인텐트 생성
-     */
+    // noti_type, ref_type, ref_id 기반으로 딥링크 인텐트 생성
     private fun createDeepLinkIntent(data: Map<String, String>): Intent {
         val notiType = data[FcmDataKey.NOTI_TYPE]
             ?.let { runCatching { NotificationType.valueOf(it) }.getOrNull() }
@@ -183,6 +191,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    // URL로 비트맵 생성해서 반환
     private suspend fun loadBitmapFromUrl(url: String): Bitmap? =
         withContext(ioDispatcher) {
             runCatching {
