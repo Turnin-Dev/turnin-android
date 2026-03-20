@@ -1,9 +1,8 @@
 package com.peekr.data.notification.datasource
 
-import com.peekr.core.data.source.network.util.CursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationResponse
+import com.peekr.data.notification.dto.NotificationCursorPageResponse
 
 /**
  * 알림 네트워크 데이터소스
@@ -36,7 +35,7 @@ interface NotificationNetworkDataSource {
     suspend fun getNotifications(
         cursor: Long?,
         size: Int,
-    ): NetworkResult<CursorPageResponse<NotificationResponse, Long>>
+    ): NetworkResult<NotificationCursorPageResponse>
 
     /**
      * 알림 읽음 처리

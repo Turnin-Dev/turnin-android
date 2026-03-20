@@ -1,8 +1,7 @@
-package com.peekr.data.notification
+package com.peekr.data.notification.api
 
-import com.peekr.core.data.source.network.util.CursorPageResponse
 import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationResponse
+import com.peekr.data.notification.dto.NotificationCursorPageResponse
 import com.peekr.data.notification.dto.RegisterFcmTokenRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -37,7 +36,7 @@ interface NotificationApi {
     suspend fun getNotifications(
         @Query("cursor") cursor: Long?,
         @Query("size") size: Int,
-    ): Response<CursorPageResponse<NotificationResponse, Long>>
+    ): Response<NotificationCursorPageResponse>
 
     /**
      * 알림 읽음 처리

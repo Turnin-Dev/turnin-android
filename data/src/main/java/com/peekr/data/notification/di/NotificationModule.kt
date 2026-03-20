@@ -1,7 +1,7 @@
 package com.peekr.data.notification.di
 
 import com.peekr.core.data.di.TokenOkHttpClient
-import com.peekr.data.notification.NotificationApi
+import com.peekr.data.notification.api.NotificationApi
 import com.peekr.data.notification.datasource.NotificationNetworkDataSource
 import com.peekr.data.notification.datasource.NotificationNetworkDataSourceImpl
 import com.peekr.data.notification.repository.NotificationRepositoryImpl

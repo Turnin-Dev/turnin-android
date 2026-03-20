@@ -1,12 +1,11 @@
 package com.peekr.data.notification.datasource
 
-import com.peekr.core.data.source.network.util.CursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import com.peekr.core.data.source.network.util.networkCallWithoutResponse
-import com.peekr.data.notification.NotificationApi
+import com.peekr.data.notification.api.NotificationApi
 import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationResponse
+import com.peekr.data.notification.dto.NotificationCursorPageResponse
 import com.peekr.data.notification.dto.RegisterFcmTokenRequest
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class NotificationNetworkDataSourceImpl @Inject constructor(
     override suspend fun getNotifications(
         cursor: Long?,
         size: Int,
-    ): NetworkResult<CursorPageResponse<NotificationResponse, Long>> =
+    ): NetworkResult<NotificationCursorPageResponse> =
         networkCall { notificationApi.getNotifications(cursor, size) }
 
     override suspend fun markAsRead(notificationId: Long): NetworkResult<Unit> =
