@@ -26,7 +26,7 @@ interface NotificationApi {
      */
     @DELETE("notification/token")
     suspend fun deactivateFcmToken(
-        @Body request: RegisterFcmTokenRequest,
+        @Query("token") token: String,
     ): Response<Unit>
 
     /**

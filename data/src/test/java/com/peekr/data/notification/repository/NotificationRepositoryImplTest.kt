@@ -127,8 +127,8 @@ class NotificationRepositoryImplTest {
     fun `알림 목록 조회 - 스크롤 시 다음 페이지가 로드된다`() = runTest {
         // given
         val pageSize = NotificationPagingTokens.PAGE_SIZE
-        val firstPage = createCursorPageResponse(nextCursor = 20L, pageSize)
-        val secondPage = createCursorPageResponse(nextCursor = null, pageSize)
+        val firstPage = createCursorPageResponse(nextCursor = 20L, pageSize = pageSize, startId = 0)
+        val secondPage = createCursorPageResponse(nextCursor = null, pageSize = pageSize, startId = pageSize)
 
         coEvery {
             dataSource.getNotifications(any(), any())
@@ -213,18 +213,19 @@ class NotificationRepositoryImplTest {
         private fun createCursorPageResponse(
             nextCursor: Long?,
             pageSize: Int,
+            startId: Int = 0,
         ): NotificationCursorPageResponse =
             NotificationCursorPageResponse(
                 items = List(pageSize) {
                     NotificationResponse(
-                        id = it.toLong(),
+                        id = (startId + it).toLong(),
                         notiType = "FRIEND_REQUEST",
-                        title = "친구 요청 $it",
-                        message = "message $it",
+                        title = "친구 요청 ${startId + it}",
+                        message = "message ${startId + it}",
                         imageUrl = null,
                         isRead = false,
                         isBroadcast = false,
-                        refId = it.toLong(),
+                        refId = (startId + it).toLong(),
                         refType = "USER",
                         createdAt = 1716000000L,
                     )

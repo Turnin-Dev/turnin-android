@@ -64,27 +64,27 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
 
     /**
      * FCM 메시지 수신 시 호출된다.
-     * 앱이 포그라운드 상태일 때만 호출된다.
-     * 백그라운드에서는 OS가 자동으로 알림을 표시한다.
+     * data-only 방식으로 포그라운드/백그라운드 모두 호출된다.
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        // 포그라운드 상태에서 직접 알림 빌드
-        remoteMessage.notification?.let { notification ->
-            showNotification(
-                title = notification.title ?: "",
-                body = notification.body ?: "",
-                imageUrl = notification.imageUrl?.toString(),
-                data = remoteMessage.data,
-            )
-        }
+
+        // data-only 방식 — notification 필드 대신 data 필드에서 파싱
+        val title = remoteMessage.data[FcmDataKey.TITLE] ?: ""
+        val body = remoteMessage.data[FcmDataKey.BODY] ?: ""
+        // TODO: 이미지 기능은 추후 구현
+
+        showNotification(
+            title = title,
+            body = body,
+            data = remoteMessage.data,
+        )
     }
 
     // 알림 표시
     private fun showNotification(
         title: String,
         body: String,
-        imageUrl: String?,
         data: Map<String, String>,
     ) {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -132,8 +132,8 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         // TODO: 초기 버전에선 알림에 이미지가 포함되지 않음.
-        //  추후 이미지 포함 시 백그라운드 지원 방식(data-only message)과 함께 구현 필요.
-        // 프로필 사진 여부에 따라 largeIcon 설정 후 알림 표시
+        //  추후 이미지 포함 시 백그라운드 지원 방식(data-only message)은 이미 적용되어 있으므로
+        //  imageUrl 파싱 및 setLargeIcon 구현만 추가하면 됨.
 //        if (imageUrl != null) {
 //            applicationScope.launch {
 //                val bitmap = loadBitmapFromUrl(imageUrl)
@@ -191,6 +191,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    // TODO: 이미지 기능 구현 시 활성화
     // URL로 비트맵 생성해서 반환
     private suspend fun loadBitmapFromUrl(url: String): Bitmap? =
         withContext(ioDispatcher) {
