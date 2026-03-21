@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Peekr</string>
+
+    <string name="notification_channel_normal_id">peekr_notification_channel_normal</string>
+    <string name="notification_channel_high_name">중요 알림</string>
+    <string name="notification_channel_normal_name">일반 알림</string>
 </resources>

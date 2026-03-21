@@ -3,9 +3,10 @@ package com.peekr.peekrapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.source.local.datastore.DataStoreKey
 import com.peekr.core.data.source.local.datastore.DataStoreManager
+import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.eventBus.AuthEventBus
 import com.peekr.core.domain.user.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,9 +15,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,6 +27,7 @@ class MainViewModel @Inject constructor(
     private val authEventBus: AuthEventBus,
     private val logoutUseCase: LogoutUseCase,
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -72,15 +71,19 @@ class MainViewModel @Inject constructor(
 
     // 로그아웃
     fun logout() {
-        viewModelScope.launch {
-            runCatching {
-                logoutUseCase().collect()
-            }
-                .onFailure {
+        logoutUseCase().onEach { result ->
+            when (result) {
+                Result.Loading -> {}
+                is Result.Error -> {
                     AppLogger.e(tag, "Failed to logout in MainViewModel.")
                 }
-            _navigateToLogin.send(Unit)
+
+                is Result.Success -> {
+                    _navigateToLogin.send(Unit)
+                }
+            }
         }
+            .launchIn(viewModelScope)
     }
 
     /**
@@ -91,22 +94,13 @@ class MainViewModel @Inject constructor(
      * - 3개의 데이터 중 하나라도 없는 경우
      * - 암호화된 데이터를 복호화하는 과정에서 오류가 발생한 경우
      */
-    private suspend fun checkLoggedIn(): Boolean {
-        // 로그인 여부 판단 로직, 추후 캡슐화 예정
-        return combine(
-            dataStoreManager.getLongData(DataStoreKey.User.UserId),
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.AccessToken),
-            dataStoreManager.getEncryptedStringData(DataStoreKey.Auth.RefreshToken),
-        ) { userId, accessToken, refreshToken ->
-            userId != null && accessToken != null && refreshToken != null
-        }.first()
-    }
+    private suspend fun checkLoggedIn(): Boolean =
+        authRepository.isLoggedIn()
 
     /**
      * 사용자 데이터를 미리 로드한다.
      */
     private fun preloadUserData() {
-        AppLogger.d("PreloadUserData", "Triggered!")
         if (userRepository.myProfile.value == null) {
             userRepository.getMyProfileRefresh()
                 .catch { e -> AppLogger.e(tag, e, "Failed to preload user data.") }

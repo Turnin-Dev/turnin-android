@@ -79,4 +79,8 @@ dependencies {
 
     // Splash Screen
     implementation(libs.splash.screen)
+
+    // FCM
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 }
