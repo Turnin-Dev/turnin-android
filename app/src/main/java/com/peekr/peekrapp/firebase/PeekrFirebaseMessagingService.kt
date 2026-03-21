@@ -105,9 +105,10 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.createNotificationChannel(NotificationChannel(channelId, channelName, importance))
 
         // 딥링크 인텐트 생성
+        val notificationId = System.currentTimeMillis().toInt()
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            notificationId, // 고유한 requestCode로 각 알림마다 다른 PendingIntent 생성
             createDeepLinkIntent(data),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
@@ -127,7 +128,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
 
         // 알림 수행
         notificationManager.notify(
-            System.currentTimeMillis().toInt(),
+            notificationId,
             notificationBuilder.build(),
         )
 
