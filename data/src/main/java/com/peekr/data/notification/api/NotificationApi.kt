@@ -6,7 +6,6 @@ import com.peekr.data.notification.dto.NotificationCursorPageResponse
 import com.peekr.data.notification.dto.RegisterFcmTokenRequest
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -25,9 +24,9 @@ interface NotificationApi {
     /**
      * FCM 토큰 비활성화
      */
-    @DELETE(NetworkApiPath.Notification.TOKEN)
+    @PATCH(NetworkApiPath.Notification.DEACTIVATE_TOKEN)
     suspend fun deactivateFcmToken(
-        @Query("token") token: String,
+        @Body request: RegisterFcmTokenRequest,
     ): Response<Unit>
 
     /**
