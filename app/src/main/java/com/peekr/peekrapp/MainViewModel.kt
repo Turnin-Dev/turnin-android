@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
 import com.peekr.core.common.fcm.FcmTopic
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
@@ -29,7 +28,6 @@ import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val dataStoreManager: DataStoreManager,
     private val authEventBus: AuthEventBus,
     private val logoutUseCase: LogoutUseCase,
     private val userRepository: UserRepository,
@@ -56,7 +54,6 @@ class MainViewModel @Inject constructor(
                 _loggedIn.update { result }
                 if (result) {
                     preloadUserData()
-                    registerFcmToken()
                 }
                 _isLoading.update { false }
             } else {
@@ -65,7 +62,6 @@ class MainViewModel @Inject constructor(
                 _loggedIn.update { result }
                 if (result) {
                     preloadUserData()
-                    registerFcmToken()
                 }
                 _isLoading.update { false }
             }

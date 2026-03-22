@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import coil.Coil
 import coil.request.ImageRequest
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -18,6 +19,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.presentation.common.navigation.deepLink.DeepLink
 import com.peekr.domain.notification.repository.NotificationRepository
 import com.peekr.peekrapp.MainActivity
 import com.peekr.peekrapp.R
@@ -52,6 +54,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+
         // 로그인 상태일 때만 서버에 토큰 등록
         applicationScope.launch {
             withContext(ioDispatcher) {
@@ -159,36 +162,33 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         val notiType = data[FcmDataKey.NOTI_TYPE]
             ?.let { runCatching { NotificationType.valueOf(it) }.getOrNull() }
         val refId = data[FcmDataKey.REF_ID]?.toLongOrNull()
+        val userId = data[FcmDataKey.USER_ID]?.toLongOrNull()
 
-        return when {
+        val uri = when {
             notiType == NotificationType.FRIEND_REQUEST ||
                 notiType == NotificationType.FRIEND_ACCEPT -> {
                 // 프로필 화면으로 이동
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra("screen", "profile")
-                    putExtra("userId", refId)
-                }
+                refId ?: return Intent(this, MainActivity::class.java)
+                "${DeepLink.Uri.PROFILE}/$refId".toUri()
             }
 
             notiType == NotificationType.NEW_KEYWORD -> {
                 // 키워드 상세 화면으로 이동
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra("screen", "keyword_detail")
-                    putExtra("postId", refId)
-                }
+                if (refId == null || userId == null) return Intent(this, MainActivity::class.java)
+                "${DeepLink.Uri.KEYWORD_DETAIL}/$refId/$userId".toUri()
             }
 
             notiType?.isBroadcast == true -> {
                 // 알림 목록 화면으로 이동
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra("screen", "notifications")
-                }
+                // TODO: 알림 목록 화면 구현 후 연동
+                return Intent(this, MainActivity::class.java)
             }
 
-            else -> {
-                // 알 수 없는 타입 → 홈 화면으로 이동
-                Intent(this, MainActivity::class.java)
-            }
+            else -> return Intent(this, MainActivity::class.java)
+        }
+
+        return Intent(Intent.ACTION_VIEW, uri).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
     }
 

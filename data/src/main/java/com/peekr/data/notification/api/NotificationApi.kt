@@ -1,5 +1,6 @@
 package com.peekr.data.notification.api
 
+import com.peekr.core.data.source.network.api.NetworkApiPath
 import com.peekr.data.notification.dto.FcmTokenResponse
 import com.peekr.data.notification.dto.NotificationCursorPageResponse
 import com.peekr.data.notification.dto.RegisterFcmTokenRequest
@@ -16,7 +17,7 @@ interface NotificationApi {
     /**
      * FCM 토큰 등록
      */
-    @POST("notification/token")
+    @POST(NetworkApiPath.Notification.TOKEN)
     suspend fun registerFcmToken(
         @Body request: RegisterFcmTokenRequest,
     ): Response<FcmTokenResponse>
@@ -24,7 +25,7 @@ interface NotificationApi {
     /**
      * FCM 토큰 비활성화
      */
-    @DELETE("notification/token")
+    @DELETE(NetworkApiPath.Notification.TOKEN)
     suspend fun deactivateFcmToken(
         @Query("token") token: String,
     ): Response<Unit>
@@ -32,7 +33,7 @@ interface NotificationApi {
     /**
      * 알림 목록 조회
      */
-    @GET("notification")
+    @GET(NetworkApiPath.Notification.ROUTE)
     suspend fun getNotifications(
         @Query("cursor") cursor: Long?,
         @Query("size") size: Int,
@@ -41,7 +42,7 @@ interface NotificationApi {
     /**
      * 알림 읽음 처리
      */
-    @PATCH("notification/{notificationId}/read")
+    @PATCH(NetworkApiPath.Notification.READ)
     suspend fun markAsRead(
         @Path("notificationId") notificationId: Long,
     ): Response<Unit>
