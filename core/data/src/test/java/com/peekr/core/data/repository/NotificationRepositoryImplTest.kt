@@ -1,20 +1,19 @@
-package com.peekr.data.notification.repository
+package com.peekr.core.data.repository
 
 import androidx.paging.testing.asSnapshot
+import com.peekr.core.data.MockLog
+import com.peekr.core.data.source.network.datasource.NotificationNetworkDataSource
+import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationId
-import com.peekr.data.notification.datasource.NotificationNetworkDataSource
-import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationCursorPageResponse
-import com.peekr.data.notification.dto.NotificationResponse
-import com.peekr.data.util.MockLog
-import com.peekr.domain.notification.error.NotificationErrorType
+import com.peekr.core.domain.notification.model.NotificationPagingTokens
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlin.collections.emptyList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -68,10 +67,7 @@ class NotificationRepositoryImplTest {
 
         // then
         val error = result as Result.Error
-        assertEquals(
-            NotificationErrorType.CommonError(expectedError.toCommonErrorType()),
-            error.error,
-        )
+        assertEquals(expectedError.toCommonErrorType(), error.error)
     }
 
     // ======================== getNotifications ========================
@@ -147,15 +143,12 @@ class NotificationRepositoryImplTest {
 
         // then
         val error = result as Result.Error
-        assertEquals(
-            NotificationErrorType.CommonError(expectedError.toCommonErrorType()),
-            error.error,
-        )
+        assertEquals(expectedError.toCommonErrorType(), error.error)
     }
 
     companion object {
         private const val TEST_TOKEN = "test_fcm_token"
-        private val TestNotificationId = NotificationId(1L)
+        private val TestNotificationId = NotificationId.Companion(1L)
         private val TestFcmTokenResponse = FcmTokenResponse(
             id = 1L,
             userId = 1L,

@@ -1,9 +1,8 @@
-package com.peekr.data.notification.api
+package com.peekr.core.data.source.network.api
 
-import com.peekr.core.data.source.network.api.NetworkApiPath
-import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationCursorPageResponse
-import com.peekr.data.notification.dto.RegisterFcmTokenRequest
+import com.peekr.core.data.source.network.dto.notification.request.RegisterFcmTokenRequest
+import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -1,12 +1,12 @@
-package com.peekr.data.notification.datasource
+package com.peekr.core.data.source.network.datasource
 
+import com.peekr.core.data.source.network.api.NotificationApi
+import com.peekr.core.data.source.network.dto.notification.request.RegisterFcmTokenRequest
+import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.data.source.network.util.networkCall
 import com.peekr.core.data.source.network.util.networkCallWithoutResponse
-import com.peekr.data.notification.api.NotificationApi
-import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationCursorPageResponse
-import com.peekr.data.notification.dto.RegisterFcmTokenRequest
 import javax.inject.Inject
 
 class NotificationNetworkDataSourceImpl @Inject constructor(

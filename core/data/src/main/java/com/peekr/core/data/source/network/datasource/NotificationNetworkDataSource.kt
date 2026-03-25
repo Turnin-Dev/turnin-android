@@ -1,8 +1,8 @@
-package com.peekr.data.notification.datasource
+package com.peekr.core.data.source.network.datasource
 
+import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
-import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationCursorPageResponse
 
 /**
  * 알림 네트워크 데이터소스

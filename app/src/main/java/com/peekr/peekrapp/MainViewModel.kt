@@ -9,8 +9,8 @@ import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.eventBus.AuthEventBus
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.domain.notification.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel

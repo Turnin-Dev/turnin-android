@@ -1,4 +1,4 @@
-package com.peekr.domain.notification.model
+package com.peekr.core.domain.notification.model
 
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.model.NotificationType

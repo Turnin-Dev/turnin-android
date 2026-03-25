@@ -1,11 +1,10 @@
-package com.peekr.data.notification.di
+package com.peekr.core.data.di
 
-import com.peekr.core.data.di.TokenOkHttpClient
-import com.peekr.data.notification.api.NotificationApi
-import com.peekr.data.notification.datasource.NotificationNetworkDataSource
-import com.peekr.data.notification.datasource.NotificationNetworkDataSourceImpl
-import com.peekr.data.notification.repository.NotificationRepositoryImpl
-import com.peekr.domain.notification.repository.NotificationRepository
+import com.peekr.core.data.repository.NotificationRepositoryImpl
+import com.peekr.core.data.source.network.api.NotificationApi
+import com.peekr.core.data.source.network.datasource.NotificationNetworkDataSource
+import com.peekr.core.data.source.network.datasource.NotificationNetworkDataSourceImpl
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

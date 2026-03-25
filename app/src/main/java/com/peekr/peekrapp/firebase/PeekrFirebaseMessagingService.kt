@@ -19,8 +19,8 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import com.peekr.core.presentation.common.navigation.deepLink.DeepLink
-import com.peekr.domain.notification.repository.NotificationRepository
 import com.peekr.peekrapp.MainActivity
 import com.peekr.peekrapp.R
 import dagger.hilt.android.AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.peekr.data.notification.repository
+package com.peekr.core.domain.notification.model
 
 object NotificationPagingTokens {
     const val PAGE_SIZE = 20

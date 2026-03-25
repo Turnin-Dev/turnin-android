@@ -1,10 +1,10 @@
-package com.peekr.domain.notification.repository
+package com.peekr.core.domain.notification.repository
 
 import androidx.paging.PagingData
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.NotificationId
-import com.peekr.domain.notification.error.NotificationErrorType
-import com.peekr.domain.notification.model.Notification
+import com.peekr.core.domain.notification.model.Notification
 import kotlinx.coroutines.flow.Flow
 
 /** Notification 리포지토리 */
@@ -12,7 +12,7 @@ interface NotificationRepository {
     /**
      * FCM 토큰 등록
      */
-    suspend fun registerFcmToken(token: String): Result<Unit, NotificationErrorType>
+    suspend fun registerFcmToken(token: String): Result<Unit, CommonErrorType>
 
     /**
      * 알림 목록 조회 (커서 기반 페이지네이션)
@@ -22,5 +22,5 @@ interface NotificationRepository {
     /**
      * 알림 읽음 처리
      */
-    fun markAsRead(notificationId: NotificationId): Flow<Result<Unit, NotificationErrorType>>
+    fun markAsRead(notificationId: NotificationId): Flow<Result<Unit, CommonErrorType>>
 }
