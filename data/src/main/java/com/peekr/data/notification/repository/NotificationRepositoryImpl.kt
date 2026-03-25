@@ -37,17 +37,6 @@ class NotificationRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun deactivateFcmToken(token: String): Result<Unit, NotificationErrorType> =
-        withContext(ioDispatcher) {
-            when (val result = notificationNetworkDataSource.deactivateFcmToken(token)) {
-                is NetworkResult.Success -> Result.Success(Unit)
-                is NetworkResult.Error -> Result.Error(
-                    error = NotificationErrorType.CommonError(result.error.toCommonErrorType()),
-                    message = result.message,
-                )
-            }
-        }
-
     override fun getNotifications(): Flow<PagingData<Notification>> {
         val pageSize = NotificationPagingTokens.PAGE_SIZE
         val prefetchDistance = NotificationPagingTokens.PREFETCH_DISTANCE

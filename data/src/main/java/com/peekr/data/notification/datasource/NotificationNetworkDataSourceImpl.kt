@@ -15,11 +15,6 @@ class NotificationNetworkDataSourceImpl @Inject constructor(
     override suspend fun registerFcmToken(token: String): NetworkResult<FcmTokenResponse> =
         networkCall { notificationApi.registerFcmToken(RegisterFcmTokenRequest(token)) }
 
-    override suspend fun deactivateFcmToken(token: String): NetworkResult<Unit> =
-        networkCallWithoutResponse {
-            notificationApi.deactivateFcmToken(RegisterFcmTokenRequest(token))
-        }
-
     override suspend fun getNotifications(
         cursor: Long?,
         size: Int,

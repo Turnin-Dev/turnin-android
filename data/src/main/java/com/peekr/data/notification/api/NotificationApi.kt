@@ -22,14 +22,6 @@ interface NotificationApi {
     ): Response<FcmTokenResponse>
 
     /**
-     * FCM 토큰 비활성화
-     */
-    @PATCH(NetworkApiPath.Notification.DEACTIVATE_TOKEN)
-    suspend fun deactivateFcmToken(
-        @Body request: RegisterFcmTokenRequest,
-    ): Response<Unit>
-
-    /**
      * 알림 목록 조회
      */
     @GET(NetworkApiPath.Notification.ROUTE)

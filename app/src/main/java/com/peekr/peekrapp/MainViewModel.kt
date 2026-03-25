@@ -70,7 +70,7 @@ class MainViewModel @Inject constructor(
         // 로그아웃 감지
         authEventBus.logoutEvent
             .onEach {
-                deactivateFcmToken()
+                unsubscribeFromTopic()
                 logout()
             }
             .launchIn(viewModelScope)
@@ -142,22 +142,13 @@ class MainViewModel @Inject constructor(
     }
 
     // FCM 토큰 비활성화 (로그아웃 시)
-    private suspend fun deactivateFcmToken() {
+    private suspend fun unsubscribeFromTopic() {
         runCatching {
-            FirebaseMessaging.getInstance().token.await()
-        }.onSuccess { token ->
-            when (val result = notificationRepository.deactivateFcmToken(token)) {
-                is Result.Success -> {
-                    AppLogger.d(tag, "FCM 토큰 비활성화 성공")
-                    // 브로드캐스트 토픽 구독 해제
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(FcmTopic.ALL)
-                }
-
-                is Result.Error -> AppLogger.e(tag, "FCM 토큰 비활성화 실패: ${result.message}")
-                else -> Unit
-            }
+            FirebaseMessaging.getInstance()
+                .unsubscribeFromTopic(FcmTopic.ALL)
+                .await()
         }.onFailure { e ->
-            AppLogger.e(tag, "FCM 토큰 발급 실패: ${e.message}")
+            AppLogger.e(tag, "FCM 토픽 구독 해제 실패: ${e.message}")
         }
     }
 }

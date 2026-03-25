@@ -34,7 +34,6 @@ class NotificationRepositoryImplTest {
     @Before
     fun setUp() {
         coEvery { dataSource.registerFcmToken(any()) } returns NetworkResult.Success(TestFcmTokenResponse)
-        coEvery { dataSource.deactivateFcmToken(any()) } returns NetworkResult.Success(Unit)
         coEvery { dataSource.getNotifications(any(), any()) } returns NetworkResult.Success(TestNotificationCursorPageResponse)
         coEvery { dataSource.markAsRead(any()) } returns NetworkResult.Success(Unit)
         MockLog.mock()
@@ -66,36 +65,6 @@ class NotificationRepositoryImplTest {
 
         // when
         val result = repository.registerFcmToken(TEST_TOKEN)
-
-        // then
-        val error = result as Result.Error
-        assertEquals(
-            NotificationErrorType.CommonError(expectedError.toCommonErrorType()),
-            error.error,
-        )
-    }
-
-    // ======================== deactivateFcmToken ========================
-
-    @Test
-    fun `FCM 토큰 비활성화 - 성공 시 Success를 반환한다`() = runTest {
-        // when
-        val result = repository.deactivateFcmToken(TEST_TOKEN)
-
-        // then
-        assertTrue(result is Result.Success)
-    }
-
-    @Test
-    fun `FCM 토큰 비활성화 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
-        // given
-        val expectedError = NetworkErrorType.Unexpected(null)
-        coEvery {
-            dataSource.deactivateFcmToken(any())
-        } returns NetworkResult.Error(expectedError)
-
-        // when
-        val result = repository.deactivateFcmToken(TEST_TOKEN)
 
         // then
         val error = result as Result.Error

@@ -18,15 +18,6 @@ interface NotificationNetworkDataSource {
     ): NetworkResult<FcmTokenResponse>
 
     /**
-     * FCM 토큰 비활성화
-     *
-     * @param token FCM 토큰
-     */
-    suspend fun deactivateFcmToken(
-        token: String,
-    ): NetworkResult<Unit>
-
-    /**
      * 알림 목록 조회
      *
      * @param cursor 커서 값
