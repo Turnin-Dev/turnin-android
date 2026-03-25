@@ -6,6 +6,7 @@ import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -21,13 +22,15 @@ import org.junit.Test
 
 class LogoutUseCaseTest {
     private val authRepository: AuthRepository = mockk()
+    private val notificationRepository: NotificationRepository = mockk()
     private val socialAuthManagerFactory: SocialAuthManagerFactory = mockk()
     private val socialAuthManager: SocialAuthManager = mockk()
-    private val usecase = LogoutUseCase(authRepository, socialAuthManagerFactory)
+    private val usecase =
+        LogoutUseCase(authRepository, notificationRepository, socialAuthManagerFactory)
 
     @Before
     fun setUp() {
-        coEvery { authRepository.getFcmToken() } returns TEST_FCM_TOKEN
+        coEvery { notificationRepository.getFcmToken() } returns TEST_FCM_TOKEN
         every { socialAuthManagerFactory.create(TestLoginProvider) } returns socialAuthManager
         coEvery { socialAuthManager.signOut() } returns Result.Success(Unit)
     }
