@@ -4,13 +4,17 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.google.firebase.messaging.FirebaseMessaging
 import com.peekr.core.common.coroutine.IO
+import com.peekr.core.common.fcm.FcmTopic
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.paging.PeekrCursorPagingSource
 import com.peekr.core.data.source.network.datasource.NotificationNetworkDataSource
 import com.peekr.core.data.source.network.dto.notification.response.NotificationResponse
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
+import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.NotificationId
@@ -21,12 +25,39 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationNetworkDataSource: NotificationNetworkDataSource,
     @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : NotificationRepository {
+    private val tag = this::class.java.simpleName
+
+    override suspend fun getFcmToken(): String? =
+        runCatchingSafe {
+            FirebaseMessaging.getInstance().token.await()
+        }
+            .onFailure { e -> AppLogger.e(tag, "FCM 토큰 발급 실패: ${e.message}") }
+            .getOrNull()
+
+    override suspend fun unsubscribeFromTopic() {
+        runCatchingSafe {
+            FirebaseMessaging.getInstance()
+                .unsubscribeFromTopic(FcmTopic.ALL)
+                .await()
+        }.onFailure { e ->
+            AppLogger.e(tag, "FCM 토픽 구독 해제 실패: ${e.message}")
+        }
+    }
+
+    override suspend fun subscribeToTopic() {
+        runCatchingSafe { FirebaseMessaging.getInstance().subscribeToTopic(FcmTopic.ALL) }
+            .onFailure { e ->
+                AppLogger.e(tag, "FCM 토픽 구독 실패: ${e.message}")
+            }
+    }
+
     override suspend fun registerFcmToken(token: String): Result<Unit, CommonErrorType> =
         withContext(ioDispatcher) {
             when (val result = notificationNetworkDataSource.registerFcmToken(token)) {

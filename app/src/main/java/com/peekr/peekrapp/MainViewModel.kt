@@ -2,8 +2,6 @@ package com.peekr.peekrapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.messaging.FirebaseMessaging
-import com.peekr.core.common.fcm.FcmTopic
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
@@ -24,7 +22,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -70,7 +67,7 @@ class MainViewModel @Inject constructor(
         // 로그아웃 감지
         authEventBus.logoutEvent
             .onEach {
-                unsubscribeFromTopic()
+                notificationRepository.unsubscribeFromTopic()
                 logout()
             }
             .launchIn(viewModelScope)
@@ -123,32 +120,16 @@ class MainViewModel @Inject constructor(
 
     // FCM 토큰 등록 (로그인 / 앱 시작 시)
     private suspend fun registerFcmToken() {
-        runCatching {
-            FirebaseMessaging.getInstance().token.await()
-        }.onSuccess { token ->
-            when (val result = notificationRepository.registerFcmToken(token)) {
-                is Result.Success -> {
-                    AppLogger.d(tag, "FCM 토큰 등록 성공")
-                    // 브로드캐스트 토픽 구독
-                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopic.ALL)
-                }
-
-                is Result.Error -> AppLogger.e(tag, "FCM 토큰 등록 실패: ${result.message}")
-                else -> Unit
+        val fcmToken = notificationRepository.getFcmToken() ?: return
+        when (val result = notificationRepository.registerFcmToken(fcmToken)) {
+            is Result.Success -> {
+                AppLogger.d(tag, "FCM 토큰 등록 성공")
+                // 브로드캐스트 토픽 구독
+                notificationRepository.subscribeToTopic()
             }
-        }.onFailure { e ->
-            AppLogger.e(tag, "FCM 토큰 발급 실패: ${e.message}")
-        }
-    }
 
-    // FCM 토큰 비활성화 (로그아웃 시)
-    private suspend fun unsubscribeFromTopic() {
-        runCatching {
-            FirebaseMessaging.getInstance()
-                .unsubscribeFromTopic(FcmTopic.ALL)
-                .await()
-        }.onFailure { e ->
-            AppLogger.e(tag, "FCM 토픽 구독 해제 실패: ${e.message}")
+            is Result.Error -> AppLogger.e(tag, "FCM 토큰 등록 실패: ${result.message}")
+            else -> Unit
         }
     }
 }

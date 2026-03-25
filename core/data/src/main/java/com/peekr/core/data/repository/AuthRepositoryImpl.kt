@@ -1,6 +1,5 @@
 package com.peekr.core.data.repository
 
-import com.google.firebase.messaging.FirebaseMessaging
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.cleaner.AppDataCleaner
@@ -31,7 +30,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkDataSource: AuthNetworkDataSource,
@@ -146,11 +144,6 @@ class AuthRepositoryImpl @Inject constructor(
             ?: return null
         return SocialLoginProvider.getType(provider)
     }
-
-    override suspend fun getFcmToken(): String? =
-        runCatching {
-            FirebaseMessaging.getInstance().token.await()
-        }.getOrNull()
 
     override fun logout(token: String?): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

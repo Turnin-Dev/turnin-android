@@ -10,6 +10,21 @@ import kotlinx.coroutines.flow.Flow
 /** Notification 리포지토리 */
 interface NotificationRepository {
     /**
+     * FCM 토큰 조회
+     */
+    suspend fun getFcmToken(): String?
+
+    /**
+     * 구독된 토픽을 구독 해제한다.
+     */
+    suspend fun unsubscribeFromTopic()
+
+    /**
+     * 토픽을 구독한다.
+     */
+    suspend fun subscribeToTopic()
+
+    /**
      * FCM 토큰 등록
      */
     suspend fun registerFcmToken(token: String): Result<Unit, CommonErrorType>
