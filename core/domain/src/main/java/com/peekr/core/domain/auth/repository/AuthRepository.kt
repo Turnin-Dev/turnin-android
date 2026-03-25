@@ -63,8 +63,10 @@ interface AuthRepository {
      * 로그아웃
      *
      * **로그아웃 시 모든 앱 데이터를 삭제하므로 유의해야 한다.**
+     *
+     * @param token 삭제할 FCM 토큰
      */
-    fun logout(): Flow<Result<Unit, CommonErrorType>>
+    fun logout(token: String): Flow<Result<Unit, CommonErrorType>>
 
     /**
      * 계정 삭제

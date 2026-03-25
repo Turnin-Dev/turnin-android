@@ -312,11 +312,11 @@ class AuthRepositoryImplTest {
     @Test
     fun `logout 성공 테스트`() = runTest {
         // given
-        coEvery { userNetworkDataSource.logout() } returns NetworkResult.Success(Unit)
+        coEvery { userNetworkDataSource.logout(any()) } returns NetworkResult.Success(Unit)
         coEvery { appDataCleaner.clearAll() } just Runs
 
         // when
-        val result = repository.logout().last()
+        val result = repository.logout("fcm-token").last()
 
         // then
         assertTrue(result is Result.Success)
@@ -327,11 +327,11 @@ class AuthRepositoryImplTest {
     fun `logout 실패 테스트 - 에러가 발생하면 정상적으로 에러를 방출한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
-        coEvery { userNetworkDataSource.logout() } returns NetworkResult.Error(expectedError)
+        coEvery { userNetworkDataSource.logout(any()) } returns NetworkResult.Error(expectedError)
         coEvery { appDataCleaner.clearAll() } just Runs
 
         // when
-        val result = repository.logout().last()
+        val result = repository.logout("fcm-token").last()
 
         // then
         val error = result as Result.Error
@@ -342,11 +342,11 @@ class AuthRepositoryImplTest {
     @Test
     fun `logout 실패 테스트 - 앱 데이터 삭제 시 에러가 발생하면 로그를 남기고 Success를 방출한다`() = runTest {
         // given
-        coEvery { userNetworkDataSource.logout() } returns NetworkResult.Success(Unit)
+        coEvery { userNetworkDataSource.logout(any()) } returns NetworkResult.Success(Unit)
         coEvery { appDataCleaner.clearAll() } throws Exception("")
 
         // when
-        val result = repository.logout().last()
+        val result = repository.logout("fcm-token").last()
 
         // then
         assertTrue(result is Result.Success)

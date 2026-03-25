@@ -6,6 +6,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import com.peekr.domain.setting.error.SettingErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.lastOrNull
  */
 class DeleteAccountUseCase @Inject constructor(
     private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
     private val socialAuthManagerFactory: SocialAuthManagerFactory,
 ) {
     /**
@@ -56,7 +58,10 @@ class DeleteAccountUseCase @Inject constructor(
             }
         }
 
-        // 2. 소셜 로그인 연동 해제 (해당 단계가 실패해도 계정은 이미 삭제된 상태)
+        // 2. 알림 구독 해제
+        notificationRepository.unsubscribeFromTopic()
+
+        // 3. 소셜 로그인 연동 해제 (해당 단계가 실패해도 계정은 이미 삭제된 상태)
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)
         runCatchingSafe { socialAuthManager.deleteAccount() }
 

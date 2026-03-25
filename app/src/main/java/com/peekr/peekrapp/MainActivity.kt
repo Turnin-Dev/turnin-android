@@ -1,5 +1,6 @@
 package com.peekr.peekrapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.util.Consumer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -62,6 +65,17 @@ class MainActivity : ComponentActivity() {
             val appNavController = rememberNavController()
             val navBackStackEntry by appNavController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
+
+            // ------------------------------ Handle DeepLink ------------------------------
+            DisposableEffect(appNavController) {
+                val consumer = Consumer<Intent> {
+                    appNavController.handleDeepLink(it)
+                }
+                this@MainActivity.addOnNewIntentListener(consumer)
+                onDispose {
+                    this@MainActivity.removeOnNewIntentListener(consumer)
+                }
+            }
 
             // ------------------------------ Auth Logout ------------------------------
             val isAuthScreen by remember(currentDestination?.route) {
@@ -216,5 +230,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    // 앱이 백그라운드에서 포그라운드로 올 때
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
     }
 }

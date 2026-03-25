@@ -2,6 +2,7 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.api.UserApi
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
+import com.peekr.core.data.source.network.dto.user.request.FcmTokenRequest
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -41,6 +42,6 @@ class UserNetworkDataSourceImpl @Inject constructor(
     override suspend fun updateIntroduce(patch: IntroducePatchRequest): NetworkResult<Unit> =
         networkCallWithoutResponse { userApi.updateIntroduce(patch) }
 
-    override suspend fun logout(): NetworkResult<Unit> =
-        networkCallWithoutResponse { userApi.logout() }
+    override suspend fun logout(token: FcmTokenRequest): NetworkResult<Unit> =
+        networkCallWithoutResponse { userApi.logout(token) }
 }

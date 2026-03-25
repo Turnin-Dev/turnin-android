@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import coil.Coil
 import coil.request.ImageRequest
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -18,7 +19,8 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationType
-import com.peekr.domain.notification.repository.NotificationRepository
+import com.peekr.core.domain.notification.repository.NotificationRepository
+import com.peekr.core.presentation.common.navigation.deepLink.DeepLink
 import com.peekr.peekrapp.MainActivity
 import com.peekr.peekrapp.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +54,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+
         // 로그인 상태일 때만 서버에 토큰 등록
         applicationScope.launch {
             withContext(ioDispatcher) {
@@ -105,9 +108,10 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.createNotificationChannel(NotificationChannel(channelId, channelName, importance))
 
         // 딥링크 인텐트 생성
+        val notificationId = System.currentTimeMillis().toInt()
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            notificationId, // 고유한 requestCode로 각 알림마다 다른 PendingIntent 생성
             createDeepLinkIntent(data),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
@@ -127,7 +131,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
 
         // 알림 수행
         notificationManager.notify(
-            System.currentTimeMillis().toInt(),
+            notificationId,
             notificationBuilder.build(),
         )
 
@@ -158,36 +162,33 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         val notiType = data[FcmDataKey.NOTI_TYPE]
             ?.let { runCatching { NotificationType.valueOf(it) }.getOrNull() }
         val refId = data[FcmDataKey.REF_ID]?.toLongOrNull()
+        val userId = data[FcmDataKey.USER_ID]?.toLongOrNull()
 
-        return when {
+        val uri = when {
             notiType == NotificationType.FRIEND_REQUEST ||
                 notiType == NotificationType.FRIEND_ACCEPT -> {
                 // 프로필 화면으로 이동
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra("screen", "profile")
-                    putExtra("userId", refId)
-                }
+                refId ?: return fallbackIntent()
+                "${DeepLink.Uri.PROFILE}/$refId".toUri()
             }
 
             notiType == NotificationType.NEW_KEYWORD -> {
                 // 키워드 상세 화면으로 이동
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra("screen", "keyword_detail")
-                    putExtra("postId", refId)
-                }
+                if (refId == null || userId == null) return fallbackIntent()
+                "${DeepLink.Uri.KEYWORD_DETAIL}/$refId/$userId".toUri()
             }
 
             notiType?.isBroadcast == true -> {
                 // 알림 목록 화면으로 이동
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra("screen", "notifications")
-                }
+                // TODO: 알림 목록 화면 구현 후 연동
+                return fallbackIntent()
             }
 
-            else -> {
-                // 알 수 없는 타입 → 홈 화면으로 이동
-                Intent(this, MainActivity::class.java)
-            }
+            else -> return fallbackIntent()
+        }
+
+        return Intent(Intent.ACTION_VIEW, uri).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
     }
 
@@ -211,5 +212,9 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
             is Result.Success -> AppLogger.d(tag, "FCM 토큰 등록 성공")
             is Result.Error -> AppLogger.e(tag, "FCM 토큰 등록 실패: ${result.message}")
         }
+    }
+
+    private fun fallbackIntent() = Intent(this, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
     }
 }

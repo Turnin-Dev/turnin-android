@@ -6,11 +6,15 @@ import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import com.peekr.domain.setting.error.SettingErrorType
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -21,9 +25,11 @@ import org.junit.Test
 
 class DeleteAccountUseCaseTest {
     private val authRepository: AuthRepository = mockk()
+    private val notificationRepository: NotificationRepository = mockk()
     private val socialAuthManagerFactory: SocialAuthManagerFactory = mockk()
     private val socialAuthManager: SocialAuthManager = mockk()
-    private val usecase = DeleteAccountUseCase(authRepository, socialAuthManagerFactory)
+    private val usecase =
+        DeleteAccountUseCase(authRepository, notificationRepository, socialAuthManagerFactory)
 
     @Before
     fun setUp() {
@@ -31,6 +37,7 @@ class DeleteAccountUseCaseTest {
         every { authRepository.deleteAccount() } returns flowOf(Result.Success(Unit))
         every { socialAuthManagerFactory.create(any()) } returns socialAuthManager
         coEvery { socialAuthManager.deleteAccount() } returns Result.Success(Unit)
+        coEvery { notificationRepository.unsubscribeFromTopic() } just Runs
     }
 
     @Test
@@ -38,7 +45,8 @@ class DeleteAccountUseCaseTest {
         val result = usecase().last()
         assertTrue(result is Result.Success)
 
-        coVerify(exactly = 1) { authRepository.deleteAccount() }
+        coVerify(exactly = 1) { notificationRepository.unsubscribeFromTopic() }
+        verify(exactly = 1) { authRepository.deleteAccount() }
         coVerify(exactly = 1) { socialAuthManager.deleteAccount() }
     }
 
@@ -58,7 +66,8 @@ class DeleteAccountUseCaseTest {
         )
 
         // 이 후 로직은 실행되지 않아야 한다.
-        coVerify(exactly = 0) { authRepository.deleteAccount() }
+        coVerify(exactly = 0) { notificationRepository.unsubscribeFromTopic() } // 추가
+        verify(exactly = 0) { authRepository.deleteAccount() }
         coVerify(exactly = 0) { socialAuthManager.deleteAccount() }
     }
 
@@ -74,7 +83,7 @@ class DeleteAccountUseCaseTest {
         // then
         assertTrue(result is Result.Success)
 
-        coVerify(exactly = 1) { authRepository.deleteAccount() }
+        verify(exactly = 1) { authRepository.deleteAccount() }
         coVerify(exactly = 1) { socialAuthManager.deleteAccount() }
     }
 
@@ -82,7 +91,7 @@ class DeleteAccountUseCaseTest {
     fun `계정 삭제 API 호출 시 에러가 발생하면 그대로 에러를 방출한다`() = runTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
-        coEvery { authRepository.deleteAccount() } returns flowOf(Result.Error(expectedError))
+        every { authRepository.deleteAccount() } returns flowOf(Result.Error(expectedError))
 
         // when
         val result = usecase().last()

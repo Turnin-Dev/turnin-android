@@ -1,6 +1,7 @@
 package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
+import com.peekr.core.data.source.network.dto.user.request.FcmTokenRequest
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -64,6 +65,8 @@ interface UserNetworkDataSource {
 
     /**
      * 로그아웃
+     *
+     * @param token 비활성화할 FCM 토큰
      */
-    suspend fun logout(): NetworkResult<Unit>
+    suspend fun logout(token: FcmTokenRequest): NetworkResult<Unit>
 }

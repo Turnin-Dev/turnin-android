@@ -1,4 +1,4 @@
-package com.peekr.data.notification.dto
+package com.peekr.core.data.source.network.dto.notification.response
 
 import com.squareup.moshi.JsonClass
 

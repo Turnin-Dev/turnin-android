@@ -3,11 +3,11 @@ package com.peekr.peekrapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.common.logger.AppLogger
-import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.eventBus.AuthEventBus
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import com.peekr.core.domain.user.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,6 +15,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -23,11 +25,11 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val dataStoreManager: DataStoreManager,
     private val authEventBus: AuthEventBus,
     private val logoutUseCase: LogoutUseCase,
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -47,43 +49,51 @@ class MainViewModel @Inject constructor(
                 // TODO: In debug mode
                 val result = checkLoggedIn()
                 _loggedIn.update { result }
-                if (result) preloadUserData() // 사용자 데이터 미리 로드
+                if (result) {
+                    preloadUserData()
+                    registerFcmToken()
+                }
                 _isLoading.update { false }
             } else {
                 // TODO: In production mode
                 val result = checkLoggedIn()
                 _loggedIn.update { result }
-                if (result) preloadUserData() // 사용자 데이터 미리 로드
+                if (result) {
+                    preloadUserData()
+                    registerFcmToken()
+                }
                 _isLoading.update { false }
             }
         }
 
         // 로그아웃 감지
         authEventBus.logoutEvent
-            .onEach { logout() }
+            .onEach {
+                notificationRepository.unsubscribeFromTopic()
+                logout()
+            }
             .launchIn(viewModelScope)
 
         // 로그인 감지
         authEventBus.loginEvent
-            .onEach { preloadUserData() }
+            .onEach {
+                preloadUserData()
+                registerFcmToken()
+            }
             .launchIn(viewModelScope)
     }
 
     // 로그아웃
-    fun logout() {
-        logoutUseCase().onEach { result ->
-            when (result) {
-                Result.Loading -> {}
-                is Result.Error -> {
-                    AppLogger.e(tag, "Failed to logout in MainViewModel.")
-                }
+    private suspend fun logout() {
+        val result = logoutUseCase()
+            .filter { it !is Result.Loading }
+            .first()
 
-                is Result.Success -> {
-                    _navigateToLogin.send(Unit)
-                }
-            }
+        when (result) {
+            is Result.Error -> AppLogger.e(tag, "Failed to logout in MainViewModel.")
+            is Result.Success -> _navigateToLogin.send(Unit)
+            else -> Unit
         }
-            .launchIn(viewModelScope)
     }
 
     /**
@@ -105,6 +115,23 @@ class MainViewModel @Inject constructor(
             userRepository.getMyProfileRefresh()
                 .catch { e -> AppLogger.e(tag, e, "Failed to preload user data.") }
                 .launchIn(viewModelScope)
+        }
+    }
+
+    // ------------------------------ FCM Token ------------------------------
+
+    // FCM 토큰 등록 (로그인 / 앱 시작 시)
+    private suspend fun registerFcmToken() {
+        val fcmToken = notificationRepository.getFcmToken() ?: return
+        when (val result = notificationRepository.registerFcmToken(fcmToken)) {
+            is Result.Success -> {
+                AppLogger.d(tag, "FCM 토큰 등록 성공")
+                // 브로드캐스트 토픽 구독
+                notificationRepository.subscribeToTopic()
+            }
+
+            is Result.Error -> AppLogger.e(tag, "FCM 토큰 등록 실패: ${result.message}")
+            else -> Unit
         }
     }
 }

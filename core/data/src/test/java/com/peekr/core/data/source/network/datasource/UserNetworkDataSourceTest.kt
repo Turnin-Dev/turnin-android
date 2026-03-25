@@ -2,6 +2,7 @@ package com.peekr.core.data.source.network.datasource
 
 import com.peekr.core.data.ServerTestRule
 import com.peekr.core.data.source.network.api.UserApi
+import com.peekr.core.data.source.network.dto.user.request.FcmTokenRequest
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -366,7 +367,7 @@ class UserNetworkDataSourceTest {
         )
 
         // when
-        val response = dataSource.logout()
+        val response = dataSource.logout(TestFcmTokenRequest)
 
         // then
         assertTrue(response is NetworkResult.Success)
@@ -378,10 +379,10 @@ class UserNetworkDataSourceTest {
         val mockApi: UserApi = mockk()
         val exception = Exception()
         dataSource = UserNetworkDataSourceImpl(mockApi)
-        coEvery { mockApi.logout() } throws exception
+        coEvery { mockApi.logout(any()) } throws exception
 
         // when
-        val response = dataSource.logout()
+        val response = dataSource.logout(TestFcmTokenRequest)
 
         // then
         val errorResponse = response as NetworkResult.Error
@@ -443,5 +444,6 @@ class UserNetworkDataSourceTest {
                 friendStatus = FriendStatus.NOTHING,
                 isBlocked = false,
             )
+        private val TestFcmTokenRequest = FcmTokenRequest("fcm-token")
     }
 }

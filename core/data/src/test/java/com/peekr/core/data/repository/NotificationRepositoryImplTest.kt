@@ -1,20 +1,19 @@
-package com.peekr.data.notification.repository
+package com.peekr.core.data.repository
 
 import androidx.paging.testing.asSnapshot
+import com.peekr.core.data.MockLog
+import com.peekr.core.data.source.network.datasource.NotificationNetworkDataSource
+import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
+import com.peekr.core.data.source.network.dto.notification.response.NotificationResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationId
-import com.peekr.data.notification.datasource.NotificationNetworkDataSource
-import com.peekr.data.notification.dto.FcmTokenResponse
-import com.peekr.data.notification.dto.NotificationCursorPageResponse
-import com.peekr.data.notification.dto.NotificationResponse
-import com.peekr.data.util.MockLog
-import com.peekr.domain.notification.error.NotificationErrorType
+import com.peekr.core.domain.notification.model.NotificationPagingTokens
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlin.collections.emptyList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -34,7 +33,6 @@ class NotificationRepositoryImplTest {
     @Before
     fun setUp() {
         coEvery { dataSource.registerFcmToken(any()) } returns NetworkResult.Success(TestFcmTokenResponse)
-        coEvery { dataSource.deactivateFcmToken(any()) } returns NetworkResult.Success(Unit)
         coEvery { dataSource.getNotifications(any(), any()) } returns NetworkResult.Success(TestNotificationCursorPageResponse)
         coEvery { dataSource.markAsRead(any()) } returns NetworkResult.Success(Unit)
         MockLog.mock()
@@ -69,40 +67,7 @@ class NotificationRepositoryImplTest {
 
         // then
         val error = result as Result.Error
-        assertEquals(
-            NotificationErrorType.CommonError(expectedError.toCommonErrorType()),
-            error.error,
-        )
-    }
-
-    // ======================== deactivateFcmToken ========================
-
-    @Test
-    fun `FCM 토큰 비활성화 - 성공 시 Success를 반환한다`() = runTest {
-        // when
-        val result = repository.deactivateFcmToken(TEST_TOKEN)
-
-        // then
-        assertTrue(result is Result.Success)
-    }
-
-    @Test
-    fun `FCM 토큰 비활성화 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
-        // given
-        val expectedError = NetworkErrorType.Unexpected(null)
-        coEvery {
-            dataSource.deactivateFcmToken(any())
-        } returns NetworkResult.Error(expectedError)
-
-        // when
-        val result = repository.deactivateFcmToken(TEST_TOKEN)
-
-        // then
-        val error = result as Result.Error
-        assertEquals(
-            NotificationErrorType.CommonError(expectedError.toCommonErrorType()),
-            error.error,
-        )
+        assertEquals(expectedError.toCommonErrorType(), error.error)
     }
 
     // ======================== getNotifications ========================
@@ -178,10 +143,7 @@ class NotificationRepositoryImplTest {
 
         // then
         val error = result as Result.Error
-        assertEquals(
-            NotificationErrorType.CommonError(expectedError.toCommonErrorType()),
-            error.error,
-        )
+        assertEquals(expectedError.toCommonErrorType(), error.error)
     }
 
     companion object {

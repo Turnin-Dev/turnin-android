@@ -1,8 +1,8 @@
-package com.peekr.data.notification.dto
+package com.peekr.core.data.source.network.dto.notification.response
 
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.model.NotificationType
-import com.peekr.domain.notification.model.Notification
+import com.peekr.core.domain.notification.model.Notification
 import com.squareup.moshi.JsonClass
 
 /**

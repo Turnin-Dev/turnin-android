@@ -5,6 +5,7 @@ import com.peekr.core.domain.auth.social.SocialAuthManagerFactory
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.notification.repository.NotificationRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.flow
  */
 class LogoutUseCase @Inject constructor(
     private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
     private val socialAuthManagerFactory: SocialAuthManagerFactory,
 ) {
     /**
@@ -39,7 +41,8 @@ class LogoutUseCase @Inject constructor(
         }
 
         // 1. 로그아웃
-        val logoutResult = authRepository.logout()
+        val fcmToken = notificationRepository.getFcmToken() ?: ""
+        val logoutResult = authRepository.logout(fcmToken)
             .filter { it !is Result.Loading }
             .first()
         if (logoutResult is Result.Error) {

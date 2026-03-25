@@ -12,6 +12,7 @@ import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.request.toDataModel
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
 import com.peekr.core.data.source.network.dto.auth.response.toDomainModel
+import com.peekr.core.data.source.network.dto.user.request.FcmTokenRequest
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.auth.model.ExistsUser
@@ -144,12 +145,13 @@ class AuthRepositoryImpl @Inject constructor(
         return SocialLoginProvider.getType(provider)
     }
 
-    override fun logout(): Flow<Result<Unit, CommonErrorType>> =
+    override fun logout(token: String): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
             // 1. 로그아웃 API 호출
-            val shouldClear = when (val result = userNetworkDataSource.logout()) {
+            val fcmToken = FcmTokenRequest(token)
+            val shouldClear = when (val result = userNetworkDataSource.logout(fcmToken)) {
                 is NetworkResult.Success -> true
 
                 is NetworkResult.Error -> {
