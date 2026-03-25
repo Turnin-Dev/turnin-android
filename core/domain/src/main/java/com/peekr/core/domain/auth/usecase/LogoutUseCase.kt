@@ -41,7 +41,7 @@ class LogoutUseCase @Inject constructor(
         }
 
         // 1. 로그아웃
-        val fcmToken = notificationRepository.getFcmToken()
+        val fcmToken = notificationRepository.getFcmToken() ?: ""
         val logoutResult = authRepository.logout(fcmToken)
             .filter { it !is Result.Loading }
             .first()

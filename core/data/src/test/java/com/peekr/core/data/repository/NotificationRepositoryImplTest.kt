@@ -148,7 +148,7 @@ class NotificationRepositoryImplTest {
 
     companion object {
         private const val TEST_TOKEN = "test_fcm_token"
-        private val TestNotificationId = NotificationId.Companion(1L)
+        private val TestNotificationId = NotificationId(1L)
         private val TestFcmTokenResponse = FcmTokenResponse(
             id = 1L,
             userId = 1L,

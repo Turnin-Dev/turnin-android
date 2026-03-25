@@ -66,7 +66,7 @@ interface AuthRepository {
      *
      * @param token 삭제할 FCM 토큰
      */
-    fun logout(token: String?): Flow<Result<Unit, CommonErrorType>>
+    fun logout(token: String): Flow<Result<Unit, CommonErrorType>>
 
     /**
      * 계정 삭제

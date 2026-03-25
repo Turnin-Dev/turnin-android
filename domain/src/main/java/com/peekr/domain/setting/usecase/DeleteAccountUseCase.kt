@@ -38,10 +38,7 @@ class DeleteAccountUseCase @Inject constructor(
             return@flow
         }
 
-        // 1. 알림 구독 해제
-        notificationRepository.unsubscribeFromTopic()
-
-        // 2. 계정 삭제 API 호출 및 앱 데이터 정리
+        // 1. 계정 삭제 API 호출 및 앱 데이터 정리
         val deleteAccountResult = authRepository.deleteAccount()
             .mapError { commonError ->
                 SettingErrorType.CommonError(commonError)
@@ -60,6 +57,9 @@ class DeleteAccountUseCase @Inject constructor(
                 return@flow
             }
         }
+
+        // 2. 알림 구독 해제
+        notificationRepository.unsubscribeFromTopic()
 
         // 3. 소셜 로그인 연동 해제 (해당 단계가 실패해도 계정은 이미 삭제된 상태)
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)

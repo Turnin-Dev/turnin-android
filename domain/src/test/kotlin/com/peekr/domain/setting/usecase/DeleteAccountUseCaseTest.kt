@@ -91,7 +91,7 @@ class DeleteAccountUseCaseTest {
     fun `계정 삭제 API 호출 시 에러가 발생하면 그대로 에러를 방출한다`() = runTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
-        coEvery { authRepository.deleteAccount() } returns flowOf(Result.Error(expectedError))
+        every { authRepository.deleteAccount() } returns flowOf(Result.Error(expectedError))
 
         // when
         val result = usecase().last()

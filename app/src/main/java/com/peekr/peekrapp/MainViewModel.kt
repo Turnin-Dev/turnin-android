@@ -51,6 +51,7 @@ class MainViewModel @Inject constructor(
                 _loggedIn.update { result }
                 if (result) {
                     preloadUserData()
+                    registerFcmToken()
                 }
                 _isLoading.update { false }
             } else {
@@ -59,6 +60,7 @@ class MainViewModel @Inject constructor(
                 _loggedIn.update { result }
                 if (result) {
                     preloadUserData()
+                    registerFcmToken()
                 }
                 _isLoading.update { false }
             }

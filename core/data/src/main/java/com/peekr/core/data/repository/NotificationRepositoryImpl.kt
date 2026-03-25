@@ -52,7 +52,11 @@ class NotificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun subscribeToTopic() {
-        runCatchingSafe { FirebaseMessaging.getInstance().subscribeToTopic(FcmTopic.ALL) }
+        runCatchingSafe {
+            FirebaseMessaging.getInstance()
+                .subscribeToTopic(FcmTopic.ALL)
+                .await()
+        }
             .onFailure { e ->
                 AppLogger.e(tag, "FCM 토픽 구독 실패: ${e.message}")
             }

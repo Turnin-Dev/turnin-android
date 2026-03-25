@@ -168,27 +168,27 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
             notiType == NotificationType.FRIEND_REQUEST ||
                 notiType == NotificationType.FRIEND_ACCEPT -> {
                 // 프로필 화면으로 이동
-                refId ?: return Intent(this, MainActivity::class.java)
+                refId ?: return fallbackIntent()
                 "${DeepLink.Uri.PROFILE}/$refId".toUri()
             }
 
             notiType == NotificationType.NEW_KEYWORD -> {
                 // 키워드 상세 화면으로 이동
-                if (refId == null || userId == null) return Intent(this, MainActivity::class.java)
+                if (refId == null || userId == null) return fallbackIntent()
                 "${DeepLink.Uri.KEYWORD_DETAIL}/$refId/$userId".toUri()
             }
 
             notiType?.isBroadcast == true -> {
                 // 알림 목록 화면으로 이동
                 // TODO: 알림 목록 화면 구현 후 연동
-                return Intent(this, MainActivity::class.java)
+                return fallbackIntent()
             }
 
-            else -> return Intent(this, MainActivity::class.java)
+            else -> return fallbackIntent()
         }
 
         return Intent(Intent.ACTION_VIEW, uri).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
     }
 
@@ -212,5 +212,9 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
             is Result.Success -> AppLogger.d(tag, "FCM 토큰 등록 성공")
             is Result.Error -> AppLogger.e(tag, "FCM 토큰 등록 실패: ${result.message}")
         }
+    }
+
+    private fun fallbackIntent() = Intent(this, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
     }
 }

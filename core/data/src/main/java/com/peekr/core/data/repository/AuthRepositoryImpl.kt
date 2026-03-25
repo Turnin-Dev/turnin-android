@@ -145,7 +145,7 @@ class AuthRepositoryImpl @Inject constructor(
         return SocialLoginProvider.getType(provider)
     }
 
-    override fun logout(token: String?): Flow<Result<Unit, CommonErrorType>> =
+    override fun logout(token: String): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
