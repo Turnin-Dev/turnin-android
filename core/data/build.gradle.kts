@@ -96,6 +96,10 @@ dependencies {
     implementation(libs.kakao.sdk.v2.share)
     implementation(libs.kakao.sdk.v2.cert)
 
+    // FCM
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
+
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)
     testImplementation(libs.junit)

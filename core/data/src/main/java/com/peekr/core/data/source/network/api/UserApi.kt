@@ -1,6 +1,7 @@
 package com.peekr.core.data.source.network.api
 
 import com.peekr.core.data.source.network.dto.common.UserKeywordDetailResponse
+import com.peekr.core.data.source.network.dto.user.request.FcmTokenRequest
 import com.peekr.core.data.source.network.dto.user.request.IntroducePatchRequest
 import com.peekr.core.data.source.network.dto.user.request.UserPatchRequest
 import com.peekr.core.data.source.network.dto.user.response.MyProfileResponse
@@ -8,7 +9,6 @@ import com.peekr.core.data.source.network.dto.user.response.UserProfileResponse
 import com.peekr.core.data.source.network.dto.user.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.PUT
@@ -53,6 +53,8 @@ interface UserApi {
     ): Response<Unit>
 
     /** 로그아웃 */
-    @DELETE(NetworkApiPath.User.LOGOUT)
-    suspend fun logout(): Response<Unit>
+    @PATCH(NetworkApiPath.User.LOGOUT)
+    suspend fun logout(
+        @Body fcmTokenRequest: FcmTokenRequest,
+    ): Response<Unit>
 }

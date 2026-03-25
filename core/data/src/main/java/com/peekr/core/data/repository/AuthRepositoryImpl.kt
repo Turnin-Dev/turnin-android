@@ -1,5 +1,6 @@
 package com.peekr.core.data.repository
 
+import com.google.firebase.messaging.FirebaseMessaging
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.cleaner.AppDataCleaner
@@ -12,6 +13,7 @@ import com.peekr.core.data.source.network.datasource.UserNetworkDataSource
 import com.peekr.core.data.source.network.dto.auth.request.toDataModel
 import com.peekr.core.data.source.network.dto.auth.response.ExistsResponse
 import com.peekr.core.data.source.network.dto.auth.response.toDomainModel
+import com.peekr.core.data.source.network.dto.user.request.FcmTokenRequest
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.auth.model.ExistsUser
@@ -29,6 +31,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl @Inject constructor(
     private val authNetworkDataSource: AuthNetworkDataSource,
@@ -144,12 +147,18 @@ class AuthRepositoryImpl @Inject constructor(
         return SocialLoginProvider.getType(provider)
     }
 
-    override fun logout(): Flow<Result<Unit, CommonErrorType>> =
+    override suspend fun getFcmToken(): String? =
+        runCatching {
+            FirebaseMessaging.getInstance().token.await()
+        }.getOrNull()
+
+    override fun logout(token: String?): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
             // 1. 로그아웃 API 호출
-            val shouldClear = when (val result = userNetworkDataSource.logout()) {
+            val fcmToken = FcmTokenRequest(token)
+            val shouldClear = when (val result = userNetworkDataSource.logout(fcmToken)) {
                 is NetworkResult.Success -> true
 
                 is NetworkResult.Error -> {

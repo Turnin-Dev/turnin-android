@@ -39,7 +39,8 @@ class LogoutUseCase @Inject constructor(
         }
 
         // 1. 로그아웃
-        val logoutResult = authRepository.logout()
+        val fcmToken = authRepository.getFcmToken()
+        val logoutResult = authRepository.logout(fcmToken)
             .filter { it !is Result.Loading }
             .first()
         if (logoutResult is Result.Error) {
