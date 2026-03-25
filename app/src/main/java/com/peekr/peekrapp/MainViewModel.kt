@@ -69,7 +69,6 @@ class MainViewModel @Inject constructor(
         // 로그아웃 감지
         authEventBus.logoutEvent
             .onEach {
-                notificationRepository.unsubscribeFromTopic()
                 logout()
             }
             .launchIn(viewModelScope)

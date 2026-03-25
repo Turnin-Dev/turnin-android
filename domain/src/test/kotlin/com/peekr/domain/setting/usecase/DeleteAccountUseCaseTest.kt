@@ -66,7 +66,7 @@ class DeleteAccountUseCaseTest {
         )
 
         // 이 후 로직은 실행되지 않아야 한다.
-        coVerify(exactly = 0) { notificationRepository.unsubscribeFromTopic() } // 추가
+        coVerify(exactly = 0) { notificationRepository.unsubscribeFromTopic() }
         verify(exactly = 0) { authRepository.deleteAccount() }
         coVerify(exactly = 0) { socialAuthManager.deleteAccount() }
     }
@@ -85,6 +85,7 @@ class DeleteAccountUseCaseTest {
 
         verify(exactly = 1) { authRepository.deleteAccount() }
         coVerify(exactly = 1) { socialAuthManager.deleteAccount() }
+        coVerify(exactly = 1) { notificationRepository.unsubscribeFromTopic() }
     }
 
     @Test
@@ -104,5 +105,6 @@ class DeleteAccountUseCaseTest {
         )
 
         coVerify(exactly = 0) { socialAuthManager.deleteAccount() }
+        coVerify(exactly = 0) { notificationRepository.unsubscribeFromTopic() }
     }
 }
