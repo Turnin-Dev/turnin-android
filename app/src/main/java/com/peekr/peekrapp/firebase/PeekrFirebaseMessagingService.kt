@@ -17,10 +17,10 @@ import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.fcm.FcmDataKey
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.domain.notification.NotificationSyncManager
 import com.peekr.core.presentation.common.navigation.deepLink.DeepLink
 import com.peekr.peekrapp.MainActivity
 import com.peekr.peekrapp.R
-import com.peekr.peekrapp.util.notification.NotificationSyncManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher

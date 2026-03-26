@@ -56,6 +56,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Coroutine
+    implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.kotlinx.coroutines.test)
+
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -83,4 +87,7 @@ dependencies {
     // FCM
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
+
+    // Testing
+    testImplementation(libs.mockK)
 }

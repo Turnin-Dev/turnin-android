@@ -1,5 +1,6 @@
 package com.peekr.core.data.source.network.api
 
+import com.peekr.core.data.source.network.dto.notification.request.DeactivateFcmTokenRequest
 import com.peekr.core.data.source.network.dto.notification.request.RegisterFcmTokenRequest
 import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
 import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
@@ -19,6 +20,14 @@ interface NotificationApi {
     suspend fun registerFcmToken(
         @Body request: RegisterFcmTokenRequest,
     ): Response<FcmTokenResponse>
+
+    /**
+     * FCM 토큰 비활성화
+     */
+    @PATCH(NetworkApiPath.Notification.DEACTIVATE_TOKEN)
+    suspend fun deactivateToken(
+        @Body request: DeactivateFcmTokenRequest,
+    ): Response<Unit>
 
     /**
      * 알림 목록 조회

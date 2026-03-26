@@ -7,8 +7,8 @@ import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.eventBus.AuthEventBus
+import com.peekr.core.domain.notification.NotificationSyncManager
 import com.peekr.core.domain.user.repository.UserRepository
-import com.peekr.peekrapp.util.notification.NotificationSyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -45,25 +45,13 @@ class MainViewModel @Inject constructor(
     init {
         // 로그인 체크
         viewModelScope.launch {
-            if (BuildConfig.DEBUG) {
-                // TODO: In debug mode
-                val result = checkLoggedIn()
-                _loggedIn.update { result }
-                if (result) {
-                    preloadUserData()
-                    notificationSyncManager.sync()
-                }
-                _isLoading.update { false }
-            } else {
-                // TODO: In production mode
-                val result = checkLoggedIn()
-                _loggedIn.update { result }
-                if (result) {
-                    preloadUserData()
-                    notificationSyncManager.sync()
-                }
-                _isLoading.update { false }
+            val result = authRepository.isLoggedIn()
+            _loggedIn.update { result }
+            if (result) {
+                preloadUserData()
+                launch { notificationSyncManager.sync() }
             }
+            _isLoading.update { false }
         }
 
         // 로그아웃 감지
@@ -100,17 +88,6 @@ class MainViewModel @Inject constructor(
             else -> Unit
         }
     }
-
-    /**
-     * 로그인 성공 조건:
-     * - 3개의 데이터가 모두 존재하며 암호화된 데이터도 정상적으로 복호화에 성공한 경우
-     *
-     * 로그인 실패 조건:
-     * - 3개의 데이터 중 하나라도 없는 경우
-     * - 암호화된 데이터를 복호화하는 과정에서 오류가 발생한 경우
-     */
-    private suspend fun checkLoggedIn(): Boolean =
-        authRepository.isLoggedIn()
 
     /**
      * 사용자 데이터를 미리 로드한다.

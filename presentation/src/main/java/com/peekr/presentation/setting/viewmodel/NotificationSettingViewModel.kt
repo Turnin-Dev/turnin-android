@@ -2,6 +2,7 @@ package com.peekr.presentation.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.domain.notification.NotificationSyncManager
 import com.peekr.core.domain.setting.model.AppSetting
 import com.peekr.core.domain.setting.model.ThemeMode
 import com.peekr.core.domain.setting.repository.SettingRepository
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class NotificationSettingViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
+    private val notificationSyncManager: NotificationSyncManager,
 ) : ViewModel() {
     val appSetting = settingRepository.appSetting
         .stateIn(
@@ -25,9 +27,10 @@ class NotificationSettingViewModel @Inject constructor(
             ),
         )
 
-    fun togglePushNotification(enabled: Boolean) {
+    fun togglePushNotificationAndSync(enabled: Boolean) {
         viewModelScope.launch {
             runCatching { settingRepository.setPushNotificationEnabled(enabled) }
+            runCatching { notificationSyncManager.sync() }
         }
     }
 }
