@@ -49,6 +49,7 @@ fun NotificationSettingScreen(
         SettingItemContainer(
             modifier = Modifier.fillMaxWidth(),
             title = stringResource(R.string.setting_detail_notification_setting_title),
+            enableDivider = false,
             settingItems = {
                 SettingItem(
                     title = stringResource(R.string.setting_detail_notification_setting_push_title),

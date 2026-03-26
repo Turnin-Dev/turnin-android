@@ -22,6 +22,7 @@ import com.peekr.presentation.profile.myProfileNavigation
 fun BottomNavigation(
     appNavController: NavHostController,
     modifier: Modifier = Modifier,
+    onCheckPermission: () -> Unit,
 ) {
     val bottomNavController = rememberNavController()
 
@@ -45,7 +46,10 @@ fun BottomNavigation(
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None },
         ) {
-            homeNavigation(appNavController)
+            homeNavigation(
+                appNavController = appNavController,
+                onCheckPermission = onCheckPermission,
+            )
 
             discoverNavigation(appNavController)
 

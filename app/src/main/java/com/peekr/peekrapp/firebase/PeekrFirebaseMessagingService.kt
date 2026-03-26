@@ -15,14 +15,12 @@ import com.google.firebase.messaging.RemoteMessage
 import com.peekr.core.common.coroutine.ApplicationScope
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.fcm.FcmDataKey
-import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.repository.AuthRepository
-import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationType
-import com.peekr.core.domain.notification.repository.NotificationRepository
 import com.peekr.core.presentation.common.navigation.deepLink.DeepLink
 import com.peekr.peekrapp.MainActivity
 import com.peekr.peekrapp.R
+import com.peekr.peekrapp.util.notification.NotificationSyncManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -43,7 +41,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
     lateinit var applicationScope: CoroutineScope
 
     @Inject
-    lateinit var notificationRepository: NotificationRepository
+    lateinit var notificationSyncManager: NotificationSyncManager
 
     @Inject
     lateinit var authRepository: AuthRepository
@@ -59,7 +57,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
         applicationScope.launch {
             withContext(ioDispatcher) {
                 if (authRepository.isLoggedIn()) {
-                    registerTokenToServer(token)
+                    notificationSyncManager.sync()
                 }
             }
         }
@@ -204,15 +202,6 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                 (Coil.imageLoader(applicationContext).execute(request).drawable as? BitmapDrawable)?.bitmap
             }.getOrNull()
         }
-
-    // FCM 토큰 등록
-    private suspend fun registerTokenToServer(token: String) {
-        when (val result = notificationRepository.registerFcmToken(token)) {
-            is Result.Loading -> Unit
-            is Result.Success -> AppLogger.d(tag, "FCM 토큰 등록 성공")
-            is Result.Error -> AppLogger.e(tag, "FCM 토큰 등록 실패: ${result.message}")
-        }
-    }
 
     private fun fallbackIntent() = Intent(this, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP

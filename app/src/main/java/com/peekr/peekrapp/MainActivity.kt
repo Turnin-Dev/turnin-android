@@ -1,10 +1,15 @@
 package com.peekr.peekrapp
 
+import android.Manifest
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +43,7 @@ import com.peekr.core.presentation.common.navigation.navigateToLogin
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.peekrapp.navigation.AppNavigation
+import com.peekr.peekrapp.util.notification.NotificationPermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -47,7 +53,22 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var snackbarController: SnackbarController
 
+    @Inject
+    lateinit var notificationPermissionManager: NotificationPermissionManager
+
     private val mainViewModel: MainViewModel by viewModels()
+
+    // 권한 요청 런처
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted ->
+        if (!isGranted && shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            // 한 번 거부 → 설정으로 유도
+            navigateToSystemNotificationSetting()
+        }
+        // 허용 / 두 번 거부 / 설정에서 돌아온 경우 모두 그냥 sync
+        mainViewModel.syncNotificationState()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // ------------------------------ SplashScreen ------------------------------
@@ -151,6 +172,10 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding),
                         appNavController = appNavController,
                         loggedIn = loggedIn,
+                        onCheckPermission = {
+                            // 알림 권한 요청
+                            requestNotificationPermissionIfNeeded()
+                        },
                     )
 
 // ------------------------------ 회원가입 테스트용 ------------------------------
@@ -230,6 +255,28 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        // Android 13 미만은 권한 요청 불필요
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        // 이미 권한 있으면 스킵
+        if (notificationPermissionManager.hasPermission()) return
+
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    private fun navigateToSystemNotificationSetting() {
+        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+            startActivity(this)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 설정 앱에서 권한 변경 후 복귀 시 감지를 위해
+        mainViewModel.syncNotificationState()
     }
 
     // 앱이 백그라운드에서 포그라운드로 올 때
