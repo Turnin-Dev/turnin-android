@@ -61,10 +61,7 @@ class MainViewModel @Inject constructor(
 
         // 로그인 감지
         authEventBus.loginEvent
-            .onEach {
-                preloadUserData()
-                notificationSyncManager.sync()
-            }
+            .onEach { onLogin() }
             .launchIn(viewModelScope)
     }
 
@@ -84,9 +81,20 @@ class MainViewModel @Inject constructor(
 
         when (result) {
             is Result.Error -> AppLogger.e(tag, "Failed to logout in MainViewModel.")
-            is Result.Success -> _navigateToLogin.send(Unit)
+            is Result.Success -> {
+                _loggedIn.update { false }
+                _navigateToLogin.send(Unit)
+            }
+
             else -> Unit
         }
+    }
+
+    // 로그인 시 수행
+    private suspend fun onLogin() {
+        _loggedIn.update { true }
+        preloadUserData()
+        notificationSyncManager.sync()
     }
 
     /**

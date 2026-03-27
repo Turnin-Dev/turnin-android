@@ -1,7 +1,7 @@
 package com.peekr.core.domain.notification
 
 /**
- * 알림 동기화 매니저 클래스
+ * 알림 동기화 매니저 인터페이스
  */
 interface NotificationSyncManager {
     /**

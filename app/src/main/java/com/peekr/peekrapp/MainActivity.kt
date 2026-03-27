@@ -74,6 +74,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    companion object {
+        private const val KEY_FROM_SYSTEM_SETTING = "isFromSystemSetting"
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_FROM_SYSTEM_SETTING, isFromSystemSetting)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // ------------------------------ SplashScreen ------------------------------
         installSplashScreen().apply {
@@ -84,6 +93,8 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        isFromSystemSetting = savedInstanceState?.getBoolean(KEY_FROM_SYSTEM_SETTING) ?: false
 
         setContent {
             val coroutineScope = rememberCoroutineScope()

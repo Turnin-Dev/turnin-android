@@ -188,13 +188,55 @@ class NotificationSyncManagerTest {
         }
 
     @Test
-    fun `sync - shouldRegister가 false이고 REGISTERED 상태가 아니면 deactivate를 스킵한다`() = runTest {
+    fun `sync - shouldRegister가 false이고 DEACTIVATED 상태면 deactivate를 스킵한다`() = runTest {
+        // given
+        every { settingRepository.appSetting } returns flowOf(
+            AppSetting(pushNotificationEnabled = false, themeMode = ThemeMode.SYSTEM),
+        )
+        coEvery { notificationPermissionManager.hasPermission() } returns false
+        coEvery { notificationRepository.getNotificationSyncState() } returns NotificationSyncState.DEACTIVATED
+        createSyncManager()
+
+        // when
+        syncManager.sync()
+
+        // then - 이미 해제됨, sync() 최상단 스킵 조건에서 걸림
+        coVerify(exactly = 0) { notificationRepository.deactivateFcmToken(any()) }
+        coVerify(exactly = 0) { notificationRepository.setNotificationSyncState(any()) }
+    }
+
+    @Test
+    fun `sync - shouldRegister가 false이고 상태가 null(unknown)이면 deactivate를 시도한다`() = runTest {
+        // given - 기존 앱 업데이트 or 데이터 손상으로 상태가 null인 사용자
+        val token = "fcm_token"
+        every { settingRepository.appSetting } returns flowOf(
+            AppSetting(pushNotificationEnabled = false, themeMode = ThemeMode.SYSTEM),
+        )
+        coEvery { notificationPermissionManager.hasPermission() } returns false
+        coEvery { notificationRepository.getNotificationSyncState() } returns null
+        coEvery { notificationRepository.getFcmToken() } returns token
+        coEvery { notificationRepository.deactivateFcmToken(token) } returns Result.Success(Unit)
+        coEvery { notificationRepository.setNotificationSyncState(any()) } returns Unit
+        coEvery { notificationRepository.unsubscribeFromTopic() } returns Unit
+        createSyncManager()
+
+        // when
+        syncManager.sync()
+
+        // then - null은 unknown이므로 서버에 토큰이 있을 수 있음, deactivate 시도해야 함
+        coVerify { notificationRepository.deactivateFcmToken(token) }
+        coVerify { notificationRepository.setNotificationSyncState(NotificationSyncState.DEACTIVATED) }
+    }
+
+    @Test
+    fun `sync - shouldRegister가 false이고 상태가 null이며 FCM 토큰 발급 실패 시 deactivate를 시도하지 않는다`() = runTest {
         // given
         every { settingRepository.appSetting } returns flowOf(
             AppSetting(pushNotificationEnabled = false, themeMode = ThemeMode.SYSTEM),
         )
         coEvery { notificationPermissionManager.hasPermission() } returns false
         coEvery { notificationRepository.getNotificationSyncState() } returns null
+        coEvery { notificationRepository.getFcmToken() } returns null
         createSyncManager()
 
         // when

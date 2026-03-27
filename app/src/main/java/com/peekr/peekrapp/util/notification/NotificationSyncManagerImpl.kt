@@ -9,6 +9,7 @@ import com.peekr.core.domain.setting.repository.SettingRepository
 import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
 
 /**
  * 알림 동기화 매니저 클래스
@@ -21,30 +22,39 @@ class NotificationSyncManagerImpl @Inject constructor(
 ) : NotificationSyncManager {
     private val tag = this::class.java.simpleName
 
+    private val mutex = Mutex()
+
     /**
      * 모든 알림 상태 변경의 단일 진입점
      * - 앱 시작 / onResume / 토글 변경 / 로그인 / onNewToken 모두 여기로
      */
     override suspend fun sync() {
-        val hasPermission = notificationPermissionManager.hasPermission()
-        val isEnabled = settingRepository.appSetting.first().pushNotificationEnabled
-        val shouldRegister = hasPermission && isEnabled
-        val lastState = notificationRepository.getNotificationSyncState()
-
-        // 이전과 상태가 같으면 스킵
-        if (shouldRegister && lastState == NotificationSyncState.REGISTERED) {
-            AppLogger.d(tag, "FCM 상태 변경 없음")
-            return
-        }
-        if (!shouldRegister && lastState == NotificationSyncState.DEACTIVATED) {
-            AppLogger.d(tag, "FCM 상태 변경 없음")
+        if (!mutex.tryLock()) {
+            AppLogger.d(tag, "Notification Sync already processing...")
             return
         }
 
-        if (shouldRegister) {
-            registerTokenAndSubscribe()
-        } else {
-            unsubscribe()
+        try {
+            val hasPermission = notificationPermissionManager.hasPermission()
+            val isEnabled = settingRepository.appSetting.first().pushNotificationEnabled
+            val shouldRegister = hasPermission && isEnabled
+            val lastState = notificationRepository.getNotificationSyncState()
+
+            when {
+                // 등록 필요 & 이미 등록됨 / 등록 불필요 & 이미 해제됨 → 변경 없음
+                shouldRegister &&
+                    lastState == NotificationSyncState.REGISTERED ||
+                    !shouldRegister &&
+                    lastState == NotificationSyncState.DEACTIVATED -> {
+                    AppLogger.d(tag, "FCM 상태 변경 없음")
+                }
+                // 권한 있음 & 알림 활성화 → 토큰 등록
+                shouldRegister -> registerTokenAndSubscribe()
+                // 권한 없음 or 알림 비활성화(null 상태 포함) → 토큰 해제
+                else -> unsubscribe()
+            }
+        } finally {
+            mutex.unlock()
         }
     }
 
@@ -65,7 +75,8 @@ class NotificationSyncManagerImpl @Inject constructor(
 
     // FCM 토큰 등록 해제
     private suspend fun unsubscribe() {
-        if (notificationRepository.getNotificationSyncState() != NotificationSyncState.REGISTERED) {
+        val state = notificationRepository.getNotificationSyncState()
+        if (state == NotificationSyncState.DEACTIVATED) {
             AppLogger.d(tag, "FCM 토큰 미등록 상태 - deactivate 스킵")
             return
         }
