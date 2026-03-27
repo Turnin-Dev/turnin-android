@@ -50,5 +50,12 @@ sealed class DataStoreKey(val name: String) {
          * `Value`: String 타입의 값
          */
         data object ThemeMode : DataStoreKey("theme_mode")
+
+        /**
+         * `Key`: 알림 동기화 상태
+         *
+         * `Value`: String 타입의 값
+         */
+        data object NotificationSyncState : DataStoreKey("notification_sync_state")
     }
 }

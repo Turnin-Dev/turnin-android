@@ -1,10 +1,15 @@
 package com.peekr.peekrapp
 
+import android.Manifest
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +43,7 @@ import com.peekr.core.presentation.common.navigation.navigateToLogin
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.peekrapp.navigation.AppNavigation
+import com.peekr.peekrapp.util.notification.NotificationPermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -47,7 +53,35 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var snackbarController: SnackbarController
 
+    @Inject
+    lateinit var notificationPermissionManager: NotificationPermissionManager
+
     private val mainViewModel: MainViewModel by viewModels()
+
+    // 알림 동기화 중복 요청 방지 플래그
+    private var isFromSystemSetting = false
+
+    // 권한 요청 런처
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted ->
+        if (isGranted) {
+            // 허용 / 두 번 거부 / 설정에서 돌아온 경우 모두 그냥 sync
+            mainViewModel.syncNotificationState()
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            // 한 번 거부 → 설정으로 유도
+            navigateToSystemNotificationSetting()
+        }
+    }
+
+    companion object {
+        private const val KEY_FROM_SYSTEM_SETTING = "isFromSystemSetting"
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_FROM_SYSTEM_SETTING, isFromSystemSetting)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // ------------------------------ SplashScreen ------------------------------
@@ -59,6 +93,8 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        isFromSystemSetting = savedInstanceState?.getBoolean(KEY_FROM_SYSTEM_SETTING) ?: false
 
         setContent {
             val coroutineScope = rememberCoroutineScope()
@@ -142,7 +178,6 @@ class MainActivity : ComponentActivity() {
                     },
                     contentWindowInsets = WindowInsets.systemBars,
                 ) { innerPadding ->
-// ------------------------------ 메인(프로덕션 용) ------------------------------
                     val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
 
                     AppNavigation(
@@ -151,84 +186,39 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding),
                         appNavController = appNavController,
                         loggedIn = loggedIn,
+                        onCheckPermission = {
+                            // 알림 권한 요청
+                            requestNotificationPermissionIfNeeded()
+                        },
                     )
-
-// ------------------------------ 회원가입 테스트용 ------------------------------
-//                    NavHost(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        navController = appNavController,
-//                        startDestination = "test-start",
-//                    ) {
-//                        composable(route = "test-start") {
-//                            LaunchedEffect(Unit) {
-//                                appNavController
-//                                    .navigate(
-//                                        SubGraph.Register(
-//                                            provider = UiSocialLoginProvider.GOOGLE,
-//                                            providerId = "asdasasd",
-//                                        ),
-//                                    )
-//                            }
-//                        }
-//
-//                        registerNavigation(
-//                            navController = appNavController,
-//                        )
-//                    }
-
-// ------------------------------ 키워드 편집 테스트용 ------------------------------
-//                    NavHost(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        navController = appNavController,
-//                        startDestination = Screens.KeywordEdit(null, null),
-//                    ) {
-//                        keywordEditNavigation(appNavController)
-//                    }
-
-// ------------------------------ 바텀 네비게이션 테스트용 ------------------------------
-//                    NavHost(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        navController = appNavController,
-//                        startDestination = BottomNav,
-//                    ) {
-//                        composable<BottomNav> {
-//                            BottomNavigation(
-//                                modifier = Modifier.fillMaxSize(),
-//                                appNavController = appNavController,
-//                            )
-//                        }
-//
-//                        composable(route = "HomeSecond") {
-//                            Box(
-//                                modifier = Modifier.fillMaxSize(),
-//                                contentAlignment = Alignment.Center,
-//                            ) {
-//                                Text("HomeSecond", fontSize = 50.sp)
-//                            }
-//                        }
-//                    }
-// ------------------------------ 전체 네비게이션 테스트용 ------------------------------
-//                    val testDataViewModel: TestDataViewModel = hiltViewModel()
-//                    AppNavigation(
-//                        modifier = Modifier.fillMaxSize(),
-//                        appNavController = appNavController,
-//                    )
-// ------------------------------ 키워드 그래프 테스트용 ------------------------------
-//                    Box(Modifier.padding(innerPadding)) {
-//                        KeywordGraphView(
-//                            modifier = Modifier.fillMaxSize(),
-//                            profileImageUrl = null,
-//                            keywords = UiKeyword.samples,
-//                        )
-//                    }
                 }
             }
+        }
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        // Android 13 미만은 권한 요청 불필요
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        // 이미 권한 있으면 스킵
+        if (notificationPermissionManager.hasPermission()) return
+
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    private fun navigateToSystemNotificationSetting() {
+        isFromSystemSetting = true
+        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+            startActivity(this)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 설정 앱에서 권한 변경 후 복귀 시에만 sync
+        if (isFromSystemSetting) {
+            isFromSystemSetting = false
+            mainViewModel.syncNotificationState()
         }
     }
 

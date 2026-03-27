@@ -2,6 +2,8 @@ package com.peekr.core.data.repository
 
 import androidx.paging.testing.asSnapshot
 import com.peekr.core.data.MockLog
+import com.peekr.core.data.source.local.datastore.DataStoreKey
+import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.datasource.NotificationNetworkDataSource
 import com.peekr.core.data.source.network.dto.notification.response.FcmTokenResponse
 import com.peekr.core.data.source.network.dto.notification.response.NotificationCursorPageResponse
@@ -12,14 +14,19 @@ import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.notification.model.NotificationPagingTokens
+import com.peekr.core.domain.setting.model.NotificationSyncState
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -27,14 +34,18 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotificationRepositoryImplTest {
     private val dataSource: NotificationNetworkDataSource = mockk()
+    private val dataStoreManager: DataStoreManager = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository = NotificationRepositoryImpl(dataSource, dispatcher)
+    private val repository = NotificationRepositoryImpl(dataSource, dataStoreManager, dispatcher)
 
     @Before
     fun setUp() {
         coEvery { dataSource.registerFcmToken(any()) } returns NetworkResult.Success(TestFcmTokenResponse)
         coEvery { dataSource.getNotifications(any(), any()) } returns NetworkResult.Success(TestNotificationCursorPageResponse)
         coEvery { dataSource.markAsRead(any()) } returns NetworkResult.Success(Unit)
+        coEvery { dataSource.deactivateToken(any()) } returns NetworkResult.Success(Unit)
+        coEvery { dataStoreManager.saveStringData(any(), any()) } returns Unit
+        coEvery { dataStoreManager.getStringData(any()) } returns flowOf("REGISTERED")
         MockLog.mock()
     }
 
@@ -144,6 +155,98 @@ class NotificationRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+    }
+
+    // ======================== deactivateFcmToken ========================
+
+    @Test
+    fun `FCM 토큰 비활성화 - 성공 시 Success를 반환한다`() = runTest {
+        // when
+        val result = repository.deactivateFcmToken(TEST_TOKEN)
+
+        // then
+        assertTrue(result is Result.Success)
+    }
+
+    @Test
+    fun `FCM 토큰 비활성화 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+        // given
+        val expectedError = NetworkErrorType.Unexpected(null)
+        coEvery {
+            dataSource.deactivateToken(any())
+        } returns NetworkResult.Error(expectedError)
+
+        // when
+        val result = repository.deactivateFcmToken(TEST_TOKEN)
+
+        // then
+        val error = result as Result.Error
+        assertEquals(expectedError.toCommonErrorType(), error.error)
+    }
+
+    // ======================== getNotificationSyncState ========================
+
+    @Test
+    fun `getNotificationSyncState는 DataStore에 저장된 값을 반환한다`() = runTest {
+        // given
+        val state = NotificationSyncState.REGISTERED
+        every {
+            dataStoreManager.getStringData(DataStoreKey.Setting.NotificationSyncState)
+        } returns flowOf(state.name)
+
+        // when
+        val result = repository.getNotificationSyncState()
+
+        // then
+        assertEquals(state, result)
+    }
+
+    @Test
+    fun `getNotificationSyncState는 DataStore가 비어있을 때 null을 반환한다`() = runTest {
+        // given
+        every {
+            dataStoreManager.getStringData(DataStoreKey.Setting.NotificationSyncState)
+        } returns flowOf(null)
+
+        // when
+        val result = repository.getNotificationSyncState()
+
+        // then
+        assertNull(result)
+    }
+
+    @Test
+    fun `getNotificationSyncState는 유효하지 않은 값일 때 null을 반환한다`() = runTest {
+        // given
+        every {
+            dataStoreManager.getStringData(DataStoreKey.Setting.NotificationSyncState)
+        } returns flowOf("INVALID_VALUE")
+
+        // when
+        val result = repository.getNotificationSyncState()
+
+        // then
+        assertNull(result)
+    }
+
+    // ======================== setNotificationSyncState ========================
+
+    @Test
+    fun `setNotificationSyncState 호출 시 DataStore에 동기화 상태가 저장된다`() = runTest {
+        // given
+        val state = NotificationSyncState.DEACTIVATED
+        coEvery { dataStoreManager.saveStringData(any(), any()) } returns Unit
+
+        // when
+        repository.setNotificationSyncState(state)
+
+        // then
+        coVerify {
+            dataStoreManager.saveStringData(
+                key = DataStoreKey.Setting.NotificationSyncState,
+                value = state.name,
+            )
+        }
     }
 
     companion object {

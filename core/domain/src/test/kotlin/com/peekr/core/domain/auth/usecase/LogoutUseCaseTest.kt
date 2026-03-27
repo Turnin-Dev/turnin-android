@@ -7,10 +7,13 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.notification.repository.NotificationRepository
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.toList
@@ -33,6 +36,7 @@ class LogoutUseCaseTest {
         coEvery { notificationRepository.getFcmToken() } returns TEST_FCM_TOKEN
         every { socialAuthManagerFactory.create(TestLoginProvider) } returns socialAuthManager
         coEvery { socialAuthManager.signOut() } returns Result.Success(Unit)
+        coEvery { notificationRepository.unsubscribeFromTopic() } just Runs
     }
 
     // ------------------------------ 로그인 프로바이더 조회 ------------------------------
@@ -48,6 +52,10 @@ class LogoutUseCaseTest {
         // then
         val error = result as Result.Error
         assertTrue(error.error is CommonErrorType.SocialAuth.LoginProviderNotFound)
+
+        verify(exactly = 0) { authRepository.logout(any()) }
+        coVerify(exactly = 0) { notificationRepository.unsubscribeFromTopic() }
+        coVerify(exactly = 0) { socialAuthManager.signOut() }
     }
 
     // ------------------------------ 로그아웃 ------------------------------
@@ -70,6 +78,10 @@ class LogoutUseCaseTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError, error.error)
+
+        verify(exactly = 1) { authRepository.logout(any()) }
+        coVerify(exactly = 0) { notificationRepository.unsubscribeFromTopic() }
+        coVerify(exactly = 0) { socialAuthManager.signOut() }
     }
 
     @Test
@@ -84,8 +96,10 @@ class LogoutUseCaseTest {
         val result = usecase().last()
 
         // then
-        coVerify(exactly = 1) { socialAuthManager.signOut() }
         assertTrue(result is Result.Success)
+        verify(exactly = 1) { authRepository.logout(any()) }
+        coVerify(exactly = 1) { notificationRepository.unsubscribeFromTopic() }
+        coVerify(exactly = 1) { socialAuthManager.signOut() }
     }
 
     @Test
@@ -119,6 +133,24 @@ class LogoutUseCaseTest {
 
         // then
         assertTrue(results.first() is Result.Loading)
+    }
+
+    // ------------------------------ 빈 문자열 처리 ------------------------------
+    @Test
+    fun `FCM 토큰이 null이면 빈 문자열로 폴백하여 로그아웃을 진행한다`() = runTest {
+        // given
+        coEvery { authRepository.getLoginType() } returns TestLoginProvider
+        coEvery { notificationRepository.getFcmToken() } returns null
+        every {
+            authRepository.logout("")
+        } returns flowOf(Result.Success(Unit))
+
+        // when
+        val result = usecase().last()
+
+        // then
+        verify(exactly = 1) { authRepository.logout("") }
+        assertTrue(result is Result.Success)
     }
 
     companion object {

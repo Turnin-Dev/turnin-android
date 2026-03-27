@@ -185,7 +185,7 @@ fun NavGraphBuilder.settingNavigation(
                     .fillMaxSize()
                     .background(PeekrTheme.colorScheme.backgroundNormal),
                 isPushEnabled = appSetting.pushNotificationEnabled,
-                togglePush = viewModel::togglePushNotification,
+                togglePush = viewModel::togglePushNotificationAndSync,
                 onBackPressed = { appNavController.popBackStack() },
             )
         }

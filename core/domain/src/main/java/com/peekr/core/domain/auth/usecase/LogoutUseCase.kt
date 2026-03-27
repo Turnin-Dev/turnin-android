@@ -50,7 +50,10 @@ class LogoutUseCase @Inject constructor(
             return@flow
         }
 
-        // 2. 소셜 로그인 연동 해제
+        // 2. 알림 구독 해제
+        notificationRepository.unsubscribeFromTopic()
+
+        // 3. 소셜 로그인 연동 해제
         val socialAuthManager = socialAuthManagerFactory.create(loginProvider)
 
         // 로그아웃 단계에서는 소셜 로그아웃 에러 처리를 직접적으로 하지 않고,

@@ -37,12 +37,14 @@ import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
  *
  * @param modifier [Modifier]
  * @param title 컨테이너 타이틀
+ * @param enableDivider 구분선 활성화 여부
  * @param settingItems 설정 항목 리스트
  */
 @Composable
 internal fun SettingItemContainer(
     modifier: Modifier = Modifier,
     title: String,
+    enableDivider: Boolean = true,
     settingItems: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier) {
@@ -61,12 +63,14 @@ internal fun SettingItemContainer(
         Column {
             settingItems()
         }
-        // 구분선
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = PeekrTheme.colorScheme.lineDivider.copy(0.5f),
-        )
+        if (enableDivider) {
+            // 구분선
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 4.dp,
+                color = PeekrTheme.colorScheme.lineDivider.copy(0.5f),
+            )
+        }
     }
 }
 

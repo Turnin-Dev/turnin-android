@@ -1,12 +1,15 @@
 package com.peekr.presentation.setting.viewmodel
 
+import com.peekr.core.domain.notification.NotificationSyncManager
 import com.peekr.core.domain.setting.model.AppSetting
 import com.peekr.core.domain.setting.model.ThemeMode
 import com.peekr.core.domain.setting.repository.SettingRepository
 import com.peekr.core.presentation.MainDispatcherRule
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +28,7 @@ class NotificationSettingViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val settingRepository: SettingRepository = mockk()
+    private val notificationSyncManager: NotificationSyncManager = mockk()
     private lateinit var viewModel: NotificationSettingViewModel
 
     private val fakeAppSetting = MutableStateFlow(
@@ -37,7 +41,8 @@ class NotificationSettingViewModelTest {
     @Before
     fun setUp() {
         every { settingRepository.appSetting } returns fakeAppSetting
-        viewModel = NotificationSettingViewModel(settingRepository)
+        coEvery { notificationSyncManager.sync() } just Runs
+        viewModel = NotificationSettingViewModel(settingRepository, notificationSyncManager)
     }
 
     @Test
@@ -70,15 +75,16 @@ class NotificationSettingViewModelTest {
     }
 
     @Test
-    fun `푸시 알림 토글 시 저장소의 설정 함수가 호출된다`() = runTest {
+    fun `푸시 알림 토글 시 저장소의 설정 함수가 호출되고 알림 동기화를 수행한다`() = runTest {
         // given
         val enabled = false
         coEvery { settingRepository.setPushNotificationEnabled(enabled) } returns Unit
 
         // when
-        viewModel.togglePushNotification(enabled)
+        viewModel.togglePushNotificationAndSync(enabled)
 
         // then
         coVerify { settingRepository.setPushNotificationEnabled(enabled) }
+        coVerify { notificationSyncManager.sync() }
     }
 }

@@ -41,6 +41,7 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     appNavController: NavHostController,
     loggedIn: Boolean?,
+    onCheckPermission: () -> Unit,
 ) {
     if (loggedIn != null) {
         NavHost(
@@ -86,6 +87,7 @@ fun AppNavigation(
                 BottomNavigation(
                     modifier = Modifier.fillMaxSize(),
                     appNavController = appNavController,
+                    onCheckPermission = onCheckPermission,
                 )
             }
 
