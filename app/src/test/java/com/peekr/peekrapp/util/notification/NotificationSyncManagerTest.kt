@@ -13,6 +13,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -23,6 +25,7 @@ class NotificationSyncManagerTest {
     private val notificationRepository: NotificationRepository = mockk()
     private val settingRepository: SettingRepository = mockk()
     private lateinit var syncManager: NotificationSyncManagerImpl
+    private val testScope = TestScope()
 
     @Before
     fun setUp() {
@@ -36,6 +39,7 @@ class NotificationSyncManagerTest {
             notificationPermissionManager = notificationPermissionManager,
             notificationRepository = notificationRepository,
             settingRepository = settingRepository,
+            applicationScope = testScope,
         )
     }
 
@@ -58,6 +62,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
         coVerify(exactly = 0) { notificationRepository.registerFcmToken(any()) }
@@ -79,6 +84,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
         coVerify(exactly = 0) { notificationRepository.registerFcmToken(any()) }
@@ -107,6 +113,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
         coVerify { notificationRepository.registerFcmToken(token) }
@@ -132,6 +139,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
         coVerify(exactly = 0) { notificationRepository.setNotificationSyncState(any()) }
@@ -152,6 +160,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
         coVerify(exactly = 0) { notificationRepository.registerFcmToken(any()) }
@@ -180,6 +189,7 @@ class NotificationSyncManagerTest {
 
             // when
             syncManager.sync()
+            testScope.advanceUntilIdle()
 
             // then
             coVerify { notificationRepository.deactivateFcmToken(token) }
@@ -199,6 +209,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then - 이미 해제됨, sync() 최상단 스킵 조건에서 걸림
         coVerify(exactly = 0) { notificationRepository.deactivateFcmToken(any()) }
@@ -206,43 +217,40 @@ class NotificationSyncManagerTest {
     }
 
     @Test
-    fun `sync - shouldRegister가 false이고 상태가 null(unknown)이면 deactivate를 시도한다`() = runTest {
-        // given - 기존 앱 업데이트 or 데이터 손상으로 상태가 null인 사용자
-        val token = "fcm_token"
+    fun `sync - shouldRegister가 false이고 상태가 null이면 deactivate를 스킵한다`() = runTest {
+        // given - 신규 설치 등 한 번도 등록된 적 없는 상태
         every { settingRepository.appSetting } returns flowOf(
             AppSetting(pushNotificationEnabled = false, themeMode = ThemeMode.SYSTEM),
         )
         coEvery { notificationPermissionManager.hasPermission() } returns false
         coEvery { notificationRepository.getNotificationSyncState() } returns null
-        coEvery { notificationRepository.getFcmToken() } returns token
-        coEvery { notificationRepository.deactivateFcmToken(token) } returns Result.Success(Unit)
-        coEvery { notificationRepository.setNotificationSyncState(any()) } returns Unit
-        coEvery { notificationRepository.unsubscribeFromTopic() } returns Unit
         createSyncManager()
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
-        // then - null은 unknown이므로 서버에 토큰이 있을 수 있음, deactivate 시도해야 함
-        coVerify { notificationRepository.deactivateFcmToken(token) }
-        coVerify { notificationRepository.setNotificationSyncState(NotificationSyncState.DEACTIVATED) }
+        // then - null은 한 번도 등록 안 된 상태이므로 deactivate 스킵
+        coVerify(exactly = 0) { notificationRepository.deactivateFcmToken(any()) }
+        coVerify(exactly = 0) { notificationRepository.setNotificationSyncState(any()) }
     }
 
     @Test
     fun `sync - shouldRegister가 false이고 상태가 null이며 FCM 토큰 발급 실패 시 deactivate를 시도하지 않는다`() = runTest {
-        // given
+        // given - null 상태에서 스킵되므로 토큰 발급 자체를 시도하지 않음
         every { settingRepository.appSetting } returns flowOf(
             AppSetting(pushNotificationEnabled = false, themeMode = ThemeMode.SYSTEM),
         )
         coEvery { notificationPermissionManager.hasPermission() } returns false
         coEvery { notificationRepository.getNotificationSyncState() } returns null
-        coEvery { notificationRepository.getFcmToken() } returns null
         createSyncManager()
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
+        coVerify(exactly = 0) { notificationRepository.getFcmToken() }
         coVerify(exactly = 0) { notificationRepository.deactivateFcmToken(any()) }
         coVerify(exactly = 0) { notificationRepository.setNotificationSyncState(any()) }
     }
@@ -264,6 +272,7 @@ class NotificationSyncManagerTest {
 
         // when
         syncManager.sync()
+        testScope.advanceUntilIdle()
 
         // then
         coVerify(exactly = 0) { notificationRepository.setNotificationSyncState(any()) }

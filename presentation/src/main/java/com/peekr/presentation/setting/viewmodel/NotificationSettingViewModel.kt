@@ -30,7 +30,7 @@ class NotificationSettingViewModel @Inject constructor(
     fun togglePushNotificationAndSync(enabled: Boolean) {
         viewModelScope.launch {
             runCatching { settingRepository.setPushNotificationEnabled(enabled) }
-            runCatching { notificationSyncManager.sync() }
         }
+        runCatching { notificationSyncManager.sync() }
     }
 }
