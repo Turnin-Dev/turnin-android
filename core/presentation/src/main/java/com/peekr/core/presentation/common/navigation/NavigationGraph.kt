@@ -229,5 +229,6 @@ sealed interface Screens {
     /**
      * 알림 목록 화면
      */
+    @Serializable
     data object Notifications : Screens
 }

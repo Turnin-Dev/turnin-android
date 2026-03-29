@@ -27,6 +27,7 @@ import com.peekr.presentation.friend.friendsListScreen
 import com.peekr.presentation.keywordDetail.keywordDetailNavigation
 import com.peekr.presentation.keywordEdit.keywordEditNavigation
 import com.peekr.presentation.login.loginNavigation
+import com.peekr.presentation.notification.notificationScreen
 import com.peekr.presentation.profile.myProfileNavigation
 import com.peekr.presentation.profile.userProfileNavigation
 import com.peekr.presentation.register.registerNavigation
@@ -117,6 +118,9 @@ fun AppNavigation(
 
             // 설정 네비게이션
             settingNavigation(appNavController)
+
+            // 알림 화면
+            notificationScreen(appNavController)
 
             // 임시 화면
             composable<Screens.TempMain> {

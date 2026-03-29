@@ -6,8 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -115,16 +120,24 @@ private fun NotificationList(
     notifications: LazyPagingItems<UiNotification>,
     onNotificationClick: (UiNotification) -> Unit,
 ) {
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing = remember {
         derivedStateOf {
-            notifications.loadState.refresh is LoadState.Loading
+            isManualRefresh && notifications.loadState.refresh is LoadState.Loading
         }
     }.value
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
 
     RefreshableLazyColumn(
         modifier = modifier,
         isRefreshing = isRefreshing,
-        onRefresh = { notifications.refresh() },
+        onRefresh = {
+            isManualRefresh = true
+            notifications.refresh()
+        },
         contentPadding = ListContentPadding,
     ) {
         pagingItem(

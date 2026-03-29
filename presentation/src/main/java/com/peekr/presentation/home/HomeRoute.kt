@@ -14,6 +14,7 @@ import com.peekr.presentation.home.viewmodel.HomeViewModel
 fun HomeRoute(
     onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
     onNavigateToUserProfile: (userId: Long) -> Unit,
+    onNavigateToNotification: () -> Unit,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val feeds = viewModel.feedsPagingData.collectAsLazyPagingItems()
@@ -29,6 +30,8 @@ fun HomeRoute(
         onUserClick = { userId ->
             onNavigateToUserProfile(userId)
         },
-        onNotificationClick = {},
+        onNotificationClick = {
+            onNavigateToNotification()
+        },
     )
 }

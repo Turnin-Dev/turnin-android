@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.peekr.core.presentation.common.navigation.SubGraph
 import com.peekr.core.presentation.common.navigation.navigateToKeywordDetail
+import com.peekr.core.presentation.common.navigation.navigateToNotification
 import com.peekr.core.presentation.common.navigation.navigateToUserProfile
 
 fun NavGraphBuilder.homeNavigation(
@@ -23,6 +24,9 @@ fun NavGraphBuilder.homeNavigation(
             },
             onNavigateToUserProfile = { userId ->
                 appNavController.navigateToUserProfile(userId)
+            },
+            onNavigateToNotification = {
+                appNavController.navigateToNotification()
             },
         )
     }
