@@ -2,11 +2,13 @@ package com.peekr.core.domain.notification.model
 
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.domain.model.UserId
 
 /**
  * 알림 모델
  *
  * @property id 알림 ID
+ * @property userId 사용자 ID
  * @property notiType 알림 유형 [NotificationType]
  * @property title 알림 제목
  * @property message 알림 메시지
@@ -19,6 +21,7 @@ import com.peekr.core.domain.model.NotificationType
  */
 data class Notification(
     val id: NotificationId,
+    val userId: UserId?,
     val notiType: NotificationType,
     val title: String?,
     val message: String,

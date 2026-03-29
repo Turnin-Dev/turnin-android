@@ -5,6 +5,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.notification.model.Notification
 import com.peekr.core.presentation.MainDispatcherRule
 import com.peekr.domain.notification.error.NotificationErrorType
@@ -94,7 +95,10 @@ class NotificationViewModelTest {
         coEvery { usecases.markAsRead(any()) } returns Result.Success(Unit)
 
         // when
-        viewModel.markAsRead(notificationId = TEST_NOTIFICATION_ID)
+        viewModel.onNotificationClick(
+            notificationId = TEST_NOTIFICATION_ID,
+            deepLink = TEST_DEEP_LINK,
+        )
         advanceUntilIdle()
 
         val actualPagingData = viewModel.notificationsPagingData.first()
@@ -115,20 +119,40 @@ class NotificationViewModelTest {
             usecases.markAsRead(any())
         } returns Result.Error(NotificationErrorType.CommonError(CommonErrorType.Unexpected(null)))
 
-        // when & then (예외 없이 정상 종료되면 통과)
-        viewModel.markAsRead(notificationId = TEST_NOTIFICATION_ID)
+        // when & then
+        viewModel.onNotificationClick(
+            notificationId = TEST_NOTIFICATION_ID,
+            deepLink = TEST_DEEP_LINK,
+        )
         advanceUntilIdle()
+    }
+
+    @Test
+    fun `알림 클릭 시 딥링크 이동 이벤트가 발생한다`() = runTest {
+        // given
+        coEvery { usecases.markAsRead(any()) } returns Result.Success(Unit)
+
+        // when
+        viewModel.onNotificationClick(
+            notificationId = TEST_NOTIFICATION_ID,
+            deepLink = TEST_DEEP_LINK,
+        )
+
+        // then
+        assertEquals(TEST_DEEP_LINK, viewModel.navigateToNotificationDetail.first())
     }
 
     companion object {
         private const val TEST_LIST_SIZE = 10
         private const val TEST_NOTIFICATION_ID = 1L
+        private const val TEST_DEEP_LINK = "peekr://profile/1"
         private val TestPagingDataFlow = flowOf(
             PagingData.from(
                 List(TEST_LIST_SIZE) {
                     val id = it + 1L
                     Notification(
                         id = NotificationId(id),
+                        userId = UserId(1L),
                         notiType = NotificationType.FRIEND_REQUEST,
                         isRead = false,
                         title = "title$id",

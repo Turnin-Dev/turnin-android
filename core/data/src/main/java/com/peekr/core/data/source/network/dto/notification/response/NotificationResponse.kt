@@ -2,6 +2,7 @@ package com.peekr.core.data.source.network.dto.notification.response
 
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.notification.model.Notification
 import com.squareup.moshi.JsonClass
 
@@ -9,6 +10,7 @@ import com.squareup.moshi.JsonClass
  * 알림 응답 바디
  *
  * @property id 알림 ID
+ * @property userId 사용자 ID
  * @property notiType 알림 유형 [NotificationType]
  * @property title 알림 제목
  * @property message 알림 메시지
@@ -22,6 +24,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class NotificationResponse(
     val id: Long,
+    val userId: Long?,
     val notiType: String,
     val title: String?,
     val message: String,
@@ -34,6 +37,7 @@ data class NotificationResponse(
 ) {
     fun toDomainModel() = Notification(
         id = NotificationId(this.id),
+        userId = this.userId?.let { UserId(it) },
         notiType = runCatching { NotificationType.valueOf(this.notiType) }
             .getOrDefault(NotificationType.NOTICE),
         title = this.title,

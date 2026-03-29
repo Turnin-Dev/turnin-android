@@ -260,6 +260,7 @@ class NotificationRepositoryImplTest {
         )
         private val TestNotificationResponse = NotificationResponse(
             id = 1L,
+            userId = 1L,
             notiType = "FRIEND_REQUEST",
             title = "친구 요청",
             message = "홍길동님이 친구 요청을 보냈어요.",
@@ -284,6 +285,7 @@ class NotificationRepositoryImplTest {
                 items = List(pageSize) {
                     NotificationResponse(
                         id = (startId + it).toLong(),
+                        userId = 1L,
                         notiType = "FRIEND_REQUEST",
                         title = "친구 요청 ${startId + it}",
                         message = "message ${startId + it}",

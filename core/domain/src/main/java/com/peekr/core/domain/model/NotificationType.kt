@@ -19,9 +19,11 @@ enum class NotificationType {
 
     ;
 
+    /** 브로드캐스트 알림 여부 */
     val isBroadcast: Boolean
         get() = this == NOTICE || this == EVENT
 
+    /** 친구 관련 알림 여부 (친구 요청/수락) */
     val isFriendRelated: Boolean
         get() = this == FRIEND_REQUEST || this == FRIEND_ACCEPT
 }

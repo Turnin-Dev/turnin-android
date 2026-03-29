@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
     private val _loggedIn: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val loggedIn = _loggedIn.asStateFlow()
 
-    private val _navigateToLogin = Channel<Unit>(Channel.BUFFERED)
+    private val _navigateToLogin = Channel<Unit>(Channel.CONFLATED)
     val navigateToLogin = _navigateToLogin.receiveAsFlow()
 
     init {

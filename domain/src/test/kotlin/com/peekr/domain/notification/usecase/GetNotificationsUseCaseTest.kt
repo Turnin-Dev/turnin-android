@@ -3,6 +3,7 @@ package com.peekr.domain.notification.usecase
 import androidx.paging.PagingData
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.model.NotificationType
+import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.notification.model.Notification
 import com.peekr.core.domain.notification.repository.NotificationRepository
 import io.mockk.every
@@ -33,6 +34,7 @@ class GetNotificationsUseCaseTest {
     companion object {
         private val TestNotification = Notification(
             id = NotificationId(1L),
+            userId = UserId(1L),
             notiType = NotificationType.FRIEND_REQUEST,
             title = "친구 요청",
             message = "홍길동님이 친구 요청을 보냈어요.",

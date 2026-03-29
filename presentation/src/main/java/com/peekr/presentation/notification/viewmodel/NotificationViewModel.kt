@@ -12,10 +12,12 @@ import com.peekr.domain.notification.usecase.NotificationUseCases
 import com.peekr.presentation.notification.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -24,6 +26,9 @@ class NotificationViewModel @Inject constructor(
     private val usecases: NotificationUseCases,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
+
+    private val _navigateToNotificationDetail = Channel<String>(Channel.CONFLATED)
+    val navigateToNotificationDetail = _navigateToNotificationDetail.receiveAsFlow()
 
     private val readNotificationIds = MutableStateFlow<Set<Long>>(emptySet())
 
@@ -48,11 +53,25 @@ class NotificationViewModel @Inject constructor(
         }
 
     /**
+     * 알림 항목 클릭 시 알림 읽음 처리와 딥링크 이동을 수행한다.
+     *
+     * @param notificationId 알림 ID
+     * @param deepLink 딥링크 URI
+     */
+    fun onNotificationClick(
+        notificationId: Long,
+        deepLink: String,
+    ) {
+        markAsRead(notificationId)
+        _navigateToNotificationDetail.trySend(deepLink)
+    }
+
+    /**
      * 알림 읽음 처리 (낙관적 UI 처리)
      *
      * @param notificationId 알림 ID
      */
-    fun markAsRead(notificationId: Long) {
+    private fun markAsRead(notificationId: Long) {
         viewModelScope.launch {
             val result = usecases.markAsRead(notificationId)
             if (result is Result.Error) {

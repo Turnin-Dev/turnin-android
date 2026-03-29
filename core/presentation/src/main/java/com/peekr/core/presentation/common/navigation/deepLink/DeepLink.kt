@@ -1,7 +1,5 @@
 package com.peekr.core.presentation.common.navigation.deepLink
 
-import androidx.core.net.toUri
-
 /** 딥링크 */
 object DeepLink {
     const val SCHEME = "peekr"
@@ -35,10 +33,10 @@ object DeepLink {
          *
          * @param userId 필수 (null이거나 0 이하면 null 반환)
          */
-        fun profile(userId: Long?): android.net.Uri? {
+        fun profile(userId: Long?): String? {
             if (userId == null || userId <= 0) return null
 
-            return "${Uri.PROFILE}/$userId".toUri()
+            return "${Uri.PROFILE}/$userId"
         }
 
         /**
@@ -47,17 +45,17 @@ object DeepLink {
          * @param userKeywordId 필수
          * @param userId 필수
          */
-        fun keywordDetail(userKeywordId: Long?, userId: Long?): android.net.Uri? {
+        fun keywordDetail(userKeywordId: Long?, userId: Long?): String? {
             if (userKeywordId == null || userId == null) return null
             if (userKeywordId <= 0 || userId <= 0) return null
 
-            return "${Uri.KEYWORD_DETAIL}/$userKeywordId/$userId".toUri()
+            return "${Uri.KEYWORD_DETAIL}/$userKeywordId/$userId"
         }
 
         /**
          * 알림 목록 화면 URI 생성
          * 데이터가 잘못되었을 때의 Fallback용으로도 사용 가능
          */
-        fun notifications(): android.net.Uri = Uri.NOTIFICATIONS.toUri()
+        fun notifications(): String = Uri.NOTIFICATIONS
     }
 }

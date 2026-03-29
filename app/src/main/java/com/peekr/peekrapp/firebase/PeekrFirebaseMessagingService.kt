@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import coil.Coil
 import coil.request.ImageRequest
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -166,16 +167,16 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
             notiType == NotificationType.FRIEND_REQUEST ||
                 notiType == NotificationType.FRIEND_ACCEPT -> {
                 // 프로필 화면으로 이동
-                DeepLink.Builder.profile(userId = refId)
+                DeepLink.Builder.profile(userId = refId)?.toUri()
             }
 
             notiType == NotificationType.NEW_KEYWORD -> {
                 // 키워드 상세 화면으로 이동
-                DeepLink.Builder.keywordDetail(userKeywordId = refId, userId = userId)
+                DeepLink.Builder.keywordDetail(userKeywordId = refId, userId = userId)?.toUri()
             }
 
             notiType?.isBroadcast == true -> {
-                DeepLink.Builder.notifications()
+                DeepLink.Builder.notifications().toUri()
             }
 
             else -> {
@@ -194,9 +195,9 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                             "(noti_type=$notiType, ref_type=${data[FcmDataKey.REF_TYPE]})",
                     )
                 }
-                DeepLink.Builder.notifications()
+                DeepLink.Builder.notifications().toUri()
             }
-        } ?: DeepLink.Builder.notifications()
+        } ?: DeepLink.Builder.notifications().toUri()
 
         return Intent(Intent.ACTION_VIEW, uri).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
