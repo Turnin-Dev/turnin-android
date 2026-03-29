@@ -21,4 +21,7 @@ enum class NotificationType {
 
     val isBroadcast: Boolean
         get() = this == NOTICE || this == EVENT
+
+    val isFriendRelated: Boolean
+        get() = this == FRIEND_REQUEST || this == FRIEND_ACCEPT
 }

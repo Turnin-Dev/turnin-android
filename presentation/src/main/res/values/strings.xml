@@ -227,6 +227,12 @@
     <string name="setting_error_updated_image_not_found">업데이트할 사진을 찾지 못했어요. 다시 시도해주세요.</string>
     <string name="setting_error_unexpected">문제가 발생했어요. 다시 시도해주세요.</string>
 
+    <!-- Notification Screen -->
+    <string name="notification_screen_top_bar_title">알림</string>
+    <string name="notification_screen_error_message_default">알림을 불러올 수 없어요. 다시 시도해 주세요.</string>
+    <string name="notification_screen_error_message_footer">일시적인 오류가 발생했어요. 잠시 후 다시 시도해 주세요.</string>
+    <string name="notification_screen_empty_guidance">새로운 알림이 없어요</string>
+
     <!-- Error Code -->
     <!-- name rule: (error)_(code)_(detail/name) -->
     <!-- Error Code - Auth -->
