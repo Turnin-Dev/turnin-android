@@ -43,7 +43,7 @@ interface NotificationRepository {
     /**
      * 알림 읽음 처리
      */
-    fun markAsRead(notificationId: NotificationId): Flow<Result<Unit, CommonErrorType>>
+    suspend fun markAsRead(notificationId: NotificationId): Result<Unit, CommonErrorType>
 
     /**
      * 알림 동기화 상태 조회

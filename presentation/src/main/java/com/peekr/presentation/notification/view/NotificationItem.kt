@@ -52,9 +52,9 @@ fun NotificationItem(
         modifier = modifier
             .background(
                 if (isRead) {
-                    PeekrTheme.colorScheme.backgroundUnread
-                } else {
                     Color.Transparent
+                } else {
+                    PeekrTheme.colorScheme.backgroundUnread
                 },
             )
             .clickableSingle(onClick = onClick)

@@ -135,7 +135,7 @@ class NotificationRepositoryImplTest {
     @Test
     fun `알림 읽음 처리 - 성공 테스트`() = runTest {
         // when
-        val result = repository.markAsRead(TestNotificationId).last()
+        val result = repository.markAsRead(TestNotificationId)
 
         // then
         assertTrue(result is Result.Success)
@@ -150,7 +150,7 @@ class NotificationRepositoryImplTest {
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.markAsRead(TestNotificationId).last()
+        val result = repository.markAsRead(TestNotificationId)
 
         // then
         val error = result as Result.Error
