@@ -2,6 +2,7 @@ package com.peekr.core.data.repository
 
 import androidx.paging.testing.asSnapshot
 import com.peekr.core.data.MockLog
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.BlockNetworkDataSource
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
 import com.peekr.core.data.source.network.dto.block.response.BlockedUserCursorPageResponse
@@ -15,8 +16,11 @@ import com.peekr.core.domain.block.model.CreateBlock
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.BlockId
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreUserProfile
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,11 +37,13 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class BlockRepositoryImplTest {
     private val dataSource: BlockNetworkDataSource = mockk()
+    private val memoryCache: MemoryCache<UserId, CoreUserProfile> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository = BlockRepositoryImpl(dataSource, dispatcher)
+    private val repository = BlockRepositoryImpl(dataSource, memoryCache, dispatcher)
 
     @Before
     fun setUp() {
+        every { memoryCache.remove(any()) } returns null
         coEvery {
             dataSource.getBlockReasons()
         } returns NetworkResult.Success(listOf(TestBlockReasonResponse))
@@ -134,6 +140,7 @@ class BlockRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
+        verify(exactly = 1) { memoryCache.remove(any()) }
     }
 
     @Test

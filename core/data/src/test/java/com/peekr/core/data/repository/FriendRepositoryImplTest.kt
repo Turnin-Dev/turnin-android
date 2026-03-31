@@ -3,6 +3,7 @@ package com.peekr.core.data.repository
 import androidx.paging.testing.asSnapshot
 import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.MockLog
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.peekr.core.data.source.network.dto.friend.request.DeleteFriendRequest
@@ -25,6 +26,7 @@ import com.peekr.core.domain.friend.model.FriendRequestStatus
 import com.peekr.core.domain.friend.model.IncomingRequestPagingTokens
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreUserProfile
 import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -33,6 +35,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -49,11 +52,13 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class FriendRepositoryImplTest {
     private val dataSource: FriendNetworkDataSource = mockk()
+    private val memoryCache: MemoryCache<UserId, CoreUserProfile> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository = FriendRepositoryImpl(dataSource, dispatcher)
+    private val repository = FriendRepositoryImpl(dataSource, memoryCache, dispatcher)
 
     @Before
     fun setUp() {
+        every { memoryCache.remove(any()) } returns null
         coEvery {
             dataSource.addFriend(TestAddFriendRequest)
         } returns NetworkResult.Success(TestFriendResponse)
@@ -175,6 +180,7 @@ class FriendRepositoryImplTest {
         assertEquals(TestFriendResponse.requesterId, success.data.requesterId.value)
         assertEquals(TestFriendResponse.receiverId, success.data.receiverId.value)
         assertEquals(TestFriendResponse.requestState, success.data.requestStatus)
+        verify(exactly = 1) { memoryCache.remove(any()) }
     }
 
     @Test
@@ -237,6 +243,7 @@ class FriendRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
+        verify(exactly = 1) { memoryCache.remove(any()) }
     }
 
     @Test
@@ -299,6 +306,7 @@ class FriendRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
+        verify(exactly = 1) { memoryCache.remove(any()) }
     }
 
     @Test

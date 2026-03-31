@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.data.paging.PeekrPagingSource
+import com.peekr.core.data.source.local.memory.MemoryCache
 import com.peekr.core.data.source.network.datasource.FriendNetworkDataSource
 import com.peekr.core.data.source.network.dto.friend.request.toDataModel
 import com.peekr.core.data.source.network.dto.friend.response.FriendInfoResponse
@@ -26,6 +27,7 @@ import com.peekr.core.domain.friend.model.IncomingRequestPagingTokens
 import com.peekr.core.domain.friend.model.PatchFriendStatus
 import com.peekr.core.domain.friend.repository.FriendRepository
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreUserProfile
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +35,8 @@ import kotlinx.coroutines.flow.map
 
 class FriendRepositoryImpl @Inject constructor(
     private val friendNetworkDataSource: FriendNetworkDataSource,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    private val memoryCache: MemoryCache<UserId, CoreUserProfile>,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : FriendRepository {
     override fun getFriends(userId: UserId): Flow<PagingData<FriendInfo>> {
         val pageSize = FriendPagingTokens.PAGE_SIZE
@@ -88,6 +91,8 @@ class FriendRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = friendNetworkDataSource.addFriend(addFriend.toDataModel())) {
                 is NetworkResult.Success -> {
+                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+                    memoryCache.remove(addFriend.receiverId)
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -103,6 +108,8 @@ class FriendRepositoryImpl @Inject constructor(
             emit(Result.Loading)
             when (val result = friendNetworkDataSource.deleteFriend(deleteFriend.toDataModel())) {
                 is NetworkResult.Success -> {
+                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+                    memoryCache.remove(deleteFriend.receiverId)
                     emit(Result.Success(Unit))
                 }
 
@@ -123,6 +130,8 @@ class FriendRepositoryImpl @Inject constructor(
                     friendNetworkDataSource.updateFriendStatus(patchFriendStatus.toDataModel())
             ) {
                 is NetworkResult.Success -> {
+                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+                    memoryCache.remove(patchFriendStatus.receiverId)
                     emit(Result.Success(Unit))
                 }
 
