@@ -169,11 +169,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                 // 프로필 화면으로 이동
                 DeepLink.Builder.profile(userId = refId)?.toUri()
                     ?: run {
-                        AppLogger.w(
-                            tag,
-                            "FCM 딥링크 생성 실패: 유효하지 않은 refId " +
-                                "(noti_type=$notiType, ref_id=$refId)",
-                        )
+                        AppLogger.w(tag, "FCM 딥링크 생성 실패: (noti_type=$notiType)")
                         DeepLink.Builder.notifications().toUri()
                     }
             }
@@ -182,11 +178,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                 // 키워드 상세 화면으로 이동
                 DeepLink.Builder.keywordDetail(userKeywordId = refId, userId = userId)?.toUri()
                     ?: run {
-                        AppLogger.w(
-                            tag,
-                            "FCM 딥링크 생성 실패: 유효하지 않은 refId 또는 userId " +
-                                "(noti_type=$notiType, ref_id=$refId, user_id=$userId)",
-                        )
+                        AppLogger.w(tag, "FCM 딥링크 생성 실패: (noti_type=$notiType)")
                         DeepLink.Builder.notifications().toUri()
                     }
             }

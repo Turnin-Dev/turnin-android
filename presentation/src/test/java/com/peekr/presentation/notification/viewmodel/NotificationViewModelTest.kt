@@ -17,6 +17,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -142,13 +143,15 @@ class NotificationViewModelTest {
         coEvery { usecases.markAsRead(any()) } returns Result.Success(Unit)
 
         // when
+        val navEventJob = async { viewModel.navigateToNotificationDetail.first() }
         viewModel.onNotificationClick(
             notificationId = TEST_NOTIFICATION_ID,
             deepLink = TEST_DEEP_LINK,
         )
+        advanceUntilIdle()
 
         // then
-        assertEquals(TEST_DEEP_LINK, viewModel.navigateToNotificationDetail.first())
+        assertEquals(TEST_DEEP_LINK, navEventJob.await())
     }
 
     companion object {
