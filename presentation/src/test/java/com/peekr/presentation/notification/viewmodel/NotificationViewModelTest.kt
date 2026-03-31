@@ -41,7 +41,7 @@ class NotificationViewModelTest {
     @Before
     fun setUp() {
         MockLog.mock()
-        every { usecases.getNotifications() } returns TestPagingDataFlow
+        every { usecases.getNotifications() } answers { createTestPagingDataFlow() }
         viewModel = NotificationViewModel(usecases)
     }
 
@@ -53,11 +53,7 @@ class NotificationViewModelTest {
     @Test
     fun `알림 목록 초기 페이징 데이터 로드 성공 테스트`() = runTest {
         // given
-        val expectedPagingData = TestPagingDataFlow.first()
-        val expectedList = expectedPagingData.collectDataForTest(
-            dispatcherRule.testDispatcher,
-            dispatcherRule.testDispatcher,
-        ).map { it.toUiModel() }
+        val expectedList = testNotifications.map { it.toUiModel() }
 
         // when
         val actualPagingData = viewModel.notificationsPagingData.first()
@@ -158,25 +154,26 @@ class NotificationViewModelTest {
         private const val TEST_LIST_SIZE = 10
         private const val TEST_NOTIFICATION_ID = 1L
         private const val TEST_DEEP_LINK = "peekr://profile/1"
-        private val TestPagingDataFlow = flowOf(
-            PagingData.from(
-                List(TEST_LIST_SIZE) {
-                    val id = it + 1L
-                    Notification(
-                        id = NotificationId(id),
-                        userId = UserId(1L),
-                        notiType = NotificationType.FRIEND_REQUEST,
-                        isRead = false,
-                        title = "title$id",
-                        message = "message$id",
-                        imageUrl = null,
-                        isBroadcast = false,
-                        refId = id,
-                        refType = "type$id",
-                        createdAt = 1000L,
-                    )
-                },
-            ),
+
+        private val testNotifications = List(TEST_LIST_SIZE) {
+            val id = it + 1L
+            Notification(
+                id = NotificationId(id),
+                userId = UserId(1L),
+                notiType = NotificationType.FRIEND_REQUEST,
+                isRead = false,
+                title = "title$id",
+                message = "message$id",
+                imageUrl = null,
+                isBroadcast = false,
+                refId = id,
+                refType = "type$id",
+                createdAt = 1000L,
+            )
+        }
+
+        private fun createTestPagingDataFlow() = flowOf(
+            PagingData.from(testNotifications),
         )
     }
 }
