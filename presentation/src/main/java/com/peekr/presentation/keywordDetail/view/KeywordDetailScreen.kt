@@ -18,6 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -113,25 +119,33 @@ fun KeywordDetailScreen(
     onUserClick: (userId: Long) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing = remember(isManualRefresh, uiState.loading) {
+        isManualRefresh && uiState.loading
+    }
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
+
     Box(modifier) {
         KeywordDetailScreenFrame(
             modifier = Modifier.fillMaxSize(),
-            isRefreshing = uiState.loading,
-            onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.OnRefresh) },
+            isRefreshing = isRefreshing,
+            onRefresh = {
+                isManualRefresh = true
+                onUiEvent(KeywordDetailContract.UiEvent.OnRefresh)
+            },
             topBar = {
-                if (uiState.loading) {
-                    TopBarSkeleton()
-                } else {
-                    TopBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                        myKeyword = uiState.myKeyword,
-                        onMoreClick = onMoreClick,
-                        onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
-                        onBackPressed = onBackPressed,
-                    )
-                }
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                    myKeyword = uiState.myKeyword,
+                    onMoreClick = onMoreClick,
+                    onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
+                    onBackPressed = onBackPressed,
+                )
             },
             contents = {
                 if (uiState.loading) {

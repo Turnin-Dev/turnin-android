@@ -139,10 +139,10 @@ fun HomeScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing by remember {
         derivedStateOf {
-            feeds.loadState.refresh is LoadState.Loading &&
-                feeds.itemCount > 0
+            isManualRefresh && feeds.loadState.refresh is LoadState.Loading
         }
     }
     var isRefreshTriggered by remember { mutableStateOf(false) }
@@ -153,6 +153,11 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
+
+    // 새로고침 시 맨 위로 스크롤
     LaunchedEffect(isRefreshing) {
         if (!isRefreshing && isRefreshTriggered) {
             lazyListState.requestScrollToItem(0)
@@ -193,6 +198,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 isRefreshing = isRefreshing,
                 onRefresh = {
+                    isManualRefresh = true
                     isRefreshTriggered = true
                     feeds.refresh()
                 },
