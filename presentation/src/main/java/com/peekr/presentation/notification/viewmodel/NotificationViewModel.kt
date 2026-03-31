@@ -72,12 +72,14 @@ class NotificationViewModel @Inject constructor(
      * @param notificationId 알림 ID
      */
     private fun markAsRead(notificationId: Long) {
+        // 낙관적 업데이트: API 결과와 무관하게 즉시 UI 반영, 실패 시 무시
+        readNotificationIds.update { it + notificationId }
+
         viewModelScope.launch {
             val result = usecases.markAsRead(notificationId)
             if (result is Result.Error) {
                 AppLogger.e(tag, "알림 읽음 처리 실패: ${result.error}")
             }
         }
-        readNotificationIds.update { it + notificationId }
     }
 }

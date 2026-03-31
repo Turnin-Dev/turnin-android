@@ -113,11 +113,13 @@ class NotificationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun markAsRead(notificationId: NotificationId): Result<Unit, CommonErrorType> =
-        when (val result = notificationNetworkDataSource.markAsRead(notificationId.value)) {
-            is NetworkResult.Success -> Result.Success(Unit)
-            is NetworkResult.Error -> {
-                val error = result.error.toCommonErrorType()
-                Result.Error(error = error, message = result.message)
+        withContext(ioDispatcher) {
+            when (val result = notificationNetworkDataSource.markAsRead(notificationId.value)) {
+                is NetworkResult.Success -> Result.Success(Unit)
+                is NetworkResult.Error -> {
+                    val error = result.error.toCommonErrorType()
+                    Result.Error(error = error, message = result.message)
+                }
             }
         }
 

@@ -119,12 +119,21 @@ class NotificationViewModelTest {
             usecases.markAsRead(any())
         } returns Result.Error(NotificationErrorType.CommonError(CommonErrorType.Unexpected(null)))
 
-        // when & then
+        // when
         viewModel.onNotificationClick(
             notificationId = TEST_NOTIFICATION_ID,
             deepLink = TEST_DEEP_LINK,
         )
         advanceUntilIdle()
+
+        // then — API 실패와 무관하게 낙관적 업데이트가 유지되어야 함
+        val actualPagingData = viewModel.notificationsPagingData.first()
+        val actualList = actualPagingData.collectDataForTest(
+            dispatcherRule.testDispatcher,
+            dispatcherRule.testDispatcher,
+        )
+        val target = actualList.find { it.id == TEST_NOTIFICATION_ID }
+        assertTrue(target?.isRead ?: error("TEST_NOTIFICATION_ID 항목이 목록에 없습니다"))
     }
 
     @Test

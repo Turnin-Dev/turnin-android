@@ -168,11 +168,27 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                 notiType == NotificationType.FRIEND_ACCEPT -> {
                 // 프로필 화면으로 이동
                 DeepLink.Builder.profile(userId = refId)?.toUri()
+                    ?: run {
+                        AppLogger.w(
+                            tag,
+                            "FCM 딥링크 생성 실패: 유효하지 않은 refId " +
+                                "(noti_type=$notiType, ref_id=$refId)",
+                        )
+                        DeepLink.Builder.notifications().toUri()
+                    }
             }
 
             notiType == NotificationType.NEW_KEYWORD -> {
                 // 키워드 상세 화면으로 이동
                 DeepLink.Builder.keywordDetail(userKeywordId = refId, userId = userId)?.toUri()
+                    ?: run {
+                        AppLogger.w(
+                            tag,
+                            "FCM 딥링크 생성 실패: 유효하지 않은 refId 또는 userId " +
+                                "(noti_type=$notiType, ref_id=$refId, user_id=$userId)",
+                        )
+                        DeepLink.Builder.notifications().toUri()
+                    }
             }
 
             notiType?.isBroadcast == true -> {
@@ -197,7 +213,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                 }
                 DeepLink.Builder.notifications().toUri()
             }
-        } ?: DeepLink.Builder.notifications().toUri()
+        }
 
         return Intent(Intent.ACTION_VIEW, uri).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
