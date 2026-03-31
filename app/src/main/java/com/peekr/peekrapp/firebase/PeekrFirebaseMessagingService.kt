@@ -15,11 +15,11 @@ import com.google.firebase.messaging.RemoteMessage
 import com.peekr.core.common.coroutine.ApplicationScope
 import com.peekr.core.common.coroutine.IO
 import com.peekr.core.common.fcm.FcmDataKey
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.model.NotificationType
 import com.peekr.core.domain.notification.NotificationSyncManager
 import com.peekr.core.presentation.common.navigation.deepLink.DeepLink
-import com.peekr.peekrapp.MainActivity
 import com.peekr.peekrapp.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -159,6 +159,7 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
     private fun createDeepLinkIntent(data: Map<String, String>): Intent {
         val notiType = data[FcmDataKey.NOTI_TYPE]
             ?.let { runCatching { NotificationType.valueOf(it) }.getOrNull() }
+        // 기본적으로 refId가 핵심 참조 ID이고 키워드 알림 처럼 다른 참조 ID가 있다면 userId 키를 사용
         val refId = data[FcmDataKey.REF_ID]?.toLongOrNull()
         val userId = data[FcmDataKey.USER_ID]?.toLongOrNull()
 
@@ -166,23 +167,44 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
             notiType == NotificationType.FRIEND_REQUEST ||
                 notiType == NotificationType.FRIEND_ACCEPT -> {
                 // 프로필 화면으로 이동
-                refId ?: return fallbackIntent()
-                "${DeepLink.Uri.PROFILE}/$refId".toUri()
+                DeepLink.Builder.profile(userId = refId)?.toUri()
+                    ?: run {
+                        AppLogger.w(tag, "FCM 딥링크 생성 실패: (noti_type=$notiType)")
+                        DeepLink.Builder.notifications().toUri()
+                    }
             }
 
             notiType == NotificationType.NEW_KEYWORD -> {
                 // 키워드 상세 화면으로 이동
-                if (refId == null || userId == null) return fallbackIntent()
-                "${DeepLink.Uri.KEYWORD_DETAIL}/$refId/$userId".toUri()
+                DeepLink.Builder.keywordDetail(userKeywordId = refId, userId = userId)?.toUri()
+                    ?: run {
+                        AppLogger.w(tag, "FCM 딥링크 생성 실패: (noti_type=$notiType)")
+                        DeepLink.Builder.notifications().toUri()
+                    }
             }
 
             notiType?.isBroadcast == true -> {
-                // 알림 목록 화면으로 이동
-                // TODO: 알림 목록 화면 구현 후 연동
-                return fallbackIntent()
+                DeepLink.Builder.notifications().toUri()
             }
 
-            else -> return fallbackIntent()
+            else -> {
+                // 1. 알 수 없는 타입 (새로 추가된 타입인데 앱이 구버전인 경우 등)
+                // 2. notiType 자체가 null (FCM 데이터 키 누락 or 파싱 실패)
+                if (notiType == null) {
+                    AppLogger.w(
+                        tag,
+                        "FCM 딥링크 생성 실패: notiType 파싱 실패 " +
+                            "(raw_noti_type=${data[FcmDataKey.NOTI_TYPE]}, ref_type=${data[FcmDataKey.REF_TYPE]})",
+                    )
+                } else {
+                    AppLogger.w(
+                        tag,
+                        "FCM 딥링크 생성 실패: 처리되지 않은 notiType " +
+                            "(noti_type=$notiType, ref_type=${data[FcmDataKey.REF_TYPE]})",
+                    )
+                }
+                DeepLink.Builder.notifications().toUri()
+            }
         }
 
         return Intent(Intent.ACTION_VIEW, uri).apply {
@@ -202,8 +224,4 @@ class PeekrFirebaseMessagingService : FirebaseMessagingService() {
                 (Coil.imageLoader(applicationContext).execute(request).drawable as? BitmapDrawable)?.bitmap
             }.getOrNull()
         }
-
-    private fun fallbackIntent() = Intent(this, MainActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-    }
 }

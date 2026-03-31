@@ -2,6 +2,7 @@ package com.peekr.presentation.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.notification.NotificationSyncManager
 import com.peekr.core.domain.setting.model.AppSetting
 import com.peekr.core.domain.setting.model.ThemeMode
@@ -17,6 +18,8 @@ class NotificationSettingViewModel @Inject constructor(
     private val settingRepository: SettingRepository,
     private val notificationSyncManager: NotificationSyncManager,
 ) : ViewModel() {
+    private val tag = this::class.java.simpleName
+
     val appSetting = settingRepository.appSetting
         .stateIn(
             scope = viewModelScope,
@@ -30,7 +33,8 @@ class NotificationSettingViewModel @Inject constructor(
     fun togglePushNotificationAndSync(enabled: Boolean) {
         viewModelScope.launch {
             runCatching { settingRepository.setPushNotificationEnabled(enabled) }
-            runCatching { notificationSyncManager.sync() }
+                .onFailure { e -> AppLogger.e(tag, e, "푸시 알림 설정 저장 실패") }
+            notificationSyncManager.sync()
         }
     }
 }

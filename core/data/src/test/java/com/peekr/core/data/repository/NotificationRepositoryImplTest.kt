@@ -21,7 +21,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -135,7 +134,7 @@ class NotificationRepositoryImplTest {
     @Test
     fun `알림 읽음 처리 - 성공 테스트`() = runTest {
         // when
-        val result = repository.markAsRead(TestNotificationId).last()
+        val result = repository.markAsRead(TestNotificationId)
 
         // then
         assertTrue(result is Result.Success)
@@ -150,7 +149,7 @@ class NotificationRepositoryImplTest {
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.markAsRead(TestNotificationId).last()
+        val result = repository.markAsRead(TestNotificationId)
 
         // then
         val error = result as Result.Error
@@ -260,6 +259,7 @@ class NotificationRepositoryImplTest {
         )
         private val TestNotificationResponse = NotificationResponse(
             id = 1L,
+            userId = 1L,
             notiType = "FRIEND_REQUEST",
             title = "친구 요청",
             message = "홍길동님이 친구 요청을 보냈어요.",
@@ -284,6 +284,7 @@ class NotificationRepositoryImplTest {
                 items = List(pageSize) {
                     NotificationResponse(
                         id = (startId + it).toLong(),
+                        userId = 1L,
                         notiType = "FRIEND_REQUEST",
                         title = "친구 요청 ${startId + it}",
                         message = "message ${startId + it}",

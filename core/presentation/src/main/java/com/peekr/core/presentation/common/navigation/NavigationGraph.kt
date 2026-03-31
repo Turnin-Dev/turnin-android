@@ -225,4 +225,10 @@ sealed interface Screens {
      */
     @Serializable
     data object BlockList : Screens
+
+    /**
+     * 알림 목록 화면
+     */
+    @Serializable
+    data object Notifications : Screens
 }

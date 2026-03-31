@@ -17,7 +17,6 @@ import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.coroutine.runCatchingSafe
-import com.peekr.core.domain.common.coroutine.safeResultFlow
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.NotificationId
 import com.peekr.core.domain.notification.model.Notification
@@ -113,14 +112,13 @@ class NotificationRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun markAsRead(notificationId: NotificationId): Flow<Result<Unit, CommonErrorType>> =
-        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            emit(Result.Loading)
+    override suspend fun markAsRead(notificationId: NotificationId): Result<Unit, CommonErrorType> =
+        withContext(ioDispatcher) {
             when (val result = notificationNetworkDataSource.markAsRead(notificationId.value)) {
-                is NetworkResult.Success -> emit(Result.Success(Unit))
+                is NetworkResult.Success -> Result.Success(Unit)
                 is NetworkResult.Error -> {
                     val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    Result.Error(error = error, message = result.message)
                 }
             }
         }

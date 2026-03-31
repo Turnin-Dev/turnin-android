@@ -46,7 +46,7 @@ import kotlinx.coroutines.withContext
 class UserRepositoryImpl @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val dataStoreManager: DataStoreManager,
-    private val memoryCache: MemoryCache<Long, CoreUserProfile>,
+    private val memoryCache: MemoryCache<UserId, CoreUserProfile>,
     private val myProfileDao: MyProfileDao,
     @param:IO private val ioDispatcher: CoroutineDispatcher,
     @param:ApplicationScope private val applicationScope: CoroutineScope,
@@ -118,7 +118,7 @@ class UserRepositoryImpl @Inject constructor(
         forceRefresh: Boolean,
     ): Flow<Result<CoreUserProfile, CommonErrorType>> =
         safeResultFlow<CoreUserProfile, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
-            val cachedProfile = if (!forceRefresh) memoryCache[userId.value] else null
+            val cachedProfile = if (!forceRefresh) memoryCache[userId] else null
 
             if (cachedProfile != null) {
                 emit(Result.Success(cachedProfile))
@@ -127,7 +127,7 @@ class UserRepositoryImpl @Inject constructor(
                 when (val result = userNetworkDataSource.getUserProfile(userId)) {
                     is NetworkResult.Success -> {
                         val profile = result.data.toDomainModel()
-                        memoryCache[userId.value] = profile
+                        memoryCache[userId] = profile
                         emit(Result.Success(profile))
                     }
 

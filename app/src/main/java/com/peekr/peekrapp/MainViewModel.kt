@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
     private val _loggedIn: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val loggedIn = _loggedIn.asStateFlow()
 
-    private val _navigateToLogin = Channel<Unit>(Channel.BUFFERED)
+    private val _navigateToLogin = Channel<Unit>(Channel.CONFLATED)
     val navigateToLogin = _navigateToLogin.receiveAsFlow()
 
     init {
@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
             _loggedIn.update { result }
             if (result) {
                 preloadUserData()
-                launch { notificationSyncManager.sync() }
+                notificationSyncManager.sync()
             }
             _isLoading.update { false }
         }
@@ -68,7 +68,8 @@ class MainViewModel @Inject constructor(
     // onResume에서 호출
     fun syncNotificationState() {
         viewModelScope.launch {
-            if (loggedIn.value != true) return@launch
+            val isLoggedIn = loggedIn.first { it != null }
+            if (isLoggedIn != true) return@launch
             notificationSyncManager.sync()
         }
     }
@@ -91,7 +92,7 @@ class MainViewModel @Inject constructor(
     }
 
     // 로그인 시 수행
-    private suspend fun onLogin() {
+    private fun onLogin() {
         _loggedIn.update { true }
         preloadUserData()
         notificationSyncManager.sync()

@@ -72,6 +72,11 @@ fun NavController.navigateToFriendsList(userId: Long) {
     navigate(Screens.FriendList(userId))
 }
 
+// ------------------------------ Notification ------------------------------
+fun NavController.navigateToNotification() {
+    navigate(Screens.Notifications)
+}
+
 // ------------------------------ Setting ------------------------------
 fun NavController.navigateToSetting() {
     navigate(SubGraph.Setting.Root)

@@ -1,0 +1,36 @@
+package com.peekr.presentation.notification
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.presentation.common.util.ObserveAsEvents
+import com.peekr.presentation.notification.view.NotificationScreen
+import com.peekr.presentation.notification.viewmodel.NotificationViewModel
+
+@Composable
+fun NotificationRoute(
+    onNavigateToNotificationDetail: (String) -> Unit,
+    onBackPressed: () -> Unit,
+) {
+    val viewModel: NotificationViewModel = hiltViewModel()
+    val notificationsPagingData = viewModel.notificationsPagingData.collectAsLazyPagingItems()
+
+    ObserveAsEvents(viewModel.navigateToNotificationDetail) { deepLink ->
+        onNavigateToNotificationDetail(deepLink)
+    }
+
+    NotificationScreen(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PeekrTheme.colorScheme.backgroundNormal),
+        notifications = notificationsPagingData,
+        onNotificationClick = { notification ->
+            viewModel.onNotificationClick(notification.id, notification.deepLink)
+        },
+        onBackPress = onBackPressed,
+    )
+}

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -82,6 +83,24 @@ class NotificationSettingViewModelTest {
 
         // when
         viewModel.togglePushNotificationAndSync(enabled)
+        advanceUntilIdle()
+
+        // then
+        coVerify { settingRepository.setPushNotificationEnabled(enabled) }
+        coVerify { notificationSyncManager.sync() }
+    }
+
+    @Test
+    fun `푸시 알림 설정 저장 실패 시에도 동기화를 수행한다`() = runTest {
+        // given
+        val enabled = false
+        coEvery {
+            settingRepository.setPushNotificationEnabled(enabled)
+        } throws Exception("저장 실패")
+
+        // when
+        viewModel.togglePushNotificationAndSync(enabled)
+        advanceUntilIdle()
 
         // then
         coVerify { settingRepository.setPushNotificationEnabled(enabled) }

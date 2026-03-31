@@ -20,7 +20,7 @@ object MemoryCacheModule {
     @Provides
     @IntoSet
     fun provideCoreUserProfileCacheClearable(
-        cache: MemoryCache<Long, CoreUserProfile>,
+        cache: MemoryCache<UserId, CoreUserProfile>,
     ): Clearable = Clearable { cache.clear() }
 
     @Provides
@@ -38,7 +38,7 @@ object MemoryCacheModule {
     // ------------------------------ Provide Module ------------------------------
     @Provides
     @Singleton
-    fun provideCoreUserProfileMemoryCache(): MemoryCache<Long, CoreUserProfile> =
+    fun provideCoreUserProfileMemoryCache(): MemoryCache<UserId, CoreUserProfile> =
         LruMemoryCache(
             maxSize = 10,
             ttl = 3.minutes,
