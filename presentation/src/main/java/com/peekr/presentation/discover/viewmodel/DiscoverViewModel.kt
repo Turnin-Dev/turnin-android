@@ -5,6 +5,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.discover.model.DiscoverContext
 import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.common.snackbar.SnackbarController
@@ -24,8 +25,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
@@ -36,7 +38,8 @@ class DiscoverViewModel @Inject constructor(
     private val tag = this::class.java.simpleName
 
     init {
-        initialize()
+        initMyDiscoverContext()
+        refreshMyKeywords()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -103,27 +106,48 @@ class DiscoverViewModel @Inject constructor(
     }
 
     /**
-     * 초기화 작업
+     * 초기화 작업 (1/2) (나의 탐색 컨텍스트 조회)
      *
      * 1. 히스토리 바에 나를 추가
      * 2. 현재 탐색 대상을 나로 설정
      */
-    private fun initialize() {
-        viewModelScope.launch {
-            val myDiscoverContext = usecases.getMyDiscoverContext()
-            if (myDiscoverContext == null) {
-                showSnackbar(DiscoverErrorType.MyProfileNotFound.asUiText())
-                return@launch
+    private fun initMyDiscoverContext() {
+        usecases.getMyDiscoverContext()
+            .catch { e -> AppLogger.e(tag, e, "Unexpected error in getMyDiscoverContext") }
+            .onEach { myDiscoverContext ->
+                val myDiscoverContextUiModel = myDiscoverContext.toUiModel()
+                updateState {
+                    // 1. 히스토리: '나'를 제외한 나머지 사용자들만 남기고, '나'를 맨 앞에 붙임
+                    val others = histories.filter { it.user.userId != myDiscoverContextUiModel.user.userId }
+                    val updatedHistories = listOf(myDiscoverContextUiModel) + others
+
+                    // 2. 타겟: 현재 타겟이 없거나, 현재 타겟이 '나'인 경우 최신 정보로 갱신
+                    val shouldUpdateTarget = currentDiscoverTarget == null ||
+                        currentDiscoverTarget.user.userId == myDiscoverContextUiModel.user.userId
+
+                    copy(
+                        histories = updatedHistories,
+                        currentDiscoverTarget = if (shouldUpdateTarget) {
+                            myDiscoverContextUiModel
+                        } else {
+                            currentDiscoverTarget
+                        },
+                    )
+                }
             }
-            // 히스토리에 나를 추가하고 현재 탐색 대상을 나로 설정
-            val myDiscoverContextUiModel = myDiscoverContext.toUiModel()
-            updateState {
-                this.copy(
-                    histories = emptyList<UiDiscoverContext>() + myDiscoverContextUiModel,
-                    currentDiscoverTarget = myDiscoverContextUiModel,
-                )
+            .launchIn(viewModelScope)
+    }
+
+    /**
+     * 초기화 작업 (2/2) (나의 키워드 새로고침 트리거)
+     */
+    private fun refreshMyKeywords() {
+        usecases.refreshMyKeywords().onEach { result ->
+            if (result is Result.Error) {
+                showSnackbar(DiscoverErrorType.MyKeywordsRefreshFailed.asUiText())
             }
         }
+            .launchIn(viewModelScope)
     }
 
     /**
