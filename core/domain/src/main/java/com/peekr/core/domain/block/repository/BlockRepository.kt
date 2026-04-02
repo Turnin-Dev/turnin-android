@@ -24,6 +24,9 @@ interface BlockRepository {
     /**
      * 차단 생성
      *
+     * 잘못된 데이터가 노출될 수 있으므로 캐시 무효화는 코루틴 취소에 영향받지 않도록
+     * [kotlinx.coroutines.NonCancellable] 컨텍스트에서 수행한다.
+     *
      * @param block 차단 생성 요청 모델
      */
     fun createBlock(block: CreateBlock): Flow<Result<Unit, CommonErrorType>>

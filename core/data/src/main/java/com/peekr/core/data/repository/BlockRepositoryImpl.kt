@@ -26,8 +26,10 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreUserProfile
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class BlockRepositoryImpl @Inject constructor(
     private val blockNetworkDataSource: BlockNetworkDataSource,
@@ -82,7 +84,9 @@ class BlockRepositoryImpl @Inject constructor(
             when (val result = blockNetworkDataSource.createBlock(block.toDataModel())) {
                 is NetworkResult.Success -> {
                     // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
-                    memoryCache.remove(block.blockedId)
+                    withContext(NonCancellable) {
+                        memoryCache.remove(block.blockedId)
+                    }
                     emit(Result.Success(Unit))
                 }
 
