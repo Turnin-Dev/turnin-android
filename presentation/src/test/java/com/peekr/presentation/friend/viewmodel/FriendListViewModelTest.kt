@@ -11,7 +11,6 @@ import com.peekr.core.domain.friend.model.IncomingRequest
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
-import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MainDispatcherRule
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
@@ -47,7 +46,6 @@ class FriendListViewModelTest {
     val dispatcherRule = MainDispatcherRule()
 
     private val usecases: FriendUseCases = mockk()
-    private val getMyUserIdUseCase: GetMyUserIdUseCase = mockk()
     private val snackbarController = FakeSnackbarController()
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var viewModel: FriendListViewModel
@@ -77,7 +75,6 @@ class FriendListViewModelTest {
         // when: 뷰모델 생성
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -98,7 +95,7 @@ class FriendListViewModelTest {
     fun `나의 사용자 ID 로드 실패 테스트`() = runTest {
         // given
         setMocking(myUserId = 1L, currentUserId = 1L)
-        coEvery { getMyUserIdUseCase() } returns null
+        every { usecases.getMyUserId() } returns null
         val snackbarList = mutableListOf<SnackbarEvent>()
         val snackbarJob = launch {
             snackbarController.events.toList(snackbarList)
@@ -107,7 +104,6 @@ class FriendListViewModelTest {
         // when
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -136,7 +132,6 @@ class FriendListViewModelTest {
         // when
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -201,7 +196,6 @@ class FriendListViewModelTest {
         }
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -228,7 +222,6 @@ class FriendListViewModelTest {
         }
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -250,13 +243,12 @@ class FriendListViewModelTest {
         // given
         val targetId = 100L
         setMocking(myUserId = 1L, currentUserId = 1L)
-        coEvery { getMyUserIdUseCase() } returns null
+        every { usecases.getMyUserId() } returns null
         coEvery {
             usecases.acceptFriendRequest(1L, targetId)
         } returns flowOf(Result.Success(Unit))
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -280,7 +272,6 @@ class FriendListViewModelTest {
         } returns flowOf(Result.Success(Unit))
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -304,7 +295,6 @@ class FriendListViewModelTest {
         } returns flowOf(Result.Success(Unit))
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )
@@ -384,14 +374,13 @@ class FriendListViewModelTest {
         val currentUserIdVO = UserId(currentUserId)
         every { usecases.getFriends(currentUserIdVO.value) } returns TestFriendsPagingDataFlow
         every { usecases.getIncomingRequests() } returns TestRequestersPagingDataFlow
-        coEvery { getMyUserIdUseCase() } returns myUserIdVO
+        every { usecases.getMyUserId() } returns myUserIdVO
         savedStateHandle = SavedStateHandle(
             mapOf("userId" to currentUserIdVO.value),
         )
 
         viewModel = FriendListViewModel(
             usecases = usecases,
-            getMyUserIdUseCase = getMyUserIdUseCase,
             snackbarController = snackbarController,
             savedStateHandle = savedStateHandle,
         )

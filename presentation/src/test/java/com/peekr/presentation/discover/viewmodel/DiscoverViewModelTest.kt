@@ -17,6 +17,7 @@ import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.FakeSnackbarController
 import com.peekr.core.presentation.MVIBaseViewModelTest
 import com.peekr.core.presentation.MainDispatcherRule
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.domain.discover.error.DiscoverErrorType
 import com.peekr.domain.discover.usecase.DiscoverUseCases
@@ -514,10 +515,14 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
         testEffect(
             viewModel = viewModel,
             intents = listOf(
-                DiscoverContract.UiEvent.NavigateToUserProfile(2L),
+                DiscoverContract.UiEvent.NavigateToUserProfile(
+                    UserProfileArgs(userId = 2L),
+                ),
             ),
             assertions = listOf(
-                DiscoverContract.UiEffect.NavigateToUserProfile(2L),
+                DiscoverContract.UiEffect.NavigateToUserProfile(
+                    UserProfileArgs(userId = 2L),
+                ),
             ),
         )
     }
@@ -534,7 +539,9 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
         testEffect(
             viewModel = viewModel,
             intents = listOf(
-                DiscoverContract.UiEvent.NavigateToUserProfile(myUserId.value),
+                DiscoverContract.UiEvent.NavigateToUserProfile(
+                    UserProfileArgs(userId = myUserId.value),
+                ),
             ),
             assertions = listOf(
                 DiscoverContract.UiEffect.NavigateToMyProfile,
@@ -554,7 +561,11 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
         }
 
         // when
-        viewModel.processEvent(DiscoverContract.UiEvent.NavigateToUserProfile(1L))
+        viewModel.processEvent(
+            DiscoverContract.UiEvent.NavigateToUserProfile(
+                UserProfileArgs(userId = 1L),
+            ),
+        )
         advanceUntilIdle()
 
         // then: 스낵바 검증

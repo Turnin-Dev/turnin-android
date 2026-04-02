@@ -10,7 +10,6 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.friend.model.FriendInfo
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
@@ -43,7 +42,6 @@ private typealias UserID = Long
 @HiltViewModel
 class FriendListViewModel @Inject constructor(
     private val usecases: FriendUseCases,
-    private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val snackbarController: SnackbarController,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -52,7 +50,7 @@ class FriendListViewModel @Inject constructor(
     private val currentUserId: Long? = savedStateHandle.get<Long>("userId")
     private val myUserId = MutableStateFlow<Long?>(null)
 
-    private val _isMyFriendList = MutableStateFlow<Boolean>(false)
+    private val _isMyFriendList = MutableStateFlow(false)
     val isMyFriendList = _isMyFriendList.asStateFlow()
 
     private val _effect = Channel<FriendEffect>()
@@ -68,7 +66,7 @@ class FriendListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // 나의 사용자 ID를 로드하고 나의 친구 목록인지 판단
-            val localMyUserId = getMyUserIdUseCase()
+            val localMyUserId = usecases.getMyUserId()
             if (localMyUserId == null) {
                 showSnackbar(FriendErrorType.MyUserIdNotFound.asUiText())
                 return@launch
