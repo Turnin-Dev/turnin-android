@@ -206,11 +206,17 @@ sealed interface Screens {
      * 사용자 프로필 화면
      *
      * @property userId 사용자 ID
+     * @property userName 사용자 명
+     * @property displayId 사용자 표시 ID
+     * @property profileImageUrl 프로필 사진 URL
      * @property blockId 차단 ID
      */
     @Serializable
     data class UserProfile(
         val userId: Long,
+        val userName: String?,
+        val displayId: String?,
+        val profileImageUrl: String?,
         val blockId: Long?,
     ) : Screens
 

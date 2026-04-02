@@ -52,6 +52,7 @@ import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Refresh
 import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
 import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
@@ -159,18 +160,20 @@ fun DiscoverScreen(
                         modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
                         discoverContext = discoverContext,
                         onFeedClick = {
-                            onUiEvent(
-                                DiscoverContract.UiEvent.NavigateToUserProfile(
-                                    userId = discoverContext.user.userId,
-                                ),
+                            val args = UserProfileArgs(
+                                userId = discoverContext.user.userId,
+                                userName = discoverContext.user.userName,
+                                profileImageUrl = discoverContext.user.profileImageUrl,
                             )
+                            onUiEvent(DiscoverContract.UiEvent.NavigateToUserProfile(args))
                         },
                         onUserClick = {
-                            onUiEvent(
-                                DiscoverContract.UiEvent.NavigateToUserProfile(
-                                    userId = discoverContext.user.userId,
-                                ),
+                            val args = UserProfileArgs(
+                                userId = discoverContext.user.userId,
+                                userName = discoverContext.user.userName,
+                                profileImageUrl = discoverContext.user.profileImageUrl,
                             )
+                            onUiEvent(DiscoverContract.UiEvent.NavigateToUserProfile(args))
                         },
                         onKeywordClick = { keyword ->
                             onUiEvent(
@@ -194,11 +197,12 @@ fun DiscoverScreen(
                         )
                     },
                     onUserClick = { discoverContext ->
-                        onUiEvent(
-                            DiscoverContract.UiEvent.NavigateToUserProfile(
-                                userId = discoverContext.user.userId,
-                            ),
+                        val args = UserProfileArgs(
+                            userId = discoverContext.user.userId,
+                            userName = discoverContext.user.userName,
+                            profileImageUrl = discoverContext.user.profileImageUrl,
                         )
+                        onUiEvent(DiscoverContract.UiEvent.NavigateToUserProfile(args))
                     },
                     onKeywordClick = { userId, keyword ->
                         onUiEvent(

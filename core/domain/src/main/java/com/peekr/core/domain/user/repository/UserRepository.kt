@@ -57,6 +57,15 @@ interface UserRepository {
     ): Flow<Result<CoreUserProfile, CommonErrorType>>
 
     /**
+     * 사용자 프로필을 캐시에서 조회한다.
+     *
+     * @param userId 사용자 ID
+     */
+    fun getCachedUserProfile(
+        userId: UserId,
+    ): CoreUserProfile?
+
+    /**
      * 나의 프로필 수정
      *
      * @param patch 사용자 수정 요청

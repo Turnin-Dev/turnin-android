@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.R
 import com.peekr.presentation.keywordDetail.state.KeywordDetailContract
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 fun KeywordDetailRoute(
     onNavigateToReport: (userId: Long?, userKeywordId: Long?) -> Unit,
     onNavigateToKeywordEdit: (userKeywordId: Long?) -> Unit,
-    onNavigateToUserProfile: (userId: Long) -> Unit,
+    onNavigateToUserProfile: (args: UserProfileArgs) -> Unit,
     onNavigateToMyProfile: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -87,11 +88,11 @@ fun KeywordDetailRoute(
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
         onMoreClick = { isOptionModalOpen = true },
-        onUserClick = { userId ->
+        onUserClick = { args ->
             if (uiState.myKeyword) {
                 onNavigateToMyProfile()
             } else {
-                onNavigateToUserProfile(userId)
+                onNavigateToUserProfile(args)
             }
         },
         onBackPressed = onBackPressed,

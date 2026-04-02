@@ -43,6 +43,7 @@ import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -116,7 +117,7 @@ fun KeywordDetailScreen(
     uiState: KeywordDetailContract.UiState,
     onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
     onMoreClick: () -> Unit,
-    onUserClick: (userId: Long) -> Unit,
+    onUserClick: (args: UserProfileArgs) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
@@ -161,7 +162,14 @@ fun KeywordDetailScreen(
                             createdAt = uiState.keywordDetail.createdAt,
                             keyword = uiState.keywordDetail.keyword,
                             description = uiState.keywordDetail.description,
-                            onUserClick = { onUserClick(uiState.keywordDetail.userId) },
+                            onUserClick = {
+                                val args = UserProfileArgs(
+                                    userId = uiState.keywordDetail.userId,
+                                    userName = uiState.keywordDetail.userName,
+                                    profileImageUrl = uiState.keywordDetail.profileImageUrl,
+                                )
+                                onUserClick(args)
+                            },
                         )
                     }
                 }

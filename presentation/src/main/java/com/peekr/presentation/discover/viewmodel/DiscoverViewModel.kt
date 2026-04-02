@@ -8,6 +8,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.discover.model.DiscoverContext
 import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.common.viewmodel.MVIBaseViewModel
@@ -100,7 +101,7 @@ class DiscoverViewModel @Inject constructor(
             }
 
             is DiscoverContract.UiEvent.NavigateToUserProfile -> {
-                navigateToUserProfile(event.userId)
+                navigateToUserProfile(event.args)
             }
         }
     }
@@ -216,16 +217,16 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private suspend fun navigateToUserProfile(userId: Long) {
+    private suspend fun navigateToUserProfile(args: UserProfileArgs) {
         val myUserId = getMyUserIdUseCase()
         if (myUserId == null) {
             showSnackbar(DiscoverErrorType.MyProfileNotFound.asUiText())
             return
         }
 
-        if (myUserId.value != userId) {
+        if (myUserId.value != args.userId) {
             sendEffect {
-                DiscoverContract.UiEffect.NavigateToUserProfile(userId)
+                DiscoverContract.UiEffect.NavigateToUserProfile(args)
             }
         } else {
             sendEffect {

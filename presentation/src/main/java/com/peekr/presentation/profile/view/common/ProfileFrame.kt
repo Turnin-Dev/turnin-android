@@ -45,7 +45,7 @@ fun ProfileFrame(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     name: String,
-    friendsCount: Long,
+    friendsCount: Long?,
     introduce: String,
     onProfileImageClick: () -> Unit,
     onFriendsCountClick: () -> Unit,
@@ -93,14 +93,16 @@ fun ProfileFrame(
                         fontWeight = FontWeight.Bold,
                         color = PeekrTheme.colorScheme.textNormal,
                     )
-                    Text(
-                        text = "$friendsCount",
-                        style = PeekrTheme.typography.body3Normal,
-                        fontWeight = FontWeight.Normal,
-                        color = PeekrTheme.colorScheme.textNormal,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    friendsCount?.let {
+                        Text(
+                            text = "$it",
+                            style = PeekrTheme.typography.body3Normal,
+                            fontWeight = FontWeight.Normal,
+                            color = PeekrTheme.colorScheme.textNormal,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
             }
 

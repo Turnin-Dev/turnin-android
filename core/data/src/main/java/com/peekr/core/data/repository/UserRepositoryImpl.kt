@@ -144,6 +144,9 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
 
+    override fun getCachedUserProfile(userId: UserId): CoreUserProfile? =
+        memoryCache[userId]
+
     override fun updateMyProfile(patch: UserPatch): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)

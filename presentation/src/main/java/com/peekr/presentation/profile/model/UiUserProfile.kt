@@ -27,7 +27,25 @@ data class UiUserProfile(
     val friendStatus: FriendStatus,
     val active: Boolean,
     val isBlocked: Boolean,
-)
+) {
+    companion object {
+        val sample = UiUserProfile(
+            userId = 1L,
+            displayId = "Honggd123",
+            name = "홍길동",
+            profileImageUrl = null,
+            introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
+                "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
+                "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
+            friendsCount = 86,
+            lastLoginAt = 1000L,
+            active = true,
+            friendStatus = FriendStatus.NOTHING,
+            isBlocked = false,
+        )
+    }
+}
 
 fun UserProfile.toUiModel(): UiUserProfile =
     UiUserProfile(

@@ -59,6 +59,7 @@ import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Bell
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
@@ -95,7 +96,7 @@ private fun HomeScreenFrame(
                 if (canTopBarControlState) {
                     val delta = available.y
                     val newOffset = topBarOffsetY + delta
-                    topBarOffsetY = newOffset.coerceIn(-topBarHeightPx.toFloat(), 0f)
+                    topBarOffsetY = newOffset.coerceIn(-topBarHeightPx, 0f)
                 }
                 return Offset.Zero
             }
@@ -134,7 +135,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     feeds: LazyPagingItems<UiFeed>,
     onFeedClick: (UiFeed) -> Unit,
-    onUserClick: (Long) -> Unit,
+    onUserClick: (UserProfileArgs) -> Unit,
     onNotificationClick: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -249,7 +250,14 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .clickableSingle { onFeedClick(it) },
                                 feed = it,
-                                onUserClick = { onUserClick(it.userId) },
+                                onUserClick = {
+                                    val args = UserProfileArgs(
+                                        userId = it.userId,
+                                        userName = it.userName,
+                                        profileImageUrl = it.profileImageUrl,
+                                    )
+                                    onUserClick(args)
+                                },
                             )
                             FeedDivider()
                         }

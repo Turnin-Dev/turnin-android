@@ -16,6 +16,8 @@ object DeepLink {
         const val NOTIFICATIONS = "$SCHEME://${Path.NOTIFICATIONS}"
     }
 
+    // TODO: 만약 사용자 프로필에 사진 URL을 넘겨야 하는 상황이면,
+    //  인코딩을 해줘야 하지만 URI 방식이 아닌 Type-Safe 방식으로 변경한다면 불필요하다.
     object Pattern {
         const val PROFILE = "${Uri.PROFILE}/{userId}?blockId={blockId}"
         const val KEYWORD_DETAIL = "${Uri.KEYWORD_DETAIL}/{userKeywordId}/{userId}"

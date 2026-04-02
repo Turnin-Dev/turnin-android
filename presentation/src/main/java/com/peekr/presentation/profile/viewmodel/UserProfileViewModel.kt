@@ -25,7 +25,12 @@ class UserProfileViewModel @Inject constructor(
     private val usecases: UserProfileUseCases,
     savedStateHandle: SavedStateHandle,
 ) : MVIBaseViewModel<UserProfileContract.UiState, UserProfileContract.UiEvent, UserProfileContract.UiEffect>() {
-    /** 친구 사용자 ID */
+    private val initUserId = savedStateHandle.get<Long>("userId")
+    private val initUserName = savedStateHandle.get<String>("userName")
+    private val initDisplayId = savedStateHandle.get<String>("displayId")
+    private val initProfileImageUrl = savedStateHandle.get<String>("profileImageUrl")
+
+    /** 사용자 ID */
     private val currentUserId: Long by lazy {
         requireNotNull(savedStateHandle.get<Long>("userId"))
     }
@@ -33,8 +38,15 @@ class UserProfileViewModel @Inject constructor(
     /** 차단 ID */
     private val blockId: Long? = savedStateHandle.get<Long>("blockId")
 
-    override fun createInitialState(): UserProfileContract.UiState =
-        UserProfileContract.UiState()
+    override fun createInitialState(): UserProfileContract.UiState {
+        val cached = initUserId?.let { usecases.getCachedUserProfile(it)?.toUiModel() }
+        return UserProfileContract.UiState(
+            previewName = cached?.name ?: initUserName ?: "",
+            previewDisplayId = cached?.displayId ?: initDisplayId ?: "",
+            previewProfileImageUrl = cached?.profileImageUrl ?: initProfileImageUrl,
+            profile = cached,
+        )
+    }
 
     override suspend fun handleEvent(event: UserProfileContract.UiEvent) {
         when (event) {

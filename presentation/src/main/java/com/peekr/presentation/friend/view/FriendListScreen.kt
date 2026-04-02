@@ -34,6 +34,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.component.button.FriendStatusButton
 import com.peekr.core.presentation.ui.component.card.ProfileCard
@@ -110,7 +111,7 @@ fun FriendListScreen(
     requesters: LazyPagingItems<UiRequester>,
     requestersStatus: Map<Long, FriendStatus>,
     loadRequestersPagingData: () -> Unit,
-    onFriendClick: (userId: Long) -> Unit,
+    onFriendClick: (args: UserProfileArgs) -> Unit,
     onRequestAcceptClick: (targetId: Long, status: FriendStatus) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -131,7 +132,13 @@ fun FriendListScreen(
                 isMyFriendList = isMyFriendList,
                 friends = friends,
                 onFriendClick = { friend ->
-                    onFriendClick(friend.userId)
+                    val args = UserProfileArgs(
+                        userId = friend.userId,
+                        userName = friend.name,
+                        displayId = friend.displayId,
+                        profileImageUrl = friend.profileImageUrl,
+                    )
+                    onFriendClick(args)
                 },
             )
         },
@@ -146,7 +153,13 @@ fun FriendListScreen(
                 requesters = requesters,
                 requestersStatus = requestersStatus,
                 onRequesterClick = { requester ->
-                    onFriendClick(requester.userId)
+                    val args = UserProfileArgs(
+                        userId = requester.userId,
+                        userName = requester.name,
+                        displayId = requester.displayId,
+                        profileImageUrl = requester.profileImageUrl,
+                    )
+                    onFriendClick(args)
                 },
                 onRequestAcceptClick = { targetId, status ->
                     onRequestAcceptClick(targetId, status)
