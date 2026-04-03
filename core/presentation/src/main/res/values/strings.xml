@@ -40,6 +40,7 @@
     <string name="common_error_social_auth_kakao_sign_in_error">카카오 로그인 오류 발생</string>
     <string name="common_error_social_auth_kakao_sign_out_error">카카오 로그아웃 오류</string>
     <string name="common_error_social_auth_kakao_delete_account_error">카카오 계정 삭제 오류</string>
+    <string name="common_error_social_auth_kakao_login_required">카카오 로그인을 다시 진행해주세요.</string>
     <string name="common_error_social_auth_save_token_failed">인증 정보 저장에 실패했습니다. 추후에 다시 로그인 해야할 수도 있습니다.</string>
     <string name="common_error_social_auth_failed">로그인에 실패했습니다.</string>
     <string name="common_error_login_provider_not_found">로그인 정보를 찾을 수 없어요. 재로그인 해주세요.</string>

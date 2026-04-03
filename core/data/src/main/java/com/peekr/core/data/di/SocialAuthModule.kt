@@ -28,14 +28,12 @@ class SocialAuthModule {
     @KakaoAuth
     @Singleton
     @Provides
-    fun provideKakaoAuthManager(
-        @ApplicationContext context: Context,
-    ): SocialAuthManager = KakaoSocialAuthManager(context)
+    fun provideKakaoAuthManager(): SocialAuthManager = KakaoSocialAuthManager()
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface LoginBindModule {
+interface AuthManagerFactoryBindModule {
     @Binds
     fun bindsAuthManagerFactory(impl: SocialAuthManagerFactoryImpl): SocialAuthManagerFactory
 }

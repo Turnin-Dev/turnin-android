@@ -66,6 +66,9 @@ dependencies {
     testImplementation(libs.androidx.paging.common)
     testImplementation(libs.androidx.paging.testing)
 
+    // Kakao SDK
+    implementation(libs.kakao.sdk.v2.user)
+
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)
     testImplementation(libs.junit)

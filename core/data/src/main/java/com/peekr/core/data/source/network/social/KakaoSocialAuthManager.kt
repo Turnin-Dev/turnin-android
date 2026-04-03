@@ -1,10 +1,7 @@
 package com.peekr.core.data.source.network.social
 
-import android.content.Context
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.common.model.ApiError
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.core.common.coroutine.trySendAndClose
@@ -21,35 +18,52 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 private typealias ProviderIdResult = Result<ProviderId, CommonErrorType>
 
-class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
+class KakaoSocialAuthManager : SocialAuthManager {
     private val tag = this::class.java.simpleName
 
+    // SDK 로그인 없이 기존 토큰으로 로그인 시도
+    // 토큰이 없거나 만료된 경우 KakaoLoginRequired 반환
+    // → LoginRoute에서 SDK 로그인 성공 후 loginViewModel.login() 재호출 → signIn() 재진입 → fetchUser()
     override fun signIn(): Flow<Result<ProviderId, CommonErrorType>> = callbackFlow {
         if (AuthApiClient.instance.hasToken()) {
-            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            UserApiClient.instance.accessTokenInfo { _, error ->
                 if (error != null) {
                     if (error is KakaoSdkError && error.isInvalidTokenError()) {
-                        // 1. Login Required
-                        AppLogger.i(tag, "Kakao login required")
-                        login(context)
+                        // 토큰 만료 → SDK 로그인 필요
+                        AppLogger.i(tag, "Kakao token invalid, login required")
+                        trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoLoginRequired))
                     } else {
-                        // 2. another error
+                        // 토큰 유효성 확인 중 알 수 없는 오류
                         AppLogger.i(tag, "Weird error during Kakao sign-in")
                         trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoSignInError))
                     }
                 } else {
-                    // 3. token validity check successful (renew if necessary)
-                    AppLogger.i(tag, "Kakao login required")
-                    login(context)
+                    // 토큰 유효 → 사용자 정보 조회
+                    AppLogger.i(tag, "Kakao token valid, fetching user")
+                    fetchUser()
                 }
             }
         } else {
-            // 1. Login Required
-            AppLogger.i(tag, "Kakao login required")
-            login(context)
+            // 저장된 토큰 없음 → SDK 로그인 필요
+            AppLogger.i(tag, "Kakao token not found, login required")
+            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoLoginRequired))
         }
 
         awaitClose()
+    }
+
+    // 카카오 사용자 정보 조회 후 ProviderId 반환
+    // signIn() 내부에서만 호출 (토큰 유효 시 또는 SDK 로그인 완료 후 재진입 시)
+    private fun ProducerScope<ProviderIdResult>.fetchUser() {
+        UserApiClient.instance.me { user, error ->
+            if (user?.id != null) {
+                AppLogger.i(tag, "Kakao Login succeeded")
+                trySendAndClose(Result.Success(ProviderId(user.id.toString())))
+            } else {
+                AppLogger.i(tag, "Kakao user not found.")
+                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.UserNotFound))
+            }
+        }
     }
 
     override suspend fun signOut(): Result<Unit, CommonErrorType> =
@@ -104,73 +118,6 @@ class KakaoSocialAuthManager(private val context: Context) : SocialAuthManager {
                 }
             }
         }
-
-    private fun ProducerScope<ProviderIdResult>.login(context: Context) {
-        // 카카오톡 설치 확인
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            loginWithKakaoTalk(context)
-        } else {
-            loginWithKakaoAccount(context)
-        }
-    }
-
-    private fun ProducerScope<ProviderIdResult>.loginWithKakaoTalk(context: Context) =
-        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-            if (error != null) { // 로그인 실패/에러
-                AppLogger.i(tag, "'Login with KakaoTalk' failed.")
-                loginWithKakaoTalkError(context, error)
-            } else if (token != null) { // 로그인 성공
-                AppLogger.i(tag, "'Login with KakaoTalk' succeeded.")
-                loginSuccess()
-            } else {
-                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Unexpected(error)))
-            }
-        }
-
-    private fun ProducerScope<ProviderIdResult>.loginWithKakaoTalkError(
-        context: Context,
-        error: Throwable?,
-    ) {
-        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Cancellation))
-        } else {
-            loginWithKakaoAccount(context)
-        }
-    }
-
-    private fun ProducerScope<ProviderIdResult>.loginWithKakaoAccount(context: Context) =
-        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
-            if (error != null) { // 로그인 실패/에러
-                AppLogger.i(tag, "'Login with KakaoAccount' failed.")
-                loginWithKakaoAccountError(error)
-            } else if (token != null) { // 로그인 성공
-                AppLogger.i(tag, "'Login with KakaoAccount' succeeded.")
-                loginSuccess()
-            } else {
-                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Unexpected(error)))
-            }
-        }
-
-    private fun ProducerScope<ProviderIdResult>.loginWithKakaoAccountError(error: Throwable?) {
-        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.Cancellation))
-        } else {
-            trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoSignInError, error?.message))
-        }
-    }
-
-    private fun ProducerScope<ProviderIdResult>.loginSuccess() {
-        UserApiClient.instance.me { user, error ->
-            if (user?.id != null) {
-                AppLogger.i(tag, "Kakao Login succeeded")
-                val providerId = ProviderId(user.id.toString())
-                trySendAndClose(Result.Success(providerId))
-            } else {
-                AppLogger.i(tag, "Kakao user not found.")
-                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.UserNotFound))
-            }
-        }
-    }
 
     // 이메일 로그인 필요 시 활성화
 //    private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
