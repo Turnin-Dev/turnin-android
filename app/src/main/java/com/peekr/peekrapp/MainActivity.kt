@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.util.Consumer
@@ -97,6 +99,7 @@ class MainActivity : ComponentActivity() {
         isFromSystemSetting = savedInstanceState?.getBoolean(KEY_FROM_SYSTEM_SETTING) ?: false
 
         setContent {
+            val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
             val appNavController = rememberNavController()
             val navBackStackEntry by appNavController.currentBackStackEntryAsState()
@@ -123,14 +126,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
             if (!isAuthScreen) {
+                val logoutMessage = stringResource(R.string.auto_logout)
                 ObserveAsEvents(mainViewModel.navigateToLogin) {
+                    Toast.makeText(context, logoutMessage, Toast.LENGTH_SHORT).show()
                     // 로그인 화면으로 이동
                     appNavController.navigateToLogin()
                 }
             }
 
             // ------------------------------ Snackbar ------------------------------
-            val context = LocalContext.current
             val snackbarHostState = remember(isAuthScreen) { SnackbarHostState() }
             val snackbarBottomPadding = remember {
                 derivedStateOf {
