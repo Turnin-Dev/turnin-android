@@ -6,8 +6,8 @@ import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
 import com.peekr.domain.login.error.LoginErrorType
-import com.peekr.domain.login.usecase.GetExistingLoginCredentialsUseCase
-import com.peekr.domain.login.usecase.LoginIntegrationUseCase
+import com.peekr.domain.login.usecase.GetSocialLoginResultUseCase
+import com.peekr.domain.login.usecase.LoginUseCase
 import com.peekr.presentation.login.error.asUiText
 import com.peekr.presentation.login.mapper.toDomainModel
 import com.peekr.presentation.login.mapper.toUiModel
@@ -25,8 +25,8 @@ import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginIntegrationUseCase: LoginIntegrationUseCase,
-    private val getExistingLoginCredentialsUseCase: GetExistingLoginCredentialsUseCase,
+    private val getSocialLoginResult: GetSocialLoginResultUseCase,
+    private val loginUseCase: LoginUseCase,
 ) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
@@ -43,9 +43,11 @@ class LoginViewModel @Inject constructor(
      * @param uiSocialLoginProvider [UiSocialLoginProvider]
      */
     fun login(uiSocialLoginProvider: UiSocialLoginProvider) {
+        if (loginState.value.isNavigating || loginState.value.loading) return
+
         val socialLoginProvider = uiSocialLoginProvider.toDomainModel()
-        // 사용자 존재 여부 파악
-        getExistingLoginCredentialsUseCase(socialLoginProvider)
+        // 소셜로그인 & 사용자 존재 여부 파악
+        getSocialLoginResult(socialLoginProvider)
             .onEach { result ->
                 updateLoginState(
                     result = result,
@@ -67,12 +69,29 @@ class LoginViewModel @Inject constructor(
         _loginState.update {
             it.copy(
                 loading = false,
+                isNavigating = true,
                 event = LoginUiEvent.NavigateToRegister(
                     loginCredentials.provider.toUiModel(),
                     loginCredentials.providerId.uid,
                 ),
             )
         }
+    }
+
+    // 로그인을 계속 진행하고 성공 시 메인 페이지로 이동
+    private fun proceedWithLoginAndNavigateToMain(loginCredentials: LoginCredentials) {
+        loginUseCase(loginCredentials)
+            .onEach { result ->
+                updateLoginState(result) { _ ->
+                    _loginState.update {
+                        it.copy(
+                            loading = false,
+                            isNavigating = true,
+                            event = LoginUiEvent.NavigateToMain,
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     fun onEventConsumed() {
@@ -83,14 +102,8 @@ class LoginViewModel @Inject constructor(
         _loginState.update { it.copy(error = null) }
     }
 
-    // 로그인을 계속 진행하고 성공 시 메인 페이지로 이동
-    private fun proceedWithLoginAndNavigateToMain(loginCredentials: LoginCredentials) {
-        loginIntegrationUseCase(loginCredentials)
-            .onEach { result ->
-                updateLoginState(result) { _ ->
-                    _loginState.update { it.copy(loading = false, event = LoginUiEvent.NavigateToMain) }
-                }
-            }.launchIn(viewModelScope)
+    fun onResetNavigating() {
+        _loginState.update { it.copy(isNavigating = false) }
     }
 
     /**

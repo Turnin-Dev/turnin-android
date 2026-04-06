@@ -17,12 +17,14 @@ sealed interface LoginUiEvent {
  *
  * @param loginSuccess 로그인 성공 여부
  * @param loading 로그인 로딩
+ * @param isNavigating 네비게이션 이동 상태 (로그인 중복 호출 방지용)
  * @param error 로그인 에러 메시지
  * @param event 로그인 UI 이벤트 [LoginUiEvent]
  */
 data class LoginState(
     val loginSuccess: Boolean = false,
     val loading: Boolean = false,
+    val isNavigating: Boolean = false,
     val error: UiText? = null,
     val event: LoginUiEvent? = null,
 )

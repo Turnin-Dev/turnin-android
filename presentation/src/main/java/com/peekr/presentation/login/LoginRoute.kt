@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -38,8 +39,8 @@ fun LoginRoute(
     LaunchedEffect(loginState.error) {
         loginState.error?.let { error ->
             Toast.makeText(context, error.asString(context), Toast.LENGTH_SHORT).show()
+            loginViewModel.onErrorMessageShown()
         }
-        loginViewModel.onErrorMessageShown()
     }
 
     LaunchedUiEffectHandler(
@@ -58,20 +59,29 @@ fun LoginRoute(
         },
     )
 
+    // 네비게이션 이동 상태를 초기화하기 위해 사용
+    DisposableEffect(Unit) {
+        onDispose {
+            loginViewModel.onResetNavigating()
+        }
+    }
+
     LoginScreen(
         modifier = modifier.fillMaxSize(),
         loginState = loginState,
         login = { provider ->
-            when (provider) {
-                UiSocialLoginProvider.KAKAO -> startKakaoLogin(
-                    activity = activity,
-                    onSuccess = { loginViewModel.login(provider) },
-                    onError = { error ->
-                        Toast.makeText(context, error.asUiText().asString(context), Toast.LENGTH_SHORT).show()
-                    },
-                )
+            if (!loginState.isNavigating) {
+                when (provider) {
+                    UiSocialLoginProvider.KAKAO -> startKakaoLogin(
+                        activity = activity,
+                        onSuccess = { loginViewModel.login(provider) },
+                        onError = { error ->
+                            Toast.makeText(context, error.asUiText().asString(context), Toast.LENGTH_SHORT).show()
+                        },
+                    )
 
-                else -> loginViewModel.login(provider)
+                    else -> loginViewModel.login(provider)
+                }
             }
         },
     )
