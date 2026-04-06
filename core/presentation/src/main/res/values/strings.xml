@@ -69,6 +69,7 @@
 
     <!-- Image Cropper -->
     <string name="image_cropper_btn_image_crop">완료</string>
+    <string name="image_cropper_error_default">사진 자르기 중 문제가 발생했습니다. 다시 시도 해주세요.</string>
 
     <!-- SinglePhotoPicker -->
     <string name="single_photo_picker_invalid_image_format">이미지가 올바르지 않은 형식입니다.</string>
