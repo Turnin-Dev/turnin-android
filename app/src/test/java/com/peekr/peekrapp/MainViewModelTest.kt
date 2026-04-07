@@ -77,6 +77,10 @@ class MainViewModelTest {
 
     @After
     fun tearDown() {
+        if (::viewModel.isInitialized) {
+            viewModel.viewModelScope.cancel()
+            testDispatcher.scheduler.advanceUntilIdle()
+        }
         logoutEventChannel.close()
         loginEventChannel.close()
         Dispatchers.resetMain()
