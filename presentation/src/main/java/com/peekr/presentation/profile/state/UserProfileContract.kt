@@ -24,6 +24,9 @@ class UserProfileContract {
      * @property unblockLoading 차단 해제 로딩
      */
     data class UiState(
+        val previewName: String = "",
+        val previewDisplayId: String = "",
+        val previewProfileImageUrl: String? = null,
         val profile: UiUserProfile? = null,
         val profileLoading: Boolean = false,
         val keywords: List<UiUserKeyword>? = null,

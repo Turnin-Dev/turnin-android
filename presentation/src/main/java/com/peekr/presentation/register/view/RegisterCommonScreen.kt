@@ -78,7 +78,7 @@ fun RegisterCommonScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                onBackPressed = { onBackPressed?.invoke() },
+                onBackPressed = onBackPressed,
             )
         },
         contents = {

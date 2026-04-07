@@ -1,6 +1,7 @@
 package com.peekr.core.presentation.common.navigation
 
 import androidx.navigation.NavController
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 
 // ------------------------------ Login ------------------------------
 fun NavController.navigateToLogin() {
@@ -16,11 +17,16 @@ fun NavController.navigateToMyProfile() {
 }
 
 // ------------------------------ UserProfile ------------------------------
-fun NavController.navigateToUserProfile(
-    userId: Long,
-    blockId: Long? = null,
-) {
-    navigate(Screens.UserProfile(userId, blockId))
+fun NavController.navigateToUserProfile(args: UserProfileArgs) {
+    navigate(
+        Screens.UserProfile(
+            userId = args.userId,
+            userName = args.userName,
+            displayId = args.displayId,
+            profileImageUrl = args.profileImageUrl,
+            blockId = args.blockId,
+        ),
+    )
 }
 
 // ------------------------------ Report ------------------------------

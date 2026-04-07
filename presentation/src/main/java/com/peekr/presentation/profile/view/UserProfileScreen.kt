@@ -33,7 +33,6 @@ import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
 import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.component.button.FriendStatusButton
-import com.peekr.core.presentation.ui.model.UiUserKeyword
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
 import com.peekr.presentation.profile.model.UiUserProfile
@@ -63,7 +62,7 @@ fun UserProfileScreen(
     onUiEvent: (UserProfileContract.UiEvent) -> Unit,
     onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
     onNavigateToFriendsList: (userId: Long) -> Unit,
-    onBackPressed: () -> Unit, // TODO: 람다로 직접 받을지, 이벤트로 받을지 고민
+    onBackPressed: () -> Unit,
 ) {
     Box(modifier) {
         ProfileScreenFrame(
@@ -73,68 +72,57 @@ fun UserProfileScreen(
             isRefreshing = uiState.isRefreshing,
             onRefresh = { onUiEvent(UserProfileContract.UiEvent.Refresh) },
             topBar = {
-                if (uiState.profileLoading) {
-                    TopBarSkeleton()
-                } else {
-                    uiState.profile?.let {
-                        TopBar(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                            title = uiState.profile.displayId,
-                            isBlocked = uiState.profile.isBlocked,
-                            onReportClick = {
-                                onUiEvent(
-                                    UserProfileContract.UiEvent.OnReport,
-                                )
-                            },
-                            onBackPressed = onBackPressed,
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                    title = uiState.profile?.displayId ?: uiState.previewDisplayId,
+                    blockable = uiState.profile != null,
+                    onReportClick = {
+                        onUiEvent(
+                            UserProfileContract.UiEvent.OnReport,
                         )
-                    }
-                }
+                    },
+                    onBackPressed = onBackPressed,
+                )
             },
             profile = {
-                if (uiState.profileLoading) {
-                    ProfileSkeleton()
-                } else {
-                    uiState.profile?.let {
-                        Profile(
-                            modifier = Modifier.fillMaxWidth(),
-                            profileImageUrl = it.profileImageUrl,
-                            name = it.name,
-                            friendsCount = it.friendsCount,
-                            introduce = it.introduce,
-                            friendStatus = it.friendStatus,
-                            isBlocked = it.isBlocked,
-                            unblockLoading = uiState.unblockLoading,
-                            onProfileImageClick = {},
-                            onFriendsCountClick = {
-                                onNavigateToFriendsList(it.userId)
-                            },
-                            onFriendsButtonClick = { currentFriendshipStatus ->
-                                onUiEvent(
-                                    UserProfileContract.UiEvent.OnFriendButtonClick(
-                                        friendStatus = currentFriendshipStatus,
-                                    ),
-                                )
-                            },
-                            onUnblock = {
-                                onUiEvent(UserProfileContract.UiEvent.Unblock)
-                            },
+                Profile(
+                    modifier = Modifier.fillMaxWidth(),
+                    profileImageUrl = uiState.profile?.profileImageUrl
+                        ?: uiState.previewProfileImageUrl,
+                    name = uiState.profile?.name ?: uiState.previewName,
+                    friendsCount = uiState.profile?.friendsCount,
+                    introduce = uiState.profile?.introduce ?: "",
+                    friendStatus = uiState.profile?.friendStatus,
+                    isBlocked = uiState.profile?.isBlocked,
+                    unblockLoading = uiState.unblockLoading,
+                    onProfileImageClick = {},
+                    onFriendsCountClick = {
+                        uiState.profile?.userId?.let { userId ->
+                            onNavigateToFriendsList(userId)
+                        }
+                    },
+                    onFriendsButtonClick = { currentFriendshipStatus ->
+                        onUiEvent(
+                            UserProfileContract.UiEvent.OnFriendButtonClick(
+                                friendStatus = currentFriendshipStatus,
+                            ),
                         )
-                    }
-                }
+                    },
+                    onUnblock = {
+                        onUiEvent(UserProfileContract.UiEvent.Unblock)
+                    },
+                )
             },
             keywordsTitle = {
-                if (uiState.keywordsLoading) {
+                if (uiState.keywordsLoading || uiState.keywords == null) {
                     KeywordsTitleSkeleton()
                 } else {
-                    uiState.keywords?.let {
-                        KeywordsTitleView(
-                            modifier = Modifier.align(Alignment.CenterStart),
-                            count = uiState.keywords.count(),
-                        )
-                    }
+                    KeywordsTitleView(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        count = uiState.keywords.count(),
+                    )
                 }
             },
             keywords = {
@@ -168,7 +156,7 @@ fun UserProfileScreen(
  *
  * @param modifier [Modifier]
  * @param title 탑바 타이틀
- * @param isBlocked 차단 여부
+ * @param blockable 차단 활성화 여부
  * @param onReportClick 신고 클릭 시
  * @param onBackPressed 뒤로 가기 클릭 시
  */
@@ -176,7 +164,7 @@ fun UserProfileScreen(
 private fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
-    isBlocked: Boolean,
+    blockable: Boolean,
     onReportClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -184,7 +172,7 @@ private fun TopBar(
         modifier = modifier,
         title = title,
         optionSlot = {
-            if (!isBlocked) {
+            if (blockable) {
                 PeekrIconButton(
                     icon = PeekrIcons.Filled.Bold.Report,
                     iconSize = TopBarOptionIconSize,
@@ -216,10 +204,10 @@ private fun Profile(
     modifier: Modifier = Modifier,
     profileImageUrl: String?,
     name: String,
-    friendsCount: Long,
+    friendsCount: Long?,
     introduce: String,
-    friendStatus: FriendStatus,
-    isBlocked: Boolean,
+    friendStatus: FriendStatus?,
+    isBlocked: Boolean?,
     unblockLoading: Boolean,
     onProfileImageClick: () -> Unit,
     onFriendsCountClick: () -> Unit,
@@ -235,18 +223,20 @@ private fun Profile(
         onProfileImageClick = onProfileImageClick,
         onFriendsCountClick = onFriendsCountClick,
         friendStatusButton = {
-            if (!isBlocked) {
-                FriendStatusButton(
-                    friendStatus = friendStatus,
-                    onClick = { onFriendsButtonClick(friendStatus) },
-                )
-            } else {
-                PeekrOutlinedButton(
-                    text = stringResource(R.string.user_profile_screen_btn_unblock),
-                    style = PeekrButtonStyle.Tiny,
-                    loading = unblockLoading,
-                    onClick = onUnblock,
-                )
+            if (isBlocked != null && friendStatus != null) {
+                if (!isBlocked) {
+                    FriendStatusButton(
+                        friendStatus = friendStatus,
+                        onClick = { onFriendsButtonClick(friendStatus) },
+                    )
+                } else {
+                    PeekrOutlinedButton(
+                        text = stringResource(R.string.user_profile_screen_btn_unblock),
+                        style = PeekrButtonStyle.Tiny,
+                        loading = unblockLoading,
+                        onClick = onUnblock,
+                    )
+                }
             }
         },
     )
@@ -347,7 +337,7 @@ private fun TopBarPreview() {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             title = "TopBar",
-            isBlocked = false,
+            blockable = false,
             onReportClick = {},
             onBackPressed = {},
         )
@@ -386,24 +376,7 @@ private fun UserProfileScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
-            uiState = UserProfileContract.UiState(
-                profile = UiUserProfile(
-                    userId = 1L,
-                    displayId = "Honggd123",
-                    name = "홍길동",
-                    profileImageUrl = null,
-                    introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
-                        "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                    friendsCount = 86,
-                    lastLoginAt = 1000L,
-                    active = true,
-                    friendStatus = FriendStatus.NOTHING,
-                    isBlocked = false,
-                ),
-                keywords = UiUserKeyword.samples,
-            ),
+            uiState = UserProfileContract.UiState(profile = UiUserProfile.sample),
             onUiEvent = {},
             onNavigateToKeywordDetail = { _, _ -> },
             onNavigateToFriendsList = {},
@@ -421,22 +394,29 @@ private fun UserProfileScreen_Empty_Preview() {
                 .fillMaxSize()
                 .background(PeekrTheme.colorScheme.backgroundNormal),
             uiState = UserProfileContract.UiState(
-                profile = UiUserProfile(
-                    userId = 1L,
-                    displayId = "Honggd123",
-                    name = "홍길동",
-                    profileImageUrl = null,
-                    introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +
-                        "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
-                        "1 ~ 2줄 정도로 간단히 본인을 소개하세요. 1 ~ 2줄 정도로 간단히 본인을 소개하세요.",
-                    friendsCount = 86,
-                    lastLoginAt = 1000L,
-                    active = true,
-                    friendStatus = FriendStatus.NOTHING,
-                    isBlocked = false,
-                ),
+                profile = UiUserProfile.sample,
                 keywords = emptyList(),
+            ),
+            onUiEvent = {},
+            onNavigateToKeywordDetail = { _, _ -> },
+            onNavigateToFriendsList = {},
+            onBackPressed = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun UserProfileScreen_InitialState_Preview() {
+    PeekrAppTheme {
+        UserProfileScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PeekrTheme.colorScheme.backgroundNormal),
+            uiState = UserProfileContract.UiState(
+                previewDisplayId = "",
+                previewName = "PreviewName",
+                previewProfileImageUrl = null,
             ),
             onUiEvent = {},
             onNavigateToKeywordDetail = { _, _ -> },

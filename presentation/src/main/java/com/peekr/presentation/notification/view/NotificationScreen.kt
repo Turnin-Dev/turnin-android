@@ -197,6 +197,21 @@ private fun NotificationScreenPreview() {
     }
 }
 
+@PreviewLightDarkWithBackground
+@Composable
+private fun NotificationEmptyScreenPreview() {
+    val notifications = testEmptyPagingData.collectAsLazyPagingItems()
+
+    PeekrAppTheme {
+        NotificationScreen(
+            modifier = Modifier.fillMaxSize(),
+            notifications = notifications,
+            onNotificationClick = {},
+            onBackPress = {},
+        )
+    }
+}
+
 private val testNotificationsPagingData = MutableStateFlow(
     PagingData.from(
         List(40) {
@@ -208,3 +223,5 @@ private val testNotificationsPagingData = MutableStateFlow(
         },
     ),
 )
+
+private val testEmptyPagingData = MutableStateFlow(PagingData.empty<UiNotification>())

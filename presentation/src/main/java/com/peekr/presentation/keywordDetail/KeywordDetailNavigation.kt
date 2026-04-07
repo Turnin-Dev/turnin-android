@@ -26,8 +26,8 @@ fun NavGraphBuilder.keywordDetailNavigation(appNavController: NavController) {
             onNavigateToKeywordEdit = { userKeywordId ->
                 appNavController.navigateToKeywordEdit(userKeywordId)
             },
-            onNavigateToUserProfile = { userId ->
-                appNavController.navigateToUserProfile(userId)
+            onNavigateToUserProfile = { args ->
+                appNavController.navigateToUserProfile(args)
             },
             onNavigateToMyProfile = {
                 appNavController.navigateToMyProfile()

@@ -13,7 +13,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,6 +34,7 @@ import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.domain.friend.model.FriendStatus
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.component.button.FriendStatusButton
 import com.peekr.core.presentation.ui.component.card.ProfileCard
@@ -106,7 +111,7 @@ fun FriendListScreen(
     requesters: LazyPagingItems<UiRequester>,
     requestersStatus: Map<Long, FriendStatus>,
     loadRequestersPagingData: () -> Unit,
-    onFriendClick: (userId: Long) -> Unit,
+    onFriendClick: (args: UserProfileArgs) -> Unit,
     onRequestAcceptClick: (targetId: Long, status: FriendStatus) -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -127,7 +132,13 @@ fun FriendListScreen(
                 isMyFriendList = isMyFriendList,
                 friends = friends,
                 onFriendClick = { friend ->
-                    onFriendClick(friend.userId)
+                    val args = UserProfileArgs(
+                        userId = friend.userId,
+                        userName = friend.name,
+                        displayId = friend.displayId,
+                        profileImageUrl = friend.profileImageUrl,
+                    )
+                    onFriendClick(args)
                 },
             )
         },
@@ -142,7 +153,13 @@ fun FriendListScreen(
                 requesters = requesters,
                 requestersStatus = requestersStatus,
                 onRequesterClick = { requester ->
-                    onFriendClick(requester.userId)
+                    val args = UserProfileArgs(
+                        userId = requester.userId,
+                        userName = requester.name,
+                        displayId = requester.displayId,
+                        profileImageUrl = requester.profileImageUrl,
+                    )
+                    onFriendClick(args)
                 },
                 onRequestAcceptClick = { targetId, status ->
                     onRequestAcceptClick(targetId, status)
@@ -185,17 +202,25 @@ private fun FriendList(
     friends: LazyPagingItems<UiFriendInfo>,
     onFriendClick: (UiFriendInfo) -> Unit,
 ) {
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing = remember {
         derivedStateOf {
-            friends.loadState.refresh is LoadState.Loading
+            isManualRefresh && friends.loadState.refresh is LoadState.Loading
         }
     }.value
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
 
     // 친구 목록 + Footer
     RefreshableLazyColumn(
         modifier = modifier,
         isRefreshing = isRefreshing,
-        onRefresh = { friends.refresh() },
+        onRefresh = {
+            isManualRefresh = true
+            friends.refresh()
+        },
         contentPadding = ListContentPadding,
     ) {
         pagingItem(
@@ -258,17 +283,25 @@ private fun RequesterList(
     onRequesterClick: (UiRequester) -> Unit,
     onRequestAcceptClick: (targetId: Long, status: FriendStatus) -> Unit,
 ) {
-    var isRefreshing = remember {
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing = remember {
         derivedStateOf {
-            requesters.loadState.refresh is LoadState.Loading
+            isManualRefresh && requesters.loadState.refresh is LoadState.Loading
         }
     }.value
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
 
     // 친구 요청 목록 + Footer
     RefreshableLazyColumn(
         modifier = modifier,
         isRefreshing = isRefreshing,
-        onRefresh = { requesters.refresh() },
+        onRefresh = {
+            isManualRefresh = true
+            requesters.refresh()
+        },
         contentPadding = ListContentPadding,
     ) {
         pagingItem(

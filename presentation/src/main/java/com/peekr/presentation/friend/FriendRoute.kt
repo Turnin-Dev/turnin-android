@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.friend.state.FriendEffect
 import com.peekr.presentation.friend.view.FriendListScreen
@@ -17,7 +18,7 @@ import com.peekr.presentation.friend.viewmodel.FriendListViewModel
 @Composable
 fun FriendRoute(
     onBackPressed: () -> Unit,
-    onNavigateToUserProfile: (userId: Long) -> Unit,
+    onNavigateToUserProfile: (args: UserProfileArgs) -> Unit,
     onNavigateToMyProfile: () -> Unit,
 ) {
     val viewModel: FriendListViewModel = hiltViewModel()
@@ -29,7 +30,7 @@ fun FriendRoute(
     ObserveAsEvents(viewModel.effect) { effect ->
         when (effect) {
             is FriendEffect.NavigateToUserProfile -> {
-                onNavigateToUserProfile(effect.userId)
+                onNavigateToUserProfile(effect.args)
             }
 
             FriendEffect.NavigateToMyProfile -> {
@@ -49,8 +50,8 @@ fun FriendRoute(
         loadRequestersPagingData = {
             viewModel.initRequestersPagingData()
         },
-        onFriendClick = { friendUserId ->
-            viewModel.navigateToUserProfileOrMyProfile(friendUserId)
+        onFriendClick = { args ->
+            viewModel.navigateToUserProfileOrMyProfile(args)
         },
         onRequestAcceptClick = { targetId, status ->
             viewModel.acceptFriendRequest(targetId, status)

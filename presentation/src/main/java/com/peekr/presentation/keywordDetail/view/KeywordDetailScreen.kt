@@ -18,6 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,6 +43,7 @@ import com.peekr.core.designsystem.util.icon.More
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Report
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.R
@@ -110,28 +117,36 @@ fun KeywordDetailScreen(
     uiState: KeywordDetailContract.UiState,
     onUiEvent: (KeywordDetailContract.UiEvent) -> Unit,
     onMoreClick: () -> Unit,
-    onUserClick: (userId: Long) -> Unit,
+    onUserClick: (args: UserProfileArgs) -> Unit,
     onBackPressed: () -> Unit,
 ) {
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing = remember(isManualRefresh, uiState.loading) {
+        isManualRefresh && uiState.loading
+    }
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
+
     Box(modifier) {
         KeywordDetailScreenFrame(
             modifier = Modifier.fillMaxSize(),
-            isRefreshing = uiState.loading,
-            onRefresh = { onUiEvent(KeywordDetailContract.UiEvent.OnRefresh) },
+            isRefreshing = isRefreshing,
+            onRefresh = {
+                isManualRefresh = true
+                onUiEvent(KeywordDetailContract.UiEvent.OnRefresh)
+            },
             topBar = {
-                if (uiState.loading) {
-                    TopBarSkeleton()
-                } else {
-                    TopBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
-                        myKeyword = uiState.myKeyword,
-                        onMoreClick = onMoreClick,
-                        onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
-                        onBackPressed = onBackPressed,
-                    )
-                }
+                TopBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
+                    myKeyword = uiState.myKeyword,
+                    onMoreClick = onMoreClick,
+                    onReportClick = { onUiEvent(KeywordDetailContract.UiEvent.OnReport) },
+                    onBackPressed = onBackPressed,
+                )
             },
             contents = {
                 if (uiState.loading) {
@@ -147,7 +162,14 @@ fun KeywordDetailScreen(
                             createdAt = uiState.keywordDetail.createdAt,
                             keyword = uiState.keywordDetail.keyword,
                             description = uiState.keywordDetail.description,
-                            onUserClick = { onUserClick(uiState.keywordDetail.userId) },
+                            onUserClick = {
+                                val args = UserProfileArgs(
+                                    userId = uiState.keywordDetail.userId,
+                                    userName = uiState.keywordDetail.userName,
+                                    profileImageUrl = uiState.keywordDetail.profileImageUrl,
+                                )
+                                onUserClick(args)
+                            },
                         )
                     }
                 }

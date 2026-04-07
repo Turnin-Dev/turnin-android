@@ -33,6 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -65,6 +66,10 @@ class UserRepositoryImpl @Inject constructor(
                 } else {
                     myProfileDao.getByUserId(userId).map { it?.toDomainModel() }
                 }
+            }
+            .catch { e ->
+                AppLogger.e(tag, e, "Error observing my profile")
+                emit(null)
             }
             .flowOn(ioDispatcher)
             .onEach { _myProfile.value = it }
@@ -138,6 +143,9 @@ class UserRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override fun getCachedUserProfile(userId: UserId): CoreUserProfile? =
+        memoryCache[userId]
 
     override fun updateMyProfile(patch: UserPatch): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

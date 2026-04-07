@@ -1,5 +1,6 @@
 package com.peekr.presentation.discover.state
 
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.viewmodel.BaseUiEffect
 import com.peekr.core.presentation.common.viewmodel.BaseUiEvent
 import com.peekr.core.presentation.common.viewmodel.BaseUiState
@@ -54,7 +55,7 @@ class DiscoverContract {
          * 사용자 프로필 이동 이벤트
          */
         data class NavigateToUserProfile(
-            val userId: Long,
+            val args: UserProfileArgs,
         ) : UiEvent
     }
 
@@ -76,7 +77,7 @@ class DiscoverContract {
          * 사용자 프로필 이동 일회성 이벤트
          */
         data class NavigateToUserProfile(
-            val userId: Long,
+            val args: UserProfileArgs,
         ) : UiEffect
     }
 }

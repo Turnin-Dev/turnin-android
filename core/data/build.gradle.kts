@@ -90,11 +90,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     // Kakao SDK
-    implementation(libs.kakao.sdk.v2.all)
     implementation(libs.kakao.sdk.v2.user)
-    implementation(libs.kakao.sdk.v2.talk)
-    implementation(libs.kakao.sdk.v2.share)
-    implementation(libs.kakao.sdk.v2.cert)
 
     // FCM
     implementation(libs.firebase.messaging)

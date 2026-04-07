@@ -100,7 +100,7 @@ class BlockListViewModelTest {
     fun `차단 해제 성공 시 페이징 데이터에서 해당 데이터를 제외한다`() = runTest {
         // given
         every { getBlockedUsersUseCase() } returns TestPagingDataFlow
-        every { deleteBlockUseCase(any()) } returns flowOf(Result.Success(Unit))
+        every { deleteBlockUseCase(any(), any()) } returns flowOf(Result.Success(Unit))
         viewModel =
             BlockListViewModel(getBlockedUsersUseCase, deleteBlockUseCase, snackbarController)
 
@@ -112,7 +112,7 @@ class BlockListViewModelTest {
             .map { it.toUiModel() }
 
         // when: 차단 ID가 1인 데이터로 차단 해제 수행
-        viewModel.unblock(1)
+        viewModel.unblock(1L, 1L)
         advanceUntilIdle()
         val actualPagingData = viewModel.blockedUsersPagingData.first()
         val actualList = actualPagingData.collectDataForTest(
@@ -130,7 +130,7 @@ class BlockListViewModelTest {
         // given
         val expectedError = BlockErrorType.Unexpected(null)
         every { getBlockedUsersUseCase() } returns TestPagingDataFlow
-        every { deleteBlockUseCase(any()) } returns flowOf(Result.Error(expectedError))
+        every { deleteBlockUseCase(any(), any()) } returns flowOf(Result.Error(expectedError))
         viewModel =
             BlockListViewModel(getBlockedUsersUseCase, deleteBlockUseCase, snackbarController)
 
@@ -140,7 +140,7 @@ class BlockListViewModelTest {
         }
 
         // when: 차단 해제 수행
-        viewModel.unblock(1)
+        viewModel.unblock(1L, 1L)
         advanceUntilIdle()
 
         // then: 스낵바 검증

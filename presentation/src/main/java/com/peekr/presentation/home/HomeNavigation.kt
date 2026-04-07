@@ -22,8 +22,8 @@ fun NavGraphBuilder.homeNavigation(
             onNavigateToKeywordDetail = { userId, userKeywordId ->
                 appNavController.navigateToKeywordDetail(userId, userKeywordId)
             },
-            onNavigateToUserProfile = { userId ->
-                appNavController.navigateToUserProfile(userId)
+            onNavigateToUserProfile = { args ->
+                appNavController.navigateToUserProfile(args)
             },
             onNavigateToNotification = {
                 appNavController.navigateToNotification()

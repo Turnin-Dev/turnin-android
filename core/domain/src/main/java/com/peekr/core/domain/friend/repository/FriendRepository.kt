@@ -33,6 +33,9 @@ interface FriendRepository {
     /**
      * 친구 추가
      *
+     * 잘못된 데이터가 노출될 수 있으므로 캐시 무효화는 코루틴 취소에 영향받지 않도록
+     * [kotlinx.coroutines.NonCancellable] 컨텍스트에서 수행한다.
+     *
      * 에러 별 설명
      * - [CommonErrorType.Network.Forbidden]: 요청자 ID와 실제 요청을 한 사용자 ID가 같지 않은 경우
      * - [CommonErrorType.Network.NotFound]: 사용자가 존재하지 않는 경우
@@ -48,6 +51,9 @@ interface FriendRepository {
     /**
      * 친구 삭제
      *
+     * 잘못된 데이터가 노출될 수 있으므로 캐시 무효화는 코루틴 취소에 영향받지 않도록
+     * [kotlinx.coroutines.NonCancellable] 컨텍스트에서 수행한다.
+     *
      * 에러 별 설명
      * - [CommonErrorType.Network.Forbidden]: 실제 요청을 한 사용자 ID가 요청자 ID, 요청 받을 ID와 모두 같지 않은 경우
      * - [CommonErrorType.Network.NotFound]: 친구 데이터에서 삭제 대상을 찾지 못하는 경우 (높은 확률로 이미 처리된 요청.)
@@ -60,6 +66,9 @@ interface FriendRepository {
 
     /**
      * 친구 상태 수정
+     *
+     * 잘못된 데이터가 노출될 수 있으므로 캐시 무효화는 코루틴 취소에 영향받지 않도록
+     * [kotlinx.coroutines.NonCancellable] 컨텍스트에서 수행한다.
      *
      * 에러 별 설명
      * - [CommonErrorType.Network.Forbidden]: 요청자 ID와 실제 요청을 한 사용자 ID가 같지 않은 경우

@@ -14,8 +14,8 @@ fun NavGraphBuilder.discoverNavigation(appNavController: NavHostController) {
             navigateToKeywordDetail = { userId, userKeywordId ->
                 appNavController.navigateToKeywordDetail(userId, userKeywordId)
             },
-            navigateToUserProfile = { userId ->
-                appNavController.navigateToUserProfile(userId)
+            navigateToUserProfile = { args ->
+                appNavController.navigateToUserProfile(args)
             },
             navigateToMyProfile = {
                 appNavController.navigateToMyProfile()

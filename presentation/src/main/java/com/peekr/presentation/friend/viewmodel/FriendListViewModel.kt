@@ -10,7 +10,7 @@ import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.friend.model.FriendInfo
 import com.peekr.core.domain.friend.model.FriendStatus
-import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.snackbar.SnackbarController
 import com.peekr.core.presentation.common.snackbar.SnackbarEvent
 import com.peekr.core.presentation.ui.util.UiText
@@ -42,7 +42,6 @@ private typealias UserID = Long
 @HiltViewModel
 class FriendListViewModel @Inject constructor(
     private val usecases: FriendUseCases,
-    private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val snackbarController: SnackbarController,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -51,7 +50,7 @@ class FriendListViewModel @Inject constructor(
     private val currentUserId: Long? = savedStateHandle.get<Long>("userId")
     private val myUserId = MutableStateFlow<Long?>(null)
 
-    private val _isMyFriendList = MutableStateFlow<Boolean>(false)
+    private val _isMyFriendList = MutableStateFlow(false)
     val isMyFriendList = _isMyFriendList.asStateFlow()
 
     private val _effect = Channel<FriendEffect>()
@@ -67,7 +66,7 @@ class FriendListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // 나의 사용자 ID를 로드하고 나의 친구 목록인지 판단
-            val localMyUserId = getMyUserIdUseCase()
+            val localMyUserId = usecases.getMyUserId()
             if (localMyUserId == null) {
                 showSnackbar(FriendErrorType.MyUserIdNotFound.asUiText())
                 return@launch
@@ -164,15 +163,21 @@ class FriendListViewModel @Inject constructor(
     }
 
     /**
-     * [otherUserId]값과 나의 사용자 ID를 비교한 후
+     * [args]값에서 다른 사용자의 ID를 꺼내 나의 사용자 ID와 비교한 후
      * 사용자 프로필 혹은 나의 프로필로 이동하는 일회성 이벤트를 보낸다.
      *
-     * @param otherUserId 비교할 사용자 ID
+     * @param args 사용자 프로필 네비게이션 인자 값
      */
-    fun navigateToUserProfileOrMyProfile(otherUserId: Long) {
+    fun navigateToUserProfileOrMyProfile(args: UserProfileArgs) {
         viewModelScope.launch {
-            if (myUserId.value == null || myUserId.value != otherUserId) {
-                _effect.send(FriendEffect.NavigateToUserProfile(otherUserId))
+            val localMyUserId = myUserId.value ?: usecases.getMyUserId()?.value
+            if (localMyUserId == null) {
+                showSnackbar(FriendErrorType.MyUserIdNotFound.asUiText())
+                return@launch
+            }
+
+            if (localMyUserId != args.userId) {
+                _effect.send(FriendEffect.NavigateToUserProfile(args))
             } else {
                 _effect.send(FriendEffect.NavigateToMyProfile)
             }

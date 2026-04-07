@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 
 class ReportRepositoryImpl @Inject constructor(
     private val reportNetworkDataSource: ReportNetworkDataSource,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : ReportRepository {
     override fun getReportReasons(): Flow<Result<ReportReasons, CommonErrorType>> =
         safeResultFlow<ReportReasons, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {

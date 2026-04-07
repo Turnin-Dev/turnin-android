@@ -50,7 +50,7 @@ class RegisterViewModel @Inject constructor(
     private val validateIntroduceUseCase: ValidateIntroduceUseCase,
     private val checkDisplayIdExistsUseCase: CheckDisplayIdExistsUseCase,
     private val registerIntegrationUseCase: RegisterIntegrationUseCase,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 

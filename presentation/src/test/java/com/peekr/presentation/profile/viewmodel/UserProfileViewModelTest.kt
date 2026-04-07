@@ -54,6 +54,9 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             usecases.getUserProfile(TestUserId.value)
         } returns flowOf(Result.Success(TestUserProfile))
         every {
+            usecases.getCachedUserProfile(TestUserId.value)
+        } returns null
+        every {
             usecases.getUserKeywords(TestUserId.value)
         } returns flowOf(Result.Success(TestUserKeywords))
 
@@ -79,6 +82,37 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
             assertions = listOf(
                 UserProfileContract.UiState(),
                 UserProfileContract.UiState(
+                    profile = TestUserProfile.toUiModel(),
+                    keywords = TestUserKeywords.map { it.toUiModel() },
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `캐시된 프로필이 있는 경우 초기 상태에 즉시 반영된다`() {
+        // given
+        every {
+            usecases.getCachedUserProfile(TestUserId.value)
+        } returns TestUserProfile
+        viewModel = UserProfileViewModel(snackbarController, usecases, savedStateHandle)
+
+        // when, then
+        testState(
+            viewModel = viewModel,
+            assertAllState = true,
+            intents = listOf(),
+            assertions = listOf(
+                UserProfileContract.UiState(
+                    previewName = TestUserProfile.name.value,
+                    previewDisplayId = TestUserProfile.displayId.value,
+                    previewProfileImageUrl = TestUserProfile.profileImageUrl,
+                    profile = TestUserProfile.toUiModel(), // 초기 상태부터 profile이 채워짐
+                ),
+                UserProfileContract.UiState(
+                    previewName = TestUserProfile.name.value,
+                    previewDisplayId = TestUserProfile.displayId.value,
+                    previewProfileImageUrl = TestUserProfile.profileImageUrl,
                     profile = TestUserProfile.toUiModel(),
                     keywords = TestUserKeywords.map { it.toUiModel() },
                 ),
@@ -310,7 +344,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
     @Test
     fun `차단한 프로필에서 차단 해제 성공 시 새로고침을 수행한다`() = runTest {
         // given
-        every { usecases.deleteBlock(any()) } returns flowOf(Result.Success(Unit))
+        every { usecases.deleteBlock(any(), any()) } returns flowOf(Result.Success(Unit))
         every {
             usecases.getUserProfile(TestUserId.value, true)
         } returns flowOf(Result.Success(TestUserProfile))
@@ -346,7 +380,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
     fun `차단한 프로필에서 차단 해제 실패 시 스낵바가 표시된다`() = runTest {
         // given
         val expectedError = ProfileErrorType.Unexpected(null)
-        every { usecases.deleteBlock(any()) } returns flowOf(Result.Error(expectedError))
+        every { usecases.deleteBlock(any(), any()) } returns flowOf(Result.Error(expectedError))
         savedStateHandle = SavedStateHandle(
             mapOf(
                 "userId" to TestUserId.value,

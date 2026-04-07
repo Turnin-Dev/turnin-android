@@ -13,8 +13,8 @@ fun NavGraphBuilder.friendsListScreen(appNavController: NavHostController) {
             onNavigateToMyProfile = {
                 appNavController.navigateToMyProfile()
             },
-            onNavigateToUserProfile = { userId ->
-                appNavController.navigateToUserProfile(userId)
+            onNavigateToUserProfile = { args ->
+                appNavController.navigateToUserProfile(args)
             },
             onBackPressed = {
                 appNavController.popBackStack()

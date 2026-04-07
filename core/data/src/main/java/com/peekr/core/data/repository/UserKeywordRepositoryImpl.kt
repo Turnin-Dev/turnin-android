@@ -52,7 +52,7 @@ class UserKeywordRepositoryImpl @Inject constructor(
     private val memoryListCache: MemoryCache<UserId, List<UserKeywordDetail>>,
     private val memoryCache: MemoryCache<UserKeywordId, UserKeywordDetail>,
     private val dataStoreManager: DataStoreManager,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : UserKeywordRepository {
     private val tag = this::class.java.simpleName
 
@@ -161,7 +161,11 @@ class UserKeywordRepositoryImpl @Inject constructor(
 
     override fun getMyKeywords(): Flow<List<UserKeyword>> =
         myKeywordDao.getAll()
-            .map { it.map { it.toDomainModel() } }
+            .map { keywordEntities ->
+                keywordEntities.map { keywordEntity ->
+                    keywordEntity.toDomainModel()
+                }
+            }
             .flowOn(ioDispatcher)
 
     override fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>> =

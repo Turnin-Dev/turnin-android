@@ -5,6 +5,7 @@ import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Introduce
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
+import com.peekr.core.domain.user.model.CoreUserProfile
 
 /**
  * 사용자 프로필
@@ -32,3 +33,17 @@ data class UserProfile(
     val active: Boolean,
     val isBlocked: Boolean,
 )
+
+fun CoreUserProfile.toUserProfile(): UserProfile =
+    UserProfile(
+        userId = userId,
+        displayId = displayId,
+        name = name,
+        profileImageUrl = profileImageUrl,
+        introduce = introduce,
+        friendsCount = friendsCount,
+        lastLoginAt = lastLoginAt,
+        friendStatus = friendStatus,
+        active = active,
+        isBlocked = isBlocked,
+    )

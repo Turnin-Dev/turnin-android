@@ -7,13 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.peekr.core.designsystem.theme.PeekrTheme
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.presentation.home.view.HomeScreen
 import com.peekr.presentation.home.viewmodel.HomeViewModel
 
 @Composable
 fun HomeRoute(
     onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
-    onNavigateToUserProfile: (userId: Long) -> Unit,
+    onNavigateToUserProfile: (UserProfileArgs) -> Unit,
     onNavigateToNotification: () -> Unit,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
@@ -27,8 +28,8 @@ fun HomeRoute(
         onFeedClick = { feed ->
             onNavigateToKeywordDetail(feed.userId, feed.userKeywordId)
         },
-        onUserClick = { userId ->
-            onNavigateToUserProfile(userId)
+        onUserClick = { args ->
+            onNavigateToUserProfile(args)
         },
         onNotificationClick = {
             onNavigateToNotification()

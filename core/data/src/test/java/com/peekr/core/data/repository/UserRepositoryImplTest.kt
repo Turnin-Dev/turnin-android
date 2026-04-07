@@ -53,7 +53,7 @@ class UserRepositoryImplTest {
     private val dataSource: UserNetworkDataSource = mockk()
     private val dataStoreManager: DataStoreManager = mockk()
     private val myProfileDao: MyProfileDao = mockk()
-    private val memoryCache: MemoryCache<Long, CoreUserProfile> = mockk()
+    private val memoryCache: MemoryCache<UserId, CoreUserProfile> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
     private val scope = TestScope()
     private lateinit var repository: UserRepository
@@ -246,8 +246,8 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Success(TestUserProfileResponse)
-        coEvery { memoryCache[TestUserId.value] } returns null
-        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+        coEvery { memoryCache[TestUserId] } returns null
+        coEvery { memoryCache[TestUserId] = any() } returns Unit
 
         // when
         val result = repository.getUserProfile(TestUserId).last()
@@ -267,7 +267,7 @@ class UserRepositoryImplTest {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Success(TestUserProfileResponse)
         coEvery {
-            memoryCache[TestUserId.value]
+            memoryCache[TestUserId]
         } returns TestUserProfileResponse.toDomainModel()
 
         // when
@@ -287,7 +287,7 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Success(TestUserProfileResponse)
-        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+        coEvery { memoryCache[TestUserId] = any() } returns Unit
 
         // when
         val result = repository.getUserProfile(TestUserId, forceRefresh = true).last()
@@ -307,8 +307,8 @@ class UserRepositoryImplTest {
         coEvery {
             dataSource.getUserProfile(TestUserId)
         } returns NetworkResult.Error(expectedError)
-        coEvery { memoryCache[TestUserId.value] } returns null
-        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+        coEvery { memoryCache[TestUserId] } returns null
+        coEvery { memoryCache[TestUserId] = any() } returns Unit
 
         // when
         val result = repository.getUserProfile(TestUserId).last()
@@ -326,8 +326,8 @@ class UserRepositoryImplTest {
         // given
         val exception = Exception("error!")
         coEvery { dataSource.getUserProfile(TestUserId) } throws exception
-        coEvery { memoryCache[TestUserId.value] } returns null
-        coEvery { memoryCache[TestUserId.value] = any() } returns Unit
+        coEvery { memoryCache[TestUserId] } returns null
+        coEvery { memoryCache[TestUserId] = any() } returns Unit
 
         // when
         val result = repository.getUserProfile(TestUserId).last()

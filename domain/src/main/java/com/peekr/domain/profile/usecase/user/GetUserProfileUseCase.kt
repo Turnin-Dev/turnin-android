@@ -7,6 +7,7 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.domain.profile.error.ProfileErrorType
 import com.peekr.domain.profile.model.UserProfile
+import com.peekr.domain.profile.model.toUserProfile
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -32,18 +33,7 @@ class GetUserProfileUseCase @Inject constructor(
         emitAll(
             userRepository.getUserProfile(userIdVO, forceRefresh)
                 .mapSuccess { coreUserProfile ->
-                    UserProfile(
-                        userId = coreUserProfile.userId,
-                        displayId = coreUserProfile.displayId,
-                        name = coreUserProfile.name,
-                        profileImageUrl = coreUserProfile.profileImageUrl,
-                        introduce = coreUserProfile.introduce,
-                        friendsCount = coreUserProfile.friendsCount,
-                        friendStatus = coreUserProfile.friendStatus,
-                        lastLoginAt = coreUserProfile.lastLoginAt,
-                        active = coreUserProfile.active,
-                        isBlocked = coreUserProfile.isBlocked,
-                    )
+                    coreUserProfile.toUserProfile()
                 }
                 .mapError { commonError ->
                     ProfileErrorType.CommonError(commonError)

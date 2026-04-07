@@ -1,5 +1,6 @@
 package com.peekr.core.presentation.feature.image.cropper
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,8 @@ internal fun ImageCropper(
     onCrop: (ImageBitmap) -> Unit,
 ) {
     val density = LocalDensity.current
+    val context = LocalContext.current
+    val defaultErrorMsg = stringResource(R.string.image_cropper_error_default)
 
     var viewWidth by remember { mutableIntStateOf(0) }
     var viewHeight by remember { mutableIntStateOf(0) }
@@ -137,7 +141,8 @@ internal fun ImageCropper(
                         }
 
                         is ImageCropResult.Failure -> {
-                            /** 에러 처리 **/
+                            val errorMsg = cropImageResult.errorMessage ?: defaultErrorMsg
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

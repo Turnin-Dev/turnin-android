@@ -1,5 +1,7 @@
 package com.peekr.peekrapp
 
+import android.net.ConnectivityManager
+import android.net.Network
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peekr.core.common.logger.AppLogger
@@ -12,9 +14,12 @@ import com.peekr.core.domain.user.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -30,6 +35,7 @@ class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
     private val notificationSyncManager: NotificationSyncManager,
+    private val connectivityManager: ConnectivityManager,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -63,6 +69,9 @@ class MainViewModel @Inject constructor(
         authEventBus.loginEvent
             .onEach { onLogin() }
             .launchIn(viewModelScope)
+
+        // 인터넷 연결 감지
+        observeNetworkConnectivity()
     }
 
     // onResume에서 호출
@@ -107,5 +116,26 @@ class MainViewModel @Inject constructor(
                 .catch { e -> AppLogger.e(tag, e, "Failed to preload user data.") }
                 .launchIn(viewModelScope)
         }
+    }
+
+    // 네트워크 연결 감지 시 수행할 작업
+    private fun observeNetworkConnectivity() {
+        callbackFlow {
+            val callback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    trySend(Unit)
+                }
+            }
+            connectivityManager.registerDefaultNetworkCallback(callback)
+            awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
+        }
+            .drop(1) // 앱 최초 실행 시 콜백 등록 직후 발생하는 onAvailable은 무시
+            .onEach {
+                // 네트워크 재연결 시 로그인 상태인 경우에만 재시도
+                if (_loggedIn.value == true) {
+                    preloadUserData()
+                }
+            }
+            .launchIn(viewModelScope)
     }
 }

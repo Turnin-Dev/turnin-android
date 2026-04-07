@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.discover.state.DiscoverContract
 import com.peekr.presentation.discover.view.DiscoverScreen
@@ -15,7 +16,7 @@ import com.peekr.presentation.discover.viewmodel.DiscoverViewModel
 @Composable
 fun DiscoverRoute(
     navigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
-    navigateToUserProfile: (userId: Long) -> Unit,
+    navigateToUserProfile: (UserProfileArgs) -> Unit,
     navigateToMyProfile: () -> Unit,
 ) {
     val viewModel: DiscoverViewModel = hiltViewModel()
@@ -29,7 +30,7 @@ fun DiscoverRoute(
             }
 
             is DiscoverContract.UiEffect.NavigateToUserProfile -> {
-                navigateToUserProfile(it.userId)
+                navigateToUserProfile(it.args)
             }
 
             DiscoverContract.UiEffect.NavigateToMyProfile -> {

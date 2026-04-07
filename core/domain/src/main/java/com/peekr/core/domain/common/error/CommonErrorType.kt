@@ -77,10 +77,11 @@ sealed interface CommonErrorType : BaseError {
         /** 카카오 로그아웃 에러 */
         data object KakaoSignOutError : SocialAuth
 
-        /**
-         * 카카오 계정 삭제 에러
-         */
+        /** 카카오 계정 삭제 에러 */
         data object KakaoDeleteAccountError : SocialAuth
+
+        /** 카카오 로그인 필요 */
+        data object KakaoLoginRequired : SocialAuth
 
         /** 토큰 저장 실패 에러 */
         data object SaveTokenFailed : SocialAuth
