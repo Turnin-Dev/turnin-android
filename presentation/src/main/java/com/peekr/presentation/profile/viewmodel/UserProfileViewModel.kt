@@ -223,7 +223,7 @@ class UserProfileViewModel @Inject constructor(
             return
         }
 
-        usecases.deleteBlock(blockId).onEach { result ->
+        usecases.deleteBlock(blockId, currentUserId).onEach { result ->
             when (result) {
                 Result.Loading -> {
                     updateState {

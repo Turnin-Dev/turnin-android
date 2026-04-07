@@ -168,10 +168,11 @@ class BlockRepositoryImplTest {
     @Test
     fun `차단 삭제 - 성공 테스트`() = runTest {
         // when
-        val result = repository.deleteBlock(BlockId(1L)).last()
+        val result = repository.deleteBlock(BlockId(1L), UserId(1L)).last()
 
         // then
         assertTrue(result is Result.Success)
+        verify(exactly = 1) { memoryCache.remove(any()) }
     }
 
     @Test
@@ -183,7 +184,7 @@ class BlockRepositoryImplTest {
         } returns NetworkResult.Error(expectedError)
 
         // when
-        val result = repository.deleteBlock(BlockId(1L)).last()
+        val result = repository.deleteBlock(BlockId(1L), UserId(1L)).last()
 
         // then
         val error = result as Result.Error

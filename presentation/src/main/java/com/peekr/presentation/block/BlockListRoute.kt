@@ -28,7 +28,7 @@ fun BlockListRoute(
             onNavigateToUserProfile(blockedUser)
         },
         onUnblock = { blockedUser ->
-            viewModel.unblock(blockedUser.id)
+            viewModel.unblock(blockId = blockedUser.id, userId = blockedUser.userId)
         },
         onBackPressed = onBackPressed,
     )

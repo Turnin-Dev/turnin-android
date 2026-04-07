@@ -7,6 +7,7 @@ import com.peekr.core.domain.block.model.CreateBlock
 import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.BlockId
+import com.peekr.core.domain.model.UserId
 import kotlinx.coroutines.flow.Flow
 
 /** 차단 리포지토리 */
@@ -35,6 +36,10 @@ interface BlockRepository {
      * 차단 삭제
      *
      * @param blockId 차단 ID
+     * @param userId 차단 삭제할 사용자 ID (캐시 무효화에 사용된다.)
      */
-    fun deleteBlock(blockId: BlockId): Flow<Result<Unit, CommonErrorType>>
+    fun deleteBlock(
+        blockId: BlockId,
+        userId: UserId,
+    ): Flow<Result<Unit, CommonErrorType>>
 }

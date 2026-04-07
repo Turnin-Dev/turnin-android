@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.auth.model.LoginCredentials
 import com.peekr.core.domain.common.Result
 import com.peekr.core.presentation.ui.model.UiSocialLoginProvider
+import com.peekr.core.presentation.ui.util.UiText
 import com.peekr.domain.login.error.LoginErrorType
 import com.peekr.domain.login.usecase.GetSocialLoginResultUseCase
 import com.peekr.domain.login.usecase.LoginUseCase
@@ -104,6 +105,10 @@ class LoginViewModel @Inject constructor(
 
     fun onResetNavigating() {
         _loginState.update { it.copy(isNavigating = false) }
+    }
+
+    fun showToast(error: UiText) {
+        _loginState.update { it.copy(error = error) }
     }
 
     /**

@@ -344,7 +344,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
     @Test
     fun `차단한 프로필에서 차단 해제 성공 시 새로고침을 수행한다`() = runTest {
         // given
-        every { usecases.deleteBlock(any()) } returns flowOf(Result.Success(Unit))
+        every { usecases.deleteBlock(any(), any()) } returns flowOf(Result.Success(Unit))
         every {
             usecases.getUserProfile(TestUserId.value, true)
         } returns flowOf(Result.Success(TestUserProfile))
@@ -380,7 +380,7 @@ class UserProfileViewModelTest : MVIBaseViewModelTest<
     fun `차단한 프로필에서 차단 해제 실패 시 스낵바가 표시된다`() = runTest {
         // given
         val expectedError = ProfileErrorType.Unexpected(null)
-        every { usecases.deleteBlock(any()) } returns flowOf(Result.Error(expectedError))
+        every { usecases.deleteBlock(any(), any()) } returns flowOf(Result.Error(expectedError))
         savedStateHandle = SavedStateHandle(
             mapOf(
                 "userId" to TestUserId.value,

@@ -21,28 +21,29 @@ class GetMyDiscoverContextUseCase @Inject constructor(
 ) {
     /**
      * 나의 탐색 컨텍스트를 조회한다.
-     *
-     * 나의 프로필 조회에 실패하거나 존재하지 않으면 `null`을 반환한다.
      */
     operator fun invoke(): Flow<DiscoverContext> =
         combine(
-            userRepository.myProfile.filterNotNull(),
+            userRepository.myProfile,
             userKeywordRepository.getMyKeywords(),
         ) { coreMyProfile, myKeywords ->
-            DiscoverContext(
-                user = DiscoverUser(
-                    userId = coreMyProfile.userId,
-                    userName = coreMyProfile.name,
-                    displayId = coreMyProfile.displayId,
-                    profileImageUrl = coreMyProfile.profileImageUrl,
-                ),
-                keywords = myKeywords.map { userKeyword ->
-                    DiscoverKeyword(
-                        userKeywordId = userKeyword.id,
-                        keywordId = userKeyword.keywordId,
-                        keywordName = userKeyword.keyword,
-                    )
-                },
-            )
+            coreMyProfile?.let {
+                DiscoverContext(
+                    user = DiscoverUser(
+                        userId = coreMyProfile.userId,
+                        userName = coreMyProfile.name,
+                        displayId = coreMyProfile.displayId,
+                        profileImageUrl = coreMyProfile.profileImageUrl,
+                    ),
+                    keywords = myKeywords.map { userKeyword ->
+                        DiscoverKeyword(
+                            userKeywordId = userKeyword.id,
+                            keywordId = userKeyword.keywordId,
+                            keywordName = userKeyword.keyword,
+                        )
+                    },
+                )
+            }
         }
+            .filterNotNull()
 }

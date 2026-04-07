@@ -56,12 +56,30 @@ class KakaoSocialAuthManager : SocialAuthManager {
     // signIn() 내부에서만 호출 (토큰 유효 시 또는 SDK 로그인 완료 후 재진입 시)
     private fun ProducerScope<ProviderIdResult>.fetchUser() {
         UserApiClient.instance.me { user, error ->
-            if (user?.id != null) {
-                AppLogger.i(tag, "Kakao Login succeeded")
-                trySendAndClose(Result.Success(ProviderId(user.id.toString())))
-            } else {
-                AppLogger.i(tag, "Kakao user not found.")
-                trySendAndClose(Result.Error(CommonErrorType.SocialAuth.UserNotFound))
+            when {
+                // 성공한 경우
+                user?.id != null -> {
+                    AppLogger.i(tag, "Kakao Login succeeded")
+                    trySendAndClose(Result.Success(ProviderId(user.id.toString())))
+                }
+
+                // 토큰이 만료된 경우
+                error is KakaoSdkError && error.isInvalidTokenError() -> {
+                    AppLogger.i(tag, "Kakao token invalid while fetching user")
+                    trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoLoginRequired))
+                }
+
+                // 에러가 발생한 경우
+                error != null -> {
+                    AppLogger.e(tag, error, "Failed to fetch Kakao user")
+                    trySendAndClose(Result.Error(CommonErrorType.SocialAuth.KakaoSignInError))
+                }
+
+                // 이 외의 경우
+                else -> {
+                    AppLogger.i(tag, "Kakao user not found.")
+                    trySendAndClose(Result.Error(CommonErrorType.SocialAuth.UserNotFound))
+                }
             }
         }
     }

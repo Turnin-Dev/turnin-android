@@ -170,8 +170,13 @@ class FriendListViewModel @Inject constructor(
      */
     fun navigateToUserProfileOrMyProfile(args: UserProfileArgs) {
         viewModelScope.launch {
-            val otherUserId = args.userId
-            if (myUserId.value == null || myUserId.value != otherUserId) {
+            val localMyUserId = myUserId.value ?: usecases.getMyUserId()?.value
+            if (localMyUserId == null) {
+                showSnackbar(FriendErrorType.MyUserIdNotFound.asUiText())
+                return@launch
+            }
+
+            if (localMyUserId != args.userId) {
                 _effect.send(FriendEffect.NavigateToUserProfile(args))
             } else {
                 _effect.send(FriendEffect.NavigateToMyProfile)

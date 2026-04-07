@@ -59,9 +59,13 @@ class BlockListViewModel @Inject constructor(
      * 차단 해제
      *
      * @param blockId 차단 ID
+     * @param userId 차단 해제할 사용자 ID
      */
-    fun unblock(blockId: Long) {
-        deleteBlockUseCase(blockId).onEach { result ->
+    fun unblock(
+        blockId: Long,
+        userId: Long,
+    ) {
+        deleteBlockUseCase(blockId, userId).onEach { result ->
             when (result) {
                 Result.Loading -> {
                     loadingIds.update { it + blockId }

@@ -1,6 +1,7 @@
 package com.peekr.peekrapp
 
 import android.net.ConnectivityManager
+import androidx.lifecycle.viewModelScope
 import com.peekr.core.domain.auth.repository.AuthRepository
 import com.peekr.core.domain.auth.usecase.LogoutUseCase
 import com.peekr.core.domain.common.Result
@@ -14,10 +15,12 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -404,54 +407,160 @@ class MainViewModelTest {
     // =========================================================
 
     @Test
-    fun `네트워크 재연결 시 프로필 없으면 preloadUserData 호출`() = runTest {
+    fun `네트워크 재연결 - 최초 연결(drop(1))은 무시된다`() = runTest {
         // given
-        coEvery { authRepository.isLoggedIn() } returns false
-        stubMyProfileNull()
-        stubGetMyProfileRefresh()
+        coEvery { authRepository.isLoggedIn() } returns true
+        stubMyProfileExists() // preloadUserData 호출 여부만 검증하기 위해 프로필 있음으로 고정
 
-        lateinit var capturedCallback: ConnectivityManager.NetworkCallback
-        every { connectivityManager.registerDefaultNetworkCallback(any()) } answers {
-            capturedCallback = firstArg()
-        }
+        val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
+        every {
+            connectivityManager.registerDefaultNetworkCallback(capture(callbackSlot))
+        } just Runs
 
         viewModel = createViewModel()
         testDispatcher.scheduler.advanceUntilIdle()
+        clearMocks(userRepository, answers = false)
 
-        // when & then
-        // 첫 번째 onAvailable은 drop(1)로 무시됨
-        capturedCallback.onAvailable(mockk())
+        // when — 첫 번째 onAvailable은 drop(1)로 무시됨
+        callbackSlot.captured.onAvailable(mockk())
         testDispatcher.scheduler.advanceUntilIdle()
+
+        // then
         verify(exactly = 0) { userRepository.getMyProfileRefresh() }
+    }
 
-        // 두 번째 onAvailable부터 처리됨
-        capturedCallback.onAvailable(mockk())
+    @Test
+    fun `네트워크 재연결 - 로그인 상태이고 프로필 없으면 getMyProfileRefresh 호출`() = runTest {
+        // given
+        coEvery { authRepository.isLoggedIn() } returns true
+        stubMyProfileNull()
+        stubGetMyProfileRefresh()
+
+        val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
+        every {
+            connectivityManager.registerDefaultNetworkCallback(capture(callbackSlot))
+        } just Runs
+
+        viewModel = createViewModel()
         testDispatcher.scheduler.advanceUntilIdle()
+        clearMocks(userRepository, answers = false)
+        stubMyProfileNull()
+        stubGetMyProfileRefresh()
+
+        // drop(1) 소비
+        callbackSlot.captured.onAvailable(mockk())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // when — 두 번째 onAvailable이 실제 재연결
+        callbackSlot.captured.onAvailable(mockk())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // then
         verify(exactly = 1) { userRepository.getMyProfileRefresh() }
     }
 
     @Test
-    fun `네트워크 재연결 시 프로필 있으면 getMyProfileRefresh 미호출`() = runTest {
+    fun `네트워크 재연결 - 로그인 상태이고 프로필 있으면 getMyProfileRefresh 미호출`() = runTest {
         // given
-        coEvery { authRepository.isLoggedIn() } returns false
+        coEvery { authRepository.isLoggedIn() } returns true
         stubMyProfileExists()
 
-        lateinit var capturedCallback: ConnectivityManager.NetworkCallback
-        every { connectivityManager.registerDefaultNetworkCallback(any()) } answers {
-            capturedCallback = firstArg()
-        }
+        val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
+        every {
+            connectivityManager.registerDefaultNetworkCallback(capture(callbackSlot))
+        } just Runs
 
         viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+        clearMocks(userRepository, answers = false)
+        stubMyProfileExists()
 
-        // when & then
-        // drop(1) 무시
-        capturedCallback.onAvailable(mockk())
+        // drop(1) 소비
+        callbackSlot.captured.onAvailable(mockk())
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // 두 번째 이벤트
-        capturedCallback.onAvailable(mockk())
+        // when
+        callbackSlot.captured.onAvailable(mockk())
         testDispatcher.scheduler.advanceUntilIdle()
 
+        // then
         verify(exactly = 0) { userRepository.getMyProfileRefresh() }
+    }
+
+    @Test
+    fun `네트워크 재연결 - 비로그인 상태이면 getMyProfileRefresh 미호출`() = runTest {
+        // given
+        coEvery { authRepository.isLoggedIn() } returns false
+
+        val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
+        every {
+            connectivityManager.registerDefaultNetworkCallback(capture(callbackSlot))
+        } just Runs
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // drop(1) 소비
+        callbackSlot.captured.onAvailable(mockk())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // when
+        callbackSlot.captured.onAvailable(mockk())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // then
+        verify(exactly = 0) { userRepository.getMyProfileRefresh() }
+    }
+
+    @Test
+    fun `네트워크 재연결 - loggedIn이 null이면 getMyProfileRefresh 미호출`() = runTest {
+        // given — isLoggedIn을 지연시켜 _loggedIn=null 유지
+        val deferred = CompletableDeferred<Boolean>()
+        coEvery { authRepository.isLoggedIn() } coAnswers { deferred.await() }
+
+        val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
+        every {
+            connectivityManager.registerDefaultNetworkCallback(capture(callbackSlot))
+        } just Runs
+
+        viewModel = createViewModel()
+        assertEquals(null, viewModel.loggedIn.value)
+
+        // drop(1) 소비
+        callbackSlot.captured.onAvailable(mockk())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // when — _loggedIn이 여전히 null인 상태에서 재연결
+        callbackSlot.captured.onAvailable(mockk())
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // then
+        verify(exactly = 0) { userRepository.getMyProfileRefresh() }
+
+        // cleanup
+        deferred.complete(false)
+    }
+
+    @Test
+    fun `네트워크 재연결 - ViewModel scope 취소 후 콜백 해제(unregister) 확인`() = runTest {
+        // given
+        coEvery { authRepository.isLoggedIn() } returns false
+
+        val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
+        every {
+            connectivityManager.registerDefaultNetworkCallback(capture(callbackSlot))
+        } just Runs
+
+        viewModel = createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // when — viewModelScope 취소 → awaitClose 블록 실행
+        viewModel.viewModelScope.cancel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // then
+        verify(exactly = 1) {
+            connectivityManager.unregisterNetworkCallback(callbackSlot.captured)
+        }
     }
 }

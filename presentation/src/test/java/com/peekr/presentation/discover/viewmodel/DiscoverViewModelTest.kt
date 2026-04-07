@@ -216,6 +216,7 @@ class DiscoverViewModelTest : MVIBaseViewModelTest<
         val currentState = viewModel.uiState.value
         assertNull(currentState.currentDiscoverTarget)
         assertTrue(currentState.histories.isEmpty())
+        verify(exactly = 0) { usecases.getDiscoverContexts(any()) }
     }
 
     @Test

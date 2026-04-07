@@ -131,8 +131,10 @@ class MainViewModel @Inject constructor(
         }
             .drop(1)
             .onEach {
-                // 네트워크 재연결 시 프로필이 없는 경우에만 재시도
-                preloadUserData()
+                // 네트워크 재연결 시 로그인 상태인 경우에만 재시도
+                if (_loggedIn.value == true) {
+                    preloadUserData()
+                }
             }
             .launchIn(viewModelScope)
     }

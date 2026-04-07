@@ -180,7 +180,7 @@ class FriendRepositoryImplTest {
         assertEquals(TestFriendResponse.requesterId, success.data.requesterId.value)
         assertEquals(TestFriendResponse.receiverId, success.data.receiverId.value)
         assertEquals(TestFriendResponse.requestState, success.data.requestStatus)
-        verify(exactly = 1) { memoryCache.remove(any()) }
+        verify(exactly = 1) { memoryCache.remove(TestAddFriend.receiverId) }
     }
 
     @Test
@@ -243,7 +243,7 @@ class FriendRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
-        verify(exactly = 1) { memoryCache.remove(any()) }
+        verify(exactly = 1) { memoryCache.remove(TestDeleteFriend.receiverId) }
     }
 
     @Test
@@ -306,7 +306,7 @@ class FriendRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
-        verify(exactly = 1) { memoryCache.remove(any()) }
+        verify(exactly = 1) { memoryCache.remove(TestPatchFriendRequestStatus.receiverId) }
     }
 
     @Test

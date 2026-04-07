@@ -97,11 +97,18 @@ class BlockRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun deleteBlock(blockId: BlockId): Flow<Result<Unit, CommonErrorType>> =
+    override fun deleteBlock(
+        blockId: BlockId,
+        userId: UserId,
+    ): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = blockNetworkDataSource.deleteBlock(blockId.value)) {
                 is NetworkResult.Success -> {
+                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+                    withContext(NonCancellable) {
+                        memoryCache.remove(userId)
+                    }
                     emit(Result.Success(Unit))
                 }
 

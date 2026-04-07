@@ -25,6 +25,7 @@ android {
 
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
         val kakaoKey = properties.getProperty("KAKAO_NATIVE_APP_KEY")
+            ?: error("KAKAO_NATIVE_APP_KEY is not defined in local.properties")
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoKey)
         manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = kakaoKey.removeSurrounding("\"")
     }

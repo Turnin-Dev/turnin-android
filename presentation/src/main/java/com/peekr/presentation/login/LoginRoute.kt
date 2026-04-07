@@ -2,6 +2,7 @@ package com.peekr.presentation.login
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -34,7 +35,7 @@ fun LoginRoute(
 ) {
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val activity = context as Activity
+    val activity = LocalActivity.current
 
     LaunchedEffect(loginState.error) {
         loginState.error?.let { error ->
@@ -70,14 +71,12 @@ fun LoginRoute(
         modifier = modifier.fillMaxSize(),
         loginState = loginState,
         login = { provider ->
-            if (!loginState.isNavigating) {
+            if (!loginState.isNavigating && activity != null) {
                 when (provider) {
                     UiSocialLoginProvider.KAKAO -> startKakaoLogin(
                         activity = activity,
                         onSuccess = { loginViewModel.login(provider) },
-                        onError = { error ->
-                            Toast.makeText(context, error.asUiText().asString(context), Toast.LENGTH_SHORT).show()
-                        },
+                        onError = { error -> loginViewModel.showToast(error.asUiText()) },
                     )
 
                     else -> loginViewModel.login(provider)
