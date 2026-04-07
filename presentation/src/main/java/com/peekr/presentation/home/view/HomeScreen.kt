@@ -55,7 +55,6 @@ import com.peekr.core.designsystem.component.topbar.PeekrTopBarTokens
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.click.clickableSingle
-import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Bell
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
@@ -284,9 +283,7 @@ private fun Feed(
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
         // 사용자 정보 일부, 생성 일자
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickableSingleWithoutRipple { onUserClick() },
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -215,6 +216,11 @@ class MainActivity : ComponentActivity() {
             data = Uri.fromParts("package", packageName, null)
             startActivity(this)
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.actionMasked == MotionEvent.ACTION_POINTER_DOWN) return true
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onResume() {
