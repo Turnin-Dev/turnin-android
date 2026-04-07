@@ -118,7 +118,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    // 인터넷 연결 감지 시 수행할 작업
+    // 네트워크 연결 감지 시 수행할 작업
     private fun observeNetworkConnectivity() {
         callbackFlow {
             val callback = object : ConnectivityManager.NetworkCallback() {
@@ -129,7 +129,7 @@ class MainViewModel @Inject constructor(
             connectivityManager.registerDefaultNetworkCallback(callback)
             awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
         }
-            .drop(1)
+            .drop(1) // 앱 최초 실행 시 콜백 등록 직후 발생하는 onAvailable은 무시
             .onEach {
                 // 네트워크 재연결 시 로그인 상태인 경우에만 재시도
                 if (_loggedIn.value == true) {

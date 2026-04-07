@@ -330,9 +330,8 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `syncNotificationState - loggedIn이 null이면 값이 확정될 때까지 대기 후 처리`() = runTest {
+    fun `syncNotificationState - loggedIn이 null이면 확정될 때까지 대기 후 로그인 상태이면 sync 호출`() = runTest {
         // given
-        // isLoggedIn을 지연시켜 loggedIn=null 상태에서 syncNotificationState 호출
         val deferred = CompletableDeferred<Boolean>()
         coEvery { authRepository.isLoggedIn() } coAnswers { deferred.await() }
 
@@ -340,18 +339,43 @@ class MainViewModelTest {
         assertEquals(null, viewModel.loggedIn.value)
 
         val syncJob = launch { viewModel.syncNotificationState() }
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // 아직 deferred 완료 전 → sync 미호출
+        // deferred 완료 전 → first { it != null } 에서 suspend 중 → sync 미호출
         verify(exactly = 0) { notificationSyncManager.sync() }
 
         // when
-        // isLoggedIn = false로 완료
+        stubMyProfileNull()
+        stubGetMyProfileRefresh()
+        deferred.complete(true)
+        testDispatcher.scheduler.advanceUntilIdle()
+        syncJob.join()
+
+        // then: init sync 1회 + syncNotificationState sync 1회 = 2회
+        verify(exactly = 2) { notificationSyncManager.sync() }
+    }
+
+    @Test
+    fun `syncNotificationState - loggedIn이 null이면 확정될 때까지 대기 후 비로그인 상태이면 sync 미호출`() = runTest {
+        // given
+        val deferred = CompletableDeferred<Boolean>()
+        coEvery { authRepository.isLoggedIn() } coAnswers { deferred.await() }
+
+        viewModel = createViewModel()
+        assertEquals(null, viewModel.loggedIn.value)
+
+        val syncJob = launch { viewModel.syncNotificationState() }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // deferred 완료 전 → first { it != null } 에서 suspend 중 → sync 미호출
+        verify(exactly = 0) { notificationSyncManager.sync() }
+
+        // when
         deferred.complete(false)
         testDispatcher.scheduler.advanceUntilIdle()
         syncJob.join()
 
         // then
-        // 비로그인이므로 sync 미호출
         verify(exactly = 0) { notificationSyncManager.sync() }
     }
 
@@ -414,7 +438,7 @@ class MainViewModelTest {
     fun `네트워크 재연결 - 최초 연결(drop(1))은 무시된다`() = runTest {
         // given
         coEvery { authRepository.isLoggedIn() } returns true
-        stubMyProfileExists() // preloadUserData 호출 여부만 검증하기 위해 프로필 있음으로 고정
+        stubMyProfileExists()
 
         val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
         every {
@@ -423,13 +447,20 @@ class MainViewModelTest {
 
         viewModel = createViewModel()
         testDispatcher.scheduler.advanceUntilIdle()
-        clearMocks(userRepository, answers = false)
 
-        // when — 첫 번째 onAvailable은 drop(1)로 무시됨
+        // ViewModel 초기화 시 발생한 호출 기록을 리셋하고,
+        // 프로필을 null로 재스텁한다.
+        // → 이후 onAvailable이 실제로 처리된다면 getMyProfileRefresh()가 반드시 호출되므로,
+        //   아래 verify(exactly = 0) 검증이 실패하게 된다.
+        clearMocks(userRepository, answers = false)
+        stubMyProfileNull()
+        stubGetMyProfileRefresh()
+
+        // when — 첫 번째 onAvailable 호출 (drop(1)에 의해 무시되어야 함)
         callbackSlot.captured.onAvailable(mockk())
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // then
+        // then — drop(1)이 없다면 getMyProfileRefresh()가 호출되어 테스트 실패
         verify(exactly = 0) { userRepository.getMyProfileRefresh() }
     }
 
