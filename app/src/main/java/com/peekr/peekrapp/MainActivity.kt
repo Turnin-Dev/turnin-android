@@ -22,6 +22,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -60,6 +61,9 @@ class MainActivity : ComponentActivity() {
     lateinit var notificationPermissionManager: NotificationPermissionManager
 
     private val mainViewModel: MainViewModel by viewModels()
+
+    // 멀티터치 활성화 여부 플래그
+    private var isMultiTouchEnabled = false
 
     // 알림 동기화 중복 요청 방지 플래그
     private var isFromSystemSetting = false
@@ -133,6 +137,20 @@ class MainActivity : ComponentActivity() {
                     // 로그인 화면으로 이동
                     appNavController.navigateToLogin()
                 }
+            }
+
+            // ------------------------------ Handle MultiTouch ------------------------------
+            val isMultiTouchAllowedScreen by remember(currentDestination?.route) {
+                derivedStateOf {
+                    currentDestination?.hierarchy?.any { destination ->
+                        destination.hasRoute(SubGraph.Register.CropProfileImage::class) ||
+                            destination.hasRoute(SubGraph.Setting.CropProfileImage::class)
+                    } == true
+                }
+            }
+
+            LaunchedEffect(isMultiTouchAllowedScreen) {
+                isMultiTouchEnabled = isMultiTouchAllowedScreen
             }
 
             // ------------------------------ Snackbar ------------------------------
@@ -219,7 +237,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_POINTER_DOWN) return true
+        if (ev.actionMasked == MotionEvent.ACTION_POINTER_DOWN && !isMultiTouchEnabled) return true
         return super.dispatchTouchEvent(ev)
     }
 
