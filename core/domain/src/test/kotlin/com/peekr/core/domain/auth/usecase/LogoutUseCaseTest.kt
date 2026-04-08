@@ -39,7 +39,7 @@ class LogoutUseCaseTest {
         every { socialAuthManagerFactory.create(TestLoginProvider) } returns socialAuthManager
         coEvery { socialAuthManager.signOut() } returns Result.Success(Unit)
         coEvery { notificationRepository.unsubscribeFromTopic() } just Runs
-        every { logger.d(any(), any(), any()) } just Runs
+        every { logger.e(any(), any(), any()) } just Runs
     }
 
     // ------------------------------ 로그인 프로바이더 조회 ------------------------------

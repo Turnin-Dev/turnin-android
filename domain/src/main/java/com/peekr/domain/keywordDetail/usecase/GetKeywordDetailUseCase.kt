@@ -56,6 +56,9 @@ class GetKeywordDetailUseCase @Inject constructor(
             emitAll(getUserKeywordDetail(userIdVO, userKeywordIdVO))
         }
     }
+        .catchAndLog(logger, tag) { e ->
+            emit(Result.Error(KeywordDetailErrorType.Unexpected(e)))
+        }
 
     private fun getMyKeywordDetail(
         userId: UserId,
@@ -80,9 +83,6 @@ class GetKeywordDetailUseCase @Inject constructor(
                 },
         )
     }
-        .catchAndLog(logger, tag) { e ->
-            emit(Result.Error(KeywordDetailErrorType.Unexpected(e)))
-        }
 
     private fun getUserKeywordDetail(
         userId: UserId,
