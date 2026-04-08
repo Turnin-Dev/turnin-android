@@ -9,11 +9,4 @@ value class FcmTokenId private constructor(val value: Long) {
 
         operator fun invoke(value: Long): FcmTokenId = from(value)
     }
-
-    init {
-        validate()
-    }
-
-    private fun validate() {
-    }
 }

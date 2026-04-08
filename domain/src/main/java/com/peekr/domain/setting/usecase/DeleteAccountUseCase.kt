@@ -7,6 +7,8 @@ import com.peekr.core.domain.common.coroutine.runCatchingSafe
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.common.error.mapError
 import com.peekr.core.domain.notification.repository.NotificationRepository
+import com.peekr.core.domain.util.DomainLogger
+import com.peekr.core.domain.util.catchAndLog
 import com.peekr.domain.setting.error.SettingErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +24,10 @@ class DeleteAccountUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
     private val socialAuthManagerFactory: SocialAuthManagerFactory,
+    private val logger: DomainLogger,
 ) {
+    private val tag = this::class.java.simpleName
+
     /**
      * 계정을 삭제한다.
      *
@@ -67,4 +72,7 @@ class DeleteAccountUseCase @Inject constructor(
 
         emit(Result.Success(Unit))
     }
+        .catchAndLog(logger, tag) { e ->
+            emit(Result.Error(SettingErrorType.Unexpected(e)))
+        }
 }

@@ -1,6 +1,7 @@
 package com.peekr.core.data.source.network.util
 
 import android.util.MalformedJsonException
+import com.peekr.core.common.logger.AppLogger
 import com.peekr.core.data.source.network.error.CommonErrorResponse
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.squareup.moshi.JsonDataException
@@ -123,8 +124,17 @@ private fun handleHttpException(e: HttpException): NetworkResult.Error {
 }
 
 /** Exception 처리 */
-private fun handleException(errorType: NetworkErrorType, e: Throwable): NetworkResult.Error =
-    NetworkResult.Error(error = errorType, message = e.message)
+private fun handleException(errorType: NetworkErrorType, e: Throwable): NetworkResult.Error {
+    // 1. 로그에는 원본 메시지 전체 출력 (개발 확인용)
+    AppLogger.e("NetworkCall", e, "Network exception occurred: ${e.message}")
+
+    // 2. IP 주소 패턴 (IPv4) 매칭 및 마스킹
+    val ipRegex = Regex("""\d{1,3}(\.\d{1,3}){3}""")
+    val maskedMessage = e.message?.replace(ipRegex, "XXX.XXX.XXX.XXX")
+
+    // 3. 마스킹된 메시지 반환
+    return NetworkResult.Error(error = errorType, message = maskedMessage)
+}
 
 /** HttpException에서 서버 에러 파싱 */
 private fun parseServerErrorFromException(e: HttpException): CommonErrorResponse? = runCatching {

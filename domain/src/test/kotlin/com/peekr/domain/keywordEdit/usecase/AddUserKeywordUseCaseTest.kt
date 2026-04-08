@@ -10,9 +10,12 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.core.domain.util.DomainLogger
 import com.peekr.domain.keywordEdit.error.KeywordEditErrorType
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
@@ -24,10 +27,12 @@ import org.junit.Test
 class AddUserKeywordUseCaseTest {
     private val userRepository: UserRepository = mockk()
     private val userKeywordRepository: UserKeywordRepository = mockk()
-    private val usecase = AddUserKeywordUseCase(userRepository, userKeywordRepository)
+    private val logger: DomainLogger = mockk()
+    private val usecase = AddUserKeywordUseCase(userRepository, userKeywordRepository, logger)
 
     @Before
     fun setUp() {
+        every { logger.e(any(), any(), any()) } just Runs
         coEvery { userRepository.getMyUserId() } returns TestUserId
         every {
             userKeywordRepository.createUserKeyword(TestCreateUserKeyword)

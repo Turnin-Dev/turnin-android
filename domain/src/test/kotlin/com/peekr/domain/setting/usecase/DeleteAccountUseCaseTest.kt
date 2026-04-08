@@ -7,6 +7,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.notification.repository.NotificationRepository
+import com.peekr.core.domain.util.DomainLogger
 import com.peekr.domain.setting.error.SettingErrorType
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -28,8 +29,9 @@ class DeleteAccountUseCaseTest {
     private val notificationRepository: NotificationRepository = mockk()
     private val socialAuthManagerFactory: SocialAuthManagerFactory = mockk()
     private val socialAuthManager: SocialAuthManager = mockk()
+    private val logger: DomainLogger = mockk()
     private val usecase =
-        DeleteAccountUseCase(authRepository, notificationRepository, socialAuthManagerFactory)
+        DeleteAccountUseCase(authRepository, notificationRepository, socialAuthManagerFactory, logger)
 
     @Before
     fun setUp() {
@@ -38,6 +40,7 @@ class DeleteAccountUseCaseTest {
         every { socialAuthManagerFactory.create(any()) } returns socialAuthManager
         coEvery { socialAuthManager.deleteAccount() } returns Result.Success(Unit)
         coEvery { notificationRepository.unsubscribeFromTopic() } just Runs
+        every { logger.e(any(), any(), any()) } just Runs
     }
 
     @Test

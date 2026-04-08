@@ -10,11 +10,4 @@ value class KeywordId private constructor(val value: Long) {
 
         operator fun invoke(value: Long): KeywordId = from(value)
     }
-
-    init {
-        validate()
-    }
-
-    private fun validate() {
-    }
 }

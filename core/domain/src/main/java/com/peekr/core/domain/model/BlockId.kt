@@ -8,11 +8,4 @@ value class BlockId private constructor(val value: Long) {
 
         operator fun invoke(value: Long): BlockId = from(value)
     }
-
-    init {
-        validate()
-    }
-
-    private fun validate() {
-    }
 }

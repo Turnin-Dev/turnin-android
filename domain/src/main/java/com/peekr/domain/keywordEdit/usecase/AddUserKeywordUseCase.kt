@@ -10,9 +10,11 @@ import com.peekr.core.domain.user.repository.UserRepository
 import com.peekr.core.domain.userKeyword.model.CreateUserKeyword
 import com.peekr.core.domain.userKeyword.model.UserKeyword
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.core.domain.util.DomainLogger
 import com.peekr.domain.keywordEdit.error.KeywordEditErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 
@@ -20,7 +22,10 @@ import kotlinx.coroutines.flow.flow
 class AddUserKeywordUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val userKeywordRepository: UserKeywordRepository,
+    private val logger: DomainLogger,
 ) {
+    private val tag = this::class.java.simpleName
+
     /**
      * 사용자 키워드를 추가한다.
      *
@@ -33,28 +38,34 @@ class AddUserKeywordUseCase @Inject constructor(
         keyword: String,
         description: String,
     ): Flow<Result<UserKeyword, KeywordEditErrorType>> = flow {
-        try {
-            emit(Result.Loading)
-            val userId = userRepository.getMyUserId()
-            if (userId != null) {
-                val createUserKeyword = CreateUserKeyword(
-                    userId = userId,
-                    keyword = KeywordName(keyword),
-                    description = KeywordDescription(description),
-                )
-                emitAll(
-                    userKeywordRepository
-                        .createUserKeyword(createUserKeyword)
-                        .mapError { commonError ->
-                            KeywordEditErrorType.CommonError(commonError)
-                        },
-                )
-            } else {
-                emit(Result.Error(error = KeywordEditErrorType.MyUserIdNotFound))
-            }
-        } catch (e: CommonValidationException) {
-            val error = KeywordEditErrorType.ValidationError(e.toValidationErrorType())
-            emit(Result.Error(error))
+        emit(Result.Loading)
+        val userId = userRepository.getMyUserId()
+        if (userId != null) {
+            val createUserKeyword = CreateUserKeyword(
+                userId = userId,
+                keyword = KeywordName(keyword),
+                description = KeywordDescription(description),
+            )
+            emitAll(
+                userKeywordRepository
+                    .createUserKeyword(createUserKeyword)
+                    .mapError { commonError ->
+                        KeywordEditErrorType.CommonError(commonError)
+                    },
+            )
+        } else {
+            emit(Result.Error(error = KeywordEditErrorType.MyUserIdNotFound))
         }
     }
+        .catch { e ->
+            when (e) {
+                is CommonValidationException ->
+                    emit(Result.Error(KeywordEditErrorType.ValidationError(e.toValidationErrorType())))
+
+                else -> {
+                    logger.e(tag, e, "Unexpected error occurred.")
+                    emit(Result.Error(error = KeywordEditErrorType.Unexpected(e)))
+                }
+            }
+        }
 }

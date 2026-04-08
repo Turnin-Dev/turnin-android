@@ -3,7 +3,9 @@ package com.peekr.domain.keywordEdit.usecase
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.core.domain.util.DomainLogger
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -15,12 +17,21 @@ import kotlinx.coroutines.flow.flow
  */
 class GetMyKeywordUseCase @Inject constructor(
     private val userKeywordRepository: UserKeywordRepository,
+    private val logger: DomainLogger,
 ) {
+    private val tag = this::class.java.simpleName
+
     /**
      * 나의 키워드를 로컬에서 단발성으로 조회한다.
      */
     operator fun invoke(userKeywordId: Long): Flow<UserKeywordDetail?> = flow {
-        val userKeywordIdVO = UserKeywordId(userKeywordId)
-        emitAll(userKeywordRepository.getMyDetailFromLocal(userKeywordIdVO))
+        try {
+            val userKeywordIdVO = UserKeywordId(userKeywordId)
+            emitAll(userKeywordRepository.getMyDetailFromLocal(userKeywordIdVO))
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            logger.e(tag, e, "Unexpected error occurred.")
+            emit(null)
+        }
     }
 }
