@@ -7,6 +7,8 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.model.UserKeywordId
 import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.core.domain.util.DomainLogger
+import com.peekr.core.domain.util.catchAndLog
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.model.KeywordDetail
 import com.peekr.domain.keywordDetail.model.toKeywordDetail
@@ -24,7 +26,10 @@ import kotlinx.coroutines.flow.last
 class GetKeywordDetailUseCase @Inject constructor(
     private val userKeywordRepository: UserKeywordRepository,
     private val getMyUserIdUseCase: GetMyUserIdUseCase,
+    private val logger: DomainLogger,
 ) {
+    private val tag = this::class.java.simpleName
+
     /**
      * 키워드 상세 정보를 조회한다.
      *
@@ -71,10 +76,13 @@ class GetKeywordDetailUseCase @Inject constructor(
             userKeywordRepository.getDetailRefresh(userId, userKeywordId)
                 .mapSuccess { it.toKeywordDetail() }
                 .mapError { commonError ->
-                    KeywordDetailErrorType.CommonError(commonError)
+                    KeywordDetailErrorType.CommonError(commonError) as KeywordDetailErrorType
                 },
         )
     }
+        .catchAndLog(logger, tag) { e ->
+            emit(Result.Error(KeywordDetailErrorType.Unexpected(e)))
+        }
 
     private fun getUserKeywordDetail(
         userId: UserId,

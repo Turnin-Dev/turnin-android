@@ -12,10 +12,13 @@ import com.peekr.core.domain.user.usecase.GetMyUserIdUseCase
 import com.peekr.core.domain.userKeyword.model.UserInfo
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import com.peekr.core.domain.userKeyword.repository.UserKeywordRepository
+import com.peekr.core.domain.util.DomainLogger
 import com.peekr.domain.keywordDetail.error.KeywordDetailErrorType
 import com.peekr.domain.keywordDetail.model.toKeywordDetail
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
@@ -28,11 +31,13 @@ import org.junit.Test
 class GetKeywordDetailUseCaseTest {
     private val userKeywordRepository: UserKeywordRepository = mockk()
     private val getMyUserIdUseCase: GetMyUserIdUseCase = mockk()
-    private val usecase = GetKeywordDetailUseCase(userKeywordRepository, getMyUserIdUseCase)
+    private val logger: DomainLogger = mockk()
+    private val usecase = GetKeywordDetailUseCase(userKeywordRepository, getMyUserIdUseCase, logger)
 
     @Before
     fun setUp() {
         coEvery { getMyUserIdUseCase() } returns TestUserId
+        every { logger.e(any(), any(), any()) } just Runs
     }
 
     // ------------------------------ 나의 키워드를 조회하는 경우 ------------------------------

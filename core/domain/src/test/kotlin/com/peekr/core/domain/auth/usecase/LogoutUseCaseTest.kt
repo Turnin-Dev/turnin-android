@@ -7,6 +7,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.SocialLoginProvider
 import com.peekr.core.domain.notification.repository.NotificationRepository
+import com.peekr.core.domain.util.DomainLogger
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,8 +29,9 @@ class LogoutUseCaseTest {
     private val notificationRepository: NotificationRepository = mockk()
     private val socialAuthManagerFactory: SocialAuthManagerFactory = mockk()
     private val socialAuthManager: SocialAuthManager = mockk()
+    private val logger: DomainLogger = mockk()
     private val usecase =
-        LogoutUseCase(authRepository, notificationRepository, socialAuthManagerFactory)
+        LogoutUseCase(authRepository, notificationRepository, socialAuthManagerFactory, logger)
 
     @Before
     fun setUp() {
@@ -37,6 +39,7 @@ class LogoutUseCaseTest {
         every { socialAuthManagerFactory.create(TestLoginProvider) } returns socialAuthManager
         coEvery { socialAuthManager.signOut() } returns Result.Success(Unit)
         coEvery { notificationRepository.unsubscribeFromTopic() } just Runs
+        every { logger.d(any(), any(), any()) } just Runs
     }
 
     // ------------------------------ 로그인 프로바이더 조회 ------------------------------

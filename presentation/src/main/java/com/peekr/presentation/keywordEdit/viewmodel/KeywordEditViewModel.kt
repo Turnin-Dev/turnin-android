@@ -78,6 +78,7 @@ class KeywordEditViewModel @Inject constructor(
     }
 
     private suspend fun loadUserKeyword(userKeywordId: Long?) {
+        // TODO: 빈 값 조회 시 폴백 필요.
         userKeywordId?.let {
             val userKeywordDetail = usecases.getMyKeyword(it).firstOrNull()
             userKeywordDetail?.let {

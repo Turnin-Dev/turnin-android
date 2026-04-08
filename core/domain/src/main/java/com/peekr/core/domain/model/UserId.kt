@@ -9,11 +9,4 @@ value class UserId private constructor(val value: Long) {
 
         operator fun invoke(value: Long): UserId = from(value)
     }
-
-    init {
-        validate()
-    }
-
-    private fun validate() {
-    }
 }
