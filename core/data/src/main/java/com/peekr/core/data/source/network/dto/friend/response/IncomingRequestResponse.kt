@@ -5,6 +5,7 @@ import com.peekr.core.domain.friend.model.IncomingRequest
 import com.peekr.core.domain.model.DisplayId
 import com.peekr.core.domain.model.Name
 import com.peekr.core.domain.model.UserId
+import com.squareup.moshi.JsonClass
 
 /**
  * 나에게 들어온 친구 요청 응답 바디
@@ -18,6 +19,7 @@ import com.peekr.core.domain.model.UserId
  * @property createdAt 요청 생성 일자
  * @property updatedAt 요청 수정 일자
  */
+@JsonClass(generateAdapter = true)
 data class IncomingRequestResponse(
     val id: Long,
     val userId: Long,

@@ -2,6 +2,7 @@ package com.peekr.core.data.source.network.dto.friend.response
 
 import com.peekr.core.data.paging.PagingDataHolder
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 /**
  * 나에게 들어온 친구 요청 목록 응답 바디
@@ -12,6 +13,7 @@ import com.squareup.moshi.Json
  * @property hasNext 다음 페이지 존재 여부
  * @property list 친구 요청 목록
  */
+@JsonClass(generateAdapter = true)
 data class IncomingRequestsResponse(
     val pageNumber: Long,
     val pageSize: Int,
