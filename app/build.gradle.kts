@@ -12,6 +12,10 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 
+val localProperties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
+}
+
 android {
     namespace = "com.peekr.peekrapp"
 
@@ -24,11 +28,42 @@ android {
             useSupportLibrary = true
         }
 
-        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
-        val kakaoKey = properties.getProperty("KAKAO_NATIVE_APP_KEY")
+        val kakaoKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY")
             ?: error("KAKAO_NATIVE_APP_KEY is not defined in local.properties")
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoKey)
         manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = kakaoKey.removeSurrounding("\"")
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(localProperties["STORE_FILE"] as String)
+            storePassword = localProperties["STORE_PASSWORD"] as String
+            keyAlias = localProperties["KEY_ALIAS"] as String
+            keyPassword = localProperties["KEY_PASSWORD"] as String
+        }
+    }
+
+    buildTypes {
+        debug {
+            manifestPlaceholders["crashlyticsEnabled"] = false
+        }
+        release {
+            manifestPlaceholders["crashlyticsEnabled"] = true
+
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
+//            isDebuggable = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+
+            // Crashlytics 매핑 파일 자동 업로드
+            configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
+        }
     }
 }
 
