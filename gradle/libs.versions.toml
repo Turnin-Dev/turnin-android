@@ -30,6 +30,7 @@ androidXArchCoreTest = "2.2.0"
 robolectric = "4.15.1"
 googleGMS = "4.4.4"
 firebaseBom = "34.10.0"
+firebaseCrashlyticsPlugin = "3.0.7"
 googleId = "1.2.0"
 credentials = "1.5.0"
 kakaoSdk = "2.21.7"
@@ -96,9 +97,10 @@ androidx-credentials-play-services-auth = { module = "androidx.credentials:crede
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleId" }
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 # Kakao SDK
 kakao-sdk-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoSdk" }
 kakao-sdk-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSdk" }
@@ -154,6 +156,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 
 # Peekr Plugins
 peekr-android-application = { id = "peekr.android.application" }
