@@ -1,6 +1,7 @@
 package com.peekr.core.common.logger
 
 import android.util.Log
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.jetbrains.annotations.NotNull
 import timber.log.Timber
 
@@ -17,11 +18,10 @@ class DebugTree : Timber.DebugTree() {
 class ReleaseTree : @NotNull Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         if (priority == Log.ERROR || priority == Log.WARN) {
-            // 릴리즈 버전에서는 Firebase Crashlytics 등으로 전송
-            // FirebaseCrashlytics.getInstance().log(message)
-            // if (t != null) {
-            //     FirebaseCrashlytics.getInstance().recordException(t)
-            // }
+            FirebaseCrashlytics.getInstance().log(message)
+            if (t != null) {
+                FirebaseCrashlytics.getInstance().recordException(t)
+            }
         }
     }
 }
