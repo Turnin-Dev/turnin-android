@@ -69,7 +69,7 @@ dependencies {
     testImplementation(libs.okhttp.mockWebServer)
 
     // Serialization
-    api(libs.moshi.kotlin)
+    implementation(libs.moshi.kotlin)
 
     // Paging3
     implementation(libs.androidx.paging.runtime)

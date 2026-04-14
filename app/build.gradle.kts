@@ -1,4 +1,3 @@
-import java.io.FileInputStream
 import java.util.Properties
 import kotlin.apply
 
@@ -13,8 +12,18 @@ plugins {
 }
 
 val localProperties = Properties().apply {
-    load(FileInputStream(rootProject.file("local.properties")))
+    rootProject.file("local.properties").inputStream().use(::load)
 }
+
+fun Properties.require(name: String): String =
+    getProperty(name) ?: error("$name is not defined in local.properties")
+
+val hasReleaseSigning = listOf(
+    "STORE_FILE",
+    "STORE_PASSWORD",
+    "KEY_ALIAS",
+    "KEY_PASSWORD",
+).all(localProperties::containsKey)
 
 android {
     namespace = "com.peekr.peekrapp"
@@ -35,11 +44,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file(localProperties["STORE_FILE"] as String)
-            storePassword = localProperties["STORE_PASSWORD"] as String
-            keyAlias = localProperties["KEY_ALIAS"] as String
-            keyPassword = localProperties["KEY_PASSWORD"] as String
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(localProperties.require("STORE_FILE"))
+                storePassword = localProperties.require("STORE_PASSWORD")
+                keyAlias = localProperties.require("KEY_ALIAS")
+                keyPassword = localProperties.require("KEY_PASSWORD")
+            }
         }
     }
 
@@ -50,7 +61,12 @@ android {
         release {
             manifestPlaceholders["crashlyticsEnabled"] = true
 
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                error("Release build requires STORE_FILE, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD in local.properties")
+            }
+
             isMinifyEnabled = true
             isShrinkResources = true
 //            isDebuggable = true
@@ -118,6 +134,7 @@ dependencies {
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.moshi.kotlin)
 
     // Splash Screen
     implementation(libs.splash.screen)
