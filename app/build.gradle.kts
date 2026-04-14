@@ -63,8 +63,6 @@ android {
 
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
-            } else {
-                error("Release build requires STORE_FILE, STORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD in local.properties")
             }
 
             isMinifyEnabled = true
