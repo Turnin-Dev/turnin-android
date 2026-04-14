@@ -53,9 +53,6 @@ dependencies {
     testImplementation(libs.retrofit.mock)
     testImplementation(libs.okhttp.mockWebServer)
 
-    // Serialization
-    implementation(libs.moshi.kotlin)
-
     // DataStore
     implementation(libs.androidx.dataStore.preference)
 
