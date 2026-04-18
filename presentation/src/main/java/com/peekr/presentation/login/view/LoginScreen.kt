@@ -8,11 +8,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,12 +57,16 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = ScreenTokens.HorizontalPadding),
-            verticalArrangement = Arrangement.spacedBy(150.dp, alignment = Alignment.CenterVertically),
+                .padding(horizontal = ScreenTokens.HorizontalPadding, vertical = 60.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Spacer(Modifier.size(0.dp))
             PeekrLogoWithText()
-            Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 GoogleLoginButton(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -122,7 +129,7 @@ private fun CommonLoginButton(
     Box(
         modifier = modifier
             .clip(LoginButtonTokens.Shape)
-            .border(0.25.dp, borderColor, LoginButtonTokens.Shape)
+            .border(1.dp, borderColor, LoginButtonTokens.Shape)
             .background(color, LoginButtonTokens.Shape)
             .clickableSingle(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -130,7 +137,7 @@ private fun CommonLoginButton(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = LoginButtonTokens.HorizontalPadding),
+                .padding(LoginButtonTokens.InnerPaddingValues),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
@@ -151,13 +158,13 @@ private fun CommonLoginButton(
 /** 로그인 버튼에 사용하는 토큰 값들 */
 private object LoginButtonTokens {
     /** 로그인 버튼 내부 Horizontal 패딩 */
-    val HorizontalPadding = 24.dp
+    val InnerPaddingValues = PaddingValues(horizontal = 24.dp, vertical = 10.dp)
 
     /** 로그인 버튼 모양 */
     val Shape = RoundedCornerShape(20.dp)
 
     /** 로그인 버튼 높이 */
-    val Height = 43.dp
+    val Height = 48.dp
 
     /** 카카오 색상 */
     val KakaoColor = Color(0xFFFEE500)
@@ -170,7 +177,7 @@ private fun LoginScreenPreview() {
         LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = ScreenTokens.HorizontalPadding),
+                .background(PeekrTheme.colorScheme.backgroundNormal),
             loginState = LoginState(),
             login = {},
         )
