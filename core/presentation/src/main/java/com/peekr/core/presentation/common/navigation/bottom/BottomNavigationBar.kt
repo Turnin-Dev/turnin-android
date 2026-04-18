@@ -2,6 +2,7 @@ package com.peekr.core.presentation.common.navigation.bottom
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,7 @@ import com.peekr.core.designsystem.component.icon.PeekrIcon
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Home
 import com.peekr.core.designsystem.util.icon.PeekrIconType
 import com.peekr.core.designsystem.util.icon.PeekrIcons
@@ -76,13 +77,18 @@ fun BottomNavigationBar(
         windowInsets = WindowInsets(bottom = 0.dp),
     ) {
         Column(Modifier.align(Alignment.CenterVertically)) {
+            // 상단 구분선
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                color = DividerColor,
-                thickness = 1.dp,
+                color = if (isSystemInDarkTheme()) Color(0xFF333333) else Color(0xFFD5D5D5),
+                thickness = 0.5.dp,
             )
+
+            // 아이템
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = BarHorizontalPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -98,7 +104,7 @@ fun BottomNavigationBar(
                     Item(
                         modifier = Modifier
                             .weight(1f)
-                            .clickableSingle {
+                            .clickableSingleWithoutRipple {
                                 navigateWithOption(
                                     navController = navController,
                                     currentRoute = item.route,
@@ -195,9 +201,9 @@ private fun navigateWithOption(
     }
 }
 
-private val ItemIconTitleSpacingDp = 6.dp
+private val ItemIconTitleSpacingDp = 4.dp
 private val ItemVerticalSpacingDp = 8.dp
-private val DividerColor = Color(0xFFD5D5D5)
+private val BarHorizontalPadding = 10.dp
 
 // ------------------------------ Previews ------------------------------
 @Preview
