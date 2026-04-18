@@ -179,22 +179,22 @@ private fun TypographySample() {
         HorizontalDivider()
         Text(
             text = "Headline 1",
-            style = PeekrTheme.typography.headline1,
-            color = PeekrTheme.colorScheme.textStrong,
-        )
-        Text(
-            text = "Headline 2",
             style = PeekrTheme.typography.headline2,
             color = PeekrTheme.colorScheme.textStrong,
         )
         Text(
-            text = "Headline 3",
+            text = "Headline 2",
             style = PeekrTheme.typography.headline3,
             color = PeekrTheme.colorScheme.textStrong,
         )
         Text(
-            text = "Headline 4",
+            text = "Headline 3",
             style = PeekrTheme.typography.headline4,
+            color = PeekrTheme.colorScheme.textStrong,
+        )
+        Text(
+            text = "Headline 4",
+            style = PeekrTheme.typography.headline5,
             color = PeekrTheme.colorScheme.textStrong,
         )
         HorizontalDivider()
@@ -210,12 +210,12 @@ private fun TypographySample() {
         )
         Text(
             text = "Body 3 Normal",
-            style = PeekrTheme.typography.body3Normal,
+            style = PeekrTheme.typography.body3,
             color = PeekrTheme.colorScheme.textStrong,
         )
         Text(
             text = "Body 3 Many",
-            style = PeekrTheme.typography.body3Many,
+            style = PeekrTheme.typography.body3,
             color = PeekrTheme.colorScheme.textStrong,
         )
         Text(

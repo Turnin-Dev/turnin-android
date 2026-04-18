@@ -296,7 +296,7 @@ private fun UserInfo(
             // 사용자 명
             Text(
                 text = userName,
-                style = PeekrTheme.typography.body3Many,
+                style = PeekrTheme.typography.body3,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textNormal,
             )
@@ -331,14 +331,14 @@ private fun KeywordContents(
     ) {
         Text(
             text = keyword,
-            style = PeekrTheme.typography.headline1,
+            style = PeekrTheme.typography.headline2,
             fontWeight = FontWeight.SemiBold,
             color = PeekrTheme.colorScheme.textNormal,
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = description,
-            style = PeekrTheme.typography.body3Content,
+            style = PeekrTheme.typography.bodyContent,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textNormal,
             textAlign = TextAlign.Start,

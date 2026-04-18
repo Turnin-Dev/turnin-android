@@ -54,7 +54,7 @@ internal fun SettingItemContainer(
                 .fillMaxWidth()
                 .padding(ContainerItemTitlePadding),
             text = title,
-            style = PeekrTheme.typography.headline4,
+            style = PeekrTheme.typography.headline5,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textAssist2,
             textAlign = TextAlign.Start,
@@ -120,7 +120,7 @@ internal fun SettingItem(
             // 제목
             Text(
                 text = title,
-                style = PeekrTheme.typography.body3Normal,
+                style = PeekrTheme.typography.body3,
                 fontWeight = FontWeight.Normal,
                 color = titleColor,
             )

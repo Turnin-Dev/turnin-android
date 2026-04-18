@@ -72,7 +72,7 @@ fun DeleteAccountModal(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.setting_detail_delete_account_modal_title),
-                style = PeekrTheme.typography.headline2,
+                style = PeekrTheme.typography.headline3,
                 fontWeight = FontWeight.Medium,
                 color = PeekrTheme.colorScheme.textNormal,
                 textAlign = TextAlign.Center,
@@ -89,7 +89,7 @@ fun DeleteAccountModal(
                     append("\n")
                     append(stringResource(R.string.setting_detail_delete_account_modal_content_3))
                 },
-                style = PeekrTheme.typography.headline4,
+                style = PeekrTheme.typography.headline5,
                 fontWeight = FontWeight.Medium,
                 color = PeekrTheme.colorScheme.textAssist,
             )

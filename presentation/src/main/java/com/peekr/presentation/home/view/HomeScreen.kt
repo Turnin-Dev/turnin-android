@@ -318,7 +318,7 @@ private fun Feed(
         // 키워드
         Text(
             text = feed.keyword,
-            style = PeekrTheme.typography.headline2,
+            style = PeekrTheme.typography.headline3,
             fontWeight = FontWeight.Bold,
             color = PeekrTheme.colorScheme.textNormal,
         )
@@ -326,7 +326,7 @@ private fun Feed(
         // 키워드 내용
         Text(
             text = feed.description,
-            style = PeekrTheme.typography.body3Content,
+            style = PeekrTheme.typography.bodyContent,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textNormal,
             maxLines = 10,

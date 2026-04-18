@@ -148,7 +148,7 @@ private fun ActionButton(
     ) {
         Text(
             text = text,
-            style = PeekrTheme.typography.body3Normal,
+            style = PeekrTheme.typography.body3,
             fontWeight = FontWeight.Bold,
             color = PeekrTheme.colorScheme.primary,
         )
@@ -166,7 +166,7 @@ private fun Content(
     ) {
         Text(
             text = text,
-            style = PeekrTheme.typography.body3Normal,
+            style = PeekrTheme.typography.body3,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Start,
             maxLines = 2,

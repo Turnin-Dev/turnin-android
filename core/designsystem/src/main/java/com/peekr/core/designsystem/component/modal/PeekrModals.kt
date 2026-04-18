@@ -124,7 +124,7 @@ private fun Title(
     Text(
         modifier = modifier,
         text = text,
-        style = PeekrTheme.typography.headline2,
+        style = PeekrTheme.typography.headline3,
         fontWeight = FontWeight.Medium,
         color = PeekrTheme.colorScheme.textNormal,
         textAlign = TextAlign.Center,

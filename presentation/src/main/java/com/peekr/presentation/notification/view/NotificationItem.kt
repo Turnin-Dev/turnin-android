@@ -135,7 +135,7 @@ private fun Contents(
             title?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.body3Normal,
+                    style = PeekrTheme.typography.body3,
                     fontWeight = FontWeight.Medium,
                     color = PeekrTheme.colorScheme.textNormal,
                 )

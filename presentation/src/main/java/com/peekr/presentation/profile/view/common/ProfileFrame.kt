@@ -89,14 +89,14 @@ fun ProfileFrame(
                 ) {
                     Text(
                         text = stringResource(R.string.my_profile_screen_friends_total),
-                        style = PeekrTheme.typography.body3Normal,
+                        style = PeekrTheme.typography.body3,
                         fontWeight = FontWeight.Bold,
                         color = PeekrTheme.colorScheme.textNormal,
                     )
                     friendsCount?.let {
                         Text(
                             text = "$it",
-                            style = PeekrTheme.typography.body3Normal,
+                            style = PeekrTheme.typography.body3,
                             fontWeight = FontWeight.Normal,
                             color = PeekrTheme.colorScheme.textNormal,
                             maxLines = 1,
