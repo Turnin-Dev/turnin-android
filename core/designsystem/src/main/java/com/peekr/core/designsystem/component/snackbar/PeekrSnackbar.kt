@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -68,7 +67,7 @@ fun PeekrSnackbar(
     dismissEnabled: Boolean = true,
 ) {
     SnackbarHost(
-        modifier = Modifier.imePadding(),
+        modifier = Modifier,
         hostState = snackbarHostState,
     ) { snackbarData ->
         val dismissSnackbarState = rememberSwipeToDismissBoxState()
@@ -184,7 +183,7 @@ private fun CustomSnackbarPreview() {
     val fakeSnackbarData = object : SnackbarData {
         override val visuals: SnackbarVisuals = object : SnackbarVisuals {
             override val message: String = "이건 스낵바 메시지 예시입니다."
-            override val actionLabel: String? = "확인"
+            override val actionLabel: String = "확인"
             override val withDismissAction: Boolean = true
             override val duration: SnackbarDuration = SnackbarDuration.Short
         }

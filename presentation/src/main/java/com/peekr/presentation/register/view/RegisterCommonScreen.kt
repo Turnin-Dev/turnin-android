@@ -29,7 +29,6 @@ import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.designsystem.util.token.ScreenTokens
-import com.peekr.core.presentation.ui.util.bottomAutoPadding
 import com.peekr.presentation.R
 
 /**
@@ -69,8 +68,6 @@ fun RegisterCommonScreen(
     onBackPressed: (() -> Unit)? = null,
     onProfileImageClick: (() -> Unit)? = null,
 ) {
-    val bottomPadding = bottomAutoPadding()
-
     RegisterScreenFrame(
         modifier = modifier,
         topBar = {
@@ -100,7 +97,10 @@ fun RegisterCommonScreen(
                     PeekrSolidButton(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = bottomPadding, top = ScreenTokens.BottomButtonPadding),
+                            .padding(
+                                bottom = ScreenTokens.BottomButtonPadding,
+                                top = ScreenTokens.BottomButtonPadding,
+                            ),
                         text = stringResource(buttonTitle),
                         style = PeekrButtonStyle.Large,
                         onClick = { onNextWithValue(text) },

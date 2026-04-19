@@ -15,8 +15,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -199,7 +201,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     },
-                    contentWindowInsets = WindowInsets.systemBars,
+                    contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime),
                 ) { innerPadding ->
                     val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
 

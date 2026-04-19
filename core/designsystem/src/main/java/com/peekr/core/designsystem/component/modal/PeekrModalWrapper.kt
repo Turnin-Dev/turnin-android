@@ -62,14 +62,13 @@ internal fun PeekrModalWrapper(
             properties = DialogProperties(usePlatformDefaultWidth = false),
         ) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().imePadding(),
                 contentAlignment = Alignment.Center,
             ) {
                 ModalScrim(onDismissRequest = onDismissRequest)
                 ModalContent(
                     modifier = Modifier
-                        .padding(20.dp)
-                        .imePadding(),
+                        .padding(20.dp),
                     content = content,
                 )
                 if (loading) {
