@@ -24,6 +24,7 @@ import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.domain.model.BlockId
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreUserProfile
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.NonCancellable
@@ -33,7 +34,8 @@ import kotlinx.coroutines.withContext
 
 class BlockRepositoryImpl @Inject constructor(
     private val blockNetworkDataSource: BlockNetworkDataSource,
-    private val memoryCache: MemoryCache<UserId, CoreUserProfile>,
+    private val userMemoryCache: MemoryCache<UserId, CoreUserProfile>,
+    private val keywordMemoryCache: MemoryCache<UserId, List<UserKeywordDetail>>,
     @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : BlockRepository {
     override fun getBlockedUsers(): Flow<PagingData<BlockedUser>> {
@@ -85,7 +87,8 @@ class BlockRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
                     withContext(NonCancellable) {
-                        memoryCache.remove(block.blockedId)
+                        userMemoryCache.remove(block.blockedId)
+                        keywordMemoryCache.remove(block.blockedId)
                     }
                     emit(Result.Success(Unit))
                 }
@@ -107,7 +110,8 @@ class BlockRepositoryImpl @Inject constructor(
                 is NetworkResult.Success -> {
                     // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
                     withContext(NonCancellable) {
-                        memoryCache.remove(userId)
+                        userMemoryCache.remove(userId)
+                        keywordMemoryCache.remove(userId)
                     }
                     emit(Result.Success(Unit))
                 }
