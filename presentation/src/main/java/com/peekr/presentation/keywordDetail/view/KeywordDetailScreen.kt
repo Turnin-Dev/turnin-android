@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -84,7 +83,10 @@ private fun KeywordDetailScreenFrame(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = ScreenTokens.HorizontalPadding)
+                    .padding(
+                        horizontal = ScreenTokens.HorizontalPadding,
+                        vertical = 10.dp,
+                    )
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(30.dp),
             ) {
@@ -154,9 +156,7 @@ fun KeywordDetailScreen(
                 } else {
                     uiState.keywordDetail?.let {
                         Contents(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 10.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             userName = uiState.keywordDetail.userName,
                             profileImageUrl = uiState.keywordDetail.profileImageUrl,
                             createdAt = uiState.keywordDetail.createdAt,
@@ -349,53 +349,38 @@ private fun KeywordContents(
 // ------------------------------ Skeleton ------------------------------
 
 @Composable
-private fun TopBarSkeleton() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 60.dp)
-            .padding(horizontal = ScreenTokens.HorizontalPadding),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SkeletonBox(Modifier.size(22.dp), CircleShape)
-        SkeletonBox(Modifier.size(22.dp), CircleShape)
-    }
-}
-
-@Composable
 private fun ContentsSkeleton() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
+        // 사용자 정보
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             SkeletonBox(Modifier.size(UserAvatarSize), CircleShape)
             Column(
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.Start,
             ) {
-                SkeletonBox(Modifier.size(87.dp, 16.dp))
+                SkeletonBox(Modifier.size(87.dp, 14.dp))
                 SkeletonBox(Modifier.size(53.dp, 14.dp))
             }
         }
 
+        // 키워드 & 내용
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.Start,
         ) {
-            SkeletonBox(Modifier.size(170.dp, 24.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                SkeletonBox(Modifier.size(208.dp, 18.dp))
-                SkeletonBox(Modifier.size(230.dp, 18.dp))
-                SkeletonBox(Modifier.size(296.dp, 18.dp))
-                SkeletonBox(Modifier.size(246.dp, 18.dp))
+            SkeletonBox(Modifier.size(170.dp, 22.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                SkeletonBox(Modifier.size(208.dp, 16.dp))
+                SkeletonBox(Modifier.size(230.dp, 16.dp))
+                SkeletonBox(Modifier.size(296.dp, 16.dp))
+                SkeletonBox(Modifier.size(246.dp, 16.dp))
             }
         }
     }
