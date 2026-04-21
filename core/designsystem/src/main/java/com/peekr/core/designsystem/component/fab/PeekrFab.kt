@@ -3,9 +3,8 @@ package com.peekr.core.designsystem.component.fab
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -64,7 +63,14 @@ fun PeekrFab(
             .clickableSingle(onClick = onClick, enabled = enabled),
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            modifier = Modifier.padding(
+                vertical = 14.dp,
+                horizontal = if (text == null) 14.dp else 22.dp,
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             PeekrIcon(
                 icon = icon,
                 iconSize = PeekrIconSize.Normal,
@@ -74,7 +80,7 @@ fun PeekrFab(
             text?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.caption3,
+                    style = PeekrTheme.typography.caption2,
                     fontWeight = FontWeight.Medium,
                     color = PeekrTheme.colorScheme.staticWhite,
                 )
@@ -94,20 +100,17 @@ private fun PeekrFabPreview() {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             PeekrFab(
-                modifier = Modifier.size(50.dp),
                 icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = null,
                 onClick = {},
             )
             PeekrFab(
-                modifier = Modifier.size(50.dp),
                 icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = null,
                 shape = CircleShape,
                 onClick = {},
             )
             PeekrFab(
-                modifier = Modifier.size(50.dp),
                 icon = PeekrIcons.Default.Bold.Plus,
                 text = "추가",
                 contentDescription = null,
@@ -115,7 +118,6 @@ private fun PeekrFabPreview() {
                 onClick = {},
             )
             PeekrFab(
-                modifier = Modifier.size(50.dp),
                 icon = PeekrIcons.Default.Bold.Plus,
                 contentDescription = null,
                 enabled = false,

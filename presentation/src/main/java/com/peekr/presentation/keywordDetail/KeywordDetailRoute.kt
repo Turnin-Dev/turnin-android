@@ -1,5 +1,6 @@
 package com.peekr.presentation.keywordDetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -12,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.R
@@ -84,7 +86,9 @@ fun KeywordDetailRoute(
     )
 
     KeywordDetailScreen(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PeekrTheme.colorScheme.backgroundNormal),
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
         onMoreClick = { isOptionModalOpen = true },
