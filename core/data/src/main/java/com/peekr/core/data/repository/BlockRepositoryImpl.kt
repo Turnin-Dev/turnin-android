@@ -27,10 +27,8 @@ import com.peekr.core.domain.user.model.CoreUserProfile
 import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 class BlockRepositoryImpl @Inject constructor(
     private val blockNetworkDataSource: BlockNetworkDataSource,
@@ -83,13 +81,14 @@ class BlockRepositoryImpl @Inject constructor(
     override fun createBlock(block: CreateBlock): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
+
+            // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+            userMemoryCache.remove(block.blockedId)
+            keywordMemoryCache.remove(block.blockedId)
+
+            // 네트워크 호출
             when (val result = blockNetworkDataSource.createBlock(block.toDataModel())) {
                 is NetworkResult.Success -> {
-                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
-                    withContext(NonCancellable) {
-                        userMemoryCache.remove(block.blockedId)
-                        keywordMemoryCache.remove(block.blockedId)
-                    }
                     emit(Result.Success(Unit))
                 }
 
@@ -106,13 +105,14 @@ class BlockRepositoryImpl @Inject constructor(
     ): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
+
+            // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+            userMemoryCache.remove(userId)
+            keywordMemoryCache.remove(userId)
+
+            // 네트워크 호출
             when (val result = blockNetworkDataSource.deleteBlock(blockId.value)) {
                 is NetworkResult.Success -> {
-                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
-                    withContext(NonCancellable) {
-                        userMemoryCache.remove(userId)
-                        keywordMemoryCache.remove(userId)
-                    }
                     emit(Result.Success(Unit))
                 }
 

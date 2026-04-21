@@ -149,7 +149,7 @@ class BlockRepositoryImplTest {
     }
 
     @Test
-    fun `차단 생성 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `차단 생성 - 에러 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -168,6 +168,8 @@ class BlockRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { userMemoryCache.remove(any()) }
+        verify(exactly = 1) { keywordMemoryCache.remove(any()) }
     }
 
     @Test
@@ -182,7 +184,7 @@ class BlockRepositoryImplTest {
     }
 
     @Test
-    fun `차단 삭제 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `차단 삭제 - 에러 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -195,6 +197,8 @@ class BlockRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { userMemoryCache.remove(any()) }
+        verify(exactly = 1) { keywordMemoryCache.remove(any()) }
     }
 
     companion object {
