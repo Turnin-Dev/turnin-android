@@ -3,6 +3,8 @@ package com.peekr.presentation.register.view
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,6 +71,8 @@ fun RegisterCommonScreen(
     onBackPressed: (() -> Unit)? = null,
     onProfileImageClick: (() -> Unit)? = null,
 ) {
+    val focusManager = LocalFocusManager.current
+
     RegisterScreenFrame(
         modifier = modifier,
         topBar = {
@@ -80,10 +85,6 @@ fun RegisterCommonScreen(
         },
         contents = {
             Contents(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(top = TopToContentSpacer),
                 title = title,
                 placeholder = placeholder,
                 text = text,
@@ -93,21 +94,25 @@ fun RegisterCommonScreen(
                 profileImage = profileImage,
                 onTextChanged = onTextChanged,
                 onProfileImageClick = onProfileImageClick,
-                bottomButton = {
-                    PeekrSolidButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                bottom = ScreenTokens.BottomButtonPadding,
-                                top = ScreenTokens.BottomButtonPadding,
-                            ),
-                        text = stringResource(buttonTitle),
-                        style = PeekrButtonStyle.Large,
-                        onClick = { onNextWithValue(text) },
-                        enabled = enabledNext,
-                        loading = loading,
-                    )
+            )
+        },
+        bottomButton = {
+            PeekrSolidButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = ScreenTokens.BottomButtonPadding,
+                        top = ScreenTokens.BottomButtonPadding,
+                    ),
+                text = stringResource(buttonTitle),
+                style = PeekrButtonStyle.Large,
+                onClick = {
+                    focusManager.clearFocus()
+                    onNextWithValue(text)
                 },
+                enabled = enabledNext,
+                loading = loading,
             )
         },
     )
@@ -118,27 +123,54 @@ fun RegisterCommonScreen(
  *
  * @param topBar 탑바
  * @param contents 메인 컨텐츠
+ * @param bottomButton 하단 버튼
  */
 @Composable
 private fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
     contents: @Composable ColumnScope.() -> Unit,
+    bottomButton: @Composable BoxScope.() -> Unit,
 ) {
     Column(modifier = modifier) {
         topBar()
-        Column(
+
+        Box(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = ScreenTokens.HorizontalPadding),
-            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            contents()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        top = TopToContentSpacer,
+                        bottom = TopToContentSpacer + ScreenTokens.BottomButtonPadding * 2,
+                    ),
+            ) {
+                contents()
+            }
+
+            bottomButton()
         }
     }
 }
 
-/** 회원가입 공통 화면 - 메인 컨텐츠 */
+/**
+ * 회원가입 공통 화면 - 메인 컨텐츠
+ *
+ * @param modifier [Modifier]
+ * @param title 화면 타이틀
+ * @param placeholder 텍스트필드 자리표시자
+ * @param text 텍스트필드 텍스트
+ * @param errorMessage 텍스트필드 에러 메시지
+ * @param singleLine 텍스트필드 싱글 라인 여부
+ * @param subTitle 화면 보조 타이틀
+ * @param profileImage 프로필 이미지
+ * @param onTextChanged 텍스트필드의 텍스트 콜백
+ * @param onProfileImageClick 프로필 이미지 클릭 시 수행할 작업
+ */
 @Composable
 private fun Contents(
     modifier: Modifier = Modifier,
@@ -151,7 +183,6 @@ private fun Contents(
     profileImage: ImageBitmap? = null,
     onTextChanged: (String) -> Unit,
     onProfileImageClick: (() -> Unit)? = null,
-    bottomButton: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -200,8 +231,6 @@ private fun Contents(
                 )
             }
         }
-
-        bottomButton()
     }
 }
 
@@ -216,6 +245,8 @@ private val ProfileImageSize = 135.dp
 
 /** 프로필 사진과 텍스트 필드 사이 간격 */
 private val ProfileImageTextFieldSpacing = 37.dp
+
+// ------------------------------ Preview ------------------------------
 
 @Preview(showBackground = true)
 @Composable
