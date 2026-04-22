@@ -187,7 +187,7 @@ private fun TopBar(
             if (isAccountInfoEdited) {
                 PeekrIconButton(
                     icon = PeekrIcons.Default.Bold.Check,
-                    iconSize = PeekrIconSize.Small,
+                    iconSize = PeekrIconSize.Normal,
                     contentDescription = stringResource(R.string.setting_detail_account_info_top_bar_save),
                     onClick = onSave,
                     tint = PeekrTheme.colorScheme.primary,

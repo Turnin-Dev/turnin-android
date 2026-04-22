@@ -228,7 +228,7 @@ private fun LazyListScope.keywordEmptyGuidance() {
 
 private val FabSize = 50.dp
 private val FabPaddingDp = 20.dp
-private val TopBarOptionIconSize = PeekrIconSize.Small
+private val TopBarOptionIconSize = PeekrIconSize.Normal
 
 // ------------------------------ Skeletons ------------------------------
 @Composable

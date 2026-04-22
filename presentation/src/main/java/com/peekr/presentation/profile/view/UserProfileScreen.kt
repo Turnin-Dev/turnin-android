@@ -260,7 +260,7 @@ private fun LazyListScope.keywordEmptyGuidance() {
     }
 }
 
-private val TopBarOptionIconSize = PeekrIconSize.Small
+private val TopBarOptionIconSize = PeekrIconSize.Normal
 
 // ------------------------------ Skeleton ------------------------------
 @Composable

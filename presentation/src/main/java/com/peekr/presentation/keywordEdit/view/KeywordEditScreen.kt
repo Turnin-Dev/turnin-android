@@ -169,7 +169,7 @@ private fun TopBar(
         optionSlot = {
             PeekrIconButton(
                 icon = PeekrIcons.Default.Normal.Check,
-                iconSize = PeekrIconSize.Small,
+                iconSize = PeekrIconSize.Normal,
                 contentDescription = stringResource(R.string.keyword_edit_screen_add),
                 tint = PeekrTheme.colorScheme.primary,
                 onClick = onAddClick,

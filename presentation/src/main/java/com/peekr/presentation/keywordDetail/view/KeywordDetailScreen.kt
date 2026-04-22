@@ -206,14 +206,14 @@ private fun TopBar(
             if (myKeyword) {
                 PeekrIconButton(
                     icon = PeekrIcons.Default.Normal.More,
-                    iconSize = PeekrIconSize.Small,
+                    iconSize = PeekrIconSize.Normal,
                     contentDescription = stringResource(R.string.keyword_detail_screen_top_bar_option),
                     onClick = onMoreClick,
                 )
             } else {
                 PeekrIconButton(
                     icon = PeekrIcons.Filled.Normal.Report,
-                    iconSize = PeekrIconSize.Small,
+                    iconSize = PeekrIconSize.Normal,
                     contentDescription = stringResource(R.string.keyword_detail_screen_top_bar_option_2),
                     onClick = onReportClick,
                 )

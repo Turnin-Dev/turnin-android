@@ -184,7 +184,7 @@ fun HomeScreen(
                 optionSlot = {
                     PeekrIconButton(
                         icon = PeekrIcons.Outlined.Normal.Bell,
-                        iconSize = PeekrIconSize.Small,
+                        iconSize = PeekrIconSize.Normal,
                         contentDescription = stringResource(R.string.home_screen_notification),
                         onClick = onNotificationClick,
                         tint = PeekrTheme.colorScheme.textNormal,
