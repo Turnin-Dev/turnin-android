@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.component.skeleton.SkeletonBox
@@ -72,14 +73,16 @@ internal fun DiscoverFeed(
             displayId = discoverContext.user.displayId,
             profileImageUrl = discoverContext.user.profileImageUrl,
         )
-        KeywordsFlowView(
-            modifier = Modifier.fillMaxWidth(),
-            keywords = discoverContext.keywords,
-            onClick = { keyword ->
-                onKeywordClick(keyword)
-            },
-            contentPadding = PaddingValues(horizontal = OuterPadding),
-        )
+        if (discoverContext.keywords.isNotEmpty()) {
+            KeywordsFlowView(
+                modifier = Modifier.fillMaxWidth(),
+                keywords = discoverContext.keywords,
+                onClick = { keyword ->
+                    onKeywordClick(keyword)
+                },
+                contentPadding = PaddingValues(horizontal = OuterPadding),
+            )
+        }
     }
 }
 
@@ -120,12 +123,16 @@ private fun UserInfo(
                 style = PeekrTheme.typography.body2,
                 fontWeight = FontWeight.SemiBold,
                 color = PeekrTheme.colorScheme.textNormal,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = displayId,
                 style = PeekrTheme.typography.body3,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textAssist,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -178,7 +185,23 @@ private val OuterShape = RoundedCornerShape(32.dp)
 private fun DiscoverFeedPreview() {
     PeekrAppTheme {
         DiscoverFeed(
+            modifier = Modifier.fillMaxWidth(),
             discoverContext = UiDiscoverContext.sample,
+            selected = false,
+            onFeedClick = {},
+            onUserClick = {},
+            onKeywordClick = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun DiscoverFeedKeywordEmptyPreview() {
+    PeekrAppTheme {
+        DiscoverFeed(
+            modifier = Modifier.fillMaxWidth(),
+            discoverContext = UiDiscoverContext.sample.copy(keywords = emptyList()),
             selected = false,
             onFeedClick = {},
             onUserClick = {},

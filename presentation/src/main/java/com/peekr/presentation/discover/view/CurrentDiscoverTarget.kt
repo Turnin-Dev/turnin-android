@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
@@ -118,12 +119,16 @@ private fun UserInfo(
                 style = PeekrTheme.typography.body1,
                 fontWeight = FontWeight.SemiBold,
                 color = PeekrTheme.colorScheme.textNormal,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = displayId,
                 style = PeekrTheme.typography.body4,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textAssist,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

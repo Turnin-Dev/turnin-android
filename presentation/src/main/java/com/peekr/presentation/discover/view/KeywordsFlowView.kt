@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -14,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.chip.PeekrChip
@@ -54,7 +54,13 @@ internal fun KeywordsFlowView(
             key = { it.userKeywordId },
         ) { keyword ->
             PeekrChip(
-                modifier = Modifier,
+                modifier = if (keyword == keywords.first()) {
+                    Modifier.onSizeChanged { size ->
+                        chipHeight = with(density) { size.height.toDp() }
+                    }
+                } else {
+                    Modifier
+                },
                 text = keyword.keywordName,
                 color = PeekrTheme.colorScheme.componentKeywordBG,
                 onClick = { onClick(keyword) },

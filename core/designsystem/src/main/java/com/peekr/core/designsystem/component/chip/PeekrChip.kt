@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -67,6 +68,8 @@ fun PeekrChip(
                 style = PeekrTheme.typography.caption2,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textNormal,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

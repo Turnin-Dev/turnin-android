@@ -67,7 +67,7 @@ fun PeekrSnackbar(
     dismissEnabled: Boolean = true,
 ) {
     SnackbarHost(
-        modifier = Modifier,
+        modifier = modifier,
         hostState = snackbarHostState,
     ) { snackbarData ->
         val dismissSnackbarState = rememberSwipeToDismissBoxState()
@@ -78,7 +78,7 @@ fun PeekrSnackbar(
         }
 
         SwipeToDismissBox(
-            modifier = modifier,
+            modifier = Modifier,
             state = dismissSnackbarState,
             backgroundContent = {},
             enableDismissFromEndToStart = dismissEnabled,

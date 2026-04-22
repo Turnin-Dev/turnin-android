@@ -19,6 +19,8 @@ fun HomeRoute(
     onNavigateToNotification: () -> Unit,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
+    // 화면 전환 시 재구독으로 인한 LoadState.Refresh 트리거를 방지하기 위해
+    // 구독 컨텍스트를 viewModelScope에 고정
     val feeds = viewModel.feedsPagingData.collectAsLazyPagingItems(viewModel.viewModelScope.coroutineContext)
 
     HomeScreen(
