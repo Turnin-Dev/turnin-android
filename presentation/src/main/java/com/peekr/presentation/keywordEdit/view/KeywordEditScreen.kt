@@ -230,7 +230,16 @@ private fun InputDescription(
         modifier = modifier,
         text = description,
         onTextChanged = { onDescriptionChanged(it) },
-        placeholder = stringResource(R.string.keyword_edit_screen_input_description_placeholder),
+        placeholder = buildString {
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_1))
+            append("\n\n")
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_2))
+            append("\n")
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_3))
+            append("\n\n")
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_4))
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_5))
+        },
     )
 }
 

@@ -220,7 +220,15 @@ private fun LazyListScope.keywordEmptyGuidance() {
             EmptyGuidance(
                 icon = PeekrIcons.Filled.Normal.Exclamation,
                 title = stringResource(R.string.my_profile_screen_keywords_empty_title),
-                description = stringResource(R.string.my_profile_screen_keywords_empty_desc),
+                description = buildString {
+                    append(stringResource(R.string.my_profile_screen_keywords_empty_desc_1))
+                    append("\n")
+                    append(stringResource(R.string.my_profile_screen_keywords_empty_desc_2))
+                    append("\n")
+                    append(stringResource(R.string.my_profile_screen_keywords_empty_desc_3))
+                    append("\n")
+                    append(stringResource(R.string.my_profile_screen_keywords_empty_desc_4))
+                },
             )
         }
     }
