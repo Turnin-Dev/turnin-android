@@ -8,6 +8,7 @@ import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.CursorPageResponse
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.common.error.PagingApiCallException
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -17,7 +18,7 @@ import kotlinx.coroutines.CancellationException
  * @param T 응답으로 받으려는 데이터 모델 ([CursorPageResponse]에서 T에 해당된다.)
  * @param apiCall 페이지네이션 API 호출 람다 (cursor: 다음 커서 값)
  *
- * @throws PagingApiCallException 페이징 도중 API 호출에서 에러가 발생하는 경우
+ * @throws com.peekr.core.domain.common.error.PagingApiCallException 페이징 도중 API 호출에서 에러가 발생하는 경우
  */
 class PeekrCursorPagingSource<K : Any, T : Any>(
     private val apiCall: suspend (cursor: K?) -> NetworkResult<CursorPageResponse<out T, out K>>,

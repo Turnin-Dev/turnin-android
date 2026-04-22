@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.peekr.core.data.MainDispatcherRule
 import com.peekr.core.data.MockLog
-import com.peekr.core.data.paging.PagingApiCallException
 import com.peekr.core.data.source.local.database.PeekrDatabase
 import com.peekr.core.data.source.network.datasource.FeedNetworkDataSource
 import com.peekr.core.data.source.network.dto.feed.FeedCursorPageResponse
@@ -15,6 +14,7 @@ import com.peekr.core.data.source.network.dto.feed.FeedResponse
 import com.peekr.core.data.source.network.dto.feed.toEntity
 import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.error.PagingApiCallException
 import com.peekr.core.domain.feed.repository.FeedRepository
 import io.mockk.clearMocks
 import io.mockk.coEvery

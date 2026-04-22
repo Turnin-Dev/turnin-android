@@ -13,6 +13,7 @@ import com.peekr.core.data.source.network.datasource.FeedNetworkDataSource
 import com.peekr.core.data.source.network.dto.feed.toEntity
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.error.PagingApiCallException
 import com.peekr.core.domain.feed.model.FeedCursor
 import com.peekr.core.domain.model.UserKeywordId
 import kotlinx.coroutines.CancellationException

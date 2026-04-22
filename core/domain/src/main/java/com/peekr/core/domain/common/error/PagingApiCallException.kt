@@ -1,6 +1,4 @@
-package com.peekr.core.data.paging
-
-import com.peekr.core.domain.common.error.CommonErrorType
+package com.peekr.core.domain.common.error
 
 /**
  * 페이징 도중 발생하는 API 호출 예외

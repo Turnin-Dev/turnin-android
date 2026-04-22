@@ -56,6 +56,8 @@ import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Bell
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.domain.common.error.PagingApiCallException
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
@@ -235,17 +237,22 @@ fun HomeScreen(
                             onRetry = { feeds.retry() },
                         )
                     },
-                    refreshError = {
+                    footerError = {
                         FooterError(
                             modifier = Modifier.fillMaxWidth(),
                             errorMessage = stringResource(R.string.home_screen_error_message_default),
                             onRetry = { feeds.retry() },
                         )
                     },
-                    footerError = {
+                    refreshError = { e ->
+                        val errorMessage = if (e is PagingApiCallException) {
+                            e.error.asUiText().asString()
+                        } else {
+                            stringResource(R.string.home_screen_error_message_default)
+                        }
                         FooterError(
                             modifier = Modifier.fillMaxWidth(),
-                            errorMessage = stringResource(R.string.home_screen_error_message_default),
+                            errorMessage = errorMessage,
                             onRetry = { feeds.retry() },
                         )
                     },
