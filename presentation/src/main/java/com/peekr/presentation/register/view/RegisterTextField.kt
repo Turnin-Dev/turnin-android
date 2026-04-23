@@ -83,7 +83,7 @@ private fun BaseTextField(
         modifier = modifier,
         value = text,
         onValueChange = { onTextChanged(it) },
-        textStyle = PeekrTheme.typography.headline2.copy(
+        textStyle = PeekrTheme.typography.headline3.copy(
             color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
             fontWeight = FontWeight.Medium,
         ),
@@ -93,7 +93,7 @@ private fun BaseTextField(
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = PeekrTheme.typography.headline2.copy(fontWeight = FontWeight.Medium),
+                    style = PeekrTheme.typography.headline3.copy(fontWeight = FontWeight.Medium),
                     color = PeekrTheme.colorScheme.textPlaceholder,
                 )
             }

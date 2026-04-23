@@ -3,7 +3,6 @@ package com.peekr.core.designsystem.component.topbar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -55,12 +54,11 @@ internal fun CoreTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LeftSection(
-            modifier = Modifier.wrapContentWidth(),
+            modifier = Modifier.weight(1f),
             backPressedSlot = { onBackPressed?.let { BackPressedButton(onBackPressed) } },
             titleSlot = { title?.let { Title(title) } },
             logoSlot = logoSlot,
         )
-        Spacer(Modifier.weight(1f))
         RightSection(
             modifier = Modifier.wrapContentWidth(),
             optionSlot = optionSlot,

@@ -61,7 +61,7 @@ internal fun UserChip(
     ) {
         Row(
             modifier = Modifier.padding(InnerPadding),
-            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             PeekrAvatar(
@@ -72,7 +72,7 @@ internal fun UserChip(
             Text(
                 text = userChipInfo.userName,
                 style = PeekrTheme.typography.caption1,
-                fontWeight = FontWeight.Normal,
+                fontWeight = FontWeight.Medium,
                 color = if (isSelected) {
                     PeekrTheme.colorScheme.backgroundNormal
                 } else {
@@ -85,12 +85,12 @@ internal fun UserChip(
 
 private val Shape = RoundedCornerShape(100.dp)
 private val InnerPadding = PaddingValues(
-    start = 2.dp,
+    start = 4.dp,
     end = 8.dp,
-    top = 2.dp,
-    bottom = 2.dp,
+    top = 4.dp,
+    bottom = 4.dp,
 )
-private val AvatarSize = 24.dp
+private val AvatarSize = 32.dp
 
 @PreviewLightDarkWithBackground
 @Composable

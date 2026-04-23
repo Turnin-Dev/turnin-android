@@ -59,7 +59,7 @@ fun ProfileCard(
         ) {
             Text(
                 text = name,
-                style = PeekrTheme.typography.body3Many,
+                style = PeekrTheme.typography.body3,
                 fontWeight = FontWeight.Bold,
                 color = PeekrTheme.colorScheme.textNormal,
             )

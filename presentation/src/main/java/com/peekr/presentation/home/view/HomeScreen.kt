@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +37,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -54,10 +52,12 @@ import com.peekr.core.designsystem.component.topbar.PeekrLogoTopBar
 import com.peekr.core.designsystem.component.topbar.PeekrTopBarTokens
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.peekr.core.designsystem.util.icon.Bell
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.token.ScreenTokens
+import com.peekr.core.domain.common.error.PagingApiCallException
+import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.indicator.PeekrIndicator
@@ -99,6 +99,12 @@ private fun HomeScreenFrame(
                 }
                 return Offset.Zero
             }
+        }
+    }
+
+    LaunchedEffect(canTopBarControl) {
+        if (!canTopBarControl) {
+            topBarOffsetY = 0f
         }
     }
 
@@ -180,7 +186,7 @@ fun HomeScreen(
                 optionSlot = {
                     PeekrIconButton(
                         icon = PeekrIcons.Outlined.Normal.Bell,
-                        iconSize = PeekrIconSize.Small,
+                        iconSize = PeekrIconSize.Normal,
                         contentDescription = stringResource(R.string.home_screen_notification),
                         onClick = onNotificationClick,
                         tint = PeekrTheme.colorScheme.textNormal,
@@ -212,8 +218,9 @@ fun HomeScreen(
                 state = lazyListState,
                 contentPadding = PaddingValues(
                     top = PeekrTopBarTokens.Height,
-                    bottom = 20.dp, // 임시
+                    bottom = 40.dp,
                 ),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 overscrollEffect = null,
             ) {
                 pagingItem(
@@ -237,29 +244,35 @@ fun HomeScreen(
                             onRetry = { feeds.retry() },
                         )
                     },
+                    refreshError = { e ->
+                        val errorMessage = if (e is PagingApiCallException) {
+                            e.error.asUiText().asString()
+                        } else {
+                            stringResource(R.string.home_screen_error_message_default)
+                        }
+                        FooterError(
+                            modifier = Modifier.fillMaxWidth(),
+                            errorMessage = errorMessage,
+                            onRetry = { feeds.retry() },
+                        )
+                    },
                 ) { idx ->
                     val feed = feeds[idx]
                     feed?.let {
-                        Column {
-                            if (idx == 0) {
-                                FeedDivider()
-                            }
-                            Feed(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickableSingle { onFeedClick(it) },
-                                feed = it,
-                                onUserClick = {
-                                    val args = UserProfileArgs(
-                                        userId = it.userId,
-                                        userName = it.userName,
-                                        profileImageUrl = it.profileImageUrl,
-                                    )
-                                    onUserClick(args)
-                                },
-                            )
-                            FeedDivider()
-                        }
+                        Feed(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickableSingleWithoutRipple { onFeedClick(it) },
+                            feed = it,
+                            onUserClick = {
+                                val args = UserProfileArgs(
+                                    userId = it.userId,
+                                    userName = it.userName,
+                                    profileImageUrl = it.profileImageUrl,
+                                )
+                                onUserClick(args)
+                            },
+                        )
                     }
                 }
             }
@@ -280,7 +293,7 @@ private fun Feed(
     feed: UiFeed,
     onUserClick: () -> Unit,
 ) {
-    Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+    Column(modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
         // 사용자 정보 일부, 생성 일자
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -289,11 +302,12 @@ private fun Feed(
         ) {
             // 사용자 정보 일부
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.clickableSingleWithoutRipple(onClick = onUserClick),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 PeekrAvatar(
-                    modifier = Modifier.size(28.dp),
+                    modifier = Modifier.size(FeedAvatarSize),
                     model = feed.profileImageUrl,
                     contentDescription = feed.userName,
                     onClick = onUserClick,
@@ -314,7 +328,9 @@ private fun Feed(
                 color = PeekrTheme.colorScheme.textAssist2,
             )
         }
+
         Spacer(Modifier.height(16.dp))
+
         // 키워드
         Text(
             text = feed.keyword,
@@ -322,11 +338,13 @@ private fun Feed(
             fontWeight = FontWeight.Bold,
             color = PeekrTheme.colorScheme.textNormal,
         )
-        Spacer(Modifier.height(4.dp))
+
+        Spacer(Modifier.height(8.dp))
+
         // 키워드 내용
         Text(
             text = feed.description,
-            style = PeekrTheme.typography.body3Content,
+            style = PeekrTheme.typography.bodyContent,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textNormal,
             maxLines = 10,
@@ -337,7 +355,7 @@ private fun Feed(
 
 @Composable
 private fun FeedSkeleton() {
-    Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
         // 사용자 정보 일부, 생성 일자
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -346,39 +364,34 @@ private fun FeedSkeleton() {
         ) {
             // 사용자 정보 일부
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SkeletonBox(Modifier.size(28.dp), CircleShape)
-                SkeletonBox(Modifier.size(63.dp, 10.dp))
+                SkeletonBox(Modifier.size(FeedAvatarSize), CircleShape)
+                SkeletonBox(Modifier.size(63.dp, 12.dp))
             }
+
             // 생성 일자
-            SkeletonBox(Modifier.size(48.dp, 10.dp))
+            SkeletonBox(Modifier.size(49.dp, 12.dp))
         }
+
         Spacer(Modifier.height(16.dp))
-        Column(modifier = Modifier.padding(top = 7.dp, bottom = 5.dp)) {
-            SkeletonBox(Modifier.size(100.dp, 16.dp))
-            Spacer(Modifier.height(12.dp))
-            SkeletonBox(Modifier.size(262.dp, 12.dp))
-            Spacer(Modifier.height(6.dp))
-            SkeletonBox(Modifier.size(262.dp, 12.dp))
-            Spacer(Modifier.height(6.dp))
-            SkeletonBox(Modifier.size(246.dp, 12.dp))
+
+        // 키워드
+        SkeletonBox(Modifier.size(100.dp, 28.dp))
+
+        Spacer(Modifier.height(8.dp))
+
+        // 키워드 내용
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            SkeletonBox(Modifier.size(262.dp, 16.dp))
+            SkeletonBox(Modifier.size(262.dp, 16.dp))
+            SkeletonBox(Modifier.size(247.dp, 16.dp))
         }
     }
 }
 
-/**
- * 피드 구분선
- */
-@Composable
-private fun FeedDivider() {
-    HorizontalDivider(
-        modifier = Modifier.fillMaxWidth(),
-        thickness = 0.5.dp,
-        color = PeekrTheme.colorScheme.lineDivider,
-    )
-}
+private val FeedAvatarSize = 28.dp
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
@@ -401,7 +414,7 @@ private fun FeedSkeletonPreview() {
     }
 }
 
-@Preview
+@PreviewLightDarkWithBackground
 @Composable
 private fun HomeScreenPreview() {
     val feeds = testFeedsPagingData.collectAsLazyPagingItems()

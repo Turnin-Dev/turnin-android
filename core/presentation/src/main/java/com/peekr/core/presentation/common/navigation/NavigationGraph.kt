@@ -167,9 +167,6 @@ sealed interface SubGraph {
 
 /** 별도의 화면을 정의할 때 여기서 선언해 사용한다. */
 sealed interface Screens {
-    @Serializable
-    data object TempMain : Screens
-
     /**
      * 키워드 상세 화면
      *

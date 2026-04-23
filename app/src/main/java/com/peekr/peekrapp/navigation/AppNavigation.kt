@@ -7,13 +7,9 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -53,15 +49,10 @@ fun AppNavigation(
             } else {
                 SubGraph.Login.Root
             },
-            // TODO: 테스트용 트랜지션
-//            enterTransition = getEnterTransition(),
-//            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
-//            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
-//            popExitTransition = getPopExitTransition(),
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
+            enterTransition = getEnterTransition(),
+            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
+            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
+            popExitTransition = getPopExitTransition(),
         ) {
             // 로그인 네비게이션
             loginNavigation(
@@ -121,16 +112,6 @@ fun AppNavigation(
 
             // 알림 화면
             notificationScreen(appNavController)
-
-            // 임시 화면
-            composable<Screens.TempMain> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("Main Screen", fontSize = 50.sp)
-                }
-            }
         }
     }
 }

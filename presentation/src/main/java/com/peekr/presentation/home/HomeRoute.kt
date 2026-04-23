@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
@@ -18,7 +19,9 @@ fun HomeRoute(
     onNavigateToNotification: () -> Unit,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val feeds = viewModel.feedsPagingData.collectAsLazyPagingItems()
+    // 화면 전환 시 재구독으로 인한 LoadState.Refresh 트리거를 방지하기 위해
+    // 구독 컨텍스트를 viewModelScope에 고정
+    val feeds = viewModel.feedsPagingData.collectAsLazyPagingItems(viewModel.viewModelScope.coroutineContext)
 
     HomeScreen(
         modifier = Modifier

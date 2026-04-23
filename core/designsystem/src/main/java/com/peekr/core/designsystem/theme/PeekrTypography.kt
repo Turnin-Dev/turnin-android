@@ -13,6 +13,14 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.peekr.core.designsystem.R
 
+/**
+ * - `Display`: 광고 및 크게 공지할 때 사용한다.
+ * - `Title`: 페이지 제목 및 큰 대목에 사용한다.
+ * - `Headline`: 콘텐츠를 설명하는데 사용한다.
+ * - `Body`: 본문에 사용한다.
+ * - `Label`: 부가 설명에 사용한다.
+ * - `Caption`: 작은 요소 안에서 사용한다.
+ */
 @Immutable
 data class PeekrTypography(
     val display1: TextStyle = TextStyle(),
@@ -22,11 +30,11 @@ data class PeekrTypography(
     val headline2: TextStyle = TextStyle(),
     val headline3: TextStyle = TextStyle(),
     val headline4: TextStyle = TextStyle(),
+    val headline5: TextStyle = TextStyle(),
     val body1: TextStyle = TextStyle(),
     val body2: TextStyle = TextStyle(),
-    val body3Normal: TextStyle = TextStyle(),
-    val body3Many: TextStyle = TextStyle(),
-    val body3Content: TextStyle = TextStyle(),
+    val bodyContent: TextStyle = TextStyle(),
+    val body3: TextStyle = TextStyle(),
     val body4: TextStyle = TextStyle(),
     val body5: TextStyle = TextStyle(),
     val label1: TextStyle = TextStyle(),
@@ -41,7 +49,7 @@ data class PeekrTypography(
 fun display1(): TextStyle = TextStyle(
     fontSize = 28.sp,
     lineHeight = 42.sp,
-    letterSpacing = 0.06.em,
+    letterSpacing = 0.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -72,9 +80,9 @@ fun title2(): TextStyle = TextStyle(
 
 @Composable
 fun headline1(): TextStyle = TextStyle(
-    fontSize = 20.sp,
-    lineHeight = 30.sp,
-    letterSpacing = -(0.025).em,
+    fontSize = 22.sp,
+    lineHeight = 33.sp,
+    letterSpacing = -(0.01).em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -83,9 +91,9 @@ fun headline1(): TextStyle = TextStyle(
 
 @Composable
 fun headline2(): TextStyle = TextStyle(
-    fontSize = 18.sp,
-    lineHeight = 27.sp,
-    letterSpacing = -(0.001).em,
+    fontSize = 20.sp,
+    lineHeight = 30.sp,
+    letterSpacing = (0.01).em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -94,9 +102,9 @@ fun headline2(): TextStyle = TextStyle(
 
 @Composable
 fun headline3(): TextStyle = TextStyle(
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
-    letterSpacing = 0.em,
+    fontSize = 18.sp,
+    lineHeight = 27.sp,
+    letterSpacing = (0.01).em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -105,9 +113,20 @@ fun headline3(): TextStyle = TextStyle(
 
 @Composable
 fun headline4(): TextStyle = TextStyle(
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    letterSpacing = (0.01).em,
+    fontWeight = FontWeight.Normal,
+    fontFamily = pretendard,
+    lineHeightStyle = lineHeightStyle,
+    platformStyle = platformTextStyle,
+)
+
+@Composable
+fun headline5(): TextStyle = TextStyle(
     fontSize = 14.sp,
     lineHeight = 21.sp,
-    letterSpacing = 0.em,
+    letterSpacing = (0.02).em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -117,7 +136,7 @@ fun headline4(): TextStyle = TextStyle(
 @Composable
 fun body1(): TextStyle = TextStyle(
     fontSize = 16.sp,
-    lineHeight = 22.4.sp,
+    lineHeight = 24.sp,
     letterSpacing = 0.005.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
@@ -137,10 +156,10 @@ fun body2(): TextStyle = TextStyle(
 )
 
 @Composable
-fun body3Normal(): TextStyle = TextStyle(
-    fontSize = 14.sp,
-    lineHeight = 20.3.sp,
-    letterSpacing = 0.01.em,
+fun bodyContent(): TextStyle = TextStyle(
+    fontSize = 15.sp,
+    lineHeight = 22.5.sp,
+    letterSpacing = 0.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -148,21 +167,10 @@ fun body3Normal(): TextStyle = TextStyle(
 )
 
 @Composable
-fun body3Many(): TextStyle = TextStyle(
+fun body3(): TextStyle = TextStyle(
     fontSize = 14.sp,
-    lineHeight = 20.3.sp,
-    letterSpacing = -(0.01).em,
-    fontWeight = FontWeight.Normal,
-    fontFamily = pretendard,
-    lineHeightStyle = lineHeightStyle,
-    platformStyle = platformTextStyle,
-)
-
-@Composable
-fun body3Content(): TextStyle = TextStyle(
-    fontSize = 14.sp,
-    lineHeight = 20.3.sp,
-    letterSpacing = 0.015.em,
+    lineHeight = 21.sp,
+    letterSpacing = 0.008.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,
@@ -183,7 +191,7 @@ fun body4(): TextStyle = TextStyle(
 @Composable
 fun body5(): TextStyle = TextStyle(
     fontSize = 11.sp,
-    lineHeight = 15.4.sp,
+    lineHeight = 16.5.sp,
     letterSpacing = 0.03.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
@@ -194,7 +202,7 @@ fun body5(): TextStyle = TextStyle(
 @Composable
 fun label1(): TextStyle = TextStyle(
     fontSize = 13.sp,
-    lineHeight = 18.2.sp,
+    lineHeight = 19.5.sp,
     letterSpacing = 0.02.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
@@ -205,7 +213,7 @@ fun label1(): TextStyle = TextStyle(
 @Composable
 fun label2(): TextStyle = TextStyle(
     fontSize = 11.sp,
-    lineHeight = 15.4.sp,
+    lineHeight = 16.5.sp,
     letterSpacing = 0.02.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
@@ -216,7 +224,7 @@ fun label2(): TextStyle = TextStyle(
 @Composable
 fun label3(): TextStyle = TextStyle(
     fontSize = 10.sp,
-    lineHeight = 14.sp,
+    lineHeight = 15.sp,
     letterSpacing = (-0.01).em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
@@ -227,7 +235,7 @@ fun label3(): TextStyle = TextStyle(
 @Composable
 fun caption1(): TextStyle = TextStyle(
     fontSize = 14.sp,
-    lineHeight = 18.sp,
+    lineHeight = 21.sp,
     letterSpacing = 0.003.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
@@ -249,7 +257,7 @@ fun caption2(): TextStyle = TextStyle(
 @Composable
 fun caption3(): TextStyle = TextStyle(
     fontSize = 10.sp,
-    lineHeight = 18.sp,
+    lineHeight = 14.sp,
     letterSpacing = 0.003.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,

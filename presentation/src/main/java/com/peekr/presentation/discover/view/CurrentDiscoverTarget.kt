@@ -5,13 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,63 +19,64 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.avatar.PeekrAvatar
-import com.peekr.core.designsystem.component.skeleton.SkeletonBox
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.click.clickableSingle
+import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.click.clickableSingleWithoutRipple
+import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.peekr.presentation.discover.model.UiDiscoverContext
 import com.peekr.presentation.discover.model.UiDiscoverKeyword
 
 /**
- * 탐색 피드 뷰
+ * 현재 탐색 대상
  *
  * @param modifier [Modifier]
  * @param discoverContext 탐색 컨텍스트 [UiDiscoverContext]
- * @param onFeedClick 피드 클릭 시 콜백
  * @param onUserClick 사용자 클릭 시 콜백
  * @param onKeywordClick 키워드 클릭 시 콜백
  */
 @Composable
-internal fun DiscoverFeed(
+internal fun CurrentDiscoverTarget(
     modifier: Modifier = Modifier,
     discoverContext: UiDiscoverContext,
-    selected: Boolean,
-    onFeedClick: () -> Unit,
     onUserClick: () -> Unit,
     onKeywordClick: (UiDiscoverKeyword) -> Unit,
 ) {
     Column(
         modifier = modifier
-            .clip(OuterShape)
-            .background(
-                color = if (selected) {
-                    PeekrTheme.colorScheme.interactionClick
-                } else {
-                    Color.Transparent
-                },
+            .peekrShadow(
+                type = PeekrShadowType.Custom(
+                    blur = 6.dp,
+                    lightColor = Color(0xFF1C1B1B).copy(alpha = 0.1f),
+                    darkColor = Color(0xFF000000).copy(alpha = 0.3f),
+                ),
                 shape = OuterShape,
             )
-            .clickableSingle(onClick = onFeedClick)
+            .clip(OuterShape)
+            .background(PeekrTheme.colorScheme.backgroundNormal)
             .padding(vertical = OuterPadding),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
+        // 사용자 정보
         UserInfo(
             modifier = Modifier
-                .clickableSingleWithoutRipple(onClick = onUserClick)
+                .clickableSingleWithoutRipple { onUserClick() }
+                .align(Alignment.Start)
                 .padding(horizontal = OuterPadding),
             userName = discoverContext.user.userName,
             displayId = discoverContext.user.displayId,
             profileImageUrl = discoverContext.user.profileImageUrl,
         )
+
+        // 키워드
         if (discoverContext.keywords.isNotEmpty()) {
             KeywordsFlowView(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 keywords = discoverContext.keywords,
-                onClick = { keyword ->
-                    onKeywordClick(keyword)
-                },
+                onClick = { onKeywordClick(it) },
                 contentPadding = PaddingValues(horizontal = OuterPadding),
             )
         }
@@ -90,7 +87,7 @@ internal fun DiscoverFeed(
  * 사용자 정보 영역
  *
  * @param modifier [Modifier]
- * @param userName 사용자 명
+ * @param userName 사용자명
  * @param displayId 사용자 표시 ID
  * @param profileImageUrl 프로필 사진 url
  */
@@ -104,7 +101,7 @@ private fun UserInfo(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Start),
+        horizontalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Start),
     ) {
         // 프로필 사진
         PeekrAvatar(
@@ -112,15 +109,14 @@ private fun UserInfo(
             model = profileImageUrl,
             contentDescription = null,
         )
-
         // 이름, ID
         Column(
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             Text(
                 text = userName,
-                style = PeekrTheme.typography.body2,
+                style = PeekrTheme.typography.body1,
                 fontWeight = FontWeight.SemiBold,
                 color = PeekrTheme.colorScheme.textNormal,
                 maxLines = 2,
@@ -128,7 +124,7 @@ private fun UserInfo(
             )
             Text(
                 text = displayId,
-                style = PeekrTheme.typography.body3,
+                style = PeekrTheme.typography.body4,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textAssist,
                 maxLines = 2,
@@ -138,57 +134,27 @@ private fun UserInfo(
     }
 }
 
-/**
- * 탐색 피드 스켈레톤
- */
-@Composable
-internal fun DiscoverFeedSkeleton() {
-    Column(
-        modifier = Modifier.padding(OuterPadding),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        // 사용자 정보
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Start),
-        ) {
-            // 프로필 사진
-            SkeletonBox(Modifier.size(AvatarSize), CircleShape)
-
-            // 이름, ID
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                SkeletonBox(Modifier.size(84.dp, 18.dp))
-                Spacer(Modifier.height(6.dp))
-                SkeletonBox(Modifier.size(103.dp, 18.dp))
-            }
-        }
-
-        // 키워드 목록
-        Row {
-            SkeletonBox(Modifier.size(125.dp, 30.dp), RoundedCornerShape(500.dp))
-            Spacer(Modifier.width(8.dp))
-            SkeletonBox(Modifier.size(95.dp, 30.dp), RoundedCornerShape(500.dp))
-        }
-    }
-}
-
-private val AvatarSize = 44.dp
+private val AvatarSize = 64.dp
 private val OuterPadding = 20.dp
-private val OuterShape = RoundedCornerShape(32.dp)
+private val OuterShape = RoundedCornerShape(48.dp)
 
-// ------------------------------ Previews ------------------------------
+// ------------------------------ Preview ------------------------------
+
 @PreviewLightDarkWithBackground
 @Composable
-private fun DiscoverFeedPreview() {
+private fun CurrentTargetUserPreview() {
     PeekrAppTheme {
-        DiscoverFeed(
+        CurrentDiscoverTarget(
             modifier = Modifier.fillMaxWidth(),
-            discoverContext = UiDiscoverContext.sample,
-            selected = false,
-            onFeedClick = {},
+            discoverContext = UiDiscoverContext.sample.copy(
+                keywords = listOf(
+                    UiDiscoverKeyword(1L, 1L, "아주 긴 키워드 테스트 아주 긴 키워드 테스트"),
+                    UiDiscoverKeyword(2L, 2L, "Confidence"),
+                    UiDiscoverKeyword(3L, 3L, "Mechanical Keyboards"),
+                    UiDiscoverKeyword(4L, 4L, "Software Engineering"),
+                    UiDiscoverKeyword(5L, 5L, "키워드 123456789"),
+                ),
+            ),
             onUserClick = {},
             onKeywordClick = {},
         )
@@ -197,23 +163,13 @@ private fun DiscoverFeedPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
-private fun DiscoverFeedKeywordEmptyPreview() {
+private fun CurrentTargetUserEmptyPreview() {
     PeekrAppTheme {
-        DiscoverFeed(
+        CurrentDiscoverTarget(
             modifier = Modifier.fillMaxWidth(),
             discoverContext = UiDiscoverContext.sample.copy(keywords = emptyList()),
-            selected = false,
-            onFeedClick = {},
             onUserClick = {},
             onKeywordClick = {},
         )
-    }
-}
-
-@PreviewLightDarkWithBackground
-@Composable
-private fun DiscoverFeedSkeletonPreview() {
-    PeekrAppTheme {
-        DiscoverFeedSkeleton()
     }
 }

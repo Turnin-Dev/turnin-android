@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.peekr.core.designsystem.component.icon.PeekrIconSize
 import com.peekr.core.designsystem.theme.PeekrTheme
@@ -43,17 +43,16 @@ fun PeekrChip(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(100.dp))
-            .widthIn(min = 60.dp)
             .background(color)
             .clickableSingle(
                 clickMode = ClickMode.Throttle,
                 onClick = onClick,
             )
-            .padding(horizontal = 10.dp, vertical = 4.dp),
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {
@@ -66,9 +65,11 @@ fun PeekrChip(
             }
             Text(
                 text = text,
-                style = PeekrTheme.typography.caption3,
+                style = PeekrTheme.typography.caption2,
                 fontWeight = FontWeight.Normal,
                 color = PeekrTheme.colorScheme.textNormal,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

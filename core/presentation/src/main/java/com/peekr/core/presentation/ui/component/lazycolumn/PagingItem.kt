@@ -33,8 +33,9 @@ fun <T : Any> LazyListScope.pagingItem(
     skeletonCount: Int = 5,
     alwaysShowSkeleton: Boolean = true,
     skeleton: @Composable (LazyItemScope.(Int) -> Unit),
-    initialError: @Composable (LazyItemScope.() -> Unit),
-    footerError: @Composable (LazyItemScope.() -> Unit),
+    initialError: @Composable (LazyItemScope.(Throwable) -> Unit),
+    footerError: @Composable (LazyItemScope.(Throwable) -> Unit),
+    refreshError: @Composable (LazyItemScope.(Throwable) -> Unit)? = null,
     emptyGuidance: (@Composable (LazyItemScope.() -> Unit))? = null,
     lastContent: (@Composable (LazyItemScope.() -> Unit))? = null,
     pagingContent: @Composable (LazyItemScope.(Int) -> Unit),
@@ -59,11 +60,25 @@ fun <T : Any> LazyListScope.pagingItem(
         // 2. 초기 데이터 로드 시도 중 에러 발생 시 에러 뷰 표시
         refreshState is LoadState.Error && pagingItems.itemCount == 0 -> {
             item {
-                initialError()
+                initialError(refreshState.error)
             }
         }
 
-        // 3. 데이터가 존재하며 정상적으로 표시 가능한 경우
+        // 3. 데이터가 존재하지만 에러가 발생한 경우
+        refreshState is LoadState.Error && pagingItems.itemCount > 0 -> {
+            item {
+                refreshError?.invoke(this, refreshState.error)
+            }
+
+            items(
+                count = pagingItems.itemCount,
+                key = key,
+                contentType = contentType,
+                itemContent = pagingContent,
+            )
+        }
+
+        // 4. 데이터가 존재하며 정상적으로 표시 가능한 경우
         else -> {
             // 페이징 아이템 렌더링
             if (pagingItems.itemCount != 0) {
@@ -99,7 +114,7 @@ fun <T : Any> LazyListScope.pagingItem(
                 // 다음 페이지 로드 시 에러
                 is LoadState.Error -> {
                     item {
-                        footerError()
+                        footerError(appendState.error)
                     }
                 }
 

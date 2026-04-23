@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -69,7 +68,6 @@ private fun AccountInfoScreenFrame(
         Column(
             Modifier
                 .weight(1f)
-                .imePadding()
                 .verticalScroll(rememberScrollState()),
         ) {
             Box(
@@ -189,7 +187,7 @@ private fun TopBar(
             if (isAccountInfoEdited) {
                 PeekrIconButton(
                     icon = PeekrIcons.Default.Bold.Check,
-                    iconSize = PeekrIconSize.Small,
+                    iconSize = PeekrIconSize.Normal,
                     contentDescription = stringResource(R.string.setting_detail_account_info_top_bar_save),
                     onClick = onSave,
                     tint = PeekrTheme.colorScheme.primary,

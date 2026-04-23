@@ -1,5 +1,6 @@
 package com.peekr.presentation.discover
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -7,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
 import com.peekr.core.presentation.common.util.ObserveAsEvents
 import com.peekr.presentation.discover.state.DiscoverContract
@@ -40,7 +42,9 @@ fun DiscoverRoute(
     }
 
     DiscoverScreen(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PeekrTheme.colorScheme.backgroundNormal),
         uiState = uiState,
         discoverContexts = discoverContexts,
         onUiEvent = viewModel::processEvent,

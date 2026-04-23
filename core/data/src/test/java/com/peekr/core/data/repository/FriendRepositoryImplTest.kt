@@ -184,7 +184,7 @@ class FriendRepositoryImplTest {
     }
 
     @Test
-    fun `친구 추가 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `친구 추가 - 알려진 에러 방출 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -197,10 +197,11 @@ class FriendRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { memoryCache.remove(TestAddFriend.receiverId) }
     }
 
     @Test
-    fun `친구 추가 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `친구 추가 - 예외 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery {
@@ -218,10 +219,11 @@ class FriendRepositoryImplTest {
                 (error.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
+        verify(exactly = 1) { memoryCache.remove(TestAddFriend.receiverId) }
     }
 
     @Test
-    fun `친구 추가 - HTTP 상태코드 409 에러가 발생한 경우 알려진 에러로 반환한다`() = runTest {
+    fun `친구 추가 - HTTP 상태코드 409 에러가 발생한 경우 캐시를 무효화하고 알려진 에러로 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Network.HttpError(409)
         coEvery {
@@ -234,6 +236,7 @@ class FriendRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(CommonErrorType.Network.Conflict, error.error)
+        verify(exactly = 1) { memoryCache.remove(TestAddFriend.receiverId) }
     }
 
     @Test
@@ -247,7 +250,7 @@ class FriendRepositoryImplTest {
     }
 
     @Test
-    fun `친구 삭제 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `친구 삭제 - 알려진 에러 방출 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -260,10 +263,11 @@ class FriendRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { memoryCache.remove(TestDeleteFriend.receiverId) }
     }
 
     @Test
-    fun `친구 삭제 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `친구 삭제 - 예외 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery {
@@ -281,10 +285,11 @@ class FriendRepositoryImplTest {
                 (error.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
+        verify(exactly = 1) { memoryCache.remove(TestDeleteFriend.receiverId) }
     }
 
     @Test
-    fun `친구 삭제 - HTTP 상태코드 404 에러가 발생한 경우 알려진 에러로 반환한다`() = runTest {
+    fun `친구 삭제 - HTTP 상태코드 404 에러가 발생한 경우 캐시를 무효화하고 알려진 에러로 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Network.HttpError(404)
         coEvery {
@@ -297,6 +302,7 @@ class FriendRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(CommonErrorType.Network.NotFound, error.error)
+        verify(exactly = 1) { memoryCache.remove(TestDeleteFriend.receiverId) }
     }
 
     @Test
@@ -310,7 +316,7 @@ class FriendRepositoryImplTest {
     }
 
     @Test
-    fun `친구 관계 상태 수정 - 알려진 에러 방출 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `친구 관계 상태 수정 - 알려진 에러 방출 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -323,10 +329,11 @@ class FriendRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { memoryCache.remove(TestPatchFriendRequestStatus.receiverId) }
     }
 
     @Test
-    fun `친구 관계 상태 수정 - 예외 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `친구 관계 상태 수정 - 예외 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val exception = Exception("error!")
         coEvery {
@@ -344,10 +351,11 @@ class FriendRepositoryImplTest {
                 (error.error as CommonErrorType.Unexpected).cause?.message,
             )
         }
+        verify(exactly = 1) { memoryCache.remove(TestPatchFriendRequestStatus.receiverId) }
     }
 
     @Test
-    fun `친구 관계 상태 수정 - HTTP 상태코드 404 에러가 발생한 경우 알려진 에러로 반환한다`() = runTest {
+    fun `친구 관계 상태 수정 - HTTP 상태코드 404 에러가 발생한 경우 캐시를 무효화하고 알려진 에러로 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Network.HttpError(404)
         coEvery {
@@ -360,6 +368,7 @@ class FriendRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(CommonErrorType.Network.NotFound, error.error)
+        verify(exactly = 1) { memoryCache.remove(TestPatchFriendRequestStatus.receiverId) }
     }
 
     companion object {

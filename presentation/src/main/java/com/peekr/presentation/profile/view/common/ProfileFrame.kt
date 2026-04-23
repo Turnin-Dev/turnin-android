@@ -1,12 +1,12 @@
 package com.peekr.presentation.profile.view.common
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,65 +55,66 @@ fun ProfileFrame(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        // 프로필 사진, 이름, 친구 수, 친구 상태 버튼
+        // 프로필 사진, 이름, 친구 수
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.Start),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // 프로필 사진
-            PeekrAvatar(
-                modifier = Modifier.size(ProfileScreenTokens.AvatarSize),
-                model = profileImageUrl,
-                contentDescription = stringResource(R.string.my_profile_screen_avatar_content_desc),
-                onClick = onProfileImageClick,
-            )
-            Column(
+            Row(
                 modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(30.dp),
             ) {
-                // 이름
-                Text(
-                    text = name,
-                    style = PeekrTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = PeekrTheme.colorScheme.textNormal,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                // 프로필 사진
+                PeekrAvatar(
+                    modifier = Modifier.size(ProfileScreenTokens.AvatarSize),
+                    model = profileImageUrl,
+                    contentDescription = stringResource(R.string.my_profile_screen_avatar_content_desc),
+                    onClick = onProfileImageClick,
                 )
-                // 친구 수
-                Row(
-                    modifier = Modifier.clickableSingleWithoutRipple(onClick = onFriendsCountClick),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
+                    // 이름
                     Text(
-                        text = stringResource(R.string.my_profile_screen_friends_total),
-                        style = PeekrTheme.typography.body3Normal,
+                        text = name,
+                        style = PeekrTheme.typography.body1,
                         fontWeight = FontWeight.Bold,
                         color = PeekrTheme.colorScheme.textNormal,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
-                    friendsCount?.let {
+                    // 친구 수
+                    Row(
+                        modifier = Modifier.clickableSingleWithoutRipple(onClick = onFriendsCountClick),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
                         Text(
-                            text = "$it",
-                            style = PeekrTheme.typography.body3Normal,
-                            fontWeight = FontWeight.Normal,
+                            text = stringResource(R.string.my_profile_screen_friends_total),
+                            style = PeekrTheme.typography.body3,
+                            fontWeight = FontWeight.Bold,
                             color = PeekrTheme.colorScheme.textNormal,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
                         )
+                        friendsCount?.let {
+                            Text(
+                                text = "$it",
+                                style = PeekrTheme.typography.body3,
+                                fontWeight = FontWeight.Normal,
+                                color = PeekrTheme.colorScheme.textNormal,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
                 }
             }
 
+            Spacer(Modifier.width(16.dp))
+
             // 친구 상태 버튼
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentSize(Alignment.CenterEnd),
-            ) {
-                friendStatusButton?.invoke()
-            }
+            friendStatusButton?.invoke()
         }
 
         // 소개 글
@@ -176,7 +177,7 @@ private fun ProfileFramePreview() {
         ProfileFrame(
             modifier = Modifier.fillMaxWidth(),
             profileImageUrl = null,
-            name = "홍길동",
+            name = "홍길동홍길동홍길동홍길동홍길동홍길동홍길동홍길동",
             friendsCount = 33,
             introduce = "이 부분은 나를 간단히 소개할 수 있는 곳입니다.\n" +
                 "1 ~ 2줄 정도로 간단히 본인을 소개하세요.\n" +

@@ -30,10 +30,8 @@ import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreUserProfile
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 class FriendRepositoryImpl @Inject constructor(
     private val friendNetworkDataSource: FriendNetworkDataSource,
@@ -91,12 +89,13 @@ class FriendRepositoryImpl @Inject constructor(
     override fun addFriend(addFriend: AddFriend): Flow<Result<Friend, CommonErrorType>> =
         safeResultFlow<Friend, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
+
+            // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+            memoryCache.remove(addFriend.receiverId)
+
+            // 네트워크 호출
             when (val result = friendNetworkDataSource.addFriend(addFriend.toDataModel())) {
                 is NetworkResult.Success -> {
-                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
-                    withContext(NonCancellable) {
-                        memoryCache.remove(addFriend.receiverId)
-                    }
                     emit(Result.Success(result.data.toDomainModel()))
                 }
 
@@ -110,12 +109,13 @@ class FriendRepositoryImpl @Inject constructor(
     override fun deleteFriend(deleteFriend: DeleteFriend): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
+
+            // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+            memoryCache.remove(deleteFriend.receiverId)
+
+            // 네트워크 호출
             when (val result = friendNetworkDataSource.deleteFriend(deleteFriend.toDataModel())) {
                 is NetworkResult.Success -> {
-                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
-                    withContext(NonCancellable) {
-                        memoryCache.remove(deleteFriend.receiverId)
-                    }
                     emit(Result.Success(Unit))
                 }
 
@@ -131,15 +131,16 @@ class FriendRepositoryImpl @Inject constructor(
     ): Flow<Result<Unit, CommonErrorType>> =
         safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
+
+            // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
+            memoryCache.remove(patchFriendStatus.receiverId)
+
+            // 네트워크 호출
             when (
                 val result =
                     friendNetworkDataSource.updateFriendStatus(patchFriendStatus.toDataModel())
             ) {
                 is NetworkResult.Success -> {
-                    // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
-                    withContext(NonCancellable) {
-                        memoryCache.remove(patchFriendStatus.receiverId)
-                    }
                     emit(Result.Success(Unit))
                 }
 

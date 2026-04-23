@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,13 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +32,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,13 +45,12 @@ import com.peekr.core.designsystem.component.icon.PeekrIcon
 import com.peekr.core.designsystem.component.topbar.PeekrTopBar
 import com.peekr.core.designsystem.theme.PeekrAppTheme
 import com.peekr.core.designsystem.theme.PeekrTheme
-import com.peekr.core.designsystem.util.PeekrShadowType
 import com.peekr.core.designsystem.util.icon.Arrow1Right
 import com.peekr.core.designsystem.util.icon.PeekrIcons
 import com.peekr.core.designsystem.util.icon.Refresh
-import com.peekr.core.designsystem.util.peekrShadow
 import com.peekr.core.designsystem.util.token.ScreenTokens
 import com.peekr.core.presentation.common.navigation.args.UserProfileArgs
+import com.peekr.core.presentation.ui.component.EmptyGuidance
 import com.peekr.core.presentation.ui.component.error.FooterError
 import com.peekr.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
 import com.peekr.core.presentation.ui.component.lazycolumn.pagingItem
@@ -76,43 +74,90 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 private fun DiscoverScreenFrame(
     modifier: Modifier = Modifier,
+    discoverContexts: LazyPagingItems<UiDiscoverContext>,
     topBar: @Composable ColumnScope.() -> Unit,
-    historyBar: @Composable ColumnScope.() -> Unit,
-    currentDiscoverTarget: @Composable ColumnScope.() -> Unit,
-    users: @Composable ColumnScope.() -> Unit,
+    historyBar: @Composable BoxScope.() -> Unit,
+    currentDiscoverTarget: @Composable () -> Unit,
+    users: LazyListScope.() -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing by remember {
+        derivedStateOf {
+            isManualRefresh && discoverContexts.loadState.refresh is LoadState.Loading
+        }
+    }
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
+
+    LaunchedEffect(discoverContexts.loadState.refresh) {
+        if (discoverContexts.loadState.refresh is LoadState.Loading) {
+            lazyListState.scrollToItem(0)
+        }
+    }
+
     Column(modifier.background(PeekrTheme.colorScheme.backgroundNormal)) {
         // 탑바
         topBar()
-        Spacer(Modifier.height(10.dp))
 
         // 히스토리 바
-        historyBar()
-        Spacer(Modifier.height(20.dp))
+        Box(Modifier.padding(vertical = 10.dp)) {
+            historyBar()
+        }
 
-        // 현재 탐색 대상
-        Text(
-            modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
-            text = stringResource(R.string.discover_screen_current_target_user_title),
-            style = PeekrTheme.typography.label3,
-            fontWeight = FontWeight.Medium,
-            color = PeekrTheme.colorScheme.textAssist2,
-        )
-        Spacer(Modifier.height(4.dp))
-        currentDiscoverTarget()
-        Spacer(Modifier.height(20.dp))
+        RefreshableLazyColumn(
+            modifier = modifier,
+            isRefreshing = isRefreshing,
+            onRefresh = {
+                isManualRefresh = true
+                discoverContexts.refresh()
+            },
+            state = lazyListState,
+            contentPadding = PaddingValues(
+                // Fab 크기(약 50) + Fab 하단 패딩 + 여유 패딩 값(20)
+                bottom = 50.dp + FabPaddingValues.calculateBottomPadding() + 20.dp,
+                start = ScreenTokens.HorizontalPadding,
+                end = ScreenTokens.HorizontalPadding,
+            ),
+            userScrollEnabled = discoverContexts.loadState.refresh !is LoadState.Loading,
+        ) {
+            // 현재 탐색 대상 타이틀
+            item {
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.discover_screen_current_target_user_title),
+                    style = PeekrTheme.typography.body4,
+                    fontWeight = FontWeight.Medium,
+                    color = PeekrTheme.colorScheme.textAssist2,
+                )
+                Spacer(Modifier.height(16.dp))
+            }
 
-        // 사용자 리스트
-        Text(
-            modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
-            text = stringResource(R.string.discover_screen_users_title),
-            style = PeekrTheme.typography.label3,
-            fontWeight = FontWeight.Medium,
-            color = PeekrTheme.colorScheme.textAssist2,
-        )
-        Spacer(Modifier.height(4.dp))
-        FeedDivider(Modifier.fillMaxWidth())
-        users()
+            // 현재 탐색 대상
+            item {
+                currentDiscoverTarget()
+                Spacer(Modifier.height(20.dp))
+            }
+
+            // 사용자 리스트 타이틀
+            item {
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.discover_screen_users_title),
+                    style = PeekrTheme.typography.body4,
+                    fontWeight = FontWeight.Medium,
+                    color = PeekrTheme.colorScheme.textAssist2,
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+
+            // 사용자 리스트
+            users()
+        }
     }
 }
 
@@ -134,6 +179,7 @@ fun DiscoverScreen(
     Box(modifier) {
         DiscoverScreenFrame(
             modifier = Modifier.fillMaxSize(),
+            discoverContexts = discoverContexts,
             topBar = {
                 PeekrTopBar(
                     modifier = Modifier
@@ -157,16 +203,8 @@ fun DiscoverScreen(
             currentDiscoverTarget = {
                 uiState.currentDiscoverTarget?.let { discoverContext ->
                     CurrentDiscoverTarget(
-                        modifier = Modifier.padding(horizontal = ScreenTokens.HorizontalPadding),
+                        modifier = Modifier.fillMaxWidth(),
                         discoverContext = discoverContext,
-                        onFeedClick = {
-                            val args = UserProfileArgs(
-                                userId = discoverContext.user.userId,
-                                userName = discoverContext.user.userName,
-                                profileImageUrl = discoverContext.user.profileImageUrl,
-                            )
-                            onUiEvent(DiscoverContract.UiEvent.NavigateToUserProfile(args))
-                        },
                         onUserClick = {
                             val args = UserProfileArgs(
                                 userId = discoverContext.user.userId,
@@ -187,9 +225,8 @@ fun DiscoverScreen(
                 }
             },
             users = {
-                Users(
-                    modifier = Modifier.fillMaxWidth(),
-                    users = discoverContexts,
+                users(
+                    discoverContexts = discoverContexts,
                     selectedDiscoverContext = uiState.selectedDiscoverTarget,
                     onFeedClick = { discoverContext ->
                         onUiEvent(
@@ -257,7 +294,7 @@ private fun HistoryBar(
         modifier = modifier,
         state = lazyListState,
         contentPadding = PaddingValues(horizontal = ScreenTokens.HorizontalPadding),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(HistoryItemGap),
         verticalAlignment = Alignment.CenterVertically,
         flingBehavior = snapFormatter,
     ) {
@@ -270,7 +307,7 @@ private fun HistoryBar(
                 userChipInfo = history.user,
                 onClick = { onItemClick(history) },
             )
-            Spacer(Modifier.width(4.dp))
+            Spacer(Modifier.width(HistoryItemGap))
             PeekrIcon(
                 modifier = Modifier.size(18.dp),
                 icon = PeekrIcons.Default.Normal.Arrow1Right,
@@ -281,126 +318,74 @@ private fun HistoryBar(
     }
 }
 
-suspend fun LazyListState.animateScrollToItemCenter(index: Int) {
-    val layoutInfo = this.layoutInfo
-    // 실제 보이는 영역의 너비 계산
-    val viewportWidth = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
-
-    // 첫 번째 아이템의 사이즈를 추정치로 사용하거나, 현재 보이는 아이템에서 찾음
-    val itemSize = layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: 0
-    val centerOffset = (viewportWidth / 2) - (itemSize / 2)
-
-    // 마이너스 오프셋을 주어 아이템을 중앙으로 당김
-    this.animateScrollToItem(index, -centerOffset)
-}
-
 /**
- * 현재 탐색 대상
+ * 사용자 리스트
  *
- * @param modifier [Modifier]
- * @param discoverContext 탐색 컨텍스트 [UiDiscoverContext]
- * @param onFeedClick 피드 클릭 시 콜백
+ * @param discoverContexts 탐색 컨텍스트 (페이징 데이터)
+ * @param selectedDiscoverContext 선택된 탐색 컨텍스트
+ * @param onFeedClick 탐색 피드 클릭 시 콜백
  * @param onUserClick 사용자 클릭 시 콜백
  * @param onKeywordClick 키워드 클릭 시 콜백
  */
-@Composable
-private fun CurrentDiscoverTarget(
-    modifier: Modifier = Modifier,
-    discoverContext: UiDiscoverContext,
-    onFeedClick: () -> Unit,
-    onUserClick: () -> Unit,
-    onKeywordClick: (UiDiscoverKeyword) -> Unit,
-) {
-    DiscoverFeed(
-        modifier = modifier
-            .peekrShadow(type = PeekrShadowType.Normal, shape = CurrentTargetUserShape)
-            .clip(CurrentTargetUserShape)
-            .background(PeekrTheme.colorScheme.backgroundNormal, CurrentTargetUserShape),
-        discoverContext = discoverContext,
-        selected = false,
-        onFeedClick = onFeedClick,
-        onUserClick = onUserClick,
-        onKeywordClick = onKeywordClick,
-    )
-}
-
-@Composable
-private fun Users(
-    modifier: Modifier = Modifier,
-    users: LazyPagingItems<UiDiscoverContext>,
+private fun LazyListScope.users(
+    discoverContexts: LazyPagingItems<UiDiscoverContext>,
     selectedDiscoverContext: UiDiscoverContext?,
     onFeedClick: (UiDiscoverContext) -> Unit,
     onUserClick: (UiDiscoverContext) -> Unit,
     onKeywordClick: (userId: Long, UiDiscoverKeyword) -> Unit,
 ) {
-    val lazyListState = rememberLazyListState()
-    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
-    val isRefreshing by remember {
-        derivedStateOf {
-            isManualRefresh && users.loadState.refresh is LoadState.Loading
-        }
-    }
-
-    LaunchedEffect(isRefreshing) {
-        if (!isRefreshing) isManualRefresh = false
-    }
-
-    LaunchedEffect(users.loadState.refresh) {
-        if (users.loadState.refresh is LoadState.Loading) {
-            lazyListState.scrollToItem(0)
-        }
-    }
-
-    RefreshableLazyColumn(
-        modifier = modifier,
-        isRefreshing = isRefreshing,
-        onRefresh = {
-            isManualRefresh = true
-            users.refresh()
+    pagingItem(
+        pagingItems = discoverContexts,
+        key = discoverContexts.itemKey { it.user.userId },
+        skeletonCount = 5,
+        skeleton = {
+            DiscoverFeedSkeleton()
         },
-        state = lazyListState,
-        contentPadding = PaddingValues(
-            // 마지막에 더해주는 20.dp는 여유 패딩 값
-            bottom = FabSize + FabPaddingValues.calculateBottomPadding() + 20.dp,
-        ),
-        userScrollEnabled = users.loadState.refresh !is LoadState.Loading,
-    ) {
-        pagingItem(
-            pagingItems = users,
-            key = users.itemKey { it.user.userId },
-            skeletonCount = 10,
-            skeleton = {
-                DiscoverFeedSkeleton()
-            },
-            initialError = {
-                FooterError(
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = stringResource(R.string.discover_error_paging_init_error),
-                    onRetry = { users.refresh() },
-                )
-            },
-            footerError = {
-                FooterError(
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = stringResource(R.string.discover_error_paging_footer_error),
-                    onRetry = { users.retry() },
-                )
-            },
-        ) { idx ->
-            val user = users[idx]
-            user?.let {
-                Column {
-                    DiscoverFeed(
-                        modifier = Modifier.fillMaxWidth(),
-                        discoverContext = user,
-                        selected = selectedDiscoverContext?.user?.userId == user.user.userId,
-                        onFeedClick = { onFeedClick(user) },
-                        onUserClick = { onUserClick(user) },
-                        onKeywordClick = { keyword -> onKeywordClick(user.user.userId, keyword) },
-                    )
-                    FeedDivider(Modifier.fillMaxWidth())
-                }
+        initialError = {
+            FooterError(
+                modifier = Modifier.fillMaxWidth(),
+                errorMessage = stringResource(R.string.discover_error_paging_init_error),
+                onRetry = { discoverContexts.refresh() },
+            )
+        },
+        footerError = {
+            FooterError(
+                modifier = Modifier.fillMaxWidth(),
+                errorMessage = stringResource(R.string.discover_error_paging_footer_error),
+                onRetry = { discoverContexts.retry() },
+            )
+        },
+        emptyGuidance = {
+            EmptyGuidance(
+                modifier = Modifier.fillMaxWidth(),
+                title = stringResource(R.string.discover_screen_empty_guidance_title),
+                description = buildString {
+                    append(stringResource(R.string.discover_screen_empty_guidance_desc_1))
+                    append("\n")
+                    append("\n")
+                    append(stringResource(R.string.discover_screen_empty_guidance_desc_2))
+                },
+            )
+        },
+    ) { idx ->
+        val user = discoverContexts[idx]
+        user?.let {
+            if (idx > 0) Spacer(Modifier.height(16.dp))
+
+            val onFeedClickLambda = remember(user.user.userId) { { onFeedClick(user) } }
+            val onUserClickLambda = remember(user.user.userId) { { onUserClick(user) } }
+            val onKeywordClickLambda = remember(user.user.userId) {
+                { keyword: UiDiscoverKeyword -> onKeywordClick(user.user.userId, keyword) }
             }
+
+            DiscoverFeed(
+                modifier = Modifier.fillMaxWidth(),
+                discoverContext = user,
+                selected = selectedDiscoverContext?.user?.userId == user.user.userId,
+                onFeedClick = onFeedClickLambda,
+                onUserClick = onUserClickLambda,
+                onKeywordClick = onKeywordClickLambda,
+            )
         }
     }
 }
@@ -419,7 +404,7 @@ private fun ReDiscoverFab(
     onClick: () -> Unit,
 ) {
     PeekrFab(
-        modifier = modifier.size(FabSize),
+        modifier = modifier,
         icon = PeekrIcons.Default.Normal.Refresh,
         contentDescription = stringResource(R.string.discover_screen_fab_content_desc),
         enabled = enabled,
@@ -433,33 +418,23 @@ private fun ReDiscoverFab(
     )
 }
 
-@Composable
-private fun FeedDivider(modifier: Modifier = Modifier) {
-    HorizontalDivider(
-        modifier = modifier,
-        thickness = 0.5.dp,
-        color = PeekrTheme.colorScheme.lineDivider,
-    )
+suspend fun LazyListState.animateScrollToItemCenter(index: Int) {
+    val layoutInfo = this.layoutInfo
+    // 실제 보이는 영역의 너비 계산
+    val viewportWidth = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
+
+    // 첫 번째 아이템의 사이즈를 추정치로 사용하거나, 현재 보이는 아이템에서 찾음
+    val itemSize = layoutInfo.visibleItemsInfo.firstOrNull()?.size ?: 0
+    val centerOffset = (viewportWidth / 2) - (itemSize / 2)
+
+    // 마이너스 오프셋을 주어 아이템을 중앙으로 당김
+    this.animateScrollToItem(index, -centerOffset)
 }
 
-private val CurrentTargetUserShape = RoundedCornerShape(8.dp)
-private val FabSize = 50.dp
+private val HistoryItemGap = 8.dp
 private val FabPaddingValues = PaddingValues(end = 20.dp, bottom = 24.dp)
 
 // ------------------------------ Previews ------------------------------
-@PreviewLightDarkWithBackground
-@Composable
-private fun CurrentTargetUserPreview() {
-    PeekrAppTheme {
-        CurrentDiscoverTarget(
-            discoverContext = UiDiscoverContext.sample,
-            onFeedClick = {},
-            onUserClick = {},
-            onKeywordClick = {},
-        )
-    }
-}
-
 @PreviewLightDarkWithBackground
 @Composable
 private fun HistoryBarPreview() {

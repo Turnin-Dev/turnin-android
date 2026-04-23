@@ -2,7 +2,6 @@ package com.peekr.core.data.repository
 
 import androidx.paging.testing.asSnapshot
 import com.peekr.core.data.MockLog
-import com.peekr.core.data.paging.PagingApiCallException
 import com.peekr.core.data.source.network.datasource.DiscoverNetworkDataSource
 import com.peekr.core.data.source.network.dto.discover.response.DiscoverContextCursorPageResponse
 import com.peekr.core.data.source.network.dto.discover.response.DiscoverContextResponse
@@ -10,6 +9,7 @@ import com.peekr.core.data.source.network.dto.discover.response.DiscoverKeywordR
 import com.peekr.core.data.source.network.dto.discover.response.DiscoverUserResponse
 import com.peekr.core.data.source.network.dto.discover.response.toDomainModel
 import com.peekr.core.data.source.network.util.NetworkResult
+import com.peekr.core.domain.common.error.PagingApiCallException
 import com.peekr.core.domain.discover.model.DiscoverPagingTokens
 import com.peekr.core.domain.model.UserId
 import io.mockk.coEvery

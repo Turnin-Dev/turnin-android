@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -61,11 +60,7 @@ private fun KeywordEditScreenFrame(
     val scrollState = rememberScrollState()
     var inputDescHeight by remember { mutableIntStateOf(0) }
 
-    Column(
-        modifier
-            .fillMaxSize()
-            .imePadding(),
-    ) {
+    Column(modifier.fillMaxSize()) {
         topBar()
 
         Column(
@@ -174,7 +169,7 @@ private fun TopBar(
         optionSlot = {
             PeekrIconButton(
                 icon = PeekrIcons.Default.Normal.Check,
-                iconSize = PeekrIconSize.Small,
+                iconSize = PeekrIconSize.Normal,
                 contentDescription = stringResource(R.string.keyword_edit_screen_add),
                 tint = PeekrTheme.colorScheme.primary,
                 onClick = onAddClick,
@@ -235,7 +230,16 @@ private fun InputDescription(
         modifier = modifier,
         text = description,
         onTextChanged = { onDescriptionChanged(it) },
-        placeholder = stringResource(R.string.keyword_edit_screen_input_description_placeholder),
+        placeholder = buildString {
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_1))
+            append("\n\n")
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_2))
+            append("\n")
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_3))
+            append("\n\n")
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_4))
+            append(stringResource(R.string.keyword_edit_screen_input_description_placeholder_5))
+        },
     )
 }
 

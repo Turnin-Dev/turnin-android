@@ -17,6 +17,7 @@ import com.peekr.core.domain.common.Result
 import com.peekr.core.domain.model.BlockId
 import com.peekr.core.domain.model.UserId
 import com.peekr.core.domain.user.model.CoreUserProfile
+import com.peekr.core.domain.userKeyword.model.UserKeywordDetail
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -37,13 +38,16 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class BlockRepositoryImplTest {
     private val dataSource: BlockNetworkDataSource = mockk()
-    private val memoryCache: MemoryCache<UserId, CoreUserProfile> = mockk()
+    private val userMemoryCache: MemoryCache<UserId, CoreUserProfile> = mockk()
+    private val keywordMemoryCache: MemoryCache<UserId, List<UserKeywordDetail>> = mockk()
     private val dispatcher = UnconfinedTestDispatcher()
-    private val repository = BlockRepositoryImpl(dataSource, memoryCache, dispatcher)
+    private val repository =
+        BlockRepositoryImpl(dataSource, userMemoryCache, keywordMemoryCache, dispatcher)
 
     @Before
     fun setUp() {
-        every { memoryCache.remove(any()) } returns null
+        every { userMemoryCache.remove(any()) } returns null
+        every { keywordMemoryCache.remove(any()) } returns null
         coEvery {
             dataSource.getBlockReasons()
         } returns NetworkResult.Success(listOf(TestBlockReasonResponse))
@@ -140,11 +144,12 @@ class BlockRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
-        verify(exactly = 1) { memoryCache.remove(any()) }
+        verify(exactly = 1) { userMemoryCache.remove(any()) }
+        verify(exactly = 1) { keywordMemoryCache.remove(any()) }
     }
 
     @Test
-    fun `차단 생성 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `차단 생성 - 에러 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -163,6 +168,8 @@ class BlockRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { userMemoryCache.remove(any()) }
+        verify(exactly = 1) { keywordMemoryCache.remove(any()) }
     }
 
     @Test
@@ -172,11 +179,12 @@ class BlockRepositoryImplTest {
 
         // then
         assertTrue(result is Result.Success)
-        verify(exactly = 1) { memoryCache.remove(any()) }
+        verify(exactly = 1) { userMemoryCache.remove(any()) }
+        verify(exactly = 1) { keywordMemoryCache.remove(any()) }
     }
 
     @Test
-    fun `차단 삭제 - 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `차단 삭제 - 에러 발생 시 캐시를 무효화하고 에러를 반환한다`() = runTest {
         // given
         val expectedError = NetworkErrorType.Unexpected(null)
         coEvery {
@@ -189,6 +197,8 @@ class BlockRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(expectedError.toCommonErrorType(), error.error)
+        verify(exactly = 1) { userMemoryCache.remove(any()) }
+        verify(exactly = 1) { keywordMemoryCache.remove(any()) }
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.peekr.presentation.discover.model
 
+import androidx.compose.runtime.Immutable
 import com.peekr.core.domain.discover.model.DiscoverContext
 
 /**
@@ -12,6 +13,7 @@ import com.peekr.core.domain.discover.model.DiscoverContext
  * @property user 탐색용 사용자
  * @property keywords 탐색용 키워드 리스트
  */
+@Immutable
 data class UiDiscoverContext(
     val user: UiDiscoverUser,
     val keywords: List<UiDiscoverKeyword>,

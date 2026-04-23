@@ -21,9 +21,12 @@
     <!-- Discover Screen -->
     <string name="discover_screen_top_bar_title">탐색</string>
     <string name="discover_screen_current_target_user_title">현재 탐색 대상</string>
-    <string name="discover_screen_users_title">유사한 키워드를 공유하는 사용자</string>
+    <string name="discover_screen_users_title">유사한 키워드를 등록한 사용자</string>
     <string name="discover_screen_fab_text">재탐색</string>
     <string name="discover_screen_fab_content_desc">재탐색</string>
+    <string name="discover_screen_empty_guidance_title">아직 유사한 키워드가 없어요</string>
+    <string name="discover_screen_empty_guidance_desc_1">프로필에 나의 키워드를 등록하거나\n유사한 키워드가 등록될 때까지 조금만 기다려 주세요.</string>
+    <string name="discover_screen_empty_guidance_desc_2">기다리는 동안 나에 대해 좀 더 깊이 생각해보며,\n내가 정말 좋아하는 것, 나를 잘 나타내는 문장들을 떠올리며 키워드를 다듬다 보면\n곧 반가운 신호를 발견하게 될 거예요.</string>
     <!-- Discover Error -->
     <string name="discover_error_my_profile_not_found">나의 정보를 찾을 수 없습니다. 다시 시도해주세요.</string>
     <string name="discover_error_my_keywords_refresh_failed">나의 키워드를 불러올 수 없습니다. 다시 시도해주세요.</string>
@@ -61,8 +64,11 @@
     <string name="my_profile_screen_fab_content_desc">키워드 추가</string>
     <string name="my_profile_screen_introduce_expand">더보기</string>
     <string name="my_profile_screen_introduce_collapse">접기</string>
-    <string name="my_profile_screen_keywords_empty_title">아직 키워드가 없어요</string>
-    <string name="my_profile_screen_keywords_empty_desc">나를 구성하고 있는 키워드를 추가하고,\n유사한 키워드로 소통하는 다른 사람들을\n탐색해봐요</string>
+    <string name="my_profile_screen_keywords_empty_title">나의 첫 키워드를 등록해봐요</string>
+    <string name="my_profile_screen_keywords_empty_desc_1">나에 대해 깊이 생각해보며</string>
+    <string name="my_profile_screen_keywords_empty_desc_2">키워드를 하나씩 완성해 보세요.</string>
+    <string name="my_profile_screen_keywords_empty_desc_3">나를 잘 표현할수록, 유사한 취향을 가진 사람들과</string>
+    <string name="my_profile_screen_keywords_empty_desc_4">더 가깝게 연결될 수 있습니다.</string>
     <!-- My Profile Screen (KeywordCardView) -->
     <string name="my_profile_screen_keyword_card">키워드 자세히 보기</string>
     <!-- User Profile Screen -->
@@ -91,7 +97,11 @@
     <!-- KeywordEditScreen -->
     <string name="keyword_edit_screen_add">키워드 등록</string>
     <string name="keyword_edit_screen_input_keyword_placeholder">키워드를 입력해주세요 (1 ~ 15자 이내)</string>
-    <string name="keyword_edit_screen_input_description_placeholder">키워드에 관한 내용을 자유롭게 작성해주세요.</string>
+    <string name="keyword_edit_screen_input_description_placeholder_1">나를 나타내는 키워드를 생각해보세요.</string>
+    <string name="keyword_edit_screen_input_description_placeholder_2">• 요즘 내 마음이 머무는 곳이나 나를 웃게 만드는 것들이 무엇인가요?</string>
+    <string name="keyword_edit_screen_input_description_placeholder_3">• 내가 소중히 여기는 가치와 나다운 순간들을 무엇인가요?</string>
+    <string name="keyword_edit_screen_input_description_placeholder_4">나를 표현하는 데 정답은 없어요. 자유롭게 적어주세요.</string>
+    <string name="keyword_edit_screen_input_description_placeholder_5">(부적절한 내용은 무통보 삭제될 수 있습니다)</string>
     <!-- KeywordEdit Modal -->
     <string name="keyword_edit_modal_safe_cancel">변경사항을 버리시겠습니까?</string>
     <!-- KeywordEdit Error -->

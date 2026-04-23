@@ -3,6 +3,7 @@ package com.peekr.presentation.login
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -16,6 +17,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.peekr.core.common.logger.AppLogger
+import com.peekr.core.designsystem.theme.PeekrTheme
 import com.peekr.core.domain.common.error.CommonErrorType
 import com.peekr.core.presentation.common.error.asUiText
 import com.peekr.core.presentation.common.util.LaunchedUiEffectHandler
@@ -68,7 +70,9 @@ fun LoginRoute(
     }
 
     LoginScreen(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(PeekrTheme.colorScheme.backgroundNormal),
         loginState = loginState,
         login = { provider ->
             if (!loginState.isNavigating && activity != null) {

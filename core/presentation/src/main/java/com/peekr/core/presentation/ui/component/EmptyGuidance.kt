@@ -44,7 +44,7 @@ fun EmptyGuidance(
             // 단일 타이틀
             Text(
                 text = title,
-                style = PeekrTheme.typography.headline2,
+                style = PeekrTheme.typography.headline3,
                 fontWeight = FontWeight.Medium,
                 color = PeekrTheme.colorScheme.textAssist2,
                 textAlign = TextAlign.Center,
@@ -67,7 +67,7 @@ fun EmptyGuidance(
             title?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.headline2,
+                    style = PeekrTheme.typography.headline3,
                     fontWeight = FontWeight.SemiBold,
                     color = PeekrTheme.colorScheme.textNormal,
                     textAlign = TextAlign.Center,
@@ -78,7 +78,7 @@ fun EmptyGuidance(
             description?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.body3Normal,
+                    style = PeekrTheme.typography.body3,
                     fontWeight = FontWeight.Normal,
                     color = PeekrTheme.colorScheme.textAssist2,
                     textAlign = TextAlign.Center,

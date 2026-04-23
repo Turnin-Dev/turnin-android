@@ -7,6 +7,7 @@ import com.peekr.core.data.source.network.error.NetworkErrorType
 import com.peekr.core.data.source.network.error.toCommonErrorType
 import com.peekr.core.data.source.network.util.NetworkResult
 import com.peekr.core.domain.common.error.CommonErrorType
+import com.peekr.core.domain.common.error.PagingApiCallException
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -16,7 +17,7 @@ import kotlinx.coroutines.CancellationException
  * @param R T를 의존하고 있는 [PagingDataHolder]를 구현하는 데이터 모델
  * @param apiCall 페이지네이션 API 호출 람다 (page: 페이지 번호)
  *
- * @throws PagingApiCallException 페이징 도중 API 호출에서 에러가 발생하는 경우
+ * @throws com.peekr.core.domain.common.error.PagingApiCallException 페이징 도중 API 호출에서 에러가 발생하는 경우
  */
 class PeekrPagingSource<T : Any, R : PagingDataHolder<T>>(
     private val apiCall: suspend (page: Long) -> NetworkResult<R>,

@@ -176,7 +176,7 @@ private fun PolicyLink(
     ) {
         Text(
             text = text,
-            style = PeekrTheme.typography.body3Normal,
+            style = PeekrTheme.typography.body3,
             fontWeight = FontWeight.Normal,
             color = PeekrTheme.colorScheme.textNormal,
         )

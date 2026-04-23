@@ -76,7 +76,7 @@ internal fun CoreTabBar(
                     Text(
                         modifier = Modifier.padding(vertical = 8.dp),
                         text = tab,
-                        style = PeekrTheme.typography.headline4,
+                        style = PeekrTheme.typography.headline5,
                         fontWeight = FontWeight.SemiBold,
                         color = PeekrTheme.colorScheme.textNormal,
                     )

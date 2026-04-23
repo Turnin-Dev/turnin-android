@@ -103,7 +103,7 @@ private fun Content(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
-                style = PeekrTheme.typography.headline2,
+                style = PeekrTheme.typography.headline3,
                 fontWeight = FontWeight.Medium,
                 color = PeekrTheme.colorScheme.textNormal,
                 textAlign = TextAlign.Center,

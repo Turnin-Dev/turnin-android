@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -68,7 +67,7 @@ fun PeekrSnackbar(
     dismissEnabled: Boolean = true,
 ) {
     SnackbarHost(
-        modifier = Modifier.imePadding(),
+        modifier = modifier,
         hostState = snackbarHostState,
     ) { snackbarData ->
         val dismissSnackbarState = rememberSwipeToDismissBoxState()
@@ -79,7 +78,7 @@ fun PeekrSnackbar(
         }
 
         SwipeToDismissBox(
-            modifier = modifier,
+            modifier = Modifier,
             state = dismissSnackbarState,
             backgroundContent = {},
             enableDismissFromEndToStart = dismissEnabled,
@@ -148,7 +147,7 @@ private fun ActionButton(
     ) {
         Text(
             text = text,
-            style = PeekrTheme.typography.body3Normal,
+            style = PeekrTheme.typography.body3,
             fontWeight = FontWeight.Bold,
             color = PeekrTheme.colorScheme.primary,
         )
@@ -166,7 +165,7 @@ private fun Content(
     ) {
         Text(
             text = text,
-            style = PeekrTheme.typography.body3Normal,
+            style = PeekrTheme.typography.body3,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Start,
             maxLines = 2,
@@ -184,7 +183,7 @@ private fun CustomSnackbarPreview() {
     val fakeSnackbarData = object : SnackbarData {
         override val visuals: SnackbarVisuals = object : SnackbarVisuals {
             override val message: String = "이건 스낵바 메시지 예시입니다."
-            override val actionLabel: String? = "확인"
+            override val actionLabel: String = "확인"
             override val withDismissAction: Boolean = true
             override val duration: SnackbarDuration = SnackbarDuration.Short
         }
