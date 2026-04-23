@@ -107,10 +107,8 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideHttpCacheInterceptor(
-        @ApplicationContext context: Context,
-    ): HttpCacheInterceptor =
-        HttpCacheInterceptor(context)
+    fun provideHttpCacheInterceptor(): HttpCacheInterceptor =
+        HttpCacheInterceptor()
 
     // ------------------------------ Retrofit ------------------------------
     @Singleton

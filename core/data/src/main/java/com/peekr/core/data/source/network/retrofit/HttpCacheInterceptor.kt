@@ -1,6 +1,5 @@
 package com.peekr.core.data.source.network.retrofit
 
-import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Invocation
@@ -16,7 +15,7 @@ object HttpCacheDuration {
 }
 
 /** HTTP 캐시 인터셉터 */
-class HttpCacheInterceptor(private val context: Context) : Interceptor {
+class HttpCacheInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response = chain.proceed(request)
