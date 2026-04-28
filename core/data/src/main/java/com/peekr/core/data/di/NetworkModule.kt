@@ -1,8 +1,10 @@
 package com.peekr.core.data.di
 
+import android.content.Context
 import com.peekr.core.data.BuildConfig
 import com.peekr.core.data.source.local.datastore.DataStoreManager
 import com.peekr.core.data.source.network.api.RefreshTokenApi
+import com.peekr.core.data.source.network.retrofit.HttpCacheInterceptor
 import com.peekr.core.data.source.network.retrofit.TokenAuthenticator
 import com.peekr.core.data.source.network.retrofit.TokenInterceptor
 import com.peekr.core.domain.eventBus.AuthEventBus
@@ -11,10 +13,12 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.Platform
 import okhttp3.logging.HttpLoggingInterceptor
@@ -34,10 +38,54 @@ private val maskingLogger = HttpLoggingInterceptor.Logger { message ->
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
+    @Singleton
+    @Provides
+    fun provideCache(
+        @ApplicationContext context: Context,
+    ): Cache =
+        Cache(context.cacheDir, 10 * 1024 * 1024L)
+
     // ------------------------------ Serialization ------------------------------
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+    // ------------------------------ OkHttpClient ------------------------------
+    @DefaultOkHttpClient
+    @Singleton
+    @Provides
+    fun provideDefaultOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        cache: Cache,
+        cacheInterceptor: HttpCacheInterceptor,
+    ): OkHttpClient = OkHttpClient
+        .Builder()
+        .cache(cache)
+        .addInterceptor(httpLoggingInterceptor)
+        .addNetworkInterceptor(cacheInterceptor)
+        .commonTimeout()
+        .build()
+
+    @TokenOkHttpClient
+    @Singleton
+    @Provides
+    fun providerTokenOkHttpClient(
+        tokenAuthenticator: TokenAuthenticator,
+        tokenInterceptor: TokenInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        cache: Cache,
+        cacheInterceptor: HttpCacheInterceptor,
+    ): OkHttpClient = OkHttpClient
+        .Builder()
+        .cache(cache)
+        .authenticator(tokenAuthenticator)
+        .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(tokenInterceptor)
+        .addNetworkInterceptor(cacheInterceptor)
+        .commonTimeout()
+        .build()
+
+    // ------------------------------ Interceptor ------------------------------
 
     @Singleton
     @Provides
@@ -52,32 +100,15 @@ class NetworkModule {
             redactHeader("Cookie")
         }
 
-    // ------------------------------ OkHttpClient & Interceptor ------------------------------
-    @DefaultOkHttpClient
     @Singleton
     @Provides
-    fun provideDefaultOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient = OkHttpClient
-        .Builder()
-        .addInterceptor(httpLoggingInterceptor)
-        .commonTimeout()
-        .build()
+    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
+        TokenInterceptor(dataStoreManager)
 
-    @TokenOkHttpClient
     @Singleton
     @Provides
-    fun providerTokenOkHttpClient(
-        tokenAuthenticator: TokenAuthenticator,
-        tokenInterceptor: TokenInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient = OkHttpClient
-        .Builder()
-        .authenticator(tokenAuthenticator)
-        .addInterceptor(httpLoggingInterceptor)
-        .addInterceptor(tokenInterceptor)
-        .commonTimeout()
-        .build()
+    fun provideHttpCacheInterceptor(): HttpCacheInterceptor =
+        HttpCacheInterceptor()
 
     // ------------------------------ Retrofit ------------------------------
     @Singleton
@@ -91,20 +122,6 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTokenAuthenticator(
-        dataStoreManager: DataStoreManager,
-        refreshTokenApi: RefreshTokenApi,
-        authEventBus: AuthEventBus,
-    ): TokenAuthenticator =
-        TokenAuthenticator(dataStoreManager, refreshTokenApi, authEventBus)
-
-    @Singleton
-    @Provides
-    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
-        TokenInterceptor(dataStoreManager)
-
-    @Singleton
-    @Provides
     fun providerRefreshTokenApi(
         retrofit: Retrofit.Builder,
         @DefaultOkHttpClient okHttpClient: OkHttpClient,
@@ -112,6 +129,15 @@ class NetworkModule {
         .client(okHttpClient)
         .build()
         .create(RefreshTokenApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideTokenAuthenticator(
+        dataStoreManager: DataStoreManager,
+        refreshTokenApi: RefreshTokenApi,
+        authEventBus: AuthEventBus,
+    ): TokenAuthenticator =
+        TokenAuthenticator(dataStoreManager, refreshTokenApi, authEventBus)
 }
 
 // ------------------------------ Qualifier ------------------------------

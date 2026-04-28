@@ -3,6 +3,8 @@ package com.peekr.core.data.source.network.api
 import com.peekr.core.data.source.network.dto.block.request.BlockRequest
 import com.peekr.core.data.source.network.dto.block.response.BlockReasonResponse
 import com.peekr.core.data.source.network.dto.block.response.BlockedUserCursorPageResponse
+import com.peekr.core.data.source.network.retrofit.Cacheable
+import com.peekr.core.data.source.network.retrofit.HttpCacheDuration
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -26,6 +28,7 @@ interface BlockApi {
     /**
      * 차단 사유 목록 조회
      */
+    @Cacheable(maxAge = HttpCacheDuration.ONE_WEEK)
     @GET(NetworkApiPath.Block.REASON)
     suspend fun getBlockReasons(): Response<List<BlockReasonResponse>>
 

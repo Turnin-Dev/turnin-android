@@ -18,13 +18,12 @@
 
 
 # Uncomment this to preserve the line number information for
-# debugging stack traces.
+
+# ------------------------------ 추가 설정 ------------------------------
+# 써드파티 및 라이브러리들은 자동으로 AAR에 포함되는 룰 제외 (중복이 있을 수도 있음)
+
 # 스택 트레이스 줄 번호 유지 (Crashlytics 분석용)
 -keepattributes SourceFile,LineNumberTable
-
-# Kotlinx Serialization
--keep @kotlinx.serialization.Serializable class ** { *; }
--keepclassmembers @kotlinx.serialization.Serializable class ** { *; }
 
 # 제네릭, 어노테이션, 내부 클래스 정보 유지
 -keepattributes Signature, *Annotation*, InnerClasses, EnclosingMethod
@@ -32,12 +31,42 @@
 # Enum
 -keep enum com.peekr.** { *; }
 
+# Kotlinx Serialization
+-keep @kotlinx.serialization.Serializable class ** { *; }
+-keepclassmembers @kotlinx.serialization.Serializable class ** { *; }
+
 # Crashlytics
 -keep public class * extends java.lang.Exception
 
 # 카카오 SDK
 -keep class com.kakao.sdk.**.model.* { <fields>; }
+-dontwarn com.kakao.**
 
 # Moshi
 -keep @com.squareup.moshi.JsonClass class * { *; }
 -keep class *JsonAdapter { *; }
+-keep class com.squareup.moshi.** { *; }
+
+# Retrofit & OkHttp
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# Room
+-keep @androidx.room.Entity class * { *; }
+
+# Hilt
+-keepnames @dagger.hilt.android.lifecycle.HiltViewModel class * extends androidx.lifecycle.ViewModel
+
+# HTTP 캐시 커스텀 어노테이션 (리플렉션을 사용하므로)
+-keep @interface *Cacheable
+-keepclassmembers class * {
+    @*Cacheable <methods>;
+}
+
+# Compose @Preview (제거 보장)
+-checkdiscard class * {
+    @androidx.compose.ui.tooling.preview.Preview <methods>;
+}
+-keepclassmembers,allowshrinking class * {
+    @androidx.compose.ui.tooling.preview.Preview <methods>;
+}
