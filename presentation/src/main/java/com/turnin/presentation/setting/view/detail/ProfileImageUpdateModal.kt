@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.turnin.core.designsystem.component.modal.ModalContentToken
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheet
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheetContent
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheet
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheetContent
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.presentation.R
 
 /**
@@ -36,33 +36,33 @@ fun ProfileImageUpdateModal(
     onImageChangeToDefault: () -> Unit,
     onImageAdd: () -> Unit,
 ) {
-    PeekrModalBottomSheet(
+    TurninModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
     ) { contentModifier ->
         if (existsProfileImage) {
-            PeekrModalBottomSheetContent(
+            TurninModalBottomSheetContent(
                 modifier = contentModifier.fillMaxWidth(),
                 onCancel = onCancel,
                 ModalContentToken(
                     stringResource(R.string.setting_detail_account_info_modal_change_image),
-                    PeekrTheme.colorScheme.textNormal,
+                    TurninTheme.colorScheme.textNormal,
                     onImageChange,
                 ),
                 ModalContentToken(
                     stringResource(R.string.setting_detail_account_info_modal_change_default),
-                    PeekrTheme.colorScheme.textNormal,
+                    TurninTheme.colorScheme.textNormal,
                     onImageChangeToDefault,
                 ),
             )
         } else {
-            PeekrModalBottomSheetContent(
+            TurninModalBottomSheetContent(
                 modifier = contentModifier.fillMaxWidth(),
                 onCancel = onCancel,
                 ModalContentToken(
                     stringResource(R.string.setting_detail_account_info_modal_add_image),
-                    PeekrTheme.colorScheme.textNormal,
+                    TurninTheme.colorScheme.textNormal,
                     onImageAdd,
                 ),
             )

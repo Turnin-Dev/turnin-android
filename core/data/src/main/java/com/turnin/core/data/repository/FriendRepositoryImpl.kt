@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.turnin.core.common.coroutine.IO
-import com.turnin.core.data.paging.PeekrPagingSource
+import com.turnin.core.data.paging.TurninPagingSource
 import com.turnin.core.data.source.local.memory.MemoryCache
 import com.turnin.core.data.source.network.datasource.FriendNetworkDataSource
 import com.turnin.core.data.source.network.dto.friend.request.toDataModel
@@ -49,7 +49,7 @@ class FriendRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize + prefetchDistance,
             ),
             pagingSourceFactory = {
-                PeekrPagingSource(
+                TurninPagingSource(
                     apiCall = { page ->
                         friendNetworkDataSource.getFriends(userId.value, page, pageSize)
                     },
@@ -73,7 +73,7 @@ class FriendRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize + prefetchDistance,
             ),
             pagingSourceFactory = {
-                PeekrPagingSource(
+                TurninPagingSource(
                     apiCall = { page ->
                         friendNetworkDataSource.getIncomingRequests(page, pageSize)
                     },

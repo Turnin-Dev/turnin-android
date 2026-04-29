@@ -28,9 +28,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.component.tabBar.PeekrTabBar
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.component.tabBar.TurninTabBar
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.domain.friend.model.FriendStatus
@@ -76,7 +76,7 @@ private fun FriendListFrame(
 
     Column(modifier) {
         topBar()
-        PeekrTabBar(
+        TurninTabBar(
             modifier = Modifier.fillMaxWidth(),
             tabs = tabs,
             pageContent = { page ->
@@ -180,7 +180,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     onBackPress: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = stringResource(R.string.friend_list_top_bar_title),
         onBackPressed = onBackPress,
@@ -443,7 +443,7 @@ private val ListContentPadding = PaddingValues(top = 10.dp, bottom = 16.dp)
 @PreviewLightDarkWithBackground
 @Composable
 private fun TopBarPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             onBackPress = {},
@@ -454,7 +454,7 @@ private fun TopBarPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun FriendCardSkeletonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         FriendCardSkeleton(Modifier.fillMaxWidth())
     }
 }
@@ -464,7 +464,7 @@ private fun FriendCardSkeletonPreview() {
 private fun FriendListPreview() {
     val friends = testFriendsPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         FriendList(
             modifier = Modifier.fillMaxSize(),
             isMyFriendList = false,
@@ -480,7 +480,7 @@ private fun FriendListScreenPreview() {
     val friends = testFriendsPagingData.collectAsLazyPagingItems()
     val requesters = testRequestersPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         FriendListScreen(
             modifier = Modifier.fillMaxSize(),
             isMyFriendList = true,
@@ -501,7 +501,7 @@ private fun FriendListScreen_Empty_Preview() {
     val friends = testFriendsEmptyPagingData.collectAsLazyPagingItems()
     val requesters = testRequestersEmptyPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         FriendListScreen(
             modifier = Modifier.fillMaxSize(),
             isMyFriendList = true,
@@ -522,7 +522,7 @@ private fun FriendListScreen_Empty_Preview2() {
     val friends = testFriendsEmptyPagingData.collectAsLazyPagingItems()
     val requesters = testRequestersEmptyPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         FriendListScreen(
             modifier = Modifier.fillMaxSize(),
             isMyFriendList = false,

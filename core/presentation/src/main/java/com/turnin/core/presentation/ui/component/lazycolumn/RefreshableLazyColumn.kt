@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.turnin.core.presentation.ui.component.indicator.PeekrIndicator
+import com.turnin.core.presentation.ui.component.indicator.TurninIndicator
 
 /**
  * 새로고침 기능이 포함된 [LazyColumn]
@@ -70,7 +70,7 @@ fun RefreshableLazyColumn(
             if (indicator != null) {
                 indicator(pullToRefreshState)
             } else {
-                PeekrIndicator(isRefreshing, pullToRefreshState)
+                TurninIndicator(isRefreshing, pullToRefreshState)
             }
         },
     ) {

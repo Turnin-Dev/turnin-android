@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.component.modal.ModalContentToken
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheet
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheetContent
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheet
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheetContent
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.ui.util.UiText
 
 /**
@@ -54,7 +54,7 @@ fun <T : SelectableReason> SelectReportBlockReasonModal(
     onCancel: () -> Unit,
     onReasonClick: (T) -> Unit,
 ) {
-    PeekrModalBottomSheet(
+    TurninModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
@@ -63,7 +63,7 @@ fun <T : SelectableReason> SelectReportBlockReasonModal(
         val reasonTokens = reasons.map { reason ->
             ModalContentToken(
                 reason.description,
-                PeekrTheme.colorScheme.textNormal,
+                TurninTheme.colorScheme.textNormal,
                 { onReasonClick(reason) },
             )
         }
@@ -83,7 +83,7 @@ fun <T : SelectableReason> SelectReportBlockReasonModal(
             }
 
             else -> {
-                PeekrModalBottomSheetContent(
+                TurninModalBottomSheetContent(
                     modifier = contentModifier.fillMaxWidth(),
                     onCancel = onCancel,
                     *reasonTokens.toTypedArray(),
@@ -126,9 +126,9 @@ private fun Error(
     ) {
         Text(
             text = error,
-            style = PeekrTheme.typography.body4,
+            style = TurninTheme.typography.body4,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
         )
     }
 }

@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import kotlinx.coroutines.launch
 
 /**
@@ -56,11 +56,11 @@ internal fun CoreTabBar(
                 TabRowDefaults.SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                     height = 2.dp,
-                    color = PeekrTheme.colorScheme.textNormal,
+                    color = TurninTheme.colorScheme.textNormal,
                 )
             },
             divider = {
-                HorizontalDivider(thickness = 0.5.dp, color = PeekrTheme.colorScheme.textNormal)
+                HorizontalDivider(thickness = 0.5.dp, color = TurninTheme.colorScheme.textNormal)
             },
         ) {
             tabs.forEachIndexed { index, tab ->
@@ -76,9 +76,9 @@ internal fun CoreTabBar(
                     Text(
                         modifier = Modifier.padding(vertical = 8.dp),
                         text = tab,
-                        style = PeekrTheme.typography.headline5,
+                        style = TurninTheme.typography.headline5,
                         fontWeight = FontWeight.SemiBold,
-                        color = PeekrTheme.colorScheme.textNormal,
+                        color = TurninTheme.colorScheme.textNormal,
                     )
                 }
             }

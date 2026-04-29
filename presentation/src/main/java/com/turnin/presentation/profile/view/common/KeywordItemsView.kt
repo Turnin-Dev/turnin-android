@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.model.UiUserKeyword
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
@@ -53,7 +53,7 @@ fun LazyListScope.keywordItemsSkeleton() {
                 .fillMaxWidth()
                 .height(76.dp)
                 .padding(horizontal = ScreenTokens.HorizontalPadding),
-            shape = RoundedCornerShape(PeekrTheme.shape.small),
+            shape = RoundedCornerShape(TurninTheme.shape.small),
         )
         Spacer(Modifier.height(10.dp))
     }
@@ -62,7 +62,7 @@ fun LazyListScope.keywordItemsSkeleton() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun KeywordItemsPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             keywordItemsView(
                 keywords = LargeKeywordList,
@@ -75,7 +75,7 @@ private fun KeywordItemsPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun KeywordItemsSkeletonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             keywordItemsSkeleton()
         }

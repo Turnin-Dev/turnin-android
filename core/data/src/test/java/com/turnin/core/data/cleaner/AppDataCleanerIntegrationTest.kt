@@ -1,7 +1,7 @@
 package com.turnin.core.data.cleaner
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.turnin.core.data.source.local.database.PeekrDatabase
+import com.turnin.core.data.source.local.database.TurninDatabase
 import com.turnin.core.data.source.local.database.entity.FeedEntity
 import com.turnin.core.data.source.local.database.entity.FeedRemoteKeyEntity
 import com.turnin.core.data.source.local.database.entity.MyKeywordEntity
@@ -29,7 +29,7 @@ class AppDataCleanerIntegrationTest {
     var hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var database: PeekrDatabase
+    lateinit var database: TurninDatabase
 
     @Inject
     lateinit var dataStoreManager: DataStoreManager

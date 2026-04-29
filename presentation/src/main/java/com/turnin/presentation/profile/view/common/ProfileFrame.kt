@@ -20,9 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
@@ -67,7 +67,7 @@ fun ProfileFrame(
                 horizontalArrangement = Arrangement.spacedBy(30.dp),
             ) {
                 // 프로필 사진
-                PeekrAvatar(
+                TurninAvatar(
                     modifier = Modifier.size(ProfileScreenTokens.AvatarSize),
                     model = profileImageUrl,
                     contentDescription = stringResource(R.string.my_profile_screen_avatar_content_desc),
@@ -80,9 +80,9 @@ fun ProfileFrame(
                     // 이름
                     Text(
                         text = name,
-                        style = PeekrTheme.typography.body1,
+                        style = TurninTheme.typography.body1,
                         fontWeight = FontWeight.Bold,
-                        color = PeekrTheme.colorScheme.textNormal,
+                        color = TurninTheme.colorScheme.textNormal,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -93,16 +93,16 @@ fun ProfileFrame(
                     ) {
                         Text(
                             text = stringResource(R.string.my_profile_screen_friends_total),
-                            style = PeekrTheme.typography.body3,
+                            style = TurninTheme.typography.body3,
                             fontWeight = FontWeight.Bold,
-                            color = PeekrTheme.colorScheme.textNormal,
+                            color = TurninTheme.colorScheme.textNormal,
                         )
                         friendsCount?.let {
                             Text(
                                 text = "$it",
-                                style = PeekrTheme.typography.body3,
+                                style = TurninTheme.typography.body3,
                                 fontWeight = FontWeight.Normal,
-                                color = PeekrTheme.colorScheme.textNormal,
+                                color = TurninTheme.colorScheme.textNormal,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -140,9 +140,9 @@ private fun Introduce(
     Column(modifier = modifier) {
         Text(
             text = introduce,
-            style = PeekrTheme.typography.body4,
+            style = TurninTheme.typography.body4,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
             textAlign = TextAlign.Start,
             maxLines = if (expandedIntroduce) 10 else INTRODUCE_MAX_LINE_COUNT,
             overflow = if (expandedIntroduce) TextOverflow.Visible else TextOverflow.Ellipsis,
@@ -159,9 +159,9 @@ private fun Introduce(
                         expandedIntroduce = !expandedIntroduce
                     },
                 text = if (expandedIntroduce) "접기" else "...더보기",
-                style = PeekrTheme.typography.caption2,
+                style = TurninTheme.typography.caption2,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist2,
+                color = TurninTheme.colorScheme.textAssist2,
                 textAlign = TextAlign.End,
             )
         }
@@ -173,7 +173,7 @@ private const val INTRODUCE_MAX_LINE_COUNT = 2
 @PreviewLightDarkWithBackground
 @Composable
 private fun ProfileFramePreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ProfileFrame(
             modifier = Modifier.fillMaxWidth(),
             profileImageUrl = null,

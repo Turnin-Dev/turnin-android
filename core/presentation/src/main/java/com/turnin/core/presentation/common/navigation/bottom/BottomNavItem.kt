@@ -3,9 +3,9 @@ package com.turnin.core.presentation.common.navigation.bottom
 import androidx.annotation.StringRes
 import com.turnin.core.designsystem.util.icon.Discover
 import com.turnin.core.designsystem.util.icon.Home
-import com.turnin.core.designsystem.util.icon.PeekrIconType
-import com.turnin.core.designsystem.util.icon.PeekrIcons
 import com.turnin.core.designsystem.util.icon.Profile
+import com.turnin.core.designsystem.util.icon.TurninIconType
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.presentation.R
 import com.turnin.core.presentation.common.navigation.SubGraph
 
@@ -19,24 +19,24 @@ import com.turnin.core.presentation.common.navigation.SubGraph
 sealed class BottomNavItem(
     val route: SubGraph,
     @StringRes val title: Int,
-    val icon: PeekrIconType,
+    val icon: TurninIconType,
 ) {
     data object Home : BottomNavItem(
         route = SubGraph.BottomNav.Home,
         title = R.string.bottom_nav_item_home,
-        icon = PeekrIcons.Filled.Normal.Home,
+        icon = TurninIcons.Filled.Normal.Home,
     )
 
     data object Discover : BottomNavItem(
         route = SubGraph.BottomNav.Discover,
         title = R.string.bottom_nav_item_discover,
-        icon = PeekrIcons.Filled.Normal.Discover,
+        icon = TurninIcons.Filled.Normal.Discover,
     )
 
     data object Profile : BottomNavItem(
         route = SubGraph.BottomNav.Profile,
         title = R.string.bottom_nav_item_profile,
-        icon = PeekrIcons.Filled.Normal.Profile,
+        icon = TurninIcons.Filled.Normal.Profile,
     )
 }
 

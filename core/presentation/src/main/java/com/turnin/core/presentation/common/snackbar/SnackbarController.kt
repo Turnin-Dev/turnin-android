@@ -14,7 +14,7 @@ data class SnackbarAction(
 )
 
 /**
- * Peekr Snackbar Controller
+ * Turnin Snackbar Controller
  *
  * ### 사용 예시
  *     fun showSnackbar() {

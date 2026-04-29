@@ -15,11 +15,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Exclamation
-import com.turnin.core.designsystem.util.icon.PeekrIconType
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIconType
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.presentation.R
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 
@@ -31,7 +31,7 @@ import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 @Composable
 fun EmptyGuidance(
     modifier: Modifier = Modifier,
-    icon: PeekrIconType? = null,
+    icon: TurninIconType? = null,
     title: String? = null,
     description: String? = null,
 ) {
@@ -44,9 +44,9 @@ fun EmptyGuidance(
             // 단일 타이틀
             Text(
                 text = title,
-                style = PeekrTheme.typography.headline3,
+                style = TurninTheme.typography.headline3,
                 fontWeight = FontWeight.Medium,
-                color = PeekrTheme.colorScheme.textAssist2,
+                color = TurninTheme.colorScheme.textAssist2,
                 textAlign = TextAlign.Center,
             )
         } else {
@@ -55,11 +55,11 @@ fun EmptyGuidance(
                 Icon(
                     modifier = Modifier
                         .size(56.dp)
-                        .background(PeekrTheme.colorScheme.primary.copy(0.1f), CircleShape)
+                        .background(TurninTheme.colorScheme.primary.copy(0.1f), CircleShape)
                         .padding(4.dp),
                     imageVector = it.imageVector,
                     contentDescription = stringResource(R.string.empty_guidance_icon_content_desc),
-                    tint = PeekrTheme.colorScheme.primary,
+                    tint = TurninTheme.colorScheme.primary,
                 )
             }
 
@@ -67,9 +67,9 @@ fun EmptyGuidance(
             title?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.headline3,
+                    style = TurninTheme.typography.headline3,
                     fontWeight = FontWeight.SemiBold,
-                    color = PeekrTheme.colorScheme.textNormal,
+                    color = TurninTheme.colorScheme.textNormal,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -78,9 +78,9 @@ fun EmptyGuidance(
             description?.let {
                 Text(
                     text = it,
-                    style = PeekrTheme.typography.body3,
+                    style = TurninTheme.typography.body3,
                     fontWeight = FontWeight.Normal,
-                    color = PeekrTheme.colorScheme.textAssist2,
+                    color = TurninTheme.colorScheme.textAssist2,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -93,9 +93,9 @@ fun EmptyGuidance(
 @PreviewLightDarkWithBackground
 @Composable
 private fun EmptyGuidance_Full_Preview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         EmptyGuidance(
-            icon = PeekrIcons.Filled.Normal.Exclamation,
+            icon = TurninIcons.Filled.Normal.Exclamation,
             title = "아직 키워드가 없어요",
             description = "나를 구성하고 있는 키워드를 추가하고,\n" +
                 "유사한 키워드로 소통하는 다른 사람들을\n" +
@@ -107,7 +107,7 @@ private fun EmptyGuidance_Full_Preview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun EmptyGuidance_Without_Icon_Preview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         EmptyGuidance(
             title = "아직 키워드가 없어요",
             description = "나를 구성하고 있는 키워드를 추가하고,\n" +
@@ -120,7 +120,7 @@ private fun EmptyGuidance_Without_Icon_Preview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun EmptyGuidance_Only_Title_Preview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         EmptyGuidance(
             title = "아직 키워드가 없어요",
         )

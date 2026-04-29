@@ -26,9 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.modal.PeekrCustomModal
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.modal.TurninCustomModal
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
 
@@ -53,7 +53,7 @@ fun DeleteAccountModal(
     onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
-    PeekrCustomModal(
+    TurninCustomModal(
         modifier = modifier,
         isOpen = isOpen,
         acceptLabel = R.string.setting_detail_delete_account_modal_delete,
@@ -72,9 +72,9 @@ fun DeleteAccountModal(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.setting_detail_delete_account_modal_title),
-                style = PeekrTheme.typography.headline3,
+                style = TurninTheme.typography.headline3,
                 fontWeight = FontWeight.Medium,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 textAlign = TextAlign.Center,
             )
 
@@ -89,9 +89,9 @@ fun DeleteAccountModal(
                     append("\n")
                     append(stringResource(R.string.setting_detail_delete_account_modal_content_3))
                 },
-                style = PeekrTheme.typography.headline5,
+                style = TurninTheme.typography.headline5,
                 fontWeight = FontWeight.Medium,
-                color = PeekrTheme.colorScheme.textAssist,
+                color = TurninTheme.colorScheme.textAssist,
             )
 
             Spacer(Modifier.height(ModalGapDp))
@@ -145,7 +145,7 @@ private fun DeleteConfirmTextField(
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 0.6.dp,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
         )
     }
 }
@@ -168,8 +168,8 @@ private fun BaseTextField(
         modifier = modifier,
         value = text,
         onValueChange = onTextChanged,
-        textStyle = PeekrTheme.typography.body2.copy(
-            color = PeekrTheme.colorScheme.textNormal,
+        textStyle = TurninTheme.typography.body2.copy(
+            color = TurninTheme.colorScheme.textNormal,
             fontWeight = FontWeight.SemiBold,
         ),
         singleLine = true,
@@ -178,9 +178,9 @@ private fun BaseTextField(
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = PeekrTheme.typography.body2,
+                    style = TurninTheme.typography.body2,
                     fontWeight = FontWeight.Normal,
-                    color = PeekrTheme.colorScheme.textPlaceholder,
+                    color = TurninTheme.colorScheme.textPlaceholder,
                 )
             }
             innerTextField()
@@ -199,7 +199,7 @@ private val ModalGapDp = 40.dp
 private fun DeleteAccountModalPreview() {
     val (text, onTextChanged) = remember { mutableStateOf("") }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         DeleteAccountModal(
             isOpen = true,
             isDeletionEnabled = text == "삭제",
@@ -214,7 +214,7 @@ private fun DeleteAccountModalPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun DeleteConfirmTextFieldPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         DeleteConfirmTextField(
             modifier = Modifier.fillMaxWidth(),
             text = "",

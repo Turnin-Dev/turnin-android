@@ -11,9 +11,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.turnin.core.designsystem.component.loading.PeekrLoadingScreen
-import com.turnin.core.designsystem.component.modal.PeekrSimpleModal
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
+import com.turnin.core.designsystem.component.modal.TurninSimpleModal
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.util.ObserveAsEvents
 import com.turnin.presentation.R
 import com.turnin.presentation.setting.model.UiAccountInfo
@@ -87,11 +87,11 @@ fun SettingRoute(
 
     // 로딩 화면
     if (uiState.fullScreenLoading) {
-        PeekrLoadingScreen()
+        TurninLoadingScreen()
     }
 
     // 로그아웃 모달
-    PeekrSimpleModal(
+    TurninSimpleModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isLogoutModalOpen,
         title = R.string.setting_screen_modal_logout_title,
@@ -124,7 +124,7 @@ fun SettingRoute(
     SettingScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         accountInfoLoading = uiState.accountInfoLoading,
         onUiEvent = viewModel::processEvent,
         onBackPressed = onBackPressed,

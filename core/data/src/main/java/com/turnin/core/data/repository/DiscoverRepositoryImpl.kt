@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.turnin.core.data.paging.PeekrCursorPagingSource
+import com.turnin.core.data.paging.TurninCursorPagingSource
 import com.turnin.core.data.source.network.datasource.DiscoverNetworkDataSource
 import com.turnin.core.data.source.network.dto.discover.response.DiscoverContextResponse
 import com.turnin.core.data.source.network.dto.discover.response.toDomainModel
@@ -30,7 +30,7 @@ class DiscoverRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize,
             ),
             pagingSourceFactory = {
-                PeekrCursorPagingSource<Long, DiscoverContextResponse>(
+                TurninCursorPagingSource<Long, DiscoverContextResponse>(
                     apiCall = { nextCursor ->
                         discoverNetworkDataSource.getDiscoverContexts(
                             userId = userId.value,

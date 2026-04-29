@@ -31,7 +31,7 @@ import com.turnin.presentation.report.reportNavigation
 import com.turnin.presentation.setting.settingNavigation
 
 /**
- * Peekr의 앱 네비게이션
+ * Turnin의 앱 네비게이션
  */
 @Composable
 fun AppNavigation(
@@ -49,10 +49,10 @@ fun AppNavigation(
             } else {
                 SubGraph.Login.Root
             },
-            enterTransition = _root_ide_package_.com.turnin.app.navigation.getEnterTransition(),
-            exitTransition = _root_ide_package_.com.turnin.app.navigation.getExitTransition(Screens.KeywordEdit(null)),
-            popEnterTransition = _root_ide_package_.com.turnin.app.navigation.getPopEnterTransition(Screens.KeywordEdit(null)),
-            popExitTransition = _root_ide_package_.com.turnin.app.navigation.getPopExitTransition(),
+            enterTransition = getEnterTransition(),
+            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
+            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
+            popExitTransition = getPopExitTransition(),
         ) {
             // 로그인 네비게이션
             loginNavigation(

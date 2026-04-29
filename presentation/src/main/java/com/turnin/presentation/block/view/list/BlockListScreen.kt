@@ -27,11 +27,11 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrOutlinedButton
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninOutlinedButton
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.component.EmptyGuidance
@@ -115,7 +115,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = stringResource(R.string.block_list_screen_top_bar_title),
         onBackPressed = onBackPressed,
@@ -234,9 +234,9 @@ private fun BlockedUserCard(
             displayId = displayId,
         )
 
-        PeekrOutlinedButton(
+        TurninOutlinedButton(
             text = stringResource(R.string.block_list_screen_btn_delete),
-            style = PeekrButtonStyle.Tiny,
+            style = TurninButtonStyle.Tiny,
             loading = loading,
             onClick = onUnblock,
         )
@@ -284,7 +284,7 @@ private val ListContentPadding = PaddingValues(top = 10.dp, bottom = 16.dp)
 @PreviewLightDarkWithBackground
 @Composable
 private fun BlockedUserCardPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         BlockedUserCard(
             modifier = Modifier.fillMaxWidth(),
             profileImageUrl = "https://example.com/photo.jpg",
@@ -301,7 +301,7 @@ private fun BlockedUserCardPreview() {
 private fun BlockListScreenPreview() {
     val blockedUsers = testBlockedUsersPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         BlockListScreen(
             modifier = Modifier.fillMaxSize(),
             blockedUsers = blockedUsers,

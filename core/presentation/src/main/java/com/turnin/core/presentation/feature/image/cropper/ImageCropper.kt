@@ -32,8 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrSolidButton
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninSolidButton
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.R
 
@@ -116,13 +116,13 @@ internal fun ImageCropper(
             }
         }
 
-        PeekrSolidButton(
+        TurninSolidButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(ScreenTokens.HorizontalPadding),
             text = stringResource(id = R.string.image_cropper_btn_image_crop),
-            style = PeekrButtonStyle.Large,
+            style = TurninButtonStyle.Large,
             enabled = imageBitmap != null && viewWidth > 0 && viewHeight > 0,
             onClick = {
                 imageBitmap?.let { imageBitmap ->

@@ -3,7 +3,7 @@ package com.turnin.core.data.source.local.di
 import android.content.Context
 import androidx.room.Room
 import com.turnin.core.data.cleaner.Clearable
-import com.turnin.core.data.source.local.database.PeekrDatabase
+import com.turnin.core.data.source.local.database.TurninDatabase
 import com.turnin.core.data.source.local.database.dao.FeedDao
 import com.turnin.core.data.source.local.database.dao.FeedRemoteKeyDao
 import com.turnin.core.data.source.local.database.dao.MyKeywordDao
@@ -23,7 +23,7 @@ object DatabaseModule {
     @Provides
     @IntoSet
     fun provideDatabaseClearable(
-        database: PeekrDatabase,
+        database: TurninDatabase,
     ): Clearable = Clearable {
         database.clearAllTables()
     }
@@ -32,27 +32,27 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context,
-    ): PeekrDatabase = Room
-        .databaseBuilder(context, PeekrDatabase::class.java, "peekr_v1.db")
+    ): TurninDatabase = Room
+        .databaseBuilder(context, TurninDatabase::class.java, TurninDatabase.DATABASE_NAME)
         .build()
 
     @Provides
     @Singleton
-    fun provideMyProfileDao(database: PeekrDatabase): MyProfileDao =
+    fun provideMyProfileDao(database: TurninDatabase): MyProfileDao =
         database.myProfileDao()
 
     @Provides
     @Singleton
-    fun provideMyKeywordDao(database: PeekrDatabase): MyKeywordDao =
+    fun provideMyKeywordDao(database: TurninDatabase): MyKeywordDao =
         database.myKeywordDao()
 
     @Provides
     @Singleton
-    fun provideFeedDao(database: PeekrDatabase): FeedDao =
+    fun provideFeedDao(database: TurninDatabase): FeedDao =
         database.feedDao()
 
     @Provides
     @Singleton
-    fun provideFeedRemoteKeyDao(database: PeekrDatabase): FeedRemoteKeyDao =
+    fun provideFeedRemoteKeyDao(database: TurninDatabase): FeedRemoteKeyDao =
         database.feedRemoteKeyDao()
 }

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.util.ObserveAsEvents
 import com.turnin.presentation.notification.view.NotificationScreen
 import com.turnin.presentation.notification.viewmodel.NotificationViewModel
@@ -26,7 +26,7 @@ fun NotificationRoute(
     NotificationScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         notifications = notificationsPagingData,
         onNotificationClick = { notification ->
             viewModel.onNotificationClick(notification.id, notification.deepLink)

@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.presentation.R
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
@@ -37,16 +37,16 @@ fun FooterError(
     ) {
         Text(
             text = errorMessage,
-            style = PeekrTheme.typography.label1,
+            style = TurninTheme.typography.label1,
             fontWeight = FontWeight.Medium,
-            color = PeekrTheme.colorScheme.textAssist2,
+            color = TurninTheme.colorScheme.textAssist2,
         )
         Text(
             modifier = Modifier.clickableSingle(onClick = onRetry),
             text = stringResource(R.string.footer_error_retry),
-            style = PeekrTheme.typography.label1,
+            style = TurninTheme.typography.label1,
             fontWeight = FontWeight.Bold,
-            color = PeekrTheme.colorScheme.textStrong,
+            color = TurninTheme.colorScheme.textStrong,
         )
     }
 }
@@ -54,7 +54,7 @@ fun FooterError(
 @PreviewLightDarkWithBackground
 @Composable
 private fun FooterErrorPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         FooterError(
             modifier = Modifier.fillMaxWidth(),
             errorMessage = "에러가 발생했어요.",

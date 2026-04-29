@@ -153,7 +153,7 @@ class NotificationViewModelTest {
     companion object {
         private const val TEST_LIST_SIZE = 10
         private const val TEST_NOTIFICATION_ID = 1L
-        private const val TEST_DEEP_LINK = "peekr://profile/1"
+        private const val TEST_DEEP_LINK = "turnin://profile/1"
 
         private val testNotifications = List(TEST_LIST_SIZE) {
             val id = it + 1L

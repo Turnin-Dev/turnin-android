@@ -14,16 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.icon.PeekrIcon
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.component.logo.PeekrLogo
-import com.turnin.core.designsystem.component.logo.PeekrLogoType
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.icon.TurninIcon
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.component.logo.TurninLogo
+import com.turnin.core.designsystem.component.logo.TurninLogoType
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.icon.Arrow1Right
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
@@ -87,7 +87,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = stringResource(R.string.setting_detail_version_info_top_bar_title),
         onBackPressed = onBackPressed,
@@ -110,15 +110,15 @@ private fun LogoAndVersion(
         verticalArrangement = Arrangement.spacedBy(LogoGapDp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        PeekrLogo(
-            logoType = PeekrLogoType.Icon,
+        TurninLogo(
+            logoType = TurninLogoType.Icon,
             logoWidth = LOGO_WIDTH,
         )
         Text(
             text = versionName,
-            style = PeekrTheme.typography.display1,
+            style = TurninTheme.typography.display1,
             fontWeight = FontWeight.SemiBold,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
         )
     }
 }
@@ -176,15 +176,15 @@ private fun PolicyLink(
     ) {
         Text(
             text = text,
-            style = PeekrTheme.typography.body3,
+            style = TurninTheme.typography.body3,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
         )
-        PeekrIcon(
-            icon = PeekrIcons.Default.Normal.Arrow1Right,
-            iconSize = PeekrIconSize.Small,
+        TurninIcon(
+            icon = TurninIcons.Default.Normal.Arrow1Right,
+            iconSize = TurninIconSize.Small,
             contentDescription = null,
-            tint = PeekrTheme.colorScheme.lineNormal,
+            tint = TurninTheme.colorScheme.lineNormal,
         )
     }
 }
@@ -198,7 +198,7 @@ private fun PolicyLink(
 private fun PolicyDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(
         modifier = modifier,
-        color = PeekrTheme.colorScheme.lineDivider,
+        color = TurninTheme.colorScheme.lineDivider,
         thickness = 0.5.dp,
     )
 }
@@ -218,7 +218,7 @@ private val LinkPaddingDp = 20.dp
 @PreviewLightDarkWithBackground
 @Composable
 private fun LogoAndVersionPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         LogoAndVersion(versionName = "v1.0.0")
     }
 }
@@ -226,7 +226,7 @@ private fun LogoAndVersionPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun PolicyLinkPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         PolicyLink(
             modifier = Modifier.fillMaxWidth(),
             text = "서비스 이용약관",
@@ -238,7 +238,7 @@ private fun PolicyLinkPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun PolicyLinkGroupPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         PolicyLinkGroup(
             modifier = Modifier.fillMaxWidth(),
             onServiceTermClick = {},
@@ -250,7 +250,7 @@ private fun PolicyLinkGroupPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun VersionInfoScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         VersionInfoScreen(
             modifier = Modifier.fillMaxSize(),
             versionName = "v1.0.0",

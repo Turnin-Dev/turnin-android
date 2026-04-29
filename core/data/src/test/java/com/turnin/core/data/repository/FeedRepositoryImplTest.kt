@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.turnin.core.data.MainDispatcherRule
 import com.turnin.core.data.MockLog
-import com.turnin.core.data.source.local.database.PeekrDatabase
+import com.turnin.core.data.source.local.database.TurninDatabase
 import com.turnin.core.data.source.network.datasource.FeedNetworkDataSource
 import com.turnin.core.data.source.network.dto.feed.FeedCursorPageResponse
 import com.turnin.core.data.source.network.dto.feed.FeedCursorResponse
@@ -45,7 +45,7 @@ class FeedRepositoryImplTest {
     var mainDispatcherRule = MainDispatcherRule()
 
     private val dataSource: FeedNetworkDataSource = mockk()
-    private lateinit var database: PeekrDatabase
+    private lateinit var database: TurninDatabase
     private lateinit var repository: FeedRepository
 
     @Before
@@ -53,7 +53,7 @@ class FeedRepositoryImplTest {
         MockLog.mock()
 
         val context = ApplicationProvider.getApplicationContext<Context>()
-        database = Room.inMemoryDatabaseBuilder(context, PeekrDatabase::class.java)
+        database = Room.inMemoryDatabaseBuilder(context, TurninDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         repository = FeedRepositoryImpl(dataSource, database)

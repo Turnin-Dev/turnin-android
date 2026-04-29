@@ -16,13 +16,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.icon.PeekrIcon
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.icon.TurninIcon
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.icon.Arrow1Right
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
 
@@ -43,8 +43,8 @@ fun KeywordCardView(
 ) {
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(PeekrTheme.shape.small))
-            .background(PeekrTheme.colorScheme.componentKeywordBG)
+            .clip(RoundedCornerShape(TurninTheme.shape.small))
+            .background(TurninTheme.colorScheme.componentKeywordBG)
             .clickableSingle { onClick() }
             .padding(
                 horizontal = 16.dp,
@@ -60,29 +60,29 @@ fun KeywordCardView(
             // 키워드
             Text(
                 text = keyword,
-                style = PeekrTheme.typography.body1,
+                style = TurninTheme.typography.body1,
                 fontWeight = FontWeight.Bold,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             // 내용
             Text(
                 text = description,
-                style = PeekrTheme.typography.body4,
+                style = TurninTheme.typography.body4,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
             )
         }
 
         // 자세히 보기 아이콘
-        PeekrIcon(
-            icon = PeekrIcons.Default.Normal.Arrow1Right,
-            iconSize = PeekrIconSize.ExtraTiny,
+        TurninIcon(
+            icon = TurninIcons.Default.Normal.Arrow1Right,
+            iconSize = TurninIconSize.ExtraTiny,
             contentDescription = stringResource(R.string.my_profile_screen_keyword_card),
-            tint = PeekrTheme.colorScheme.textNormal,
+            tint = TurninTheme.colorScheme.textNormal,
         )
     }
 }
@@ -90,7 +90,7 @@ fun KeywordCardView(
 @PreviewLightDarkWithBackground
 @Composable
 private fun KeywordCardPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         KeywordCardView(
             modifier = Modifier.fillMaxWidth(),
             keyword = "Keyword",

@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.turnin.core.designsystem.component.modal.ModalContentToken
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheet
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheetContent
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheet
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheetContent
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.presentation.R
 
 /**
@@ -39,22 +39,22 @@ fun MyKeywordOptionModal(
     onDelete: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    PeekrModalBottomSheet(
+    TurninModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
     ) { contentModifier ->
-        PeekrModalBottomSheetContent(
+        TurninModalBottomSheetContent(
             modifier = contentModifier.fillMaxWidth(),
             onCancel = onCancel,
             ModalContentToken(
                 stringResource(R.string.keyword_detail_option_modal_edit),
-                PeekrTheme.colorScheme.textNormal,
+                TurninTheme.colorScheme.textNormal,
                 onEdit,
             ),
             ModalContentToken(
                 stringResource(R.string.keyword_detail_option_modal_delete),
-                PeekrTheme.colorScheme.statusNegative,
+                TurninTheme.colorScheme.statusNegative,
                 onDelete,
             ),
         )
@@ -69,7 +69,7 @@ private fun MyKeywordOptionModalPreview() {
     var showBottomSheet by remember { mutableStateOf(true) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         MyKeywordOptionModal(
             sheetState = sheetState,
             onDismissRequest = {

@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.presentation.profile.view.MyProfileScreen
 import com.turnin.presentation.profile.viewmodel.MyProfileViewModel
 
@@ -24,7 +24,7 @@ fun MyProfileRoute(
     MyProfileScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
         onNavigateToKeywordAdd = onNavigateToKeywordAddScreen,

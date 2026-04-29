@@ -6,7 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.turnin.core.data.paging.FeedRemoteMediator
-import com.turnin.core.data.source.local.database.PeekrDatabase
+import com.turnin.core.data.source.local.database.TurninDatabase
 import com.turnin.core.data.source.local.database.entity.toDomainModel
 import com.turnin.core.data.source.network.datasource.FeedNetworkDataSource
 import com.turnin.core.domain.feed.model.Feed
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalPagingApi::class)
 class FeedRepositoryImpl @Inject constructor(
     private val feedNetworkDataSource: FeedNetworkDataSource,
-    private val database: PeekrDatabase,
+    private val database: TurninDatabase,
 ) : FeedRepository {
     override fun getFeeds(): Flow<PagingData<Feed>> {
         val pagingSourceFactory = { database.feedDao().getPagingSource() }

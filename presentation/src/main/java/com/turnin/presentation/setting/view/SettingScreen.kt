@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
@@ -120,7 +120,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = stringResource(R.string.setting_screen_top_bar_title),
         onBackPressed = onBackPressed,
@@ -131,7 +131,7 @@ private fun TopBar(
 @PreviewLightDarkWithBackground
 @Composable
 private fun SettingScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         SettingScreen(
             modifier = Modifier.fillMaxSize(),
             accountInfoLoading = true,

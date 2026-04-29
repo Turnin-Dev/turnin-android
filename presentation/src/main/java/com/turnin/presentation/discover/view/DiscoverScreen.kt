@@ -40,14 +40,14 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.turnin.core.designsystem.component.fab.PeekrFab
-import com.turnin.core.designsystem.component.icon.PeekrIcon
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.fab.TurninFab
+import com.turnin.core.designsystem.component.icon.TurninIcon
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Arrow1Right
-import com.turnin.core.designsystem.util.icon.PeekrIcons
 import com.turnin.core.designsystem.util.icon.Refresh
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
 import com.turnin.core.presentation.ui.component.EmptyGuidance
@@ -98,7 +98,7 @@ private fun DiscoverScreenFrame(
         }
     }
 
-    Column(modifier.background(PeekrTheme.colorScheme.backgroundNormal)) {
+    Column(modifier.background(TurninTheme.colorScheme.backgroundNormal)) {
         // 탑바
         topBar()
 
@@ -129,9 +129,9 @@ private fun DiscoverScreenFrame(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.discover_screen_current_target_user_title),
-                    style = PeekrTheme.typography.body4,
+                    style = TurninTheme.typography.body4,
                     fontWeight = FontWeight.Medium,
-                    color = PeekrTheme.colorScheme.textAssist2,
+                    color = TurninTheme.colorScheme.textAssist2,
                 )
                 Spacer(Modifier.height(16.dp))
             }
@@ -148,9 +148,9 @@ private fun DiscoverScreenFrame(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.discover_screen_users_title),
-                    style = PeekrTheme.typography.body4,
+                    style = TurninTheme.typography.body4,
                     fontWeight = FontWeight.Medium,
-                    color = PeekrTheme.colorScheme.textAssist2,
+                    color = TurninTheme.colorScheme.textAssist2,
                 )
                 Spacer(Modifier.height(16.dp))
             }
@@ -181,7 +181,7 @@ fun DiscoverScreen(
             modifier = Modifier.fillMaxSize(),
             discoverContexts = discoverContexts,
             topBar = {
-                PeekrTopBar(
+                TurninTopBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = ScreenTokens.HorizontalPadding),
@@ -308,11 +308,11 @@ private fun HistoryBar(
                 onClick = { onItemClick(history) },
             )
             Spacer(Modifier.width(HistoryItemGap))
-            PeekrIcon(
+            TurninIcon(
                 modifier = Modifier.size(18.dp),
-                icon = PeekrIcons.Default.Normal.Arrow1Right,
+                icon = TurninIcons.Default.Normal.Arrow1Right,
                 contentDescription = null,
-                tint = PeekrTheme.colorScheme.lineNormal,
+                tint = TurninTheme.colorScheme.lineNormal,
             )
         }
     }
@@ -403,9 +403,9 @@ private fun ReDiscoverFab(
     enabled: Boolean,
     onClick: () -> Unit,
 ) {
-    PeekrFab(
+    TurninFab(
         modifier = modifier,
-        icon = PeekrIcons.Default.Normal.Refresh,
+        icon = TurninIcons.Default.Normal.Refresh,
         contentDescription = stringResource(R.string.discover_screen_fab_content_desc),
         enabled = enabled,
         text = stringResource(R.string.discover_screen_fab_text),
@@ -440,7 +440,7 @@ private val FabPaddingValues = PaddingValues(end = 20.dp, bottom = 24.dp)
 private fun HistoryBarPreview() {
     var target: Long? by remember { mutableStateOf(null) }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         HistoryBar(
             modifier = Modifier.fillMaxWidth(),
             currentTargetUserId = target,
@@ -457,7 +457,7 @@ private fun HistoryBarPreview() {
 private fun DiscoverScreenPreview() {
     val discoverContexts = testDiscoverContextsPaging.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         DiscoverScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = DiscoverContract.UiState(

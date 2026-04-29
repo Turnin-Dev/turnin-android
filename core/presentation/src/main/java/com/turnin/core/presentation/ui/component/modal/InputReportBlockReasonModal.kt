@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrSolidButton
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheet
-import com.turnin.core.designsystem.component.textfield.PeekrTextField
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninSolidButton
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheet
+import com.turnin.core.designsystem.component.textfield.TurninTextField
+import com.turnin.core.designsystem.theme.TurninTheme
 
 /**
  * 신고/차단 사유 작성 모달
@@ -49,7 +49,7 @@ fun InputReportBlockReasonModal(
 ) {
     val (reason, onReasonChanged) = rememberSaveable { mutableStateOf("") }
 
-    PeekrModalBottomSheet(
+    TurninModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
@@ -103,12 +103,12 @@ private fun Content(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
-                style = PeekrTheme.typography.headline3,
+                style = TurninTheme.typography.headline3,
                 fontWeight = FontWeight.Medium,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 textAlign = TextAlign.Center,
             )
-            PeekrTextField(
+            TurninTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
@@ -118,11 +118,11 @@ private fun Content(
             )
         }
 
-        PeekrSolidButton(
+        TurninSolidButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            style = PeekrButtonStyle.Medium,
+            style = TurninButtonStyle.Medium,
             text = btnTitle,
             loading = loading,
             onClick = onClick,

@@ -29,21 +29,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.component.loading.PeekrLoadingScreen
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.designsystem.util.icon.More
-import com.turnin.core.designsystem.util.icon.PeekrIcons
 import com.turnin.core.designsystem.util.icon.Report
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
-import com.turnin.core.presentation.ui.component.indicator.PeekrIndicator
+import com.turnin.core.presentation.ui.component.indicator.TurninIndicator
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
 import com.turnin.presentation.keywordDetail.model.UiKeywordDetail
@@ -77,7 +77,7 @@ private fun KeywordDetailScreenFrame(
             state = pullToRefreshState,
             isRefreshing = isRefreshing,
             onRefresh = { onRefresh() },
-            indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
+            indicator = { TurninIndicator(isRefreshing, pullToRefreshState) },
         ) {
             // 컨텐츠, 댓글
             Column(
@@ -97,7 +97,7 @@ private fun KeywordDetailScreenFrame(
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = 0.35.dp,
-                    color = PeekrTheme.colorScheme.lineDivider,
+                    color = TurninTheme.colorScheme.lineDivider,
                 )
             }
         }
@@ -177,7 +177,7 @@ fun KeywordDetailScreen(
         )
 
         if (uiState.fullScreenLoading) {
-            PeekrLoadingScreen()
+            TurninLoadingScreen()
         }
     }
 }
@@ -199,21 +199,21 @@ private fun TopBar(
     onReportClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         onBackPressed = onBackPressed,
         optionSlot = {
             if (myKeyword) {
-                PeekrIconButton(
-                    icon = PeekrIcons.Default.Normal.More,
-                    iconSize = PeekrIconSize.Normal,
+                TurninIconButton(
+                    icon = TurninIcons.Default.Normal.More,
+                    iconSize = TurninIconSize.Normal,
                     contentDescription = stringResource(R.string.keyword_detail_screen_top_bar_option),
                     onClick = onMoreClick,
                 )
             } else {
-                PeekrIconButton(
-                    icon = PeekrIcons.Filled.Normal.Report,
-                    iconSize = PeekrIconSize.Normal,
+                TurninIconButton(
+                    icon = TurninIcons.Filled.Normal.Report,
+                    iconSize = TurninIconSize.Normal,
                     contentDescription = stringResource(R.string.keyword_detail_screen_top_bar_option_2),
                     onClick = onReportClick,
                 )
@@ -284,7 +284,7 @@ private fun UserInfo(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // 사용자 프로필 사진
-        PeekrAvatar(
+        TurninAvatar(
             modifier = Modifier.size(UserAvatarSize),
             model = profileImageUrl,
             contentDescription = userName,
@@ -296,16 +296,16 @@ private fun UserInfo(
             // 사용자 명
             Text(
                 text = userName,
-                style = PeekrTheme.typography.body3,
+                style = TurninTheme.typography.body3,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
             )
             // 키워드 작성 일자
             Text(
                 text = createdAt,
-                style = PeekrTheme.typography.body5,
+                style = TurninTheme.typography.body5,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist,
+                color = TurninTheme.colorScheme.textAssist,
             )
         }
     }
@@ -331,16 +331,16 @@ private fun KeywordContents(
     ) {
         Text(
             text = keyword,
-            style = PeekrTheme.typography.headline2,
+            style = TurninTheme.typography.headline2,
             fontWeight = FontWeight.SemiBold,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = description,
-            style = PeekrTheme.typography.bodyContent,
+            style = TurninTheme.typography.bodyContent,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
             textAlign = TextAlign.Start,
         )
     }
@@ -392,7 +392,7 @@ private val UserAvatarSize = 40.dp
 @PreviewLightDarkWithBackground
 @Composable
 private fun UserInfoPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         UserInfo(
             userName = "Username",
             createdAt = "2026.01.10",
@@ -404,7 +404,7 @@ private fun UserInfoPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun KeywordContentsPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         KeywordContents(
             keyword = "키워드 텍스트",
             description = "대통령은 국무총리·국무위원·행정각부의 장 기타 법률이 정하는 공사의 직을 겸할 수 없다." +
@@ -418,7 +418,7 @@ private fun KeywordContentsPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun ContentsPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Contents(
             userName = "Username",
             createdAt = "2026.01.10",
@@ -436,7 +436,7 @@ private fun ContentsPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun KeywordDetailScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(
@@ -466,7 +466,7 @@ private fun KeywordDetailScreenPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun SkeletonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         KeywordDetailScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordDetailContract.UiState(loading = true),

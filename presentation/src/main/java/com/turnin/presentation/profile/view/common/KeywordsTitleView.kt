@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.domain.profile.model.ProfileRule
 import com.turnin.presentation.R
 
@@ -27,9 +27,9 @@ fun KeywordsTitleView(
         modifier = modifier,
         text = stringResource(R.string.my_profile_screen_keywords_title) +
             " ($count/${ProfileRule.MAX_KEYWORD_COUNT})",
-        style = PeekrTheme.typography.body1,
+        style = TurninTheme.typography.body1,
         fontWeight = FontWeight.Bold,
-        color = PeekrTheme.colorScheme.textNormal,
+        color = TurninTheme.colorScheme.textNormal,
     )
 }
 

@@ -16,11 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrSolidButton
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheet
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninSolidButton
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheet
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.ui.util.UiText
 
 /**
@@ -49,7 +49,7 @@ fun ReportBlockResultModal(
     onDismissRequest: () -> Unit,
     onFinishClick: () -> Unit,
 ) {
-    PeekrModalBottomSheet(
+    TurninModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
@@ -104,9 +104,9 @@ private fun Content(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = error,
-                    style = PeekrTheme.typography.body2,
+                    style = TurninTheme.typography.body2,
                     fontWeight = FontWeight.Normal,
-                    color = PeekrTheme.colorScheme.textNormal,
+                    color = TurninTheme.colorScheme.textNormal,
                     textAlign = TextAlign.Center,
                 )
             } else {
@@ -118,26 +118,26 @@ private fun Content(
                 ) {
                     Text(
                         text = successTitle,
-                        style = PeekrTheme.typography.headline3,
+                        style = TurninTheme.typography.headline3,
                         fontWeight = FontWeight.Medium,
-                        color = PeekrTheme.colorScheme.textNormal,
+                        color = TurninTheme.colorScheme.textNormal,
                         textAlign = TextAlign.Center,
                     )
                     Text(
                         text = successContent,
-                        style = PeekrTheme.typography.body2,
+                        style = TurninTheme.typography.body2,
                         fontWeight = FontWeight.Normal,
-                        color = PeekrTheme.colorScheme.textNormal,
+                        color = TurninTheme.colorScheme.textNormal,
                         textAlign = TextAlign.Center,
                     )
                 }
             }
         }
 
-        PeekrSolidButton(
+        TurninSolidButton(
             modifier = Modifier.fillMaxWidth(),
             text = buttonText,
-            style = PeekrButtonStyle.Medium,
+            style = TurninButtonStyle.Medium,
             onClick = onFinishClick,
         )
     }
@@ -150,7 +150,7 @@ private val ModalContentMinHeight = 280.dp
 @Preview(name = "정상 완료")
 @Composable
 private fun ReportBlockResultModalPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ReportBlockResultModal(
             modifier = Modifier,
             sheetState = rememberModalBottomSheetState(),
@@ -169,7 +169,7 @@ private fun ReportBlockResultModalPreview() {
 @Preview(name = "에러 발생 시")
 @Composable
 private fun ReportBlockResultModalErrorPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ReportBlockResultModal(
             modifier = Modifier,
             sheetState = rememberModalBottomSheetState(),

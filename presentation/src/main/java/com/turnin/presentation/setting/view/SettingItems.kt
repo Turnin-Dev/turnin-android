@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.presentation.R
 
 /**
@@ -121,7 +121,7 @@ fun LazyListScope.deleteAccountItem(
     item {
         SettingItem(
             title = stringResource(R.string.setting_screen_item_delete_account),
-            titleColor = PeekrTheme.colorScheme.statusNegative,
+            titleColor = TurninTheme.colorScheme.statusNegative,
             onClick = onDeleteAccountClick,
         )
     }

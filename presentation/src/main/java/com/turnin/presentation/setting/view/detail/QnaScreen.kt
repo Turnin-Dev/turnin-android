@@ -31,11 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrSolidButton
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninSolidButton
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.presentation.R
 
@@ -54,7 +54,7 @@ fun QnaScreen(
 ) {
     Column(modifier.wrapContentHeight()) {
         // 탑바
-        PeekrTopBar(
+        TurninTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
@@ -143,7 +143,7 @@ private fun GoogleFormWebView(
         if (isLoading && !isError) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = PeekrTheme.colorScheme.primary,
+                color = TurninTheme.colorScheme.primary,
             )
         }
 
@@ -172,19 +172,19 @@ private fun ErrorScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterVertically),
     ) {
         Text(
             text = stringResource(R.string.setting_detail_qna_page_load_failed),
-            style = PeekrTheme.typography.body2,
-            color = PeekrTheme.colorScheme.textNormal,
+            style = TurninTheme.typography.body2,
+            color = TurninTheme.colorScheme.textNormal,
         )
         Spacer(modifier = Modifier.height(8.dp))
-        PeekrSolidButton(
+        TurninSolidButton(
             text = stringResource(R.string.setting_detail_qna_page_load_failed_btn),
-            style = PeekrButtonStyle.Medium,
+            style = TurninButtonStyle.Medium,
             onClick = onRetry,
         )
     }
@@ -194,7 +194,7 @@ private fun ErrorScreen(
 @Preview
 @Composable
 private fun QnaScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         QnaScreen(
             modifier = Modifier.fillMaxSize(),
             formUrl = "",
@@ -206,7 +206,7 @@ private fun QnaScreenPreview() {
 @PreviewLightDark
 @Composable
 private fun ErrorScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ErrorScreen(
             modifier = Modifier.fillMaxSize(),
             onRetry = {},

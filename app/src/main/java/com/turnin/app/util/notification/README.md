@@ -25,7 +25,7 @@ FCM 토큰 등록/해제를 **단일 진입점**으로 관리하는 알림 동�
 | 로그인 완료 | `MainViewModel.onLogin()` |
 | 앱 복귀 (설정 화면에서 돌아올 때) | `MainActivity.onResume` → `MainViewModel.syncNotificationState()` |
 | 푸시 알림 토글 변경 | `NotificationSettingViewModel.togglePushNotificationAndSync()` |
-| FCM 토큰 갱신 | `PeekrFirebaseMessagingService.onNewToken()` |
+| FCM 토큰 갱신 | `TurninFirebaseMessagingService.onNewToken()` |
 
 ---
 

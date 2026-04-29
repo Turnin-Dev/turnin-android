@@ -6,7 +6,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.domain.report.model.ReportReasonId
 import com.turnin.core.presentation.ui.component.modal.SelectReportBlockReasonModal
 import com.turnin.core.presentation.ui.util.UiText
@@ -54,7 +54,7 @@ fun SelectReportReasonModal(
 private fun SelectReportReasonModalPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectReportReasonModal(
             sheetState = sheetState,
             reportReasons = listOf(
@@ -89,7 +89,7 @@ private fun SelectReportReasonModalPreview() {
 private fun SkeletonPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectReportReasonModal(
             sheetState = sheetState,
             reportReasons = emptyList(),
@@ -108,7 +108,7 @@ private fun SkeletonPreview() {
 private fun ErrorPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectReportReasonModal(
             sheetState = sheetState,
             reportReasons = emptyList(),

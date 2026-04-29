@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.presentation.ui.component.modal.ReportBlockResultModal
 import com.turnin.core.presentation.ui.util.UiText
 import com.turnin.presentation.R
@@ -50,7 +50,7 @@ fun BlockResultModal(
 private fun BlockResultModalPreview() {
     val sheetState = rememberModalBottomSheetState()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         BlockResultModal(
             sheetState = sheetState,
             error = null,

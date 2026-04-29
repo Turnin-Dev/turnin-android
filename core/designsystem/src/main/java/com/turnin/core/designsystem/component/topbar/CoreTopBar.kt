@@ -15,13 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.R
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Arrow1Left
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 
-object PeekrTopBarTokens {
+object TurninTopBarTokens {
     val Height = 60.dp
 }
 
@@ -50,7 +50,7 @@ internal fun CoreTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = PeekrTopBarTokens.Height),
+            .heightIn(min = TurninTopBarTokens.Height),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LeftSection(
@@ -113,10 +113,10 @@ private fun RightSection(
 
 @Composable
 private fun BackPressedButton(onClick: () -> Unit) {
-    PeekrIconButton(
-        icon = PeekrIcons.Default.Normal.Arrow1Left,
+    TurninIconButton(
+        icon = TurninIcons.Default.Normal.Arrow1Left,
         contentDescription = stringResource(R.string.top_bar_btn_back_pressed),
-        iconSize = PeekrIconSize.Small,
+        iconSize = TurninIconSize.Small,
         onClick = onClick,
     )
 }
@@ -125,9 +125,9 @@ private fun BackPressedButton(onClick: () -> Unit) {
 private fun Title(text: String) {
     Text(
         text = text,
-        style = PeekrTheme.typography.title2,
+        style = TurninTheme.typography.title2,
         fontWeight = FontWeight.SemiBold,
-        color = PeekrTheme.colorScheme.textNormal,
+        color = TurninTheme.colorScheme.textNormal,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
     )

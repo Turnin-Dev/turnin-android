@@ -22,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
@@ -55,7 +55,7 @@ internal fun DiscoverFeed(
             .clip(OuterShape)
             .background(
                 color = if (selected) {
-                    PeekrTheme.colorScheme.interactionClick
+                    TurninTheme.colorScheme.interactionClick
                 } else {
                     Color.Transparent
                 },
@@ -107,7 +107,7 @@ private fun UserInfo(
         horizontalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Start),
     ) {
         // 프로필 사진
-        PeekrAvatar(
+        TurninAvatar(
             modifier = Modifier.size(AvatarSize),
             model = profileImageUrl,
             contentDescription = null,
@@ -120,17 +120,17 @@ private fun UserInfo(
         ) {
             Text(
                 text = userName,
-                style = PeekrTheme.typography.body2,
+                style = TurninTheme.typography.body2,
                 fontWeight = FontWeight.SemiBold,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = displayId,
-                style = PeekrTheme.typography.body3,
+                style = TurninTheme.typography.body3,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist,
+                color = TurninTheme.colorScheme.textAssist,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -183,7 +183,7 @@ private val OuterShape = RoundedCornerShape(32.dp)
 @PreviewLightDarkWithBackground
 @Composable
 private fun DiscoverFeedPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         DiscoverFeed(
             modifier = Modifier.fillMaxWidth(),
             discoverContext = UiDiscoverContext.sample,
@@ -198,7 +198,7 @@ private fun DiscoverFeedPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun DiscoverFeedKeywordEmptyPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         DiscoverFeed(
             modifier = Modifier.fillMaxWidth(),
             discoverContext = UiDiscoverContext.sample.copy(keywords = emptyList()),
@@ -213,7 +213,7 @@ private fun DiscoverFeedKeywordEmptyPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun DiscoverFeedSkeletonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         DiscoverFeedSkeleton()
     }
 }

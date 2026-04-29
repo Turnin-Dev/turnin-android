@@ -9,12 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Cancel
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.R
 import com.turnin.core.presentation.feature.image.cropper.ImageCropper
@@ -45,14 +45,14 @@ fun SimpleImageCropper(
             )
         }
         // 취소 버튼
-        PeekrIconButton(
+        TurninIconButton(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(ScreenTokens.HorizontalPaddingWithTouchTarget),
-            icon = PeekrIcons.Default.Normal.Cancel,
-            iconSize = PeekrIconSize.Small,
+            icon = TurninIcons.Default.Normal.Cancel,
+            iconSize = TurninIconSize.Small,
             contentDescription = stringResource(R.string.simple_image_cropper_cancel),
-            tint = PeekrTheme.colorScheme.staticWhite,
+            tint = TurninTheme.colorScheme.staticWhite,
             onClick = onCancel,
         )
     }
@@ -61,7 +61,7 @@ fun SimpleImageCropper(
 @Preview
 @Composable
 private fun SimpleImageCropperPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         SimpleImageCropper(
             modifier = Modifier.fillMaxSize(),
             image = null,

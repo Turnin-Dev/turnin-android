@@ -2,7 +2,7 @@ package com.turnin.core.presentation.common.navigation.deepLink
 
 /** 딥링크 */
 object DeepLink {
-    const val SCHEME = "peekr"
+    const val SCHEME = "turnin"
 
     object Path {
         const val PROFILE = "profile"

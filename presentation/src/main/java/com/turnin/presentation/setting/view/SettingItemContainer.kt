@@ -20,13 +20,13 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.icon.PeekrIcon
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.icon.TurninIcon
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.icon.Arrow1Right
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 
@@ -54,9 +54,9 @@ internal fun SettingItemContainer(
                 .fillMaxWidth()
                 .padding(ContainerItemTitlePadding),
             text = title,
-            style = PeekrTheme.typography.headline5,
+            style = TurninTheme.typography.headline5,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.textAssist2,
+            color = TurninTheme.colorScheme.textAssist2,
             textAlign = TextAlign.Start,
         )
         // 항목 아이템들
@@ -68,7 +68,7 @@ internal fun SettingItemContainer(
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
-                color = PeekrTheme.colorScheme.lineDivider.copy(0.5f),
+                color = TurninTheme.colorScheme.lineDivider.copy(0.5f),
             )
         }
     }
@@ -91,16 +91,16 @@ internal fun SettingItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    titleColor: Color = PeekrTheme.colorScheme.textNormal,
+    titleColor: Color = TurninTheme.colorScheme.textNormal,
     description: String? = null,
-    descriptionColor: Color = PeekrTheme.colorScheme.textAssist2,
+    descriptionColor: Color = TurninTheme.colorScheme.textAssist2,
     loading: Boolean = false,
     option: @Composable () -> Unit = {
-        PeekrIcon(
-            icon = PeekrIcons.Default.Normal.Arrow1Right,
-            iconSize = PeekrIconSize.Small,
+        TurninIcon(
+            icon = TurninIcons.Default.Normal.Arrow1Right,
+            iconSize = TurninIconSize.Small,
             contentDescription = null,
-            tint = PeekrTheme.colorScheme.lineNormal,
+            tint = TurninTheme.colorScheme.lineNormal,
         )
     },
 ) {
@@ -120,7 +120,7 @@ internal fun SettingItem(
             // 제목
             Text(
                 text = title,
-                style = PeekrTheme.typography.body3,
+                style = TurninTheme.typography.body3,
                 fontWeight = FontWeight.Normal,
                 color = titleColor,
             )
@@ -129,7 +129,7 @@ internal fun SettingItem(
             description?.let {
                 Text(
                     text = description,
-                    style = PeekrTheme.typography.body5,
+                    style = TurninTheme.typography.body5,
                     fontWeight = FontWeight.Normal,
                     color = descriptionColor,
                 )
@@ -142,7 +142,7 @@ internal fun SettingItem(
                 modifier = Modifier.size(15.dp),
                 strokeCap = StrokeCap.Round,
                 strokeWidth = 2.5.dp,
-                color = PeekrTheme.colorScheme.primary,
+                color = TurninTheme.colorScheme.primary,
             )
         } else {
             option()
@@ -168,7 +168,7 @@ private val ItemMinHeightDp = 57.dp
 @PreviewLightDarkWithBackground
 @Composable
 private fun SettingSettingItemContainerPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         SettingItemContainer(
             modifier = Modifier.fillMaxWidth(),
             title = "정보",
@@ -189,7 +189,7 @@ private fun SettingSettingItemContainerPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun SettingSettingItemContainerPreview2() {
-    PeekrAppTheme {
+    TurninAppTheme {
         SettingItemContainer(
             modifier = Modifier.fillMaxWidth(),
             title = "정보",

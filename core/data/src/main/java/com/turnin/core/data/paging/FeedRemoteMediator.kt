@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.data.source.local.database.PeekrDatabase
+import com.turnin.core.data.source.local.database.TurninDatabase
 import com.turnin.core.data.source.local.database.entity.FeedEntity
 import com.turnin.core.data.source.local.database.entity.FeedRemoteKeyEntity
 import com.turnin.core.data.source.network.datasource.FeedNetworkDataSource
@@ -24,7 +24,7 @@ import kotlinx.coroutines.CancellationException
 @OptIn(ExperimentalPagingApi::class)
 class FeedRemoteMediator(
     private val feedNetworkDataSource: FeedNetworkDataSource,
-    private val database: PeekrDatabase,
+    private val database: TurninDatabase,
 ) : RemoteMediator<Int, FeedEntity>() {
     private val tag = this::class.java.simpleName
 

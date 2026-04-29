@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".PeekrApplication"
+        android:name=".TurninApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Peekr.Splash"
+        android:theme="@style/Theme.Turnin.Splash"
         tools:targetApi="31">
 
         <!-- 디버그 빌드에서는 Crashlytics 비활성화 -->
@@ -24,7 +24,7 @@
 
         <!-- FCM 서비스 등록 -->
         <service
-            android:name=".firebase.PeekrFirebaseMessagingService"
+            android:name=".firebase.TurninFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -45,7 +45,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Peekr.Splash"
+            android:theme="@style/Theme.Turnin.Splash"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop">
 
@@ -62,7 +62,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="peekr" />
+                <data android:scheme="turnin" />
             </intent-filter>
         </activity>
 

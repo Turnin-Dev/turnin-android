@@ -5,14 +5,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrOutlinedButton
-import com.turnin.core.designsystem.component.button.PeekrSolidButton
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninOutlinedButton
+import com.turnin.core.designsystem.component.button.TurninSolidButton
 import com.turnin.core.designsystem.util.icon.Arrow2Right
 import com.turnin.core.designsystem.util.icon.Cancel
 import com.turnin.core.designsystem.util.icon.Check
-import com.turnin.core.designsystem.util.icon.PeekrIcons
 import com.turnin.core.designsystem.util.icon.Plus
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.domain.friend.model.FriendStatus
 import com.turnin.core.presentation.R
 
@@ -25,14 +25,14 @@ import com.turnin.core.presentation.R
  *
  * @param modifier [Modifier]
  * @param friendStatus 친구 상태 [FriendStatus]
- * @param buttonStyle 버튼 스타일 [PeekrButtonStyle]
+ * @param buttonStyle 버튼 스타일 [TurninButtonStyle]
  * @param onClick 버튼 클릭 시 콜백
  */
 @Composable
 fun FriendStatusButton(
     modifier: Modifier = Modifier,
     friendStatus: FriendStatus,
-    buttonStyle: PeekrButtonStyle = PeekrButtonStyle.Tiny,
+    buttonStyle: TurninButtonStyle = TurninButtonStyle.Tiny,
     onClick: () -> Unit,
 ) {
     Box(
@@ -41,37 +41,37 @@ fun FriendStatusButton(
     ) {
         when (friendStatus) {
             FriendStatus.NOTHING -> {
-                PeekrSolidButton(
+                TurninSolidButton(
                     text = stringResource(R.string.friend_status_btn_nothing),
                     style = buttonStyle,
-                    icon = PeekrIcons.Default.Bold.Plus,
+                    icon = TurninIcons.Default.Bold.Plus,
                     onClick = onClick,
                 )
             }
 
             FriendStatus.FRIENDS -> {
-                PeekrOutlinedButton(
+                TurninOutlinedButton(
                     text = stringResource(R.string.friend_status_btn_friends),
                     style = buttonStyle,
-                    icon = PeekrIcons.Default.Bold.Check,
+                    icon = TurninIcons.Default.Bold.Check,
                     onClick = onClick,
                 )
             }
 
             FriendStatus.REQUESTED -> {
-                PeekrOutlinedButton(
+                TurninOutlinedButton(
                     text = stringResource(R.string.friend_status_btn_requested),
                     style = buttonStyle,
-                    icon = PeekrIcons.Default.Bold.Cancel,
+                    icon = TurninIcons.Default.Bold.Cancel,
                     onClick = onClick,
                 )
             }
 
             FriendStatus.RECEIVED -> {
-                PeekrSolidButton(
+                TurninSolidButton(
                     text = stringResource(R.string.friend_status_btn_received),
                     style = buttonStyle,
-                    icon = PeekrIcons.Default.Bold.Arrow2Right,
+                    icon = TurninIcons.Default.Bold.Arrow2Right,
                     onClick = onClick,
                 )
             }

@@ -18,12 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
-import com.turnin.core.designsystem.util.PeekrShadowType
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
+import com.turnin.core.designsystem.util.TurninShadowType
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
-import com.turnin.core.designsystem.util.peekrShadow
+import com.turnin.core.designsystem.util.turninShadow
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.discover.model.UiDiscoverContext
 import com.turnin.presentation.discover.model.UiDiscoverKeyword
@@ -45,8 +45,8 @@ internal fun CurrentDiscoverTarget(
 ) {
     Column(
         modifier = modifier
-            .peekrShadow(
-                type = PeekrShadowType.Custom(
+            .turninShadow(
+                type = TurninShadowType.Custom(
                     blur = 6.dp,
                     lightColor = Color(0xFF1C1B1B).copy(alpha = 0.1f),
                     darkColor = Color(0xFF000000).copy(alpha = 0.3f),
@@ -54,7 +54,7 @@ internal fun CurrentDiscoverTarget(
                 shape = OuterShape,
             )
             .clip(OuterShape)
-            .background(PeekrTheme.colorScheme.backgroundNormal)
+            .background(TurninTheme.colorScheme.backgroundNormal)
             .padding(vertical = OuterPadding),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
@@ -104,7 +104,7 @@ private fun UserInfo(
         horizontalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Start),
     ) {
         // 프로필 사진
-        PeekrAvatar(
+        TurninAvatar(
             modifier = Modifier.size(AvatarSize),
             model = profileImageUrl,
             contentDescription = null,
@@ -116,17 +116,17 @@ private fun UserInfo(
         ) {
             Text(
                 text = userName,
-                style = PeekrTheme.typography.body1,
+                style = TurninTheme.typography.body1,
                 fontWeight = FontWeight.SemiBold,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = displayId,
-                style = PeekrTheme.typography.body4,
+                style = TurninTheme.typography.body4,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist,
+                color = TurninTheme.colorScheme.textAssist,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -143,7 +143,7 @@ private val OuterShape = RoundedCornerShape(48.dp)
 @PreviewLightDarkWithBackground
 @Composable
 private fun CurrentTargetUserPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         CurrentDiscoverTarget(
             modifier = Modifier.fillMaxWidth(),
             discoverContext = UiDiscoverContext.sample.copy(
@@ -164,7 +164,7 @@ private fun CurrentTargetUserPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun CurrentTargetUserEmptyPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         CurrentDiscoverTarget(
             modifier = Modifier.fillMaxWidth(),
             discoverContext = UiDiscoverContext.sample.copy(keywords = emptyList()),

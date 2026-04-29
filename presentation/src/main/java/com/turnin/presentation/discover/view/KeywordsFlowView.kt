@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.chip.PeekrChip
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.chip.TurninChip
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.discover.model.UiDiscoverKeyword
 
@@ -53,7 +53,7 @@ internal fun KeywordsFlowView(
             items = keywords,
             key = { it.userKeywordId },
         ) { keyword ->
-            PeekrChip(
+            TurninChip(
                 modifier = if (keyword == keywords.first()) {
                     Modifier.onSizeChanged { size ->
                         chipHeight = with(density) { size.height.toDp() }
@@ -62,7 +62,7 @@ internal fun KeywordsFlowView(
                     Modifier
                 },
                 text = keyword.keywordName,
-                color = PeekrTheme.colorScheme.componentKeywordBG,
+                color = TurninTheme.colorScheme.componentKeywordBG,
                 onClick = { onClick(keyword) },
             )
         }
@@ -74,7 +74,7 @@ private val Gap = 8.dp
 @PreviewLightDarkWithBackground
 @Composable
 private fun KeywordsFlowLayoutPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         KeywordsFlowView(
             modifier = Modifier.width(200.dp),
             keywords = listOf(

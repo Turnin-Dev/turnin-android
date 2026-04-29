@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.turnin.core.common.coroutine.IO
-import com.turnin.core.data.paging.PeekrCursorPagingSource
+import com.turnin.core.data.paging.TurninCursorPagingSource
 import com.turnin.core.data.source.local.memory.MemoryCache
 import com.turnin.core.data.source.network.datasource.BlockNetworkDataSource
 import com.turnin.core.data.source.network.dto.block.request.toDataModel
@@ -47,7 +47,7 @@ class BlockRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize + prefetchDistance,
             ),
             pagingSourceFactory = {
-                PeekrCursorPagingSource<Long, BlockedUserResponse>(
+                TurninCursorPagingSource<Long, BlockedUserResponse>(
                     apiCall = { nextCursor ->
                         blockNetworkDataSource.getBlockedUsers(nextCursor, pageSize)
                     },

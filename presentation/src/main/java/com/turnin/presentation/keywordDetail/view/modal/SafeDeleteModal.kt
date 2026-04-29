@@ -12,8 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.turnin.core.designsystem.component.modal.PeekrSimpleModal
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.component.modal.TurninSimpleModal
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.presentation.R
 
 /**
@@ -33,7 +33,7 @@ fun SafeDeleteModal(
     onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit,
 ) {
-    PeekrSimpleModal(
+    TurninSimpleModal(
         modifier = modifier,
         isOpen = isOpen,
         title = title,
@@ -45,7 +45,7 @@ fun SafeDeleteModal(
 @Preview
 @Composable
 private fun SafeDeleteModalPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         var isOpen by remember { mutableStateOf(false) }
 
         Box(Modifier.fillMaxSize()) {

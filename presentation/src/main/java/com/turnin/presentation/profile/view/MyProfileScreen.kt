@@ -18,17 +18,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.fab.PeekrFab
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.fab.TurninFab
+import com.turnin.core.designsystem.component.icon.TurninIconSize
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Exclamation
-import com.turnin.core.designsystem.util.icon.PeekrIcons
 import com.turnin.core.designsystem.util.icon.Plus
 import com.turnin.core.designsystem.util.icon.Settings
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.component.EmptyGuidance
 import com.turnin.core.presentation.ui.model.UiUserKeyword
@@ -69,7 +69,7 @@ fun MyProfileScreen(
         ProfileScreenFrame(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             isRefreshing = uiState.myProfileLoading || uiState.myKeywordsLoading,
             onRefresh = { onUiEvent(MyProfileContract.UiEvent.Refresh) },
             topBar = {
@@ -134,12 +134,12 @@ fun MyProfileScreen(
         )
 
         uiState.myProfile?.let {
-            PeekrFab(
+            TurninFab(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(FabPaddingDp)
                     .size(FabSize),
-                icon = PeekrIcons.Default.Bold.Plus,
+                icon = TurninIcons.Default.Bold.Plus,
                 contentDescription = stringResource(R.string.my_profile_screen_fab_content_desc),
                 onClick = onNavigateToKeywordAdd,
             )
@@ -160,12 +160,12 @@ private fun TopBar(
     title: String,
     onSettingClick: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = title,
         optionSlot = {
-            PeekrIconButton(
-                icon = PeekrIcons.Outlined.Bold.Settings,
+            TurninIconButton(
+                icon = TurninIcons.Outlined.Bold.Settings,
                 iconSize = TopBarOptionIconSize,
                 contentDescription = stringResource(R.string.my_profile_screen_top_bar_settings),
                 onClick = onSettingClick,
@@ -218,7 +218,7 @@ private fun LazyListScope.keywordEmptyGuidance() {
             contentAlignment = Alignment.Center,
         ) {
             EmptyGuidance(
-                icon = PeekrIcons.Filled.Normal.Exclamation,
+                icon = TurninIcons.Filled.Normal.Exclamation,
                 title = stringResource(R.string.my_profile_screen_keywords_empty_title),
                 description = buildString {
                     append(stringResource(R.string.my_profile_screen_keywords_empty_desc_1))
@@ -236,7 +236,7 @@ private fun LazyListScope.keywordEmptyGuidance() {
 
 private val FabSize = 50.dp
 private val FabPaddingDp = 20.dp
-private val TopBarOptionIconSize = PeekrIconSize.Normal
+private val TopBarOptionIconSize = TurninIconSize.Normal
 
 // ------------------------------ Skeletons ------------------------------
 @Composable
@@ -293,7 +293,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
 @PreviewLightDarkWithBackground
 @Composable
 private fun TopBarPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             title = "TopBar",
@@ -305,7 +305,7 @@ private fun TopBarPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun ProfilePreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Profile(
             name = "Hong",
             profileImageUrl = null,
@@ -320,7 +320,7 @@ private fun ProfilePreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun MyProfileScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = MyProfileContract.UiState(
@@ -351,7 +351,7 @@ private fun MyProfileScreenPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun MyProfileScreen_Empty_Preview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = MyProfileContract.UiState(
@@ -382,7 +382,7 @@ private fun MyProfileScreen_Empty_Preview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun SkeletonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         MyProfileScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = MyProfileContract.UiState(

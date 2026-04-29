@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.presentation.ui.component.modal.SelectReportBlockReasonModal
 import com.turnin.core.presentation.ui.util.UiText
 import com.turnin.presentation.block.model.UiBlockReason
@@ -55,7 +55,7 @@ fun SelectBlockReasonModal(
 private fun SelectBlockReasonModalPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectBlockReasonModal(
             sheetState = sheetState,
             blockReasons = listOf(
@@ -90,7 +90,7 @@ private fun SelectBlockReasonModalPreview() {
 private fun SkeletonPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectBlockReasonModal(
             sheetState = sheetState,
             blockReasons = emptyList(),
@@ -109,7 +109,7 @@ private fun SkeletonPreview() {
 private fun ErrorPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectBlockReasonModal(
             sheetState = sheetState,
             blockReasons = emptyList(),

@@ -19,16 +19,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.button.PeekrOutlinedButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.button.TurninOutlinedButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Report
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.domain.friend.model.FriendStatus
 import com.turnin.core.presentation.ui.component.EmptyGuidance
@@ -68,7 +68,7 @@ fun UserProfileScreen(
         ProfileScreenFrame(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             isRefreshing = uiState.isRefreshing,
             onRefresh = { onUiEvent(UserProfileContract.UiEvent.Refresh) },
             topBar = {
@@ -168,13 +168,13 @@ private fun TopBar(
     onReportClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = title,
         optionSlot = {
             if (blockable) {
-                PeekrIconButton(
-                    icon = PeekrIcons.Filled.Bold.Report,
+                TurninIconButton(
+                    icon = TurninIcons.Filled.Bold.Report,
                     iconSize = TopBarOptionIconSize,
                     contentDescription = stringResource(R.string.user_profile_screen_top_bar_report),
                     onClick = onReportClick,
@@ -230,9 +230,9 @@ private fun Profile(
                         onClick = { onFriendsButtonClick(friendStatus) },
                     )
                 } else {
-                    PeekrOutlinedButton(
+                    TurninOutlinedButton(
                         text = stringResource(R.string.user_profile_screen_btn_unblock),
-                        style = PeekrButtonStyle.Tiny,
+                        style = TurninButtonStyle.Tiny,
                         loading = unblockLoading,
                         onClick = onUnblock,
                     )
@@ -260,7 +260,7 @@ private fun LazyListScope.keywordEmptyGuidance() {
     }
 }
 
-private val TopBarOptionIconSize = PeekrIconSize.Normal
+private val TopBarOptionIconSize = TurninIconSize.Normal
 
 // ------------------------------ Skeleton ------------------------------
 @Composable
@@ -333,7 +333,7 @@ private fun ProfileSkeleton(modifier: Modifier = Modifier) {
 @PreviewLightDarkWithBackground
 @Composable
 private fun TopBarPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             title = "TopBar",
@@ -347,7 +347,7 @@ private fun TopBarPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun ProfilePreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Column {
             FriendStatus.entries.forEach {
                 Profile(
@@ -371,11 +371,11 @@ private fun ProfilePreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun UserProfileScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         UserProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             uiState = UserProfileContract.UiState(profile = UiUserProfile.sample),
             onUiEvent = {},
             onNavigateToKeywordDetail = { _, _ -> },
@@ -388,11 +388,11 @@ private fun UserProfileScreenPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun UserProfileScreen_Empty_Preview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         UserProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             uiState = UserProfileContract.UiState(
                 profile = UiUserProfile.sample,
                 keywords = emptyList(),
@@ -408,11 +408,11 @@ private fun UserProfileScreen_Empty_Preview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun UserProfileScreen_InitialState_Preview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         UserProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             uiState = UserProfileContract.UiState(
                 previewDisplayId = "",
                 previewName = "PreviewName",

@@ -11,10 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.turnin.core.designsystem.component.switch.PeekrSwitch
-import com.turnin.core.designsystem.component.switch.PeekrSwitchSize
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.component.switch.TurninSwitch
+import com.turnin.core.designsystem.component.switch.TurninSwitchSize
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
@@ -37,7 +37,7 @@ fun NotificationSettingScreen(
 ) {
     Column(modifier) {
         // 탑바
-        PeekrTopBar(
+        TurninTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
@@ -56,10 +56,10 @@ fun NotificationSettingScreen(
                     description = stringResource(R.string.setting_detail_notification_setting_push_desc),
                     onClick = { togglePush(!isPushEnabled) },
                     option = {
-                        PeekrSwitch(
+                        TurninSwitch(
                             checked = isPushEnabled,
                             onCheckedChanged = { checked -> togglePush(checked) },
-                            size = PeekrSwitchSize.Small,
+                            size = TurninSwitchSize.Small,
                         )
                     },
                 )
@@ -73,7 +73,7 @@ fun NotificationSettingScreen(
 private fun NotificationSettingScreenPreview() {
     var checked by remember { mutableStateOf(false) }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         NotificationSettingScreen(
             modifier = Modifier.fillMaxSize(),
             isPushEnabled = checked,

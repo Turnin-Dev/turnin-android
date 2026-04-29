@@ -12,9 +12,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.turnin.core.designsystem.component.loading.PeekrLoadingScreen
-import com.turnin.core.designsystem.component.modal.PeekrSimpleModal
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
+import com.turnin.core.designsystem.component.modal.TurninSimpleModal
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.util.ObserveAsEvents
 import com.turnin.core.presentation.feature.image.SinglePhotoPicker
 import com.turnin.presentation.R
@@ -59,11 +59,11 @@ fun AccountInfoRoute(
 
     // ------------------------------ LoadingScreen ------------------------------
     if (uiState.fullScreenLoading) {
-        PeekrLoadingScreen()
+        TurninLoadingScreen()
     }
 
     // ------------------------------ SafeCancelModal ------------------------------
-    PeekrSimpleModal(
+    TurninSimpleModal(
         modifier = Modifier.fillMaxSize(),
         isOpen = isOpenSafeCancelModal,
         title = R.string.setting_detail_account_info_safe_cancel_title,
@@ -123,7 +123,7 @@ fun AccountInfoRoute(
     AccountInfoScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         accountInfo = uiState.accountInfo,
         localProfileImage = localProfileImage,
         isAccountInfoEdited = uiState.isAccountInfoEdited,

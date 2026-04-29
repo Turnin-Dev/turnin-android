@@ -42,9 +42,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.turnin.app.navigation.AppNavigation
 import com.turnin.app.util.notification.NotificationPermissionManager
-import com.turnin.core.designsystem.component.snackbar.PeekrSnackbar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.snackbar.TurninSnackbar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
 import com.turnin.core.presentation.common.navigation.navigateToLogin
@@ -189,13 +189,13 @@ class MainActivity : ComponentActivity() {
             )
 
             // ------------------------------ Main ------------------------------
-            PeekrAppTheme {
+            TurninAppTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    containerColor = PeekrTheme.colorScheme.backgroundNormal,
+                    containerColor = TurninTheme.colorScheme.backgroundNormal,
                     snackbarHost = {
                         if (!isAuthScreen) {
-                            PeekrSnackbar(
+                            TurninSnackbar(
                                 modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
                                 snackbarHostState = snackbarHostState,
                             )

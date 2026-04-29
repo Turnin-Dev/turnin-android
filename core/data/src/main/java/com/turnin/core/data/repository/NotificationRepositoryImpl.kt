@@ -8,7 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.turnin.core.common.coroutine.IO
 import com.turnin.core.common.fcm.FcmTopic
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.data.paging.PeekrCursorPagingSource
+import com.turnin.core.data.paging.TurninCursorPagingSource
 import com.turnin.core.data.source.local.datastore.DataStoreKey
 import com.turnin.core.data.source.local.datastore.DataStoreManager
 import com.turnin.core.data.source.network.datasource.NotificationNetworkDataSource
@@ -99,7 +99,7 @@ class NotificationRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize + prefetchDistance,
             ),
             pagingSourceFactory = {
-                PeekrCursorPagingSource<Long, NotificationResponse>(
+                TurninCursorPagingSource<Long, NotificationResponse>(
                     apiCall = { nextCursor ->
                         notificationNetworkDataSource.getNotifications(nextCursor, pageSize)
                     },

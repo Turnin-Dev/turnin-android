@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.ui.modifier.accessibility
 
 /**
@@ -83,8 +83,8 @@ private fun BaseTextField(
         modifier = modifier,
         value = text,
         onValueChange = { onTextChanged(it) },
-        textStyle = PeekrTheme.typography.headline3.copy(
-            color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
+        textStyle = TurninTheme.typography.headline3.copy(
+            color = if (isError) TurninTheme.colorScheme.statusNegative else TurninTheme.colorScheme.textNormal,
             fontWeight = FontWeight.Medium,
         ),
         singleLine = singleLine,
@@ -93,8 +93,8 @@ private fun BaseTextField(
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = PeekrTheme.typography.headline3.copy(fontWeight = FontWeight.Medium),
-                    color = PeekrTheme.colorScheme.textPlaceholder,
+                    style = TurninTheme.typography.headline3.copy(fontWeight = FontWeight.Medium),
+                    color = TurninTheme.colorScheme.textPlaceholder,
                 )
             }
             innerTextField()
@@ -116,8 +116,8 @@ private fun ErrorMessage(
     Text(
         modifier = modifier.accessibility(errorMessage),
         text = errorMessage,
-        style = PeekrTheme.typography.caption2,
-        color = PeekrTheme.colorScheme.statusNegative,
+        style = TurninTheme.typography.caption2,
+        color = TurninTheme.colorScheme.statusNegative,
         textAlign = TextAlign.Start,
     )
 }
@@ -127,7 +127,7 @@ private fun ErrorMessage(
 private fun RegisterTextFieldPreview() {
     var (text, onTextChanged) = remember { mutableStateOf("") }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         RegisterTextField(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             text = text,
@@ -144,7 +144,7 @@ private fun RegisterTextFieldPreview() {
 private fun RegisterTextFieldPreview2() {
     var (text, onTextChanged) = remember { mutableStateOf("닉!") }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         RegisterTextField(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             text = text,
@@ -161,7 +161,7 @@ private fun RegisterTextFieldPreview2() {
 private fun BaseTextFieldPreview() {
     var (text, onTextChanged) = remember { mutableStateOf("") }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         BaseTextField(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             text = text,

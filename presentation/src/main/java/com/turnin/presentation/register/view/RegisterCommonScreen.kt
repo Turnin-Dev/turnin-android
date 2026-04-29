@@ -25,12 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.component.button.PeekrButtonStyle
-import com.turnin.core.designsystem.component.button.PeekrSolidButton
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
+import com.turnin.core.designsystem.component.button.TurninSolidButton
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.presentation.R
 
@@ -76,7 +76,7 @@ fun RegisterCommonScreen(
     RegisterScreenFrame(
         modifier = modifier,
         topBar = {
-            PeekrTopBar(
+            TurninTopBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ScreenTokens.HorizontalPaddingWithTouchTarget),
@@ -97,7 +97,7 @@ fun RegisterCommonScreen(
             )
         },
         bottomButton = {
-            PeekrSolidButton(
+            TurninSolidButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
@@ -106,7 +106,7 @@ fun RegisterCommonScreen(
                         top = ScreenTokens.BottomButtonPadding,
                     ),
                 text = stringResource(buttonTitle),
-                style = PeekrButtonStyle.Large,
+                style = TurninButtonStyle.Large,
                 onClick = {
                     focusManager.clearFocus()
                     onNextWithValue(text)
@@ -194,15 +194,15 @@ private fun Contents(
             Column {
                 Text(
                     text = stringResource(title),
-                    style = PeekrTheme.typography.title1,
+                    style = TurninTheme.typography.title1,
                     fontWeight = FontWeight.Bold,
-                    color = PeekrTheme.colorScheme.textNormal,
+                    color = TurninTheme.colorScheme.textNormal,
                 )
                 subTitle?.let {
                     Text(
                         text = stringResource(subTitle),
-                        style = PeekrTheme.typography.label2,
-                        color = PeekrTheme.colorScheme.textAssist2,
+                        style = TurninTheme.typography.label2,
+                        color = TurninTheme.colorScheme.textAssist2,
                     )
                 }
             }
@@ -210,7 +210,7 @@ private fun Contents(
             Column(verticalArrangement = Arrangement.spacedBy(ProfileImageTextFieldSpacing)) {
                 // 프로필 사진
                 onProfileImageClick?.let {
-                    PeekrAvatar(
+                    TurninAvatar(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .size(ProfileImageSize),
@@ -253,11 +253,11 @@ private val ProfileImageTextFieldSpacing = 37.dp
 private fun RegisterScreenFramePreview() {
     val (text, onTextChanged) = remember { mutableStateOf("") }
 
-    PeekrAppTheme {
+    TurninAppTheme {
         RegisterCommonScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             title = R.string.register_screen_name_title,
             subTitle = R.string.register_screen_name_sub_title,
             placeholder = R.string.register_screen_name_placeholder,

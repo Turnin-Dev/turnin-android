@@ -10,8 +10,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.shimmerEffect
 
 /**
@@ -30,14 +30,14 @@ fun SkeletonBox(
             modifier
                 .clip(shape)
                 .shimmerEffect()
-                .background(PeekrTheme.colorScheme.componentShimmer, shape),
+                .background(TurninTheme.colorScheme.componentShimmer, shape),
     )
 }
 
 @Preview
 @Composable
 private fun SkeletonBoxPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         SkeletonBox(Modifier.size(200.dp, 50.dp))
     }
 }

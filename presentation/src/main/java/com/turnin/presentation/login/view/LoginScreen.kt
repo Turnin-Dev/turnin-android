@@ -31,12 +31,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.loading.PeekrLoadingScreen
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.token.ScreenTokens
-import com.turnin.core.presentation.ui.component.logo.PeekrLogoWithText
+import com.turnin.core.presentation.ui.component.logo.TurninLogoWithText
 import com.turnin.core.presentation.ui.model.UiSocialLoginProvider
 import com.turnin.presentation.R
 import com.turnin.presentation.login.state.LoginState
@@ -62,7 +62,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.size(0.dp))
-            PeekrLogoWithText()
+            TurninLogoWithText()
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -83,7 +83,7 @@ fun LoginScreen(
         }
 
         if (loginState.loading) {
-            PeekrLoadingScreen()
+            TurninLoadingScreen()
         }
     }
 }
@@ -149,7 +149,7 @@ private fun CommonLoginButton(
                     .weight(1f)
                     .wrapContentSize(Alignment.Center),
                 text = stringResource(text),
-                style = PeekrTheme.typography.body2.copy(fontWeight = FontWeight.Medium),
+                style = TurninTheme.typography.body2.copy(fontWeight = FontWeight.Medium),
             )
         }
     }
@@ -173,11 +173,11 @@ private object LoginButtonTokens {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             loginState = LoginState(),
             login = {},
         )
@@ -187,7 +187,7 @@ private fun LoginScreenPreview() {
 @Preview
 @Composable
 private fun LoginButtonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
             GoogleLoginButton(
                 modifier = Modifier

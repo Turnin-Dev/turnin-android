@@ -24,10 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
-import com.turnin.core.presentation.ui.component.indicator.PeekrIndicator
+import com.turnin.core.presentation.ui.component.indicator.TurninIndicator
 
 /**
  * 프로필 화면 프레임
@@ -64,7 +64,7 @@ fun ProfileScreenFrame(
             state = pullToRefreshState,
             isRefreshing = isRefreshing,
             onRefresh = { onRefresh() },
-            indicator = { PeekrIndicator(isRefreshing, pullToRefreshState) },
+            indicator = { TurninIndicator(isRefreshing, pullToRefreshState) },
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -93,7 +93,7 @@ fun ProfileScreenFrame(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(PeekrTheme.colorScheme.backgroundNormal)
+                                .background(TurninTheme.colorScheme.backgroundNormal)
                                 .padding(
                                     horizontal = ScreenTokens.HorizontalPadding,
                                     vertical = 10.dp,
@@ -117,14 +117,14 @@ private fun DividerSection(modifier: Modifier = Modifier) {
     HorizontalDivider(
         modifier = modifier,
         thickness = 0.35.dp,
-        color = PeekrTheme.colorScheme.lineDivider,
+        color = TurninTheme.colorScheme.lineDivider,
     )
 }
 
 @Preview(heightDp = 400)
 @Composable
 private fun ProfileScreenFramePreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ProfileScreenFrame(
             modifier = Modifier.fillMaxSize(),
             isRefreshing = false,
@@ -148,7 +148,7 @@ private fun ProfileScreenFramePreview() {
             keywordsTitle = {
                 Text(
                     text = "키워드 (0/5)",
-                    style = PeekrTheme.typography.body1,
+                    style = TurninTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
                 )
             },

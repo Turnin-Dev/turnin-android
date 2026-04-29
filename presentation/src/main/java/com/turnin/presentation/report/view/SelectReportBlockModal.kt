@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.turnin.core.designsystem.component.modal.ModalContentToken
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheet
-import com.turnin.core.designsystem.component.modal.PeekrModalBottomSheetContent
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheet
+import com.turnin.core.designsystem.component.modal.TurninModalBottomSheetContent
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.presentation.R
 
 /**
@@ -45,7 +45,7 @@ fun SelectReportBlockModal(
         listOf(
             ModalContentToken(
                 stringResource(R.string.report_block_modal_report),
-                PeekrTheme.colorScheme.statusNegative,
+                TurninTheme.colorScheme.statusNegative,
                 selectReport,
             ),
         )
@@ -53,24 +53,24 @@ fun SelectReportBlockModal(
         listOf(
             ModalContentToken(
                 stringResource(R.string.report_block_modal_report),
-                PeekrTheme.colorScheme.textNormal,
+                TurninTheme.colorScheme.textNormal,
                 selectReport,
             ),
             ModalContentToken(
                 stringResource(R.string.report_block_modal_block),
-                PeekrTheme.colorScheme.statusNegative,
+                TurninTheme.colorScheme.statusNegative,
                 selectBlock,
             ),
         )
     }
 
-    PeekrModalBottomSheet(
+    TurninModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         sheetGesturesEnabled = false,
         onDismissRequest = onDismissRequest,
     ) { contentModifier ->
-        PeekrModalBottomSheetContent(
+        TurninModalBottomSheetContent(
             modifier = contentModifier.fillMaxWidth(),
             onCancel = onCancel,
             *modalContentTokens.toTypedArray(),
@@ -85,7 +85,7 @@ private fun SelectReportBlockModalPreview() {
     var showBottomSheet by remember { mutableStateOf(true) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectReportBlockModal(
             sheetState = sheetState,
             onlyReport = false,
@@ -104,7 +104,7 @@ private fun SelectReportBlockModalPreview2() {
     var showBottomSheet by remember { mutableStateOf(true) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         SelectReportBlockModal(
             sheetState = sheetState,
             onlyReport = true,

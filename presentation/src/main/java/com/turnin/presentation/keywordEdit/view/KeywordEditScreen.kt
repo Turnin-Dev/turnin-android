@@ -26,14 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.component.loading.PeekrLoadingScreen
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.icon.Check
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.modifier.accessibility
 import com.turnin.presentation.R
@@ -110,7 +110,7 @@ fun KeywordEditScreen(
         KeywordEditScreenFrame(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             topBar = {
                 TopBar(
                     modifier = Modifier
@@ -145,7 +145,7 @@ fun KeywordEditScreen(
         )
 
         if (uiState.loading) {
-            PeekrLoadingScreen()
+            TurninLoadingScreen()
         }
     }
 }
@@ -163,15 +163,15 @@ private fun TopBar(
     onAddClick: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         onBackPressed = onBackPressed,
         optionSlot = {
-            PeekrIconButton(
-                icon = PeekrIcons.Default.Normal.Check,
-                iconSize = PeekrIconSize.Normal,
+            TurninIconButton(
+                icon = TurninIcons.Default.Normal.Check,
+                iconSize = TurninIconSize.Normal,
                 contentDescription = stringResource(R.string.keyword_edit_screen_add),
-                tint = PeekrTheme.colorScheme.primary,
+                tint = TurninTheme.colorScheme.primary,
                 onClick = onAddClick,
             )
         },
@@ -251,8 +251,8 @@ private fun ErrorMessage(
     Text(
         modifier = modifier.accessibility(errorMessage),
         text = errorMessage,
-        style = PeekrTheme.typography.caption2,
-        color = PeekrTheme.colorScheme.statusNegative,
+        style = TurninTheme.typography.caption2,
+        color = TurninTheme.colorScheme.statusNegative,
         textAlign = TextAlign.Start,
     )
 }
@@ -261,7 +261,7 @@ private fun ErrorMessage(
 @Preview
 @Composable
 private fun TopBarPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         TopBar(
             modifier = Modifier.fillMaxWidth(),
             onAddClick = {},
@@ -273,7 +273,7 @@ private fun TopBarPreview() {
 @Preview
 @Composable
 private fun KeywordEditScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         KeywordEditScreen(
             modifier = Modifier.fillMaxSize(),
             uiState = KeywordEditContract.UiState(),

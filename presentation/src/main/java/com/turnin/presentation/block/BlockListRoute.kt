@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.presentation.block.model.UiBlockedUser
 import com.turnin.presentation.block.view.list.BlockListScreen
 import com.turnin.presentation.block.viewmodel.BlockListViewModel
@@ -22,7 +22,7 @@ fun BlockListRoute(
     BlockListScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         blockedUsers = blockedUsersPagingData,
         onBlockedUserClick = { blockedUser ->
             onNavigateToUserProfile(blockedUser)

@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.discover.model.UiDiscoverUser
@@ -47,14 +47,14 @@ internal fun UserChip(
             .clip(Shape)
             .background(
                 if (isSelected) {
-                    PeekrTheme.colorScheme.textNormal
+                    TurninTheme.colorScheme.textNormal
                 } else {
-                    PeekrTheme.colorScheme.backgroundNormal
+                    TurninTheme.colorScheme.backgroundNormal
                 },
             )
             .border(
                 width = 0.5.dp,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
                 shape = Shape,
             )
             .clickableSingle(onClick = onClick),
@@ -64,19 +64,19 @@ internal fun UserChip(
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            PeekrAvatar(
+            TurninAvatar(
                 modifier = Modifier.size(AvatarSize),
                 model = userChipInfo.profileImageUrl,
                 contentDescription = null,
             )
             Text(
                 text = userChipInfo.userName,
-                style = PeekrTheme.typography.caption1,
+                style = TurninTheme.typography.caption1,
                 fontWeight = FontWeight.Medium,
                 color = if (isSelected) {
-                    PeekrTheme.colorScheme.backgroundNormal
+                    TurninTheme.colorScheme.backgroundNormal
                 } else {
-                    PeekrTheme.colorScheme.textNormal
+                    TurninTheme.colorScheme.textNormal
                 },
             )
         }
@@ -95,7 +95,7 @@ private val AvatarSize = 32.dp
 @PreviewLightDarkWithBackground
 @Composable
 private fun UserChipPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         var isSelected by remember { mutableStateOf(false) }
 
         UserChip(

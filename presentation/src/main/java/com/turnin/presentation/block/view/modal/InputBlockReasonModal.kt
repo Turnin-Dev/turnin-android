@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.presentation.ui.component.modal.InputReportBlockReasonModal
 import com.turnin.presentation.R
 
@@ -48,7 +48,7 @@ fun InputBlockReasonModal(
 private fun InputBlockReasonPreview() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    PeekrAppTheme {
+    TurninAppTheme {
         InputBlockReasonModal(
             sheetState = sheetState,
             loading = false,

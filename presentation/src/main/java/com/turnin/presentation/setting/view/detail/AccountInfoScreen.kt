@@ -24,16 +24,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.designsystem.util.icon.Check
 import com.turnin.core.designsystem.util.icon.Edit
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 import com.turnin.presentation.R
@@ -179,18 +179,18 @@ private fun TopBar(
     onSave: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = stringResource(R.string.setting_detail_account_info_top_bar_title),
         onBackPressed = onBackPressed,
         optionSlot = {
             if (isAccountInfoEdited) {
-                PeekrIconButton(
-                    icon = PeekrIcons.Default.Bold.Check,
-                    iconSize = PeekrIconSize.Normal,
+                TurninIconButton(
+                    icon = TurninIcons.Default.Bold.Check,
+                    iconSize = TurninIconSize.Normal,
                     contentDescription = stringResource(R.string.setting_detail_account_info_top_bar_save),
                     onClick = onSave,
-                    tint = PeekrTheme.colorScheme.primary,
+                    tint = TurninTheme.colorScheme.primary,
                 )
             }
         },
@@ -213,7 +213,7 @@ private fun ProfileImage(
     onClick: () -> Unit,
 ) {
     Box(modifier.clickableSingleWithoutRipple(onClick = onClick)) {
-        PeekrAvatar(
+        TurninAvatar(
             modifier = Modifier.size(84.dp),
             model = profileImageUrl,
             contentDescription = name,
@@ -223,11 +223,11 @@ private fun ProfileImage(
                 .align(Alignment.BottomEnd)
                 .clip(CircleShape)
                 .size(28.dp)
-                .background(PeekrTheme.colorScheme.textStrong, CircleShape)
+                .background(TurninTheme.colorScheme.textStrong, CircleShape)
                 .padding(8.dp),
-            imageVector = PeekrIcons.Outlined.Normal.Edit.imageVector,
+            imageVector = TurninIcons.Outlined.Normal.Edit.imageVector,
             contentDescription = stringResource(R.string.setting_detail_account_info_profile_image_edit),
-            tint = PeekrTheme.colorScheme.backgroundNormal,
+            tint = TurninTheme.colorScheme.backgroundNormal,
         )
     }
 }
@@ -261,7 +261,7 @@ private fun DisplayIdTextField(
                     modifier = Modifier.size(15.dp),
                     strokeCap = StrokeCap.Round,
                     strokeWidth = 2.5.dp,
-                    color = PeekrTheme.colorScheme.primary,
+                    color = TurninTheme.colorScheme.primary,
                 )
             }
         },
@@ -334,24 +334,24 @@ private val ProfileImageVerticalPadding = 50.dp
 
 @Composable
 private fun getTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    unfocusedBorderColor = PeekrTheme.colorScheme.textNormal,
-    unfocusedTextColor = PeekrTheme.colorScheme.textNormal,
-    focusedBorderColor = PeekrTheme.colorScheme.textStrong,
-    focusedTextColor = PeekrTheme.colorScheme.textNormal,
-    focusedLabelColor = PeekrTheme.colorScheme.textNormal,
-    cursorColor = PeekrTheme.colorScheme.textNormal,
-    errorTextColor = PeekrTheme.colorScheme.statusNegative,
-    errorCursorColor = PeekrTheme.colorScheme.statusNegative,
-    errorBorderColor = PeekrTheme.colorScheme.statusNegative,
-    errorSupportingTextColor = PeekrTheme.colorScheme.statusNegative,
-    errorLabelColor = PeekrTheme.colorScheme.statusNegative,
+    unfocusedBorderColor = TurninTheme.colorScheme.textNormal,
+    unfocusedTextColor = TurninTheme.colorScheme.textNormal,
+    focusedBorderColor = TurninTheme.colorScheme.textStrong,
+    focusedTextColor = TurninTheme.colorScheme.textNormal,
+    focusedLabelColor = TurninTheme.colorScheme.textNormal,
+    cursorColor = TurninTheme.colorScheme.textNormal,
+    errorTextColor = TurninTheme.colorScheme.statusNegative,
+    errorCursorColor = TurninTheme.colorScheme.statusNegative,
+    errorBorderColor = TurninTheme.colorScheme.statusNegative,
+    errorSupportingTextColor = TurninTheme.colorScheme.statusNegative,
+    errorLabelColor = TurninTheme.colorScheme.statusNegative,
 )
 
 // ------------------------------ Previews ------------------------------
 @PreviewLightDarkWithBackground
 @Composable
 private fun ProfileImagePreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ProfileImage(
             profileImageUrl = null,
             name = "name",
@@ -363,7 +363,7 @@ private fun ProfileImagePreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun DisplayIdTextFieldPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Column(verticalArrangement = Arrangement.spacedBy(50.dp)) {
             NameTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -387,11 +387,11 @@ private fun DisplayIdTextFieldPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun SettingScreenPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         AccountInfoScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             accountInfo = UiEditableAccountInfo.sample,
             localProfileImage = null,
             isAccountInfoEdited = true,

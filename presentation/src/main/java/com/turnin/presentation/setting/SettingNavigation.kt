@@ -19,8 +19,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.turnin.core.designsystem.component.loading.PeekrLoadingScreen
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToBlockList
 import com.turnin.core.presentation.common.navigation.navigateToCropProfileImage
@@ -120,7 +120,7 @@ fun NavGraphBuilder.settingNavigation(
             }
 
             if (screenLoading) {
-                PeekrLoadingScreen()
+                TurninLoadingScreen()
             }
 
             SimpleImageCropper(
@@ -152,7 +152,7 @@ fun NavGraphBuilder.settingNavigation(
             VersionInfoScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                    .background(TurninTheme.colorScheme.backgroundNormal),
                 versionName = viewModel.appVersion,
                 onServiceTermClick = { },
                 onPrivacyPolicyClick = { },
@@ -183,7 +183,7 @@ fun NavGraphBuilder.settingNavigation(
             NotificationSettingScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                    .background(TurninTheme.colorScheme.backgroundNormal),
                 isPushEnabled = appSetting.pushNotificationEnabled,
                 togglePush = viewModel::togglePushNotificationAndSync,
                 onBackPressed = { appNavController.popBackStack() },

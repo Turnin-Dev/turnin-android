@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
 import com.turnin.presentation.home.view.HomeScreen
 import com.turnin.presentation.home.viewmodel.HomeViewModel
@@ -26,7 +26,7 @@ fun HomeRoute(
     HomeScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         feeds = feeds,
         onFeedClick = { feed ->
             onNavigateToKeywordDetail(feed.userId, feed.userKeywordId)

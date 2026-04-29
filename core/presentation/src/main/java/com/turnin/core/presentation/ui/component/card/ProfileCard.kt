@@ -12,9 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 
 /**
@@ -48,7 +48,7 @@ fun ProfileCard(
         horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PeekrAvatar(
+        TurninAvatar(
             modifier = Modifier.size(ProfileCardTokens.AvatarSize),
             model = profileImageUrl,
             contentDescription = name,
@@ -59,15 +59,15 @@ fun ProfileCard(
         ) {
             Text(
                 text = name,
-                style = PeekrTheme.typography.body3,
+                style = TurninTheme.typography.body3,
                 fontWeight = FontWeight.Bold,
-                color = PeekrTheme.colorScheme.textNormal,
+                color = TurninTheme.colorScheme.textNormal,
             )
             Text(
                 text = displayId,
-                style = PeekrTheme.typography.body4,
+                style = TurninTheme.typography.body4,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist,
+                color = TurninTheme.colorScheme.textAssist,
             )
         }
     }
@@ -76,7 +76,7 @@ fun ProfileCard(
 @PreviewLightDarkWithBackground
 @Composable
 private fun ProfileCardPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         ProfileCard(
             modifier = Modifier.fillMaxWidth(),
             profileImageUrl = null,

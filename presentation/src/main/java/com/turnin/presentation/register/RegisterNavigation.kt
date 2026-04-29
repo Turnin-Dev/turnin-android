@@ -25,7 +25,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.util.LaunchedUiEffectHandler
 import com.turnin.core.presentation.common.viewmodel.sharedViewModel
@@ -59,7 +59,7 @@ fun NavGraphBuilder.registerNavigation(
             RegisterCommonScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                    .background(TurninTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_display_id_title,
                 subTitle = R.string.register_screen_display_id_sub_title,
                 placeholder = R.string.register_screen_display_id_placeholder,
@@ -82,7 +82,7 @@ fun NavGraphBuilder.registerNavigation(
             RegisterCommonScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                    .background(TurninTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_name_title,
                 subTitle = R.string.register_screen_name_sub_title,
                 placeholder = R.string.register_screen_name_placeholder,
@@ -148,7 +148,7 @@ fun NavGraphBuilder.registerNavigation(
             RegisterCommonScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PeekrTheme.colorScheme.backgroundNormal),
+                    .background(TurninTheme.colorScheme.backgroundNormal),
                 title = R.string.register_screen_profile_title,
                 subTitle = R.string.register_screen_profile_sub_title,
                 placeholder = R.string.register_screen_profile_placeholder,

@@ -36,14 +36,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.turnin.core.designsystem.component.icon.PeekrIcon
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.icon.TurninIcon
+import com.turnin.core.designsystem.component.icon.TurninIconSize
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.designsystem.util.icon.Home
-import com.turnin.core.designsystem.util.icon.PeekrIconType
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIconType
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.presentation.R
 import com.turnin.core.presentation.common.navigation.SubGraph
 
@@ -73,7 +73,7 @@ fun BottomNavigationBar(
             .fillMaxWidth()
             .defaultMinSize(minHeight = BottomNavigationBarTokens.MinHeightDp)
             .zIndex(1f),
-        containerColor = PeekrTheme.colorScheme.backgroundNormal,
+        containerColor = TurninTheme.colorScheme.backgroundNormal,
         windowInsets = WindowInsets(bottom = 0.dp),
     ) {
         Column(Modifier.align(Alignment.CenterVertically)) {
@@ -133,14 +133,14 @@ fun BottomNavigationBar(
 @Composable
 private fun Item(
     modifier: Modifier = Modifier,
-    icon: PeekrIconType,
+    icon: TurninIconType,
     @StringRes title: Int,
     checked: Boolean,
 ) {
     val color = if (checked) {
-        PeekrTheme.colorScheme.textStrong
+        TurninTheme.colorScheme.textStrong
     } else {
-        PeekrTheme.colorScheme.interactionInactive
+        TurninTheme.colorScheme.interactionInactive
     }
 
     Column(
@@ -148,15 +148,15 @@ private fun Item(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(ItemIconTitleSpacingDp),
     ) {
-        PeekrIcon(
+        TurninIcon(
             icon = icon,
             contentDescription = stringResource(title),
-            iconSize = PeekrIconSize.Normal,
+            iconSize = TurninIconSize.Normal,
             tint = color,
         )
         Text(
             text = stringResource(title),
-            style = PeekrTheme.typography.caption2,
+            style = TurninTheme.typography.caption2,
             fontWeight = FontWeight.Medium,
             color = color,
         )
@@ -209,19 +209,19 @@ private val BarHorizontalPadding = 10.dp
 @Preview
 @Composable
 private fun IconPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Row(Modifier.width(150.dp)) {
             Item(
                 modifier = Modifier
                     .weight(1f)
                     .clickable {},
-                icon = PeekrIcons.Filled.Normal.Home,
+                icon = TurninIcons.Filled.Normal.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = false,
             )
             Item(
                 modifier = Modifier.weight(1f),
-                icon = PeekrIcons.Filled.Normal.Home,
+                icon = TurninIcons.Filled.Normal.Home,
                 title = R.string.bottom_nav_item_home,
                 checked = true,
             )
@@ -232,7 +232,7 @@ private fun IconPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun BottomNavigationBarPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         val navController = rememberNavController()
         Scaffold(
             modifier = Modifier.fillMaxSize(),

@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 
 /**
  * 키워드 추가 화면에서 키워드 입력 시 사용하는 커스텀 텍스트 필드
@@ -33,19 +33,19 @@ internal fun DescriptionTextField(
         modifier = modifier,
         value = text,
         onValueChange = { onTextChanged(it) },
-        textStyle = PeekrTheme.typography.bodyContent.copy(
-            color = if (isError) PeekrTheme.colorScheme.statusNegative else PeekrTheme.colorScheme.textNormal,
+        textStyle = TurninTheme.typography.bodyContent.copy(
+            color = if (isError) TurninTheme.colorScheme.statusNegative else TurninTheme.colorScheme.textNormal,
             fontWeight = FontWeight.Normal,
         ),
         readOnly = readOnly,
-        cursorBrush = SolidColor(PeekrTheme.colorScheme.textNormal),
+        cursorBrush = SolidColor(TurninTheme.colorScheme.textNormal),
     ) { innerTextField ->
         Box(contentAlignment = Alignment.TopStart) {
             if (text.isEmpty()) {
                 Text(
                     text = placeholder,
-                    style = PeekrTheme.typography.bodyContent.copy(fontWeight = FontWeight.Normal),
-                    color = PeekrTheme.colorScheme.textPlaceholder,
+                    style = TurninTheme.typography.bodyContent.copy(fontWeight = FontWeight.Normal),
+                    color = TurninTheme.colorScheme.textPlaceholder,
                 )
             }
             innerTextField()

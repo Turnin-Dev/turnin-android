@@ -17,7 +17,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.presentation.common.error.asUiText
 import com.turnin.core.presentation.common.util.LaunchedUiEffectHandler
@@ -72,7 +72,7 @@ fun LoginRoute(
     LoginScreen(
         modifier = modifier
             .fillMaxSize()
-            .background(PeekrTheme.colorScheme.backgroundNormal),
+            .background(TurninTheme.colorScheme.backgroundNormal),
         loginState = loginState,
         login = { provider ->
             if (!loginState.isNavigating && activity != null) {

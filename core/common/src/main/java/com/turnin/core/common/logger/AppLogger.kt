@@ -9,7 +9,7 @@ import timber.log.Timber
  * 반드시, [initLogger]를 호출 후 사용해야 한다.
  */
 object AppLogger {
-    const val DEFAULT_TAG = "PeekrAppLogger"
+    const val DEFAULT_TAG = "TurninAppLogger"
 
     /**
      * 로거 초기화
@@ -21,7 +21,7 @@ object AppLogger {
         } else {
             Timber.plant(ReleaseTree())
         }
-        i(DEFAULT_TAG, "Peekr app logger initialization successful")
+        i(DEFAULT_TAG, "Turnin app logger initialization successful")
     }
 
     fun d(tag: String = DEFAULT_TAG, message: String) {

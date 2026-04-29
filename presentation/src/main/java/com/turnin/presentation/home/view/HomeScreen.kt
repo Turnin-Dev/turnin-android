@@ -44,23 +44,23 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.turnin.core.designsystem.component.avatar.PeekrAvatar
-import com.turnin.core.designsystem.component.button.PeekrIconButton
-import com.turnin.core.designsystem.component.icon.PeekrIconSize
+import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.icon.TurninIconSize
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
-import com.turnin.core.designsystem.component.topbar.PeekrLogoTopBar
-import com.turnin.core.designsystem.component.topbar.PeekrTopBarTokens
-import com.turnin.core.designsystem.theme.PeekrAppTheme
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.component.topbar.TurninLogoTopBar
+import com.turnin.core.designsystem.component.topbar.TurninTopBarTokens
+import com.turnin.core.designsystem.theme.TurninAppTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.designsystem.util.icon.Bell
-import com.turnin.core.designsystem.util.icon.PeekrIcons
+import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.domain.common.error.PagingApiCallException
 import com.turnin.core.presentation.common.error.asUiText
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
 import com.turnin.core.presentation.ui.component.error.FooterError
-import com.turnin.core.presentation.ui.component.indicator.PeekrIndicator
+import com.turnin.core.presentation.ui.component.indicator.TurninIndicator
 import com.turnin.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
 import com.turnin.core.presentation.ui.component.lazycolumn.pagingItem
 import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
@@ -86,7 +86,7 @@ private fun HomeScreenFrame(
     contents: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
-    val topBarHeightPx = with(density) { PeekrTopBarTokens.Height.toPx() }
+    val topBarHeightPx = with(density) { TurninTopBarTokens.Height.toPx() }
     var topBarOffsetY by rememberSaveable { mutableFloatStateOf(0f) }
     val canTopBarControlState by rememberUpdatedState(canTopBarControl)
     val nestedScroll = remember {
@@ -175,21 +175,21 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize(),
         canTopBarControl = isFirstItemScrolled,
         topBar = {
-            PeekrLogoTopBar(
+            TurninLogoTopBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(PeekrTheme.colorScheme.backgroundNormal)
+                    .background(TurninTheme.colorScheme.backgroundNormal)
                     .padding(
                         start = ScreenTokens.HorizontalPadding,
                         end = ScreenTokens.HorizontalPaddingWithTouchTarget,
                     ),
                 optionSlot = {
-                    PeekrIconButton(
-                        icon = PeekrIcons.Outlined.Normal.Bell,
-                        iconSize = PeekrIconSize.Normal,
+                    TurninIconButton(
+                        icon = TurninIcons.Outlined.Normal.Bell,
+                        iconSize = TurninIconSize.Normal,
                         contentDescription = stringResource(R.string.home_screen_notification),
                         onClick = onNotificationClick,
-                        tint = PeekrTheme.colorScheme.textNormal,
+                        tint = TurninTheme.colorScheme.textNormal,
                     )
                 },
                 onLogoClick = {
@@ -209,15 +209,15 @@ fun HomeScreen(
                     feeds.refresh()
                 },
                 indicator = { state ->
-                    PeekrIndicator(
+                    TurninIndicator(
                         isRefreshing = isRefreshing,
                         state = state,
-                        modifier = Modifier.offset(y = PeekrTopBarTokens.Height),
+                        modifier = Modifier.offset(y = TurninTopBarTokens.Height),
                     )
                 },
                 state = lazyListState,
                 contentPadding = PaddingValues(
-                    top = PeekrTopBarTokens.Height,
+                    top = TurninTopBarTokens.Height,
                     bottom = 40.dp,
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -306,7 +306,7 @@ private fun Feed(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                PeekrAvatar(
+                TurninAvatar(
                     modifier = Modifier.size(FeedAvatarSize),
                     model = feed.profileImageUrl,
                     contentDescription = feed.userName,
@@ -314,18 +314,18 @@ private fun Feed(
                 )
                 Text(
                     text = feed.userName,
-                    style = PeekrTheme.typography.body4,
+                    style = TurninTheme.typography.body4,
                     fontWeight = FontWeight.Bold,
-                    color = PeekrTheme.colorScheme.textNormal,
+                    color = TurninTheme.colorScheme.textNormal,
                 )
             }
 
             // 생성 일자
             Text(
                 text = feed.createdAt,
-                style = PeekrTheme.typography.body5,
+                style = TurninTheme.typography.body5,
                 fontWeight = FontWeight.Normal,
-                color = PeekrTheme.colorScheme.textAssist2,
+                color = TurninTheme.colorScheme.textAssist2,
             )
         }
 
@@ -334,9 +334,9 @@ private fun Feed(
         // 키워드
         Text(
             text = feed.keyword,
-            style = PeekrTheme.typography.headline2,
+            style = TurninTheme.typography.headline2,
             fontWeight = FontWeight.Bold,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
         )
 
         Spacer(Modifier.height(8.dp))
@@ -344,9 +344,9 @@ private fun Feed(
         // 키워드 내용
         Text(
             text = feed.description,
-            style = PeekrTheme.typography.bodyContent,
+            style = TurninTheme.typography.bodyContent,
             fontWeight = FontWeight.Normal,
-            color = PeekrTheme.colorScheme.textNormal,
+            color = TurninTheme.colorScheme.textNormal,
             maxLines = 10,
             overflow = TextOverflow.Ellipsis,
         )
@@ -397,7 +397,7 @@ private val FeedAvatarSize = 28.dp
 @PreviewLightDarkWithBackground
 @Composable
 private fun FeedPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         Feed(
             modifier = Modifier.fillMaxWidth(),
             feed = UiFeed.sample,
@@ -409,7 +409,7 @@ private fun FeedPreview() {
 @PreviewLightDarkWithBackground
 @Composable
 private fun FeedSkeletonPreview() {
-    PeekrAppTheme {
+    TurninAppTheme {
         FeedSkeleton()
     }
 }
@@ -419,11 +419,11 @@ private fun FeedSkeletonPreview() {
 private fun HomeScreenPreview() {
     val feeds = testFeedsPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(PeekrTheme.colorScheme.backgroundNormal),
+                .background(TurninTheme.colorScheme.backgroundNormal),
             feeds = feeds,
             onFeedClick = {},
             onUserClick = {},

@@ -21,8 +21,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.turnin.core.designsystem.component.topbar.PeekrTopBar
-import com.turnin.core.designsystem.theme.PeekrAppTheme
+import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.domain.model.NotificationType
 import com.turnin.core.presentation.ui.component.EmptyGuidance
@@ -100,7 +100,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     onBackPress: () -> Unit,
 ) {
-    PeekrTopBar(
+    TurninTopBar(
         modifier = modifier,
         title = stringResource(R.string.notification_screen_top_bar_title),
         onBackPressed = onBackPress,
@@ -187,7 +187,7 @@ private val ListContentPadding = PaddingValues(bottom = 80.dp)
 private fun NotificationScreenPreview() {
     val notifications = testNotificationsPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         NotificationScreen(
             modifier = Modifier.fillMaxSize(),
             notifications = notifications,
@@ -202,7 +202,7 @@ private fun NotificationScreenPreview() {
 private fun NotificationEmptyScreenPreview() {
     val notifications = testEmptyPagingData.collectAsLazyPagingItems()
 
-    PeekrAppTheme {
+    TurninAppTheme {
         NotificationScreen(
             modifier = Modifier.fillMaxSize(),
             notifications = notifications,

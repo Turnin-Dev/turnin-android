@@ -22,24 +22,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.theme.PeekrTheme
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.ClickEventProcessor
 import com.turnin.core.designsystem.util.click.ThrottleClickEventProcessor
 import com.turnin.core.designsystem.util.click.getThrottle
-import com.turnin.core.designsystem.util.icon.PeekrIconType
+import com.turnin.core.designsystem.util.icon.TurninIconType
 
-/** PeekrButton 타입 */
-internal enum class PeekrButtonType {
+/** TurninButton 타입 */
+internal enum class TurninButtonType {
     Solid,
     Outlined,
     Negative,
 }
 
 /**
- * Peekr Core Button
+ * Turnin Core Button
  *
- * @param type [PeekrButtonType]
- * @param style [PeekrButtonStyle]
+ * @param type [TurninButtonType]
+ * @param style [TurninButtonStyle]
  * @param text 버튼 텍스트
  * @param modifier [Modifier]
  * @param icon 버튼 아이콘
@@ -49,11 +49,11 @@ internal enum class PeekrButtonType {
  */
 @Composable
 internal fun CoreButton(
-    type: PeekrButtonType,
-    style: PeekrButtonStyle,
+    type: TurninButtonType,
+    style: TurninButtonStyle,
     text: String,
     modifier: Modifier = Modifier,
-    icon: PeekrIconType? = null,
+    icon: TurninIconType? = null,
     enabled: Boolean = true,
     loading: Boolean = false,
     onClick: () -> Unit,
@@ -102,54 +102,54 @@ internal fun CoreButton(
 }
 
 @Composable
-private fun PeekrButtonStyle.textStyle(): TextStyle = when (this) {
-    PeekrButtonStyle.Large -> PeekrTheme.typography.body1.copy(fontWeight = FontWeight.SemiBold)
-    PeekrButtonStyle.Medium -> PeekrTheme.typography.body2.copy(fontWeight = FontWeight.SemiBold)
-    PeekrButtonStyle.Small -> PeekrTheme.typography.label1.copy(fontWeight = FontWeight.Medium)
-    PeekrButtonStyle.Tiny -> PeekrTheme.typography.label2.copy(fontWeight = FontWeight.Medium)
+private fun TurninButtonStyle.textStyle(): TextStyle = when (this) {
+    TurninButtonStyle.Large -> TurninTheme.typography.body1.copy(fontWeight = FontWeight.SemiBold)
+    TurninButtonStyle.Medium -> TurninTheme.typography.body2.copy(fontWeight = FontWeight.SemiBold)
+    TurninButtonStyle.Small -> TurninTheme.typography.label1.copy(fontWeight = FontWeight.Medium)
+    TurninButtonStyle.Tiny -> TurninTheme.typography.label2.copy(fontWeight = FontWeight.Medium)
 }
 
 @Composable
-private fun PeekrButtonType.buttonColors(): ButtonColors = when (this) {
-    PeekrButtonType.Solid -> {
+private fun TurninButtonType.buttonColors(): ButtonColors = when (this) {
+    TurninButtonType.Solid -> {
         ButtonDefaults.buttonColors(
-            containerColor = PeekrTheme.colorScheme.primary,
-            contentColor = PeekrTheme.colorScheme.staticWhite,
-            disabledContainerColor = PeekrTheme.colorScheme.interactionDisable,
-            disabledContentColor = PeekrTheme.colorScheme.staticWhite,
+            containerColor = TurninTheme.colorScheme.primary,
+            contentColor = TurninTheme.colorScheme.staticWhite,
+            disabledContainerColor = TurninTheme.colorScheme.interactionDisable,
+            disabledContentColor = TurninTheme.colorScheme.staticWhite,
         )
     }
 
-    PeekrButtonType.Outlined -> {
+    TurninButtonType.Outlined -> {
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = PeekrTheme.colorScheme.primary,
+            contentColor = TurninTheme.colorScheme.primary,
             disabledContainerColor = Color.Transparent,
-            disabledContentColor = PeekrTheme.colorScheme.interactionDisable,
+            disabledContentColor = TurninTheme.colorScheme.interactionDisable,
         )
     }
 
-    PeekrButtonType.Negative -> {
+    TurninButtonType.Negative -> {
         ButtonDefaults.buttonColors(
-            containerColor = PeekrTheme.colorScheme.interactionDisable,
-            contentColor = PeekrTheme.colorScheme.staticWhite,
-            disabledContainerColor = PeekrTheme.colorScheme.interactionDisable,
-            disabledContentColor = PeekrTheme.colorScheme.staticWhite,
+            containerColor = TurninTheme.colorScheme.interactionDisable,
+            contentColor = TurninTheme.colorScheme.staticWhite,
+            disabledContainerColor = TurninTheme.colorScheme.interactionDisable,
+            disabledContentColor = TurninTheme.colorScheme.staticWhite,
         )
     }
 }
 
 @Composable
-private fun PeekrButtonType.borderStroke(enabled: Boolean): BorderStroke? = when (this) {
-    PeekrButtonType.Solid -> null
-    PeekrButtonType.Outlined -> BorderStroke(
+private fun TurninButtonType.borderStroke(enabled: Boolean): BorderStroke? = when (this) {
+    TurninButtonType.Solid -> null
+    TurninButtonType.Outlined -> BorderStroke(
         width = 1.dp,
         color = if (enabled) {
-            PeekrTheme.colorScheme.primary
+            TurninTheme.colorScheme.primary
         } else {
-            PeekrTheme.colorScheme.interactionDisable
+            TurninTheme.colorScheme.interactionDisable
         },
     )
 
-    PeekrButtonType.Negative -> null
+    TurninButtonType.Negative -> null
 }
