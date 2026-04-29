@@ -1,4 +1,4 @@
-import com.peekr.peekrapp.configureKotlinJvm
+import com.turnin.app.configureKotlinJvm
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

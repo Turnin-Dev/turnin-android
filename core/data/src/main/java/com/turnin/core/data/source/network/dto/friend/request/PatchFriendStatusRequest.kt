@@ -1,0 +1,26 @@
+package com.turnin.core.data.source.network.dto.friend.request
+
+import com.squareup.moshi.JsonClass
+import com.turnin.core.domain.friend.model.FriendRequestStatus
+import com.turnin.core.domain.friend.model.PatchFriendStatus
+
+/**
+ * 친구 상태 수정 요청 바디
+ *
+ * @property requesterId 요청한 사용자 ID
+ * @property receiverId 요청 받은 사용자 ID
+ * @property requestStatus 친구 상태
+ */
+@JsonClass(generateAdapter = true)
+data class PatchFriendStatusRequest(
+    val requesterId: Long,
+    val receiverId: Long,
+    val requestStatus: FriendRequestStatus,
+)
+
+fun PatchFriendStatus.toDataModel(): PatchFriendStatusRequest =
+    PatchFriendStatusRequest(
+        requesterId = requesterId.value,
+        receiverId = receiverId.value,
+        requestStatus = requestStatus,
+    )

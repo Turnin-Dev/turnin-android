@@ -29,7 +29,7 @@
 -keepattributes Signature, *Annotation*, InnerClasses, EnclosingMethod
 
 # Enum
--keep enum com.peekr.** { *; }
+-keep enum com.turnin.** { *; }
 
 # Kotlinx Serialization
 -keep @kotlinx.serialization.Serializable class ** { *; }

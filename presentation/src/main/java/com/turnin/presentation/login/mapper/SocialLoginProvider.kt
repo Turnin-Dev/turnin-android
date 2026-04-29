@@ -1,0 +1,16 @@
+package com.turnin.presentation.login.mapper
+
+import com.turnin.core.domain.model.SocialLoginProvider
+import com.turnin.core.presentation.ui.model.UiSocialLoginProvider
+import com.turnin.core.presentation.ui.model.UiSocialLoginProvider.GOOGLE
+import com.turnin.core.presentation.ui.model.UiSocialLoginProvider.KAKAO
+
+fun UiSocialLoginProvider.toDomainModel(): SocialLoginProvider = when (this) {
+    GOOGLE -> SocialLoginProvider.GOOGLE
+    KAKAO -> SocialLoginProvider.KAKAO
+}
+
+fun SocialLoginProvider.toUiModel(): UiSocialLoginProvider = when (this) {
+    SocialLoginProvider.GOOGLE -> GOOGLE
+    SocialLoginProvider.KAKAO -> KAKAO
+}

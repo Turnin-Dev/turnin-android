@@ -1,5 +1,5 @@
 import com.android.build.gradle.LibraryExtension
-import com.peekr.peekrapp.configureAndroidCompose
+import com.turnin.app.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
