@@ -2,8 +2,8 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.peekr.android.application)
-    alias(libs.plugins.peekr.android.application.compose)
+    alias(libs.plugins.turnin.android.application)
+    alias(libs.plugins.turnin.android.application.compose)
     alias(libs.plugins.gms)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -26,10 +26,10 @@ val hasReleaseSigning = listOf(
 ).all(localProperties::containsKey)
 
 android {
-    namespace = "com.peekr.peekrapp"
+    namespace = "com.turnin.app"
 
     defaultConfig {
-        applicationId = "com.peekr.peekrapp"
+        applicationId = "com.turnin.app"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

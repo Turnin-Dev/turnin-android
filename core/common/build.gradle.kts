@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.peekr.android.library)
+    alias(libs.plugins.turnin.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.peekr.core.common"
+    namespace = "com.turnin.core.common"
 }
 
 kotlin {

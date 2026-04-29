@@ -2,15 +2,15 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.peekr.android.library)
-    alias(libs.plugins.peekr.android.library.compose)
+    alias(libs.plugins.turnin.android.library)
+    alias(libs.plugins.turnin.android.library.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.peekr.presentation"
+    namespace = "com.turnin.presentation"
 
     defaultConfig {
         val properties = Properties().apply {
