@@ -1,0 +1,94 @@
+package com.turnin.core.domain.userKeyword.repository
+
+import com.turnin.core.domain.common.Result
+import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.model.UserId
+import com.turnin.core.domain.model.UserKeywordId
+import com.turnin.core.domain.userKeyword.model.CreateUserKeyword
+import com.turnin.core.domain.userKeyword.model.PatchUserKeyword
+import com.turnin.core.domain.userKeyword.model.UserKeyword
+import com.turnin.core.domain.userKeyword.model.UserKeywordDetail
+import kotlinx.coroutines.flow.Flow
+
+/** 사용자 키워드 리포지토리 */
+interface UserKeywordRepository {
+    /**
+     * 나의 키워드 상세 정보를 로컬 DB에서 조회한다.
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     *
+     * @return 데이터가 존재하면 [UserKeywordDetail]를 반환하고,
+     * 없으면 `null`을 반환하므로 별도의 조회가 필요하다.
+     */
+    fun getMyDetailFromLocal(
+        userKeywordId: UserKeywordId,
+    ): Flow<UserKeywordDetail?>
+
+    /**
+     * 사용자 키워드 상세 정보 조회
+     *
+     * @param userId 사용자 ID
+     * @param userKeywordId 사용자 키워드 ID
+     */
+    fun getDetail(
+        userId: UserId,
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<UserKeywordDetail, CommonErrorType>>
+
+    /**
+     * 사용자 키워드 상세 정보 조회 새로고침 (무조건 네트워크에서 조회)
+     *
+     * @param userId 사용자 ID
+     * @param userKeywordId 사용자 키워드 ID
+     */
+    fun getDetailRefresh(
+        userId: UserId,
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<UserKeywordDetail, CommonErrorType>>
+
+    /**
+     * 나의 키워드 리스트를 로컬에서 조회한다.
+     */
+    fun getMyKeywords(): Flow<List<UserKeyword>>
+
+    /**
+     * 나의 키워드 상세 정보 리스트를 조회해서 로컬 데이터에 업데이트한다.
+     */
+    fun getMyKeywordsRefresh(): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 사용자의 키워드 상세 정보 리스트 조회
+     *
+     * @param userId 사용자 ID
+     * @param forceRefresh 강제 새로고침 (캐시를 무효화하고 데이터를 새롭게 받아온다.)
+     */
+    fun getUserKeywords(
+        userId: UserId,
+        forceRefresh: Boolean = false,
+    ): Flow<Result<List<UserKeywordDetail>, CommonErrorType>>
+
+    /**
+     * 사용자 키워드 생성
+     *
+     * @param create 사용자 키워드 생성 요청 객체
+     */
+    fun createUserKeyword(create: CreateUserKeyword): Flow<Result<UserKeyword, CommonErrorType>>
+
+    /**
+     * 사용자 키워드 수정
+     *
+     * @param patchUserKeyword 사용자 키워드 수정 요청 모델
+     */
+    fun update(
+        patchUserKeyword: PatchUserKeyword,
+    ): Flow<Result<Unit, CommonErrorType>>
+
+    /**
+     * 사용자 키워드 삭제
+     *
+     * @param userKeywordId 사용자 키워드 ID
+     */
+    fun deleteUserKeyword(
+        userKeywordId: UserKeywordId,
+    ): Flow<Result<Unit, CommonErrorType>>
+}

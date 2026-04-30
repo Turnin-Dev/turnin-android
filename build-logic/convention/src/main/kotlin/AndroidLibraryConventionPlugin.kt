@@ -1,7 +1,7 @@
 import com.android.build.gradle.LibraryExtension
-import com.peekr.peekrapp.ExtensionType
-import com.peekr.peekrapp.configureBuildTypes
-import com.peekr.peekrapp.configureKotlinAndroid
+import com.turnin.app.ExtensionType
+import com.turnin.app.configureBuildTypes
+import com.turnin.app.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

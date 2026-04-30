@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.peekr.android.library)
-    alias(libs.plugins.peekr.android.library.compose)
+    alias(libs.plugins.turnin.android.library)
+    alias(libs.plugins.turnin.android.library.compose)
 }
 
 android {
-    namespace = "com.peekr.core.designsystem"
+    namespace = "com.turnin.core.designsystem"
 }
 
 kotlin {

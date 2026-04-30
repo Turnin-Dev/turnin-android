@@ -3,7 +3,7 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.peekr.android.library)
+    alias(libs.plugins.turnin.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -14,14 +14,14 @@ ksp {
 }
 
 android {
-    namespace = "com.peekr.core.data"
+    namespace = "com.turnin.core.data"
 
     defaultConfig {
         val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
-        buildConfigField("String", "PEEKR_DATA_STORE", properties.getProperty("PEEKR_DATA_STORE"))
-        buildConfigField("String", "PEEKR_MOCK_SERVER_URL", properties.getProperty("PEEKR_MOCK_SERVER_URL"))
-        buildConfigField("String", "PEEKR_LOCAL_SERVER_URL", properties.getProperty("PEEKR_LOCAL_SERVER_URL"))
-        buildConfigField("String", "PEEKR_REAL_SERVER_URL", properties.getProperty("PEEKR_REAL_SERVER_URL"))
+        buildConfigField("String", "TURNIN_DATA_STORE", properties.getProperty("TURNIN_DATA_STORE"))
+        buildConfigField("String", "TURNIN_MOCK_SERVER_URL", properties.getProperty("TURNIN_MOCK_SERVER_URL"))
+        buildConfigField("String", "TURNIN_LOCAL_SERVER_URL", properties.getProperty("TURNIN_LOCAL_SERVER_URL"))
+        buildConfigField("String", "TURNIN_REAL_SERVER_URL", properties.getProperty("TURNIN_REAL_SERVER_URL"))
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
         buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", properties.getProperty("CLOUD_STORAGE_SERVER_URL"))
     }

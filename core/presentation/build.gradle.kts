@@ -1,13 +1,13 @@
 plugins {
-    alias(libs.plugins.peekr.android.library)
-    alias(libs.plugins.peekr.android.library.compose)
+    alias(libs.plugins.turnin.android.library)
+    alias(libs.plugins.turnin.android.library.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.peekr.core.presentation"
+    namespace = "com.turnin.core.presentation"
     testFixtures.enable = true
 }
 

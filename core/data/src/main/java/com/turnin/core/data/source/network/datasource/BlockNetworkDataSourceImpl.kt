@@ -1,0 +1,29 @@
+package com.turnin.core.data.source.network.datasource
+
+import com.turnin.core.data.source.network.api.BlockApi
+import com.turnin.core.data.source.network.dto.block.request.BlockRequest
+import com.turnin.core.data.source.network.dto.block.response.BlockReasonResponse
+import com.turnin.core.data.source.network.dto.block.response.BlockedUserCursorPageResponse
+import com.turnin.core.data.source.network.util.NetworkResult
+import com.turnin.core.data.source.network.util.networkCall
+import com.turnin.core.data.source.network.util.networkCallWithoutResponse
+import javax.inject.Inject
+
+class BlockNetworkDataSourceImpl @Inject constructor(
+    private val blockApi: BlockApi,
+) : BlockNetworkDataSource {
+    override suspend fun getBlockedUsers(
+        cursor: Long?,
+        size: Int,
+    ): NetworkResult<BlockedUserCursorPageResponse> =
+        networkCall { blockApi.getBlockedUsers(cursor, size) }
+
+    override suspend fun getBlockReasons(): NetworkResult<List<BlockReasonResponse>> =
+        networkCall { blockApi.getBlockReasons() }
+
+    override suspend fun createBlock(blockRequest: BlockRequest): NetworkResult<Unit> =
+        networkCallWithoutResponse { blockApi.createBlock(blockRequest) }
+
+    override suspend fun deleteBlock(blockId: Long): NetworkResult<Unit> =
+        networkCallWithoutResponse { blockApi.deleteBlock(blockId) }
+}

@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.peekr.android.library)
+    alias(libs.plugins.turnin.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.peekr.data"
+    namespace = "com.turnin.data"
 
     testOptions {
         unitTests {

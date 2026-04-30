@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.peekr.jvm.library)
+    alias(libs.plugins.turnin.jvm.library)
 }
 
 kotlin {

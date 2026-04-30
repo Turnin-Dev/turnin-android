@@ -1,0 +1,38 @@
+package com.turnin.presentation.profile.model
+
+import com.turnin.domain.profile.model.MyProfile
+
+/**
+ * UI용 나의 프로필
+ *
+ * @property userId 사용자 ID
+ * @property displayId 사용자 표시 ID
+ * @property name 이름
+ * @property profileImageUrl 프로필 사진 url
+ * @property introduce 소개 글
+ * @property friendsCount 친구 수
+ * @property lastLoginAt 마지막 로그인 일시
+ * @property active 사용자 활성화 여부
+ */
+data class UiMyProfile(
+    val userId: Long,
+    val displayId: String,
+    val name: String,
+    val profileImageUrl: String?,
+    val introduce: String,
+    val friendsCount: Long,
+    val lastLoginAt: Long,
+    val active: Boolean,
+)
+
+fun MyProfile.toUiModel(): UiMyProfile =
+    UiMyProfile(
+        userId = userId.value,
+        displayId = displayId.value,
+        name = name.value,
+        profileImageUrl = profileImageUrl,
+        introduce = introduce.value,
+        friendsCount = friendsCount,
+        lastLoginAt = lastLoginAt,
+        active = active,
+    )

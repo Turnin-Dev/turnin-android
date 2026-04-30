@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.peekr.peekrapp.buildlogic"
+group = "com.turnin.app.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -28,27 +28,27 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = "peekr.android.application"
+            id = "turnin.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
 
         register("androidApplicationCompose") {
-            id = "peekr.android.application.compose"
+            id = "turnin.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
 
         register("androidLibrary") {
-            id = "peekr.android.library"
+            id = "turnin.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
 
         register("jvmLibrary") {
-            id = "peekr.jvm.library"
+            id = "turnin.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
 
         register("androidLibraryCompose") {
-            id = "peekr.android.library.compose"
+            id = "turnin.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
     }

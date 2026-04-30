@@ -158,9 +158,9 @@ gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 
-# Peekr Plugins
-peekr-android-application = { id = "peekr.android.application" }
-peekr-android-application-compose = { id = "peekr.android.application.compose" }
-peekr-android-library = { id = "peekr.android.library" }
-peekr-android-library-compose = { id = "peekr.android.library.compose" }
-peekr-jvm-library = { id = "peekr.jvm.library" }
+# Turnin Plugins
+turnin-android-application = { id = "turnin.android.application" }
+turnin-android-application-compose = { id = "turnin.android.application.compose" }
+turnin-android-library = { id = "turnin.android.library" }
+turnin-android-library-compose = { id = "turnin.android.library.compose" }
+turnin-jvm-library = { id = "turnin.jvm.library" }
