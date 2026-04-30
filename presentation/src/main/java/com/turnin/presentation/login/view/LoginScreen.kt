@@ -32,11 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
+import com.turnin.core.designsystem.component.logo.TurninLogo
+import com.turnin.core.designsystem.component.logo.TurninLogoType
 import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingle
 import com.turnin.core.designsystem.util.token.ScreenTokens
-import com.turnin.core.presentation.ui.component.logo.TurninLogoWithText
 import com.turnin.core.presentation.ui.model.UiSocialLoginProvider
 import com.turnin.presentation.R
 import com.turnin.presentation.login.state.LoginState
@@ -62,7 +63,10 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.size(0.dp))
-            TurninLogoWithText()
+            TurninLogo(
+                logoType = TurninLogoType.Text,
+                logoWidth = 154,
+            )
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),

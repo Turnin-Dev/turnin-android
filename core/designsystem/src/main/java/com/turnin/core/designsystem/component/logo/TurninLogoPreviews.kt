@@ -13,7 +13,7 @@ private fun TurninLogoPreview() {
     TurninAppTheme {
         Column(verticalArrangement = Arrangement.spacedBy(25.dp)) {
             TurninLogo(
-                logoType = TurninLogoType.Default,
+                logoType = TurninLogoType.Icon,
                 logoWidth = 150,
             )
             TurninLogo(
@@ -21,7 +21,7 @@ private fun TurninLogoPreview() {
                 logoWidth = 300,
             )
             TurninLogo(
-                logoType = TurninLogoType.Icon,
+                logoType = TurninLogoType.App,
                 logoWidth = 300,
             )
         }

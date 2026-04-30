@@ -111,7 +111,7 @@ private fun LogoAndVersion(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TurninLogo(
-            logoType = TurninLogoType.Icon,
+            logoType = TurninLogoType.App,
             logoWidth = LOGO_WIDTH,
         )
         Text(

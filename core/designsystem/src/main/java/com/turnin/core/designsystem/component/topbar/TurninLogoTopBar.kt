@@ -1,17 +1,10 @@
 package com.turnin.core.designsystem.component.topbar
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import com.turnin.core.designsystem.R
+import com.turnin.core.designsystem.component.logo.TurninLogo
+import com.turnin.core.designsystem.component.logo.TurninLogoType
 import com.turnin.core.designsystem.util.click.ClickMode
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 
@@ -32,20 +25,14 @@ fun TurninLogoTopBar(
         modifier = modifier,
         optionSlot = optionSlot,
         logoSlot = {
-            Image(
-                modifier = Modifier
-                    .size(LogoSize)
-                    .clickableSingleWithoutRipple(
-                        clickMode = ClickMode.Throttle,
-                        onClick = onLogoClick,
-                    ),
-                imageVector = ImageVector.vectorResource(R.drawable.logo_text),
-                contentDescription = stringResource(R.string.top_bar_logo),
-                contentScale = ContentScale.Crop,
+            TurninLogo(
+                logoType = TurninLogoType.Text,
+                logoWidth = 92,
+                modifier = Modifier.clickableSingleWithoutRipple(
+                    clickMode = ClickMode.Throttle,
+                    onClick = onLogoClick,
+                ),
             )
         },
     )
 }
-
-// 로고 사이즈
-private val LogoSize = DpSize(77.dp, 30.dp)

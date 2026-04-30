@@ -2,6 +2,7 @@ package com.turnin.core.designsystem.component.logo
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -17,16 +18,18 @@ import com.turnin.core.designsystem.R
 /**
  * Turnin Logo 유형
  *
- * @param res 로고 리소스
+ * @param lightRes 로고 리소스 (라이트 모드)
+ * @param darkRes 로고 리소스 (다크 모드)
  * @param ratio 1:N 비율 (N == [ratio])
  */
 enum class TurninLogoType(
-    @field:DrawableRes val res: Int,
+    @field:DrawableRes val lightRes: Int,
+    @field:DrawableRes val darkRes: Int,
     val ratio: Double,
 ) {
-    Default(res = R.drawable.logo_default, ratio = 1.44),
-    Text(res = R.drawable.logo_text, ratio = 0.382),
-    Icon(res = R.drawable.logo_icon, ratio = 1.0),
+    Icon(lightRes = R.drawable.logo_icon, darkRes = R.drawable.logo_icon, ratio = 1.24),
+    Text(lightRes = R.drawable.logo_text_light, darkRes = R.drawable.logo_text_dark, ratio = 0.239),
+    App(lightRes = R.drawable.logo_app, darkRes = R.drawable.logo_app, ratio = 1.0),
 }
 
 /**
@@ -47,12 +50,14 @@ fun TurninLogo(
     logoWidth: Int,
     modifier: Modifier = Modifier,
 ) {
+    val logoRes = if (isSystemInDarkTheme()) logoType.darkRes else logoType.lightRes
+
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Image(
             modifier = Modifier
                 .width(logoWidth.dp)
                 .height((logoWidth * logoType.ratio).dp),
-            imageVector = ImageVector.vectorResource(logoType.res),
+            imageVector = ImageVector.vectorResource(logoRes),
             contentDescription = stringResource(R.string.logo_content_desc),
         )
     }
