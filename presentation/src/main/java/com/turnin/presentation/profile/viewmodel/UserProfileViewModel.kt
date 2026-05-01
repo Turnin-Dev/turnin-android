@@ -193,13 +193,22 @@ class UserProfileViewModel @Inject constructor(
                 Result.Loading -> {}
 
                 is Result.Error -> {
-                    // 3) 실패 시 친구 상태 롤백
-                    updateState {
-                        this.copy(
-                            profile = this.profile?.copy(friendStatus = friendStatus),
-                        )
+                    when (result.error) {
+                        // 3-1) 409 Conflict 매핑 에러 발생 시 아무 작업도 수행하지 않음
+                        ProfileErrorType.AlreadyFriendsOrRequested,
+                        ProfileErrorType.AlreadyProcessed,
+                        -> Unit
+
+                        // 3-2) 실패 시 친구 상태 롤백
+                        else -> {
+                            updateState {
+                                this.copy(
+                                    profile = this.profile?.copy(friendStatus = friendStatus),
+                                )
+                            }
+                            showSnackBar(result.error.asUiText())
+                        }
                     }
-                    showSnackBar(result.error.asUiText())
                 }
 
                 is Result.Success -> {

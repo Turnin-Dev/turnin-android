@@ -171,7 +171,7 @@ class UpdateFriendStateUseCase @Inject constructor(
                 .updateFriendStatus(patchFriendStatus)
                 .mapError { commonError ->
                     when (commonError) {
-                        CommonErrorType.Network.NotFound -> {
+                        CommonErrorType.Network.Conflict -> {
                             ProfileErrorType.AlreadyProcessed
                         }
 
