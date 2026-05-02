@@ -31,6 +31,9 @@ sealed interface ProfileErrorType : BaseError {
     /** 이미 처리된 요청 */
     data object AlreadyProcessed : ProfileErrorType
 
+    /** 존재하지 않는 친구(사용자) */
+    data object FriendNotFound : ProfileErrorType
+
     // ------------------------------ Other Error Type ------------------------------
     data class CommonError(val error: CommonErrorType) : ProfileErrorType
 

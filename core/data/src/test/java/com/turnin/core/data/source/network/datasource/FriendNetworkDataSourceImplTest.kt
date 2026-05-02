@@ -120,10 +120,7 @@ class FriendNetworkDataSourceImplTest {
         val response = dataSource.addFriend(TestAddFriendRequest)
 
         // then
-        val success = response as NetworkResult.Success
-        assertEquals(TestFriendResponse.requesterId, success.data.requesterId)
-        assertEquals(TestFriendResponse.receiverId, success.data.receiverId)
-        assertEquals(TestFriendResponse.requestState, success.data.requestState)
+        assertTrue(response is NetworkResult.Success)
     }
 
     @Test

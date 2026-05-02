@@ -4,7 +4,6 @@ import com.turnin.core.data.source.network.api.FriendApi
 import com.turnin.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.turnin.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.turnin.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
-import com.turnin.core.data.source.network.dto.friend.response.FriendResponse
 import com.turnin.core.data.source.network.dto.friend.response.FriendsResponse
 import com.turnin.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import com.turnin.core.data.source.network.util.NetworkResult
@@ -28,8 +27,8 @@ class FriendNetworkDataSourceImpl @Inject constructor(
     ): NetworkResult<IncomingRequestsResponse> =
         networkCall { friendApi.getIncomingRequests(page, size) }
 
-    override suspend fun addFriend(addFriendRequest: AddFriendRequest): NetworkResult<FriendResponse> =
-        networkCall { friendApi.addFriend(addFriendRequest) }
+    override suspend fun addFriend(addFriendRequest: AddFriendRequest): NetworkResult<Unit> =
+        networkCallWithoutResponse { friendApi.addFriend(addFriendRequest) }
 
     override suspend fun deleteFriend(deleteFriendRequest: DeleteFriendRequest): NetworkResult<Unit> =
         networkCallWithoutResponse {

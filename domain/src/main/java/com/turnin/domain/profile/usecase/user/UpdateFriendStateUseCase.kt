@@ -122,6 +122,10 @@ class UpdateFriendStateUseCase @Inject constructor(
                                     Result.Error(ProfileErrorType.AlreadyFriendsOrRequested)
                                 }
 
+                                CommonErrorType.Network.NotFound -> {
+                                    Result.Error(ProfileErrorType.FriendNotFound)
+                                }
+
                                 else -> Result.Error(ProfileErrorType.CommonError(result.error))
                             }
                         }
@@ -173,6 +177,10 @@ class UpdateFriendStateUseCase @Inject constructor(
                     when (commonError) {
                         CommonErrorType.Network.Conflict -> {
                             ProfileErrorType.AlreadyProcessed
+                        }
+
+                        CommonErrorType.Network.NotFound -> {
+                            ProfileErrorType.FriendNotFound
                         }
 
                         else -> ProfileErrorType.CommonError(commonError)

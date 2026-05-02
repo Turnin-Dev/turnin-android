@@ -45,7 +45,7 @@ interface FriendNetworkDataSource {
      */
     suspend fun addFriend(
         addFriendRequest: AddFriendRequest,
-    ): NetworkResult<FriendResponse>
+    ): NetworkResult<Unit>
 
     /**
      * 친구 삭제

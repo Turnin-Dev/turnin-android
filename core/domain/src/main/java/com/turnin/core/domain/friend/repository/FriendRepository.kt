@@ -5,7 +5,6 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.friend.model.AddFriend
 import com.turnin.core.domain.friend.model.DeleteFriend
-import com.turnin.core.domain.friend.model.Friend
 import com.turnin.core.domain.friend.model.FriendInfo
 import com.turnin.core.domain.friend.model.IncomingRequest
 import com.turnin.core.domain.friend.model.PatchFriendStatus
@@ -42,11 +41,10 @@ interface FriendRepository {
      * - [CommonErrorType.Network.Conflict]: 이미 친구 요청을 했거나 친구 상태인 경우
      *
      * @param addFriend 친구 추가 모델
-     * @return [Friend] 친구 모델
      */
     fun addFriend(
         addFriend: AddFriend,
-    ): Flow<Result<Friend, CommonErrorType>>
+    ): Flow<Result<Unit, CommonErrorType>>
 
     /**
      * 친구 삭제
