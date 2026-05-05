@@ -47,15 +47,11 @@ fun FriendRoute(
         friends = friends,
         requesters = requesters,
         requestersStatus = requestersStatus,
-        loadRequestersPagingData = {
-            viewModel.initRequestersPagingData()
-        },
-        onFriendClick = { args ->
-            viewModel.navigateToUserProfileOrMyProfile(args)
-        },
-        onRequestAcceptClick = { targetId, status ->
-            viewModel.acceptFriendRequest(targetId, status)
-        },
+        resetFriendsCache = viewModel::resetFriendsCache,
+        resetRequestersCache = viewModel::resetRequestersCache,
+        loadRequestersPagingData = viewModel::initRequestersPagingData,
+        onFriendClick = viewModel::navigateToUserProfileOrMyProfile,
+        onRequestAcceptClick = viewModel::acceptFriendRequest,
         onBackPressed = onBackPressed,
     )
 }

@@ -38,3 +38,15 @@ fun IncomingRequest.toUiModel(): UiRequester =
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
+
+fun UiRequester.toUiFriendInfo(): UiFriendInfo =
+    UiFriendInfo(
+        id = id,
+        userId = userId,
+        displayId = displayId,
+        name = name,
+        profileImageUrl = profileImageUrl,
+        respondedAt = respondedAt,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

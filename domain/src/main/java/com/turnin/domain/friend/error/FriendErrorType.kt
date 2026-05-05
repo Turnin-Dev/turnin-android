@@ -10,8 +10,11 @@ sealed interface FriendErrorType : BaseError {
     /** 사용자 ID 조회 실패 에러 */
     data object UserIdNotFound : FriendErrorType
 
-    /** 이미 처리된 요청인 경우이거나 사용자를 찾을 수 없는 경우 */
-    data object AlreadyProceedOrUserNotFound : FriendErrorType
+    /** 사용자를 찾을 수 없는 경우 */
+    data object UserNotFound : FriendErrorType
+
+    /** 이미 처리된 요청인 경우이거나 */
+    data object AlreadyProceed : FriendErrorType
 
     /** 친구 상태 수정 요청자의 ID와 나의 ID가 같지 않은 경우 */
     data object NotSameRequesterIdAndMyId : FriendErrorType

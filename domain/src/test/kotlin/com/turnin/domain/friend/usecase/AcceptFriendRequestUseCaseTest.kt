@@ -55,7 +55,7 @@ class AcceptFriendRequestUseCaseTest {
     }
 
     @Test
-    fun `친구 요청 수락 시 NotFound 에러가 발생하면 AlreadyProceedOrUserNotFound를 반환한다`() = runTest {
+    fun `친구 요청 수락 시 NotFound 에러가 발생하면 UserNotFound를 반환한다`() = runTest {
         // given
         val commonError = CommonErrorType.Network.NotFound
         every { friendRepository.updateFriendStatus(patch) } returns flowOf(Result.Error(commonError))
@@ -64,7 +64,20 @@ class AcceptFriendRequestUseCaseTest {
         val results = useCase(myUserId, targetUserId).toList()
 
         // then
-        assertEquals(listOf(Result.Error(FriendErrorType.AlreadyProceedOrUserNotFound)), results)
+        assertEquals(listOf(Result.Error(FriendErrorType.UserNotFound)), results)
+    }
+
+    @Test
+    fun `친구 요청 수락 시 Conflict 에러가 발생하면 AlreadyProceed를 반환한다`() = runTest {
+        // given
+        val commonError = CommonErrorType.Network.Conflict
+        every { friendRepository.updateFriendStatus(patch) } returns flowOf(Result.Error(commonError))
+
+        // when
+        val results = useCase(myUserId, targetUserId).toList()
+
+        // then
+        assertEquals(listOf(Result.Error(FriendErrorType.AlreadyProceed)), results)
     }
 
     @Test

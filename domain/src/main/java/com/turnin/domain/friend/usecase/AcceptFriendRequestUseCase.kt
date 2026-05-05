@@ -43,8 +43,9 @@ class AcceptFriendRequestUseCase @Inject constructor(
             friendRepository.updateFriendStatus(patch)
                 .mapError { commonError ->
                     when (commonError) {
+                        CommonErrorType.Network.Conflict -> FriendErrorType.AlreadyProceed
                         CommonErrorType.Network.Forbidden -> FriendErrorType.NotSameRequesterIdAndMyId
-                        CommonErrorType.Network.NotFound -> FriendErrorType.AlreadyProceedOrUserNotFound
+                        CommonErrorType.Network.NotFound -> FriendErrorType.UserNotFound
                         else -> FriendErrorType.CommonError(commonError)
                     }
                 },
