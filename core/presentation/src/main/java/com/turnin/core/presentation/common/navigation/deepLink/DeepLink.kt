@@ -19,7 +19,7 @@ object DeepLink {
     // TODO: 만약 사용자 프로필에 사진 URL을 넘겨야 하는 상황이면,
     //  인코딩을 해줘야 하지만 URI 방식이 아닌 Type-Safe 방식으로 변경한다면 불필요하다.
     object Pattern {
-        const val PROFILE = "${Uri.PROFILE}/{userId}?blockId={blockId}"
+        const val PROFILE = "${Uri.PROFILE}/{userId}?forceRefresh={forceRefresh}"
         const val KEYWORD_DETAIL = "${Uri.KEYWORD_DETAIL}/{userKeywordId}/{userId}"
         const val NOTIFICATIONS = Uri.NOTIFICATIONS
     }
@@ -35,10 +35,10 @@ object DeepLink {
          *
          * @param userId 필수 (null이거나 0 이하면 null 반환)
          */
-        fun profile(userId: Long?): String? {
+        fun profile(userId: Long?, forceRefresh: Boolean = true): String? {
             if (userId == null || userId <= 0) return null
 
-            return "${Uri.PROFILE}/$userId"
+            return "${Uri.PROFILE}/$userId?forceRefresh=$forceRefresh"
         }
 
         /**

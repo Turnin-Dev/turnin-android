@@ -29,6 +29,7 @@ class UserProfileViewModel @Inject constructor(
     private val initUserName = savedStateHandle.get<String>("userName")
     private val initDisplayId = savedStateHandle.get<String>("displayId")
     private val initProfileImageUrl = savedStateHandle.get<String>("profileImageUrl")
+    private val initForceRefresh = savedStateHandle.get<Boolean>("forceRefresh") ?: false
 
     /** 사용자 ID */
     private val currentUserId: Long by lazy {
@@ -39,6 +40,8 @@ class UserProfileViewModel @Inject constructor(
     private val blockId: Long? = savedStateHandle.get<Long>("blockId")
 
     override fun createInitialState(): UserProfileContract.UiState {
+        if (initForceRefresh) return UserProfileContract.UiState()
+
         val cached = initUserId?.let { usecases.getCachedUserProfile(it)?.toUiModel() }
         return UserProfileContract.UiState(
             previewName = cached?.name ?: initUserName ?: "",
@@ -84,8 +87,8 @@ class UserProfileViewModel @Inject constructor(
         // initNavArgumentData 가 실패할 경우(false를 반환할 경우)
         // 에러 처리를 하고 프로필 로드 기능을 중단한다(다른 기능이 실행될 수 없다).
         if (!initResult) return
-        getUserProfile(false)
-        getUserKeywords(false)
+        getUserProfile(initForceRefresh)
+        getUserKeywords(initForceRefresh)
     }
 
     private suspend fun initNavArgumentData(): Boolean = runCatching {
