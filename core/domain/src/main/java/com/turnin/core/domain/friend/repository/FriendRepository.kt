@@ -70,7 +70,8 @@ interface FriendRepository {
      *
      * 에러 별 설명
      * - [CommonErrorType.Network.Forbidden]: 요청자 ID와 실제 요청을 한 사용자 ID가 같지 않은 경우
-     * - [CommonErrorType.Network.NotFound]: 친구 데이터에서 수정 대상을 찾지 못하는 경우 (높은 확률로 이미 처리된 요청.)
+     * - [CommonErrorType.Network.NotFound]: 친구 데이터에서 수정 대상을 찾지 못하는 경우 (상대방이 요청을 취소하는 경우나 차단된 사용자인 경우 등)
+     * - [CommonErrorType.Network.Conflict]: 이미 친구 상태인 경우
      *
      * @param patchFriendStatus 친구 상태 수정 모델
      */

@@ -216,7 +216,7 @@ sealed interface Screens {
         val displayId: String?,
         val profileImageUrl: String?,
         val blockId: Long?,
-        val forceRefresh: Boolean,
+        val forceRefresh: Boolean = false,
     ) : Screens
 
     /**
