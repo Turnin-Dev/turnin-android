@@ -25,6 +25,7 @@ fun NavController.navigateToUserProfile(args: UserProfileArgs) {
             displayId = args.displayId,
             profileImageUrl = args.profileImageUrl,
             blockId = args.blockId,
+            forceRefresh = args.forceRefresh,
         ),
     )
 }

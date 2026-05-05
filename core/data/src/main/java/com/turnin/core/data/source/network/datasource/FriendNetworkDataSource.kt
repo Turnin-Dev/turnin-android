@@ -4,7 +4,6 @@ import com.turnin.core.data.source.network.api.FriendApi
 import com.turnin.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.turnin.core.data.source.network.dto.friend.request.DeleteFriendRequest
 import com.turnin.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
-import com.turnin.core.data.source.network.dto.friend.response.FriendResponse
 import com.turnin.core.data.source.network.dto.friend.response.FriendsResponse
 import com.turnin.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import com.turnin.core.data.source.network.util.NetworkResult
@@ -40,12 +39,12 @@ interface FriendNetworkDataSource {
      * 친구 추가
      *
      * @param addFriendRequest 친구 추가 요청 바디
-     * @return [FriendResponse] 친구 응답 바디
+     *
      * @see FriendApi.addFriend
      */
     suspend fun addFriend(
         addFriendRequest: AddFriendRequest,
-    ): NetworkResult<FriendResponse>
+    ): NetworkResult<Unit>
 
     /**
      * 친구 삭제

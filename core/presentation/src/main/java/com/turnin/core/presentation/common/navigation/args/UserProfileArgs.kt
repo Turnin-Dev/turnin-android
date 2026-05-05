@@ -8,6 +8,7 @@ package com.turnin.core.presentation.common.navigation.args
  * @property displayId 사용자 표시 ID
  * @property profileImageUrl 프로필 사진 URL
  * @property blockId 차단 ID
+ * @property forceRefresh 강제 새로고침 여부
  */
 data class UserProfileArgs(
     val userId: Long,
@@ -15,4 +16,5 @@ data class UserProfileArgs(
     val displayId: String? = null,
     val profileImageUrl: String? = null,
     val blockId: Long? = null,
+    val forceRefresh: Boolean = false,
 )

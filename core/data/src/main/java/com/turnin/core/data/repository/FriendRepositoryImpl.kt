@@ -19,7 +19,6 @@ import com.turnin.core.domain.common.coroutine.safeResultFlow
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.friend.model.AddFriend
 import com.turnin.core.domain.friend.model.DeleteFriend
-import com.turnin.core.domain.friend.model.Friend
 import com.turnin.core.domain.friend.model.FriendInfo
 import com.turnin.core.domain.friend.model.FriendPagingTokens
 import com.turnin.core.domain.friend.model.IncomingRequest
@@ -86,8 +85,8 @@ class FriendRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun addFriend(addFriend: AddFriend): Flow<Result<Friend, CommonErrorType>> =
-        safeResultFlow<Friend, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
+    override fun addFriend(addFriend: AddFriend): Flow<Result<Unit, CommonErrorType>> =
+        safeResultFlow<Unit, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
 
             // 사용자 프로필 관련 액션 수행 시 메모리 캐시 무효화
@@ -96,7 +95,7 @@ class FriendRepositoryImpl @Inject constructor(
             // 네트워크 호출
             when (val result = friendNetworkDataSource.addFriend(addFriend.toDataModel())) {
                 is NetworkResult.Success -> {
-                    emit(Result.Success(result.data.toDomainModel()))
+                    emit(Result.Success(Unit))
                 }
 
                 is NetworkResult.Error -> {

@@ -4,7 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.TerminalSeparatorType
 import androidx.paging.cachedIn
+import androidx.paging.filter
+import androidx.paging.insertHeaderItem
 import androidx.paging.map
 import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.domain.common.Result
@@ -17,6 +20,8 @@ import com.turnin.core.presentation.ui.util.UiText
 import com.turnin.domain.friend.error.FriendErrorType
 import com.turnin.domain.friend.usecase.FriendUseCases
 import com.turnin.presentation.friend.error.asUiText
+import com.turnin.presentation.friend.model.UiRequester
+import com.turnin.presentation.friend.model.toUiFriendInfo
 import com.turnin.presentation.friend.model.toUiModel
 import com.turnin.presentation.friend.state.FriendEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +31,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -63,6 +69,9 @@ class FriendListViewModel @Inject constructor(
     private var _requesterStatus = MutableStateFlow(mapOf<UserID, FriendStatus>())
     val requesterStatus = _requesterStatus.asStateFlow()
 
+    // 수락된 요청자 목록
+    private val cachedAcceptedRequesters = MutableStateFlow<Set<UiRequester>>(emptySet())
+
     init {
         viewModelScope.launch {
             // 나의 사용자 ID를 로드하고 나의 친구 목록인지 판단
@@ -81,8 +90,8 @@ class FriendListViewModel @Inject constructor(
         }
     }
 
-    // 친구 목록 페이징 데이터
-    val friendsPagingData = if (currentUserId != null && currentUserId > 0) {
+    // 친구 목록 베이스 페이징 데이터
+    private val friendsBasePagingData = if (currentUserId != null && currentUserId > 0) {
         usecases.getFriends(currentUserId)
             .catch { e ->
                 AppLogger.d(tag, e, "Unexpected friend pagination error")
@@ -98,7 +107,20 @@ class FriendListViewModel @Inject constructor(
         flowOf(PagingData.empty())
     }
 
-    // 친구 요청 목록 페이징 데이터
+    /** 친구 목록 페이징 데이터 */
+    val friendsPagingData =
+        combine(friendsBasePagingData, cachedAcceptedRequesters) { pagingData, acceptedRequester ->
+            val transformPaging = pagingData.filter { pd -> pd.id !in acceptedRequester.map { it.id } }
+
+            acceptedRequester.fold(transformPaging) { acc, requester ->
+                acc.insertHeaderItem(
+                    terminalSeparatorType = TerminalSeparatorType.SOURCE_COMPLETE,
+                    item = requester.toUiFriendInfo(),
+                )
+            }
+        }
+
+    /** 친구 요청 목록 페이징 데이터 */
     val requestersPagingData = isInitRequestersPagingData
         .filter { it }
         .flatMapLatest {
@@ -125,14 +147,28 @@ class FriendListViewModel @Inject constructor(
     }
 
     /**
+     * 친구 목록 캐시 초기화
+     */
+    fun resetFriendsCache() {
+        cachedAcceptedRequesters.update { emptySet() }
+    }
+
+    /**
+     * 친구 요청 목록 캐시 초기화
+     */
+    fun resetRequestersCache() {
+        _requesterStatus.update { emptyMap() }
+    }
+
+    /**
      * 친구 요청 수락
      *
-     * @param targetUserId 요청자 사용자 ID
-     * @param currentFriendStatus 현재 친구 상태
+     * @param requester 요청자
+     * @param friendStatus 요청자의 친구 상태
      */
     fun acceptFriendRequest(
-        targetUserId: Long,
-        currentFriendStatus: FriendStatus,
+        requester: UiRequester,
+        friendStatus: FriendStatus,
     ) {
         // 조건 1. 나의 사용자 ID가 null이 아니여야 한다.
         // 조건 2. 현재 친구 상태가 '친구'인 상태가 아니여야 한다.
@@ -140,24 +176,36 @@ class FriendListViewModel @Inject constructor(
 
         // 1) 위 조건 중 하나라도 만족하지 않는 경우 아무 작업도 수행하지 않는다.
         if (myUserId.value == null ||
-            currentFriendStatus == FriendStatus.FRIENDS ||
+            friendStatus == FriendStatus.FRIENDS ||
             myUserId.value != currentUserId
         ) {
             return
         }
 
-        // 2) 즉시 '친구' 상태로 업데이트 (낙관적 업데이트)
-        _requesterStatus.update { it + (targetUserId to FriendStatus.FRIENDS) }
+        // 2) 즉시 '친구' 상태로 업데이트 (낙관적 UI 처리)
+        _requesterStatus.update { it + (requester.userId to FriendStatus.FRIENDS) }
 
         // 3) 친구 수락 수행
         usecases.acceptFriendRequest(
             myUserId = myUserId.value!!,
-            targetUserId = targetUserId,
+            targetUserId = requester.userId,
         ).onEach { result ->
-            if (result is Result.Error) {
-                // 에러 발생 시 친구 상태 롤백, 스낵바 에러 표시
-                _requesterStatus.update { it + (targetUserId to currentFriendStatus) }
-                showSnackbar(result.error.asUiText())
+            when (result) {
+                Result.Loading -> Unit
+                is Result.Error -> {
+                    // 낙관적 UI 처리를 위한 에러 분기
+                    if (result.error is FriendErrorType.AlreadyProceed) {
+                        cachedAcceptedRequesters.update { it + requester }
+                        return@onEach
+                    }
+                    // 에러 발생 시 친구 상태 롤백, 스낵바 에러 표시
+                    _requesterStatus.update { it + (requester.userId to friendStatus) }
+                    showSnackbar(result.error.asUiText())
+                }
+
+                is Result.Success -> {
+                    cachedAcceptedRequesters.update { it + requester }
+                }
             }
         }.launchIn(viewModelScope)
     }

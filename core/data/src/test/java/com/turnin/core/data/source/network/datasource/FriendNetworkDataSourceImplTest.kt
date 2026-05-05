@@ -120,28 +120,7 @@ class FriendNetworkDataSourceImplTest {
         val response = dataSource.addFriend(TestAddFriendRequest)
 
         // then
-        val success = response as NetworkResult.Success
-        assertEquals(TestFriendResponse.requesterId, success.data.requesterId)
-        assertEquals(TestFriendResponse.receiverId, success.data.receiverId)
-        assertEquals(TestFriendResponse.requestState, success.data.requestState)
-    }
-
-    @Test
-    fun `친구 추가 - 잘못된 응답 바디로 응답 시 알려진 에러를 반환한다`() = runTest {
-        // given
-        testRule.server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(TestInvalidResponse)
-            },
-        )
-
-        // when
-        val response = dataSource.addFriend(TestAddFriendRequest)
-
-        // then
-        val error = response as NetworkResult.Error
-        assertEquals(NetworkErrorType.Exception.JsonData, error.error)
+        assertTrue(response is NetworkResult.Success)
     }
 
     @Test

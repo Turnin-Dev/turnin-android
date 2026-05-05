@@ -61,7 +61,7 @@ class FriendRepositoryImplTest {
         every { memoryCache.remove(any()) } returns null
         coEvery {
             dataSource.addFriend(TestAddFriendRequest)
-        } returns NetworkResult.Success(TestFriendResponse)
+        } returns NetworkResult.Success(Unit)
         coEvery {
             dataSource.deleteFriend(TestDeleteFriendRequest)
         } returns NetworkResult.Success(Unit)
@@ -176,10 +176,7 @@ class FriendRepositoryImplTest {
         val result = repository.addFriend(TestAddFriend).last()
 
         // then
-        val success = result as Result.Success
-        assertEquals(TestFriendResponse.requesterId, success.data.requesterId.value)
-        assertEquals(TestFriendResponse.receiverId, success.data.receiverId.value)
-        assertEquals(TestFriendResponse.requestState, success.data.requestStatus)
+        assertTrue(result is Result.Success)
         verify(exactly = 1) { memoryCache.remove(TestAddFriend.receiverId) }
     }
 

@@ -99,6 +99,9 @@ private fun FriendListFrame(
  * @param requesters 친구 요청 목록
  * @param requestersStatus 친구 요청한 사용자의 상태 Map
  * @param loadRequestersPagingData 친구 요청 목록 화면 진입 시 로드 이벤트
+ * @param resetRequestersCache 친구 요청 목록 캐시 초기화
+ * @param resetFriendsCache 친구 목록 캐시 초기화
+ * @param loadRequestersPagingData 친구 요청 목록 화면 진입 시 로드 이벤트
  * @param onFriendClick 친구 클릭 시 콜백
  * @param onRequestAcceptClick 친구 요청 수락 시 콜백
  * @param onBackPressed 뒤로 가기 클릭 시 콜백
@@ -110,9 +113,11 @@ fun FriendListScreen(
     friends: LazyPagingItems<UiFriendInfo>,
     requesters: LazyPagingItems<UiRequester>,
     requestersStatus: Map<Long, FriendStatus>,
+    resetRequestersCache: () -> Unit,
+    resetFriendsCache: () -> Unit,
     loadRequestersPagingData: () -> Unit,
     onFriendClick: (args: UserProfileArgs) -> Unit,
-    onRequestAcceptClick: (targetId: Long, status: FriendStatus) -> Unit,
+    onRequestAcceptClick: (requester: UiRequester, status: FriendStatus) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     FriendListFrame(
@@ -131,6 +136,7 @@ fun FriendListScreen(
                 modifier = Modifier.fillMaxSize(),
                 isMyFriendList = isMyFriendList,
                 friends = friends,
+                resetFriendsCache = { resetFriendsCache() },
                 onFriendClick = { friend ->
                     val args = UserProfileArgs(
                         userId = friend.userId,
@@ -152,6 +158,7 @@ fun FriendListScreen(
                 isMyFriendList = isMyFriendList,
                 requesters = requesters,
                 requestersStatus = requestersStatus,
+                resetRequestersCache = { resetRequestersCache() },
                 onRequesterClick = { requester ->
                     val args = UserProfileArgs(
                         userId = requester.userId,
@@ -161,8 +168,8 @@ fun FriendListScreen(
                     )
                     onFriendClick(args)
                 },
-                onRequestAcceptClick = { targetId, status ->
-                    onRequestAcceptClick(targetId, status)
+                onRequestAcceptClick = { requester, status ->
+                    onRequestAcceptClick(requester, status)
                 },
             )
         },
@@ -193,6 +200,7 @@ private fun TopBar(
  * @param modifier [Modifier]
  * @param isMyFriendList 나의 친구 목록 여부
  * @param friends 친구 목록
+ * @param resetFriendsCache 친구 목록 캐시 초기화
  * @param onFriendClick 친구 클릭 시 콜백
  */
 @Composable
@@ -200,6 +208,7 @@ private fun FriendList(
     modifier: Modifier = Modifier,
     isMyFriendList: Boolean,
     friends: LazyPagingItems<UiFriendInfo>,
+    resetFriendsCache: () -> Unit,
     onFriendClick: (UiFriendInfo) -> Unit,
 ) {
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
@@ -220,6 +229,7 @@ private fun FriendList(
         onRefresh = {
             isManualRefresh = true
             friends.refresh()
+            resetFriendsCache()
         },
         contentPadding = ListContentPadding,
     ) {
@@ -271,6 +281,7 @@ private fun FriendList(
  * @param isMyFriendList 나의 친구 목록 여부
  * @param requesters 친구 요청 목록
  * @param requestersStatus 친구 요청한 사용자의 상태 Map
+ * @param resetRequestersCache 친구 요청 목록 캐시 초기화
  * @param onRequesterClick 요청자 클릭 시 콜백
  * @param onRequestAcceptClick 친구 요청 수락 시 콜백
  */
@@ -280,8 +291,9 @@ private fun RequesterList(
     isMyFriendList: Boolean,
     requesters: LazyPagingItems<UiRequester>,
     requestersStatus: Map<Long, FriendStatus>,
+    resetRequestersCache: () -> Unit,
     onRequesterClick: (UiRequester) -> Unit,
-    onRequestAcceptClick: (targetId: Long, status: FriendStatus) -> Unit,
+    onRequestAcceptClick: (requester: UiRequester, status: FriendStatus) -> Unit,
 ) {
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing = remember {
@@ -301,6 +313,7 @@ private fun RequesterList(
         onRefresh = {
             isManualRefresh = true
             requesters.refresh()
+            resetRequestersCache()
         },
         contentPadding = ListContentPadding,
     ) {
@@ -344,7 +357,7 @@ private fun RequesterList(
                     displayId = requester.displayId,
                     friendStatus = requesterStatus,
                     onFriendStatusClick = {
-                        onRequestAcceptClick(requester.userId, requesterStatus)
+                        onRequestAcceptClick(requester, requesterStatus)
                     },
                 )
             }
@@ -469,6 +482,7 @@ private fun FriendListPreview() {
             modifier = Modifier.fillMaxSize(),
             isMyFriendList = false,
             friends = friends,
+            resetFriendsCache = {},
             onFriendClick = {},
         )
     }
@@ -486,6 +500,8 @@ private fun FriendListScreenPreview() {
             isMyFriendList = true,
             friends = friends,
             requesters = requesters,
+            resetFriendsCache = {},
+            resetRequestersCache = {},
             loadRequestersPagingData = {},
             onFriendClick = {},
             requestersStatus = mapOf(),
@@ -507,6 +523,8 @@ private fun FriendListScreen_Empty_Preview() {
             isMyFriendList = true,
             friends = friends,
             requesters = requesters,
+            resetFriendsCache = {},
+            resetRequestersCache = {},
             loadRequestersPagingData = {},
             onFriendClick = {},
             requestersStatus = mapOf(),
@@ -528,6 +546,8 @@ private fun FriendListScreen_Empty_Preview2() {
             isMyFriendList = false,
             friends = friends,
             requesters = requesters,
+            resetFriendsCache = {},
+            resetRequestersCache = {},
             loadRequestersPagingData = {},
             onFriendClick = {},
             requestersStatus = mapOf(),

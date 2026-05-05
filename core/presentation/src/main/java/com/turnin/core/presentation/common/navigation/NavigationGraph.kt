@@ -207,6 +207,7 @@ sealed interface Screens {
      * @property displayId 사용자 표시 ID
      * @property profileImageUrl 프로필 사진 URL
      * @property blockId 차단 ID
+     * @property forceRefresh 강제 새로고침 여부
      */
     @Serializable
     data class UserProfile(
@@ -215,6 +216,7 @@ sealed interface Screens {
         val displayId: String?,
         val profileImageUrl: String?,
         val blockId: Long?,
+        val forceRefresh: Boolean = false,
     ) : Screens
 
     /**

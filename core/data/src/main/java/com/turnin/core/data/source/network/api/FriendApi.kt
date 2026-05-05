@@ -2,7 +2,6 @@ package com.turnin.core.data.source.network.api
 
 import com.turnin.core.data.source.network.dto.friend.request.AddFriendRequest
 import com.turnin.core.data.source.network.dto.friend.request.PatchFriendStatusRequest
-import com.turnin.core.data.source.network.dto.friend.response.FriendResponse
 import com.turnin.core.data.source.network.dto.friend.response.FriendsResponse
 import com.turnin.core.data.source.network.dto.friend.response.IncomingRequestsResponse
 import retrofit2.Response
@@ -45,7 +44,7 @@ interface FriendApi {
     @POST(NetworkApiPath.Friend.ROUTE)
     suspend fun addFriend(
         @Body addFriendRequest: AddFriendRequest,
-    ): Response<FriendResponse>
+    ): Response<Unit>
 
     /**
      * 친구 삭제
