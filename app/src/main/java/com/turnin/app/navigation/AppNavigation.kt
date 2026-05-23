@@ -7,6 +7,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +16,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.Screens
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.presentation.block.blockListScreen
@@ -42,7 +44,7 @@ fun AppNavigation(
 ) {
     if (loggedIn != null) {
         NavHost(
-            modifier = modifier,
+            modifier = modifier.background(TurninTheme.colorScheme.backgroundNormal),
             navController = appNavController,
             startDestination = if (loggedIn) {
                 SubGraph.BottomNav.Root
@@ -76,7 +78,7 @@ fun AppNavigation(
 
             // 바텀 네비게이션
             composable<SubGraph.BottomNav.Root> {
-                _root_ide_package_.com.turnin.app.navigation.BottomNavigation(
+                BottomNavigation(
                     modifier = Modifier.fillMaxSize(),
                     appNavController = appNavController,
                     onCheckPermission = onCheckPermission,
@@ -137,7 +139,7 @@ private fun getExitTransition(
     if (excludeScreen.any { targetState.destination.hasRoute(it::class) }) {
         ExitTransition.None
     } else {
-        fadeOut(tween(250)) + slideOutOfContainer(
+        fadeOut(tween(100)) + slideOutOfContainer(
             towards = SlideDirection.Start,
             animationSpec = tween(250),
             targetOffset = { it / 4 },
@@ -166,7 +168,7 @@ private fun getPopExitTransition(
     if (excludeScreen.any { targetState.destination.hasRoute(it::class) }) {
         ExitTransition.None
     } else {
-        fadeOut(tween(250)) + slideOutOfContainer(
+        fadeOut(tween(100)) + slideOutOfContainer(
             towards = SlideDirection.End,
             animationSpec = tween(250),
             targetOffset = { it / 4 },
