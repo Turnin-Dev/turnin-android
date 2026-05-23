@@ -89,7 +89,6 @@ class AppDataCleanerIntegrationTest {
         database.feedRemoteKeyDao().upsert(
             FeedRemoteKeyEntity(
                 cursorScore = 1.0,
-                cursorCreatedAt = 1L,
                 cursorUserKeywordId = 1L,
             ),
         )

@@ -12,7 +12,6 @@ interface FeedApi {
     @GET(NetworkApiPath.Feed.ROUTE)
     suspend fun getFeeds(
         @Query("cursorScore") cursorScore: Double?,
-        @Query("cursorCreatedAt") cursorCreatedAt: Long?,
         @Query("cursorUserKeywordId") cursorUserKeywordId: Long?,
         @Query("size") size: Int,
     ): Response<FeedCursorPageResponse>
