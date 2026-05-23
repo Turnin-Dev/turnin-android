@@ -2,6 +2,9 @@ package com.turnin.core.domain.model
 
 import com.turnin.core.domain.common.validation.CommonValidationException
 
+/**
+ * 이름 VO
+ */
 @JvmInline
 value class Name private constructor(val value: String) {
     /**
@@ -14,8 +17,8 @@ value class Name private constructor(val value: String) {
         const val MAX_LENGTH = 30
         private const val FIELD = "이름"
 
-        /** 사용자 이름 규칙: 영어/숫자/한글만 허용 */
-        val regex = Regex("^[a-zA-Z0-9가-힣]+$")
+        /** 사용자 이름 규칙: 영어/숫자/한글/특수문자(. - ' _ ! ?) 허용, 공백 허용하되 시작·끝 불가 */
+        val regex = Regex("^[a-zA-Z0-9가-힣 .\\-'_!?]+$")
 
         fun from(value: String): Name = Name(value)
 
@@ -32,7 +35,11 @@ value class Name private constructor(val value: String) {
             value.isBlank() -> {
                 throw CommonValidationException.Empty(FIELD)
             }
-            // 2) 길이 범위 위반
+            // 2) 공백으로 시작하거나 끝나는 경우
+            value.first().isWhitespace() || value.last().isWhitespace() -> {
+                throw CommonValidationException.Whitespace(FIELD)
+            }
+            // 3) 길이 범위 위반
             value.length !in MIN_LENGTH..MAX_LENGTH -> {
                 throw CommonValidationException.TooShortOrLong(
                     field = FIELD,
@@ -40,11 +47,11 @@ value class Name private constructor(val value: String) {
                     max = MAX_LENGTH,
                 )
             }
-            // 3) 허용 문자 위반
+            // 4) 허용 문자 위반
             !value.matches(regex) -> {
                 throw CommonValidationException.InvalidFormat(
                     field = FIELD,
-                    format = "영어/숫자/한글",
+                    format = "영어/숫자/한글/특수문자(. - ' _ ! ?)",
                 )
             }
         }

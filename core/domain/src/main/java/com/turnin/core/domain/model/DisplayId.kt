@@ -2,6 +2,9 @@ package com.turnin.core.domain.model
 
 import com.turnin.core.domain.common.validation.CommonValidationException
 
+/**
+ * 사용자 표시 ID VO
+ */
 @JvmInline
 value class DisplayId private constructor(val value: String) {
     /**
@@ -14,8 +17,8 @@ value class DisplayId private constructor(val value: String) {
         const val MAX_LENGTH = 30
         private const val FIELD = "사용자 표시 ID"
 
-        /** 사용자 표시 ID 규칙: 영어/숫자/밑줄만 허용 */
-        val regex = Regex("^[a-zA-Z0-9_]+$")
+        /** 사용자 표시 ID 규칙: 영어/숫자/밑줄/점 허용, 시작·끝은 영어/숫자만 */
+        val regex = Regex("^[a-zA-Z0-9][a-zA-Z0-9._]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$")
 
         fun from(value: String): DisplayId = DisplayId(value)
 
@@ -40,7 +43,7 @@ value class DisplayId private constructor(val value: String) {
             }
             // 3) 허용 문자 위반
             !value.matches(regex) -> {
-                throw CommonValidationException.InvalidFormat(FIELD, "영어/숫자/밑줄(_)")
+                throw CommonValidationException.InvalidFormat(FIELD, "영어/숫자/특수문자(_ .), 시작·끝은 영어/숫자")
             }
         }
     }

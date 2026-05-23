@@ -17,6 +17,11 @@ sealed class CommonValidationException(message: String) : IllegalArgumentExcepti
         val field: String,
         val format: String,
     ) : CommonValidationException(field)
+
+    /** 앞 뒤 공백이 있는 경우 */
+    data class Whitespace(
+        val field: String,
+    ) : CommonValidationException(field)
 }
 
 fun CommonValidationException.toValidationErrorType(): ValidationErrorType = when (this) {
@@ -30,5 +35,9 @@ fun CommonValidationException.toValidationErrorType(): ValidationErrorType = whe
 
     is CommonValidationException.InvalidFormat -> {
         ValidationErrorType.Common.InvalidFormat(field, format)
+    }
+
+    is CommonValidationException.Whitespace -> {
+        ValidationErrorType.Common.Whitespace(field)
     }
 }
