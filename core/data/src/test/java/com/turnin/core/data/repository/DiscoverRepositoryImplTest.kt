@@ -1,6 +1,7 @@
 package com.turnin.core.data.repository
 
 import androidx.paging.testing.asSnapshot
+import com.turnin.core.data.FakeMemoryCache
 import com.turnin.core.data.MockLog
 import com.turnin.core.data.source.network.datasource.DiscoverNetworkDataSource
 import com.turnin.core.data.source.network.dto.discover.response.DiscoverContextCursorPageResponse
@@ -10,24 +11,30 @@ import com.turnin.core.data.source.network.dto.discover.response.DiscoverUserRes
 import com.turnin.core.data.source.network.dto.discover.response.toDomainModel
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.error.PagingApiCallException
+import com.turnin.core.domain.discover.model.DiscoverCacheKey
 import com.turnin.core.domain.discover.model.DiscoverPagingTokens
 import com.turnin.core.domain.model.UserId
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
 class DiscoverRepositoryImplTest {
     private val dataSource: DiscoverNetworkDataSource = mockk()
-    private val repository = DiscoverRepositoryImpl(dataSource)
+    private val memoryCache = FakeMemoryCache<DiscoverCacheKey, DiscoverContextCursorPageResponse>()
+    private val repository = DiscoverRepositoryImpl(dataSource, memoryCache)
 
     @Before
     fun setUp() {
         MockLog.mock()
+        memoryCache.clear()
     }
 
     @After
@@ -59,7 +66,6 @@ class DiscoverRepositoryImplTest {
         val discoverContexts = repository.getDiscoverContexts(UserId(1L)).asSnapshot()
 
         // then
-        // 2개의 페이지만 테스트했으므로 개수는 (페이지 사이즈 * 2)이어야 한다.
         assertEquals(pageSize * 2, discoverContexts.size)
         assertEquals(expectedCursorPage1.items.first().toDomainModel(), discoverContexts.first())
     }
@@ -79,6 +85,126 @@ class DiscoverRepositoryImplTest {
 
         // then
         assertTrue(exception is PagingApiCallException)
+    }
+
+    @Test
+    fun `캐시 히트 - 1페이지 캐시가 있으면 네트워크 요청 없이 반환한다`() = runTest {
+        // given
+        val pageSize = DiscoverPagingTokens.PAGE_SIZE
+        val userId = UserId(1L)
+        val cachedPage1 = createCursorPageResponse(nextCursor = null, pageSize)
+        memoryCache[DiscoverCacheKey(userId, null)] = cachedPage1
+
+        // when
+        repository.getDiscoverContexts(userId).asSnapshot()
+
+        // then
+        coVerify(exactly = 0) { dataSource.getDiscoverContexts(any(), any(), any()) }
+    }
+
+    @Test
+    fun `캐시 저장 - 1페이지 응답을 캐시에 저장한다`() = runTest {
+        // given
+        val pageSize = DiscoverPagingTokens.PAGE_SIZE
+        val userId = UserId(1L)
+        val page1Response = createCursorPageResponse(nextCursor = null, pageSize)
+
+        coEvery {
+            dataSource.getDiscoverContexts(userId.value, null, pageSize)
+        } returns NetworkResult.Success(page1Response)
+
+        // when
+        repository.getDiscoverContexts(userId).asSnapshot()
+
+        // then
+        assertEquals(page1Response, memoryCache[DiscoverCacheKey(userId, null)])
+    }
+
+    @Test
+    fun `캐시 저장 - 2페이지 응답을 캐시에 저장한다`() = runTest {
+        // given
+        val pageSize = DiscoverPagingTokens.PAGE_SIZE
+        val userId = UserId(1L)
+        val page1Response = createCursorPageResponse(nextCursor = 5L, pageSize)
+        val page2Response = createCursorPageResponse(nextCursor = null, pageSize)
+
+        coEvery {
+            dataSource.getDiscoverContexts(any(), any(), any())
+        } answers {
+            when (secondArg<Long?>()) {
+                null -> NetworkResult.Success(page1Response)
+                5L -> NetworkResult.Success(page2Response)
+                else -> NetworkResult.Success(
+                    DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
+                )
+            }
+        }
+
+        // when
+        repository.getDiscoverContexts(userId).asSnapshot()
+
+        // then
+        assertEquals(page2Response, memoryCache[DiscoverCacheKey(userId, 5L)])
+    }
+
+    @Test
+    fun `캐시 저장 - 3페이지 이상은 캐시에 저장하지 않는다`() = runTest {
+        // given
+        val pageSize = DiscoverPagingTokens.PAGE_SIZE
+        val userId = UserId(1L)
+        val page1Response = createCursorPageResponse(nextCursor = 5L, pageSize)
+        val page2Response = createCursorPageResponse(nextCursor = 10L, pageSize)
+        val page3Response = createCursorPageResponse(nextCursor = null, pageSize)
+
+        coEvery {
+            dataSource.getDiscoverContexts(any(), any(), any())
+        } answers {
+            when (secondArg<Long?>()) {
+                null -> NetworkResult.Success(page1Response)
+                5L -> NetworkResult.Success(page2Response)
+                10L -> NetworkResult.Success(page3Response)
+                else -> NetworkResult.Success(
+                    DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
+                )
+            }
+        }
+
+        // when
+        repository.getDiscoverContexts(userId).asSnapshot()
+
+        // then
+        assertNull(memoryCache[DiscoverCacheKey(userId, 10L)])
+    }
+
+    @Test
+    fun `캐시 무효화 - 1페이지와 2페이지 캐시를 삭제한다`() {
+        // given
+        val userId = UserId(1L)
+        val page1Response = createCursorPageResponse(nextCursor = 5L, pageSize = 5)
+        val page2Response = createCursorPageResponse(nextCursor = null, pageSize = 5)
+        memoryCache[DiscoverCacheKey(userId, null)] = page1Response
+        memoryCache[DiscoverCacheKey(userId, 5L)] = page2Response
+
+        // when
+        repository.invalidateCache(userId)
+
+        // then
+        assertNull(memoryCache[DiscoverCacheKey(userId, null)])
+        assertNull(memoryCache[DiscoverCacheKey(userId, 5L)])
+    }
+
+    @Test
+    fun `캐시 무효화 - 1페이지 캐시가 없으면 2페이지 캐시는 삭제되지 않는다`() {
+        // given
+        val userId = UserId(1L)
+        val page2Response = createCursorPageResponse(nextCursor = null, pageSize = 5)
+        memoryCache[DiscoverCacheKey(userId, 5L)] = page2Response
+
+        // when
+        repository.invalidateCache(userId)
+
+        // then: 1페이지 캐시가 없으면 2페이지 커서를 알 수 없으므로 2페이지 캐시는 남아있어야 한다
+        assertNotNull(memoryCache[DiscoverCacheKey(userId, 5L)])
     }
 
     companion object {

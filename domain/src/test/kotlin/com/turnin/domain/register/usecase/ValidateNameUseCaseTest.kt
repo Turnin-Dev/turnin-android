@@ -41,7 +41,7 @@ class ValidateNameUseCaseTest {
 
     companion object {
         private const val VALID_NAME = "hong길동"
-        private const val INVALID_FORMAT_NAME = "my-name!!"
+        private const val INVALID_FORMAT_NAME = "my-name!!@#@#"
         private val TooLongName = "hello".repeat(100)
         private const val EMPTY_NAME = ""
     }

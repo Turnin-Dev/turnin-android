@@ -19,6 +19,10 @@ sealed interface ValidationErrorType : BaseError {
             val field: String,
             val format: String,
         ) : Common
+
+        data class Whitespace(
+            val field: String,
+        ) : Common
     }
 
     data object Unexpected : ValidationErrorType

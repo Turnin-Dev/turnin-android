@@ -52,7 +52,6 @@ class FeedRemoteMediator(
                     // 4) 커서 반환
                     FeedCursor(
                         score = remoteKey.cursorScore,
-                        createdAt = remoteKey.cursorCreatedAt,
                         userKeywordId = UserKeywordId(remoteKey.cursorUserKeywordId),
                     )
                 }
@@ -60,7 +59,6 @@ class FeedRemoteMediator(
 
             val response = feedNetworkDataSource.getFeeds(
                 cursorScore = cursor?.score,
-                cursorCreatedAt = cursor?.createdAt,
                 cursorUserKeywordId = cursor?.userKeywordId?.value,
                 size = state.config.pageSize,
             )
@@ -98,7 +96,6 @@ class FeedRemoteMediator(
                             nextCursor?.let {
                                 val remoteKey = FeedRemoteKeyEntity(
                                     cursorScore = it.score,
-                                    cursorCreatedAt = it.createdAt,
                                     cursorUserKeywordId = it.userKeywordId,
                                 )
                                 database.feedRemoteKeyDao().upsert(remoteKey)

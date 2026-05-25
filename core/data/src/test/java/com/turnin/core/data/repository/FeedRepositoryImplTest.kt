@@ -82,7 +82,7 @@ class FeedRepositoryImplTest {
         )
 
         coEvery {
-            dataSource.getFeeds(any(), any(), any(), any())
+            dataSource.getFeeds(any(), any(), any())
         } returns NetworkResult.Success(networkResponse)
 
         // when
@@ -101,7 +101,7 @@ class FeedRepositoryImplTest {
         // DB에서 내림차순 정렬이기에 2가 먼저 조회
         assertEquals(2L, snapshot[0].userKeywordId.value)
 
-        coVerify(exactly = 1) { dataSource.getFeeds(null, null, null, any()) }
+        coVerify(exactly = 1) { dataSource.getFeeds(null, null, any()) }
     }
 
     @Test
@@ -118,7 +118,6 @@ class FeedRepositoryImplTest {
             items = firstFeedResponse,
             nextCursor = FeedCursorResponse(
                 score = firstFeedResponse.last().score,
-                createdAt = firstFeedResponse.last().createdAt,
                 userKeywordId = firstFeedResponse.last().userKeywordId,
             ),
         )
@@ -128,7 +127,7 @@ class FeedRepositoryImplTest {
         )
 
         coEvery {
-            dataSource.getFeeds(any(), any(), any(), any())
+            dataSource.getFeeds(any(), any(), any())
         } returnsMany listOf(
             NetworkResult.Success(firstNetworkResponse),
             NetworkResult.Success(secondNetworkResponse),
@@ -156,14 +155,14 @@ class FeedRepositoryImplTest {
         assertNotNull(remoteKey)
         assertEquals(cursor?.score, remoteKey?.cursorScore)
 
-        coVerify(exactly = 2) { dataSource.getFeeds(any(), any(), any(), any()) }
+        coVerify(exactly = 2) { dataSource.getFeeds(any(), any(), any()) }
     }
 
     @Test
     fun `피드 조회 시 네트워크 에러가 발생하면 에러 상태를 반환한다`() = runTest {
         // given: 네트워크 에러 응답 설정
         coEvery {
-            dataSource.getFeeds(any(), any(), any(), any())
+            dataSource.getFeeds(any(), any(), any())
         } returns NetworkResult.Error(
             error = NetworkErrorType.Unexpected(null),
             message = "서버 연결 실패",
@@ -194,7 +193,7 @@ class FeedRepositoryImplTest {
             items = refreshItems,
             nextCursor = null,
         )
-        coEvery { dataSource.getFeeds(any(), any(), any(), any()) } returns NetworkResult.Success(networkResponse)
+        coEvery { dataSource.getFeeds(any(), any(), any()) } returns NetworkResult.Success(networkResponse)
 
         // when: getFeeds 실행 (기본적으로 첫 로드는 REFRESH)
         repository.getFeeds().asSnapshot()
@@ -213,7 +212,7 @@ class FeedRepositoryImplTest {
         database.feedDao().upsertAll(listOf(item1.toEntity()))
         val item2 = createFeedResponse(1L).copy(description = "New")
         coEvery {
-            dataSource.getFeeds(any(), any(), any(), any())
+            dataSource.getFeeds(any(), any(), any())
         } returns NetworkResult.Success(FeedCursorPageResponse(listOf(item2), null))
 
         // when: 데이터 로드

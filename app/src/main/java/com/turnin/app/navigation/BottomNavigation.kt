@@ -3,6 +3,7 @@ package com.turnin.app.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.bottom.BottomNavigationFrame
 import com.turnin.presentation.discover.discoverNavigation
@@ -31,13 +33,14 @@ fun BottomNavigation(
         NavHost(
             modifier = Modifier
                 .fillMaxSize()
+                .background(TurninTheme.colorScheme.backgroundNormal)
                 .padding(innerPadding),
             navController = bottomNavController,
             startDestination = SubGraph.BottomNav.Home,
-            enterTransition = { _root_ide_package_.com.turnin.app.navigation.enterTransition },
-            exitTransition = { _root_ide_package_.com.turnin.app.navigation.exitTransition },
-            popEnterTransition = { _root_ide_package_.com.turnin.app.navigation.enterTransition },
-            popExitTransition = { _root_ide_package_.com.turnin.app.navigation.exitTransition },
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { enterTransition },
+            popExitTransition = { exitTransition },
         ) {
             homeNavigation(
                 appNavController = appNavController,

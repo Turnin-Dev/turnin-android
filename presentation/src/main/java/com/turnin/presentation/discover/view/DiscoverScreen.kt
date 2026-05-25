@@ -66,6 +66,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * 탐색 화면 프레임
  *
  * @param modifier [Modifier]
+ * @param lazyListState [LazyListState]
+ * @param discoverContexts 탐색 컨텍스트 페이징 리스트
+ * @param onRefresh 수동 새로고침 시 수행할 작업
  * @param topBar 탑바
  * @param historyBar 히스토리 바
  * @param currentDiscoverTarget 현재 탐색 대상
@@ -74,13 +77,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 private fun DiscoverScreenFrame(
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState,
     discoverContexts: LazyPagingItems<UiDiscoverContext>,
+    onRefresh: () -> Unit,
     topBar: @Composable ColumnScope.() -> Unit,
     historyBar: @Composable BoxScope.() -> Unit,
     currentDiscoverTarget: @Composable () -> Unit,
     users: LazyListScope.() -> Unit,
 ) {
-    val lazyListState = rememberLazyListState()
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing by remember {
         derivedStateOf {
@@ -112,6 +116,7 @@ private fun DiscoverScreenFrame(
             isRefreshing = isRefreshing,
             onRefresh = {
                 isManualRefresh = true
+                onRefresh()
                 discoverContexts.refresh()
             },
             state = lazyListState,
@@ -176,10 +181,24 @@ fun DiscoverScreen(
     discoverContexts: LazyPagingItems<UiDiscoverContext>,
     onUiEvent: (DiscoverContract.UiEvent) -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
+    var isScrollReset by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isScrollReset) {
+        if (isScrollReset) {
+            lazyListState.scrollToItem(0)
+            isScrollReset = false
+        }
+    }
+
     Box(modifier) {
         DiscoverScreenFrame(
             modifier = Modifier.fillMaxSize(),
+            lazyListState = lazyListState,
             discoverContexts = discoverContexts,
+            onRefresh = {
+                onUiEvent(DiscoverContract.UiEvent.ClearCache(uiState.currentDiscoverTarget?.user?.userId))
+            },
             topBar = {
                 TurninTopBar(
                     modifier = Modifier
@@ -197,6 +216,7 @@ fun DiscoverScreen(
                         onUiEvent(
                             DiscoverContract.UiEvent.ChangeCurrentDiscoverTarget(discoverContext),
                         )
+                        isScrollReset = true
                     },
                 )
             },

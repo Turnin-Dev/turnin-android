@@ -11,14 +11,12 @@ class FeedNetworkDataSourceImpl @Inject constructor(
 ) : FeedNetworkDataSource {
     override suspend fun getFeeds(
         cursorScore: Double?,
-        cursorCreatedAt: Long?,
         cursorUserKeywordId: Long?,
         size: Int,
     ): NetworkResult<FeedCursorPageResponse> =
         networkCall {
             feedApi.getFeeds(
                 cursorScore = cursorScore,
-                cursorCreatedAt = cursorCreatedAt,
                 cursorUserKeywordId = cursorUserKeywordId,
                 size = size,
             )

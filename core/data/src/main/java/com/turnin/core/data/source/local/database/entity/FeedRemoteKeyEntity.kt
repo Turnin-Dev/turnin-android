@@ -8,15 +8,13 @@ import androidx.room.PrimaryKey
  *
  * @param id 고정 ID
  * @param cursorScore 커서 값 1 (피드 점수)
- * @param cursorCreatedAt 커서 값 2 (생성 일자)
- * @param cursorUserKeywordId 커서 값 3 (사용자 키워드 ID)
+ * @param cursorUserKeywordId 커서 값 2 (사용자 키워드 ID)
  */
 @Entity
 data class FeedRemoteKeyEntity(
     @PrimaryKey
     val id: String = SINGLE_CURSOR_ID,
     val cursorScore: Double,
-    val cursorCreatedAt: Long,
     val cursorUserKeywordId: Long,
 ) {
     companion object {

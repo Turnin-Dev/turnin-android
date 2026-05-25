@@ -57,6 +57,13 @@ class DiscoverContract {
         data class NavigateToUserProfile(
             val args: UserProfileArgs,
         ) : UiEvent
+
+        /**
+         * 특정 사용자의 캐시 무효화 이벤트
+         */
+        data class ClearCache(
+            val userId: Long?,
+        ) : UiEvent
     }
 
     sealed interface UiEffect : BaseUiEffect {

@@ -1,4 +1,3 @@
-import java.io.FileInputStream
 import java.util.Properties
 import kotlin.apply
 
@@ -13,17 +12,28 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+
 android {
     namespace = "com.turnin.core.data"
 
     defaultConfig {
-        val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
-        buildConfigField("String", "TURNIN_DATA_STORE", properties.getProperty("TURNIN_DATA_STORE"))
-        buildConfigField("String", "TURNIN_MOCK_SERVER_URL", properties.getProperty("TURNIN_MOCK_SERVER_URL"))
-        buildConfigField("String", "TURNIN_LOCAL_SERVER_URL", properties.getProperty("TURNIN_LOCAL_SERVER_URL"))
-        buildConfigField("String", "TURNIN_REAL_SERVER_URL", properties.getProperty("TURNIN_REAL_SERVER_URL"))
-        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", properties.getProperty("GOOGLE_WEB_CLIENT_ID"))
-        buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", properties.getProperty("CLOUD_STORAGE_SERVER_URL"))
+        buildConfigField("String", "TURNIN_DATA_STORE", localProperties.getProperty("TURNIN_DATA_STORE"))
+        buildConfigField("String", "TURNIN_MOCK_SERVER_URL", localProperties.getProperty("TURNIN_MOCK_SERVER_URL"))
+        buildConfigField("String", "TURNIN_LOCAL_SERVER_URL", localProperties.getProperty("TURNIN_LOCAL_SERVER_URL"))
+        buildConfigField("String", "TURNIN_REAL_SERVER_URL", localProperties.getProperty("TURNIN_REAL_SERVER_URL"))
+        buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", localProperties.getProperty("CLOUD_STORAGE_SERVER_URL"))
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", localProperties.getProperty("DEV_GOOGLE_WEB_CLIENT_ID"))
+        }
+        release {
+            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", localProperties.getProperty("PROD_GOOGLE_WEB_CLIENT_ID"))
+        }
     }
 
     testOptions {

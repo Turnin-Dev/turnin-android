@@ -1,6 +1,8 @@
 package com.turnin.core.data.source.local.memory
 
 import com.turnin.core.data.cleaner.Clearable
+import com.turnin.core.data.source.network.dto.discover.response.DiscoverContextCursorPageResponse
+import com.turnin.core.domain.discover.model.DiscoverCacheKey
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.user.model.CoreUserProfile
@@ -11,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoSet
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 @Module
@@ -33,6 +36,12 @@ object MemoryCacheModule {
     @IntoSet
     fun provideUserKeywordDetailCacheClearable(
         cache: MemoryCache<UserKeywordId, UserKeywordDetail>,
+    ): Clearable = Clearable { cache.clear() }
+
+    @Provides
+    @IntoSet
+    fun provideDiscoverContextCacheClearable(
+        cache: MemoryCache<DiscoverCacheKey, DiscoverContextCursorPageResponse>,
     ): Clearable = Clearable { cache.clear() }
 
     // ------------------------------ Provide Module ------------------------------
@@ -61,5 +70,14 @@ object MemoryCacheModule {
             maxSize = 50,
             ttl = 5.minutes,
             name = "UserKeywordDetail",
+        )
+
+    @Provides
+    @Singleton
+    fun provideDiscoverContextMemoryCache(): MemoryCache<DiscoverCacheKey, DiscoverContextCursorPageResponse> =
+        LruMemoryCache(
+            maxSize = 10,
+            ttl = 1.hours,
+            name = "DiscoverContext",
         )
 }
