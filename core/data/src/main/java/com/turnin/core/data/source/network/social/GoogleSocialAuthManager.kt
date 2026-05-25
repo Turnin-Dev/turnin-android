@@ -55,7 +55,7 @@ class GoogleSocialAuthManager(private val context: Context) : SocialAuthManager 
             emit(Result.Error(CommonErrorType.SocialAuth.Cancellation, e.message))
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            AppLogger.e(tag, "Unexpected error during Google sign-in.")
+            AppLogger.e(tag, e, "Unexpected error during Google sign-in.")
             emit(Result.Error(CommonErrorType.SocialAuth.Unexpected(e), e.message))
         }
     }

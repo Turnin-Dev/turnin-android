@@ -103,6 +103,12 @@ class DiscoverViewModel @Inject constructor(
             is DiscoverContract.UiEvent.NavigateToUserProfile -> {
                 navigateToUserProfile(event.args)
             }
+
+            is DiscoverContract.UiEvent.ClearCache -> {
+                event.userId?.let {
+                    usecases.invalidateCache(it)
+                }
+            }
         }
     }
 

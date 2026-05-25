@@ -19,4 +19,11 @@ interface DiscoverRepository {
     fun getDiscoverContexts(
         userId: UserId,
     ): Flow<PagingData<DiscoverContext>>
+
+    /**
+     * 캐시 무효화
+     *
+     * @param userId 무효화할 사용자 ID
+     */
+    fun invalidateCache(userId: UserId)
 }
