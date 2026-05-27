@@ -19,20 +19,106 @@ val localProperties = Properties().apply {
 android {
     namespace = "com.turnin.core.data"
 
-    defaultConfig {
-        buildConfigField("String", "TURNIN_DATA_STORE", localProperties.getProperty("TURNIN_DATA_STORE"))
-        buildConfigField("String", "TURNIN_MOCK_SERVER_URL", localProperties.getProperty("TURNIN_MOCK_SERVER_URL"))
-        buildConfigField("String", "TURNIN_LOCAL_SERVER_URL", localProperties.getProperty("TURNIN_LOCAL_SERVER_URL"))
-        buildConfigField("String", "TURNIN_REAL_SERVER_URL", localProperties.getProperty("TURNIN_REAL_SERVER_URL"))
-        buildConfigField("String", "CLOUD_STORAGE_SERVER_URL", localProperties.getProperty("CLOUD_STORAGE_SERVER_URL"))
-    }
-
     buildTypes {
         debug {
-            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", localProperties.getProperty("DEV_GOOGLE_WEB_CLIENT_ID"))
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${localProperties.getProperty("DEBUG_GOOGLE_WEB_CLIENT_ID")}\"",
+            )
+            buildConfigField(
+                "String",
+                "TURNIN_DATA_STORE",
+                "\"${localProperties.getProperty("DEBUG_TURNIN_DATA_STORE")}\"",
+            )
+            buildConfigField(
+                "String",
+                "TURNIN_SERVER_URL",
+                "\"${localProperties.getProperty("DEBUG_TURNIN_SERVER_URL")}\"",
+            )
+            buildConfigField(
+                "String",
+                "CLOUD_STORAGE_SERVER_URL",
+                "\"${localProperties.getProperty("DEBUG_CLOUD_STORAGE_SERVER_URL")}\"",
+            )
+            buildConfigField(
+                "String",
+                "TURNIN_MOCK_SERVER_URL",
+                "\"${localProperties.getProperty("MOCK_TURNIN_SERVER_URL")}\"",
+            )
         }
         release {
-            buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", localProperties.getProperty("PROD_GOOGLE_WEB_CLIENT_ID"))
+            val isReleaseTest = localProperties.getProperty("IS_RELEASE_TEST").toBoolean()
+            // 릴리즈 테스트 모드(로컬)에선 디버그(개발) 환경으로 실행
+            if (isReleaseTest) {
+                buildConfigField(
+                    "String",
+                    "GOOGLE_WEB_CLIENT_ID",
+                    "\"${localProperties.getProperty("DEBUG_GOOGLE_WEB_CLIENT_ID")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "TURNIN_DATA_STORE",
+                    "\"${localProperties.getProperty("DEBUG_TURNIN_DATA_STORE")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "TURNIN_SERVER_URL",
+                    "\"${localProperties.getProperty("DEBUG_TURNIN_SERVER_URL")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "CLOUD_STORAGE_SERVER_URL",
+                    "\"${localProperties.getProperty("DEBUG_CLOUD_STORAGE_SERVER_URL")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "TURNIN_MOCK_SERVER_URL",
+                    "\"${localProperties.getProperty("MOCK_TURNIN_SERVER_URL")}\"",
+                )
+            } else {
+                buildConfigField(
+                    "String",
+                    "GOOGLE_WEB_CLIENT_ID",
+                    "\"${localProperties.getProperty("RELEASE_GOOGLE_WEB_CLIENT_ID")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "TURNIN_DATA_STORE",
+                    "\"${localProperties.getProperty("RELEASE_TURNIN_DATA_STORE")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "TURNIN_SERVER_URL",
+                    "\"${localProperties.getProperty("RELEASE_TURNIN_SERVER_URL")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "CLOUD_STORAGE_SERVER_URL",
+                    "\"${localProperties.getProperty("RELEASE_CLOUD_STORAGE_SERVER_URL")}\"",
+                )
+                buildConfigField(
+                    "String",
+                    "TURNIN_MOCK_SERVER_URL",
+                    "\"${localProperties.getProperty("MOCK_TURNIN_SERVER_URL")}\"",
+                )
+            }
+        }
+        create("releaseTest") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${localProperties.getProperty("RELEASE_TEST_GOOGLE_WEB_CLIENT_ID")}\"",
+            )
+            // 방어 설정 추가
+            buildConfigField(
+                "String",
+                "TURNIN_DATA_STORE",
+                "\"${localProperties.getProperty("DEBUG_TURNIN_DATA_STORE")}\"",
+            )
         }
     }
 

@@ -16,8 +16,8 @@ android {
         val properties = Properties().apply {
             rootProject.file("local.properties").inputStream().use { load(it) }
         }
-        val qnaUrl = properties.getProperty("QNA_URL") ?: "\"\""
-        buildConfigField("String", "QNA_URL", qnaUrl)
+        val qnaUrl = properties.getProperty("QNA_URL")
+        buildConfigField("String", "QNA_URL", "\"$qnaUrl\"")
     }
 }
 
