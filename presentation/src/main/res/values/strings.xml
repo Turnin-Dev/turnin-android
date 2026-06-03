@@ -40,7 +40,7 @@
     <string name="register_screen_display_id_sub_title">* 나의 고유한 아이디에요</string>
     <string name="register_screen_display_id_placeholder">아이디</string>
     <string name="register_screen_name_title">프로필 이름을 작성해주세요.</string>
-    <string name="register_screen_name_sub_title">* 다른 사용자에게 표시되는 이름이에요</string>
+    <string name="register_screen_name_sub_title">* 다른 사용자에게 표시되는 이름(별명)이에요</string>
     <string name="register_screen_name_placeholder">프로필 이름</string>
     <string name="register_screen_profile_title">프로필을 설정해주세요.</string>
     <string name="register_screen_profile_sub_title">* 사진은 이미지 파일(.jpg, .png 등)만 가능하고 용량은 10MB 이하로만 가능해요.</string>
