@@ -118,7 +118,7 @@ class NetworkModule {
     ): Retrofit.Builder = Retrofit
         .Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi).withNullSerialization())
-        .baseUrl(BuildConfig.TURNIN_LOCAL_SERVER_URL)
+        .baseUrl(BuildConfig.TURNIN_SERVER_URL)
 
     @Singleton
     @Provides

@@ -33,6 +33,13 @@ import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.presentation.R
+import com.turnin.presentation.register.view.RegisterCommonScreenToken.ContentVerticalSpacing
+
+/** 회원가입 공통 화면 토큰 */
+object RegisterCommonScreenToken {
+    /** 메인 컨텐츠 수직 간격 */
+    val ContentVerticalSpacing = 74.dp
+}
 
 /**
  * 회원가입 공통 화면
@@ -126,7 +133,7 @@ fun RegisterCommonScreen(
  * @param bottomButton 하단 버튼
  */
 @Composable
-private fun RegisterScreenFrame(
+internal fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
     contents: @Composable ColumnScope.() -> Unit,
@@ -236,9 +243,6 @@ private fun Contents(
 
 /** 탑바랑 메인 컨텐츠 사이 간격 */
 private val TopToContentSpacer = 64.dp
-
-/** 메인 컨텐츠 수직 간격 */
-private val ContentVerticalSpacing = 74.dp
 
 /** 프로필 사진 사이즈 */
 private val ProfileImageSize = 135.dp

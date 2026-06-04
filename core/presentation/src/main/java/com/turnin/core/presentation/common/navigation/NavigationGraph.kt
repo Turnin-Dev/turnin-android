@@ -42,6 +42,9 @@ sealed interface SubGraph {
         ) : SubGraph
 
         @Serializable
+        data object TermsAgreement : Register
+
+        @Serializable
         data object DisplayId : Register
 
         @Serializable
@@ -236,4 +239,10 @@ sealed interface Screens {
      */
     @Serializable
     data object Notifications : Screens
+
+    @Serializable
+    data object TermsOfService : Screens
+
+    @Serializable
+    data object PrivacyPolicy : Screens
 }

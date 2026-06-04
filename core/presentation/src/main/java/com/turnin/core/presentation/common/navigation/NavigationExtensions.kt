@@ -2,6 +2,7 @@ package com.turnin.core.presentation.common.navigation
 
 import androidx.navigation.NavController
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
+import com.turnin.core.presentation.ui.model.UiSocialLoginProvider
 
 // ------------------------------ Login ------------------------------
 fun NavController.navigateToLogin() {
@@ -9,6 +10,19 @@ fun NavController.navigateToLogin() {
         popUpTo(0) { inclusive = true }
         launchSingleTop = true
     }
+}
+
+// ------------------------------ Register ------------------------------
+fun NavController.navigateToRegister(
+    provider: UiSocialLoginProvider,
+    providerId: String,
+) {
+    navigate(
+        SubGraph.Register.Root(
+            provider = provider,
+            providerId = providerId,
+        ),
+    )
 }
 
 // ------------------------------ MyProfile ------------------------------
@@ -103,4 +117,13 @@ fun NavController.navigateToQna(qnaUrl: String) {
 
 fun NavController.navigateToNotificationSetting() {
     navigate(SubGraph.Setting.NotificationSetting)
+}
+
+// ------------------------------ TermsAgreement ------------------------------
+fun NavController.navigateToTermsOfService() {
+    navigate(Screens.TermsOfService)
+}
+
+fun NavController.navigateToPrivacyPolicy() {
+    navigate(Screens.PrivacyPolicy)
 }

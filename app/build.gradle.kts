@@ -36,11 +36,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        val kakaoKey = localProperties.getProperty("KAKAO_NATIVE_APP_KEY")
-            ?: error("KAKAO_NATIVE_APP_KEY is not defined in local.properties")
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", kakaoKey)
-        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = kakaoKey.removeSurrounding("\"")
     }
 
     signingConfigs {
@@ -55,11 +50,29 @@ android {
     }
 
     buildTypes {
+        val debugKakaoKey = localProperties.getProperty("DEBUG_KAKAO_NATIVE_APP_KEY")
+        val releaseTestKakaoKey = localProperties.getProperty("RELEASE_TEST_KAKAO_NATIVE_APP_KEY")
+        val releaseKakaoKey = localProperties.getProperty("RELEASE_KAKAO_NATIVE_APP_KEY")
         debug {
             manifestPlaceholders["crashlyticsEnabled"] = false
+            manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = debugKakaoKey
+            buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$debugKakaoKey\"")
+
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
         release {
-            manifestPlaceholders["crashlyticsEnabled"] = true
+            val isReleaseTest = localProperties.getProperty("IS_RELEASE_TEST").toBoolean()
+            // 릴리즈 테스트 모드(로컬)에선 디버그(개발) 환경으로 실행
+            if (isReleaseTest) {
+                manifestPlaceholders["crashlyticsEnabled"] = false
+                manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = debugKakaoKey
+                buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$debugKakaoKey\"")
+            } else {
+                manifestPlaceholders["crashlyticsEnabled"] = true
+                manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = releaseKakaoKey
+                buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$releaseKakaoKey\"")
+            }
 
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
@@ -67,7 +80,6 @@ android {
 
             isMinifyEnabled = true
             isShrinkResources = true
-//            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -77,6 +89,19 @@ android {
             configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
             }
+        }
+
+        create("releaseTest") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+//            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
+
+            manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = releaseTestKakaoKey
+            buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$releaseTestKakaoKey\"")
+
+            applicationIdSuffix = ".releasetest"
+            versionNameSuffix = "-releasetest"
         }
     }
 }

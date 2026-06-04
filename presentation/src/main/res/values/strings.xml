@@ -36,14 +36,19 @@
     <string name="discover_error_not_selected_target">탐색할 대상을 선택해주세요.</string>
 
     <!-- Register Screen -->
-    <string name="register_screen_display_id_title">아이디를 입력해주세요.</string>
+    <string name="register_screen_terms_title">약관을 확인해주세요</string>
+    <string name="register_screen_terms_all_agree">전체 동의</string>
+    <string name="register_screen_terms_service">서비스 이용약관 (필수)</string>
+    <string name="register_screen_terms_privacy_policy">개인정보 처리방침 (필수)</string>
+    <string name="register_screen_terms_view">보기</string>
+    <string name="register_screen_display_id_title">아이디를 입력해주세요</string>
     <string name="register_screen_display_id_sub_title">* 나의 고유한 아이디에요</string>
     <string name="register_screen_display_id_placeholder">아이디</string>
-    <string name="register_screen_name_title">프로필 이름을 작성해주세요.</string>
-    <string name="register_screen_name_sub_title">* 다른 사용자에게 표시되는 이름이에요</string>
+    <string name="register_screen_name_title">프로필 이름을 작성해주세요</string>
+    <string name="register_screen_name_sub_title">* 다른 사용자에게 표시되는 이름(별명)이에요</string>
     <string name="register_screen_name_placeholder">프로필 이름</string>
-    <string name="register_screen_profile_title">프로필을 설정해주세요.</string>
-    <string name="register_screen_profile_sub_title">* 사진은 이미지 파일(.jpg, .png 등)만 가능하고 용량은 10MB 이하로만 가능해요.</string>
+    <string name="register_screen_profile_title">프로필을 설정해주세요</string>
+    <string name="register_screen_profile_sub_title">* 사진은 이미지 파일(.jpg, .png 등)만 가능하고 용량은 10MB 이하로만 가능해요</string>
     <string name="register_screen_profile_desc_avatar">프로필 사진</string>
     <string name="register_screen_profile_placeholder">나를 1 ~ 2줄로 간단히 표현해주세요.</string>
     <string name="register_screen_btn_next">다음</string>
@@ -218,9 +223,6 @@
     <string name="setting_detail_version_info_policy_service_term">서비스 이용약관</string>
     <string name="setting_detail_version_info_policy_privacy_policy">개인정보 처리방침</string>
     <string name="setting_detail_version_info_top_bar_title">버전 정보</string>
-    <!-- Setting Detail - Qna -->
-    <string name="setting_detail_qna_page_load_failed">페이지를 불러올 수 없습니다.</string>
-    <string name="setting_detail_qna_page_load_failed_btn">다시 시도</string>
     <!-- Setting Detail - DeleteAccount -->
     <string name="setting_detail_delete_account_modal_delete">삭제</string>
     <string name="setting_detail_delete_account_modal_cancel">취소</string>
