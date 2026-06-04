@@ -58,12 +58,7 @@ fun AppNavigation(
         ) {
             // 로그인 네비게이션
             loginNavigation(
-                navController = appNavController,
-                navigateToMain = {
-                    appNavController.navigate(SubGraph.BottomNav.Root) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
+                appNavController = appNavController,
             )
 
             // 회원가입 네비게이션

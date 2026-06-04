@@ -33,6 +33,7 @@ import com.turnin.core.presentation.feature.image.SimpleImageCropper
 import com.turnin.core.presentation.feature.image.SinglePhotoPicker
 import com.turnin.presentation.R
 import com.turnin.presentation.register.view.RegisterCommonScreen
+import com.turnin.presentation.register.view.TermsAgreementScreen
 import com.turnin.presentation.register.viewmodel.RegisterViewModel
 import kotlin.reflect.KType
 
@@ -41,7 +42,18 @@ fun NavGraphBuilder.registerNavigation(
     navigateToMain: () -> Unit,
 ) {
     navigation<SubGraph.Register.Root>(startDestination = SubGraph.Register.DisplayId) {
-        animatedComposable<SubGraph.Register.DisplayId> { backStackEntry ->
+        animatedComposableForRegister<SubGraph.Register.TermsAgreement> {
+            TermsAgreementScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(TurninTheme.colorScheme.backgroundNormal),
+                onNavigateToNext = {
+                    navController.navigate(SubGraph.Register.DisplayId)
+                },
+            )
+        }
+
+        animatedComposableForRegister<SubGraph.Register.DisplayId> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
@@ -68,13 +80,14 @@ fun NavGraphBuilder.registerNavigation(
                 errorMessage = displayIdState.displayIdError?.asString(),
                 loading = displayIdState.loading,
                 enabledNext = displayIdState.canNext,
+                onBackPressed = { navController.popBackStack() },
                 onNextWithValue = { displayId ->
                     registerViewModel.checkDisplayIdExists(displayId)
                 },
             )
         }
 
-        animatedComposable<SubGraph.Register.Name> { backStackEntry ->
+        animatedComposableForRegister<SubGraph.Register.Name> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val nameState by registerViewModel.nameState.collectAsStateWithLifecycle()
@@ -98,7 +111,7 @@ fun NavGraphBuilder.registerNavigation(
             )
         }
 
-        animatedComposable<SubGraph.Register.Profile> { backStackEntry ->
+        animatedComposableForRegister<SubGraph.Register.Profile> { backStackEntry ->
             val registerEntry = remember(backStackEntry) {
                 navController.getBackStackEntry<SubGraph.Register.Root>()
             }
@@ -172,7 +185,7 @@ fun NavGraphBuilder.registerNavigation(
             )
         }
 
-        animatedComposable<SubGraph.Register.CropProfileImage> { backStackEntry ->
+        animatedComposableForRegister<SubGraph.Register.CropProfileImage> { backStackEntry ->
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
@@ -196,7 +209,7 @@ fun NavGraphBuilder.registerNavigation(
     }
 }
 
-private inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposableForRegister(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
     deepLinks: List<NavDeepLink> = emptyList(),
     noinline sizeTransform: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards SizeTransform?)? = null,
