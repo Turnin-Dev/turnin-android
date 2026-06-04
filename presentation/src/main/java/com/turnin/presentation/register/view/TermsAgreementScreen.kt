@@ -14,6 +14,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,9 +43,11 @@ import com.turnin.presentation.R
 fun TermsAgreementScreen(
     modifier: Modifier = Modifier,
     onNavigateToNext: () -> Unit,
+    onNavigateToTermsOfService: () -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
 ) {
-    var serviceAgreed by remember { mutableStateOf(false) }
-    var privacyAgreed by remember { mutableStateOf(false) }
+    var serviceAgreed by rememberSaveable { mutableStateOf(false) }
+    var privacyAgreed by rememberSaveable { mutableStateOf(false) }
     val allAgreed by remember { derivedStateOf { serviceAgreed && privacyAgreed } }
 
     RegisterScreenFrame(
@@ -62,6 +65,7 @@ fun TermsAgreementScreen(
                     RegisterCommonScreenToken.ContentVerticalSpacing,
                 ),
             ) {
+                // 타이틀
                 Text(
                     text = stringResource(R.string.register_screen_terms_title),
                     style = TurninTheme.typography.title1,
@@ -69,18 +73,20 @@ fun TermsAgreementScreen(
                     color = TurninTheme.colorScheme.textNormal,
                 )
 
+                // 약관 동의 항목 리스트
                 TermsAgreementItems(
                     allAgreed = allAgreed,
                     serviceAgreed = serviceAgreed,
                     privacyAgreed = privacyAgreed,
                     onAllAgreeClick = {
-                        serviceAgreed = !allAgreed
-                        privacyAgreed = !allAgreed
+                        val agreedValue = !allAgreed
+                        serviceAgreed = agreedValue
+                        privacyAgreed = agreedValue
                     },
                     onServiceAgreeClick = { serviceAgreed = !serviceAgreed },
                     onPrivacyAgreeClick = { privacyAgreed = !privacyAgreed },
-                    onViewServicePolicy = { /* TODO */ },
-                    onViewPrivacyPolicy = { /* TODO */ },
+                    onViewServicePolicy = onNavigateToTermsOfService,
+                    onViewPrivacyPolicy = onNavigateToPrivacyPolicy,
                 )
             }
         },
@@ -215,6 +221,8 @@ private fun TermsAgreementScreenPreview() {
     TurninAppTheme {
         TermsAgreementScreen(
             onNavigateToNext = {},
+            onNavigateToTermsOfService = {},
+            onNavigateToPrivacyPolicy = {},
         )
     }
 }

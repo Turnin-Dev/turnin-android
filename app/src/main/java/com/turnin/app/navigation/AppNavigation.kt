@@ -31,6 +31,8 @@ import com.turnin.presentation.profile.userProfileNavigation
 import com.turnin.presentation.register.registerNavigation
 import com.turnin.presentation.report.reportNavigation
 import com.turnin.presentation.setting.settingNavigation
+import com.turnin.presentation.termsAgreement.privacyPolicyScreen
+import com.turnin.presentation.termsAgreement.termsOfServiceScreen
 
 /**
  * Turnin의 앱 네비게이션
@@ -46,14 +48,18 @@ fun AppNavigation(
         NavHost(
             modifier = modifier.background(TurninTheme.colorScheme.backgroundNormal),
             navController = appNavController,
-            startDestination = if (loggedIn) {
-                SubGraph.BottomNav.Root
-            } else {
-                SubGraph.Login.Root
-            },
+            startDestination = if (loggedIn) SubGraph.BottomNav.Root else SubGraph.Login.Root,
             enterTransition = getEnterTransition(),
-            exitTransition = getExitTransition(Screens.KeywordEdit(null)),
-            popEnterTransition = getPopEnterTransition(Screens.KeywordEdit(null)),
+            exitTransition = getExitTransition(
+                Screens.KeywordEdit(null),
+                Screens.TermsOfService,
+                Screens.PrivacyPolicy,
+            ),
+            popEnterTransition = getPopEnterTransition(
+                Screens.KeywordEdit(null),
+                Screens.TermsOfService,
+                Screens.PrivacyPolicy,
+            ),
             popExitTransition = getPopExitTransition(),
         ) {
             // 로그인 네비게이션
@@ -109,6 +115,12 @@ fun AppNavigation(
 
             // 알림 화면
             notificationScreen(appNavController)
+
+            // 서비스 이용약관 화면
+            termsOfServiceScreen(appNavController)
+
+            // 개인정보 처리방침 화면
+            privacyPolicyScreen(appNavController)
         }
     }
 }

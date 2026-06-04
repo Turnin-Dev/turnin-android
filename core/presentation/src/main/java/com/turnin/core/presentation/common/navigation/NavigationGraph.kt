@@ -239,4 +239,10 @@ sealed interface Screens {
      */
     @Serializable
     data object Notifications : Screens
+
+    @Serializable
+    data object TermsOfService : Screens
+
+    @Serializable
+    data object PrivacyPolicy : Screens
 }

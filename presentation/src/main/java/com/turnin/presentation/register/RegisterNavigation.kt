@@ -27,6 +27,8 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.common.navigation.SubGraph
+import com.turnin.core.presentation.common.navigation.navigateToPrivacyPolicy
+import com.turnin.core.presentation.common.navigation.navigateToTermsOfService
 import com.turnin.core.presentation.common.util.LaunchedUiEffectHandler
 import com.turnin.core.presentation.common.viewmodel.sharedViewModel
 import com.turnin.core.presentation.feature.image.SimpleImageCropper
@@ -41,15 +43,15 @@ fun NavGraphBuilder.registerNavigation(
     navController: NavHostController,
     navigateToMain: () -> Unit,
 ) {
-    navigation<SubGraph.Register.Root>(startDestination = SubGraph.Register.DisplayId) {
+    navigation<SubGraph.Register.Root>(startDestination = SubGraph.Register.TermsAgreement) {
         animatedComposableForRegister<SubGraph.Register.TermsAgreement> {
             TermsAgreementScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(TurninTheme.colorScheme.backgroundNormal),
-                onNavigateToNext = {
-                    navController.navigate(SubGraph.Register.DisplayId)
-                },
+                onNavigateToNext = { navController.navigate(SubGraph.Register.DisplayId) },
+                onNavigateToTermsOfService = { navController.navigateToTermsOfService() },
+                onNavigateToPrivacyPolicy = { navController.navigateToPrivacyPolicy() },
             )
         }
 

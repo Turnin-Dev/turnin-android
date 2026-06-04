@@ -118,3 +118,12 @@ fun NavController.navigateToQna(qnaUrl: String) {
 fun NavController.navigateToNotificationSetting() {
     navigate(SubGraph.Setting.NotificationSetting)
 }
+
+// ------------------------------ TermsAgreement ------------------------------
+fun NavController.navigateToTermsOfService() {
+    navigate(Screens.TermsOfService)
+}
+
+fun NavController.navigateToPrivacyPolicy() {
+    navigate(Screens.PrivacyPolicy)
+}
