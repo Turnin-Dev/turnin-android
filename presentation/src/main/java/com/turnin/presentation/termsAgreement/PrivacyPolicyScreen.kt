@@ -2,7 +2,9 @@ package com.turnin.presentation.termsAgreement
 
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -12,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.turnin.core.designsystem.component.topbar.TurninTopBar
+import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.presentation.common.navigation.Screens
 import com.turnin.core.presentation.common.webview.DefaultWebView
@@ -56,6 +59,9 @@ fun NavGraphBuilder.privacyPolicyScreen(
         popExitTransition = { slideOutOfContainer(SlideDirection.Down, tween(300)) },
     ) {
         PrivacyPolicyScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(TurninTheme.colorScheme.backgroundNormal),
             onBackPressed = {
                 navController.popBackStack()
             },
