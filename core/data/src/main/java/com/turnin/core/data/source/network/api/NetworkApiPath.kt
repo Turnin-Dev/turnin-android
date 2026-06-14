@@ -79,4 +79,9 @@ object NetworkApiPath {
         const val DEACTIVATE_TOKEN = "$ROUTE/token/deactivate"
         const val READ = "$ROUTE/{notificationId}/read"
     }
+
+    object Announcement {
+        const val ROUTE = "$BASE/announcement"
+        const val READ = "$ROUTE/read/{announcementId}"
+    }
 }
