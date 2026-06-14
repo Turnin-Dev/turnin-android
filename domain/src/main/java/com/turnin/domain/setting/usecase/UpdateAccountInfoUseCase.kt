@@ -4,6 +4,7 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.flatMapResult
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.ImageFileDetail
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.model.DisplayId
@@ -105,13 +106,18 @@ class UpdateAccountInfoUseCase @Inject constructor(
     private fun uploadImageFile(
         imageFileDetail: ImageFileDetail,
     ): Flow<Result<String, SettingErrorType>> =
-        fileRepository.getFileUpdatePresignedUrl(imageFileDetail.name, Mime.IMAGE_JPEG)
+        fileRepository.getFileUpdatePresignedUrl(
+            newFileName = imageFileDetail.name,
+            mime = Mime.IMAGE_JPEG,
+            fileCategory = FileCategory.PROFILE_IMAGE,
+        )
             .flatMapResult { presignedUrl ->
                 fileRepository.uploadFile(
                     presignedUrl = presignedUrl.presignedUrl,
                     file = imageFileDetail.bytes,
                     fileName = imageFileDetail.name,
                     mime = imageFileDetail.mime,
+                    fileCategory = FileCategory.PROFILE_IMAGE,
                 )
             }
             .map { result ->

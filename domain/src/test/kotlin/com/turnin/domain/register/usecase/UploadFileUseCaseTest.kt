@@ -3,6 +3,7 @@ package com.turnin.domain.register.usecase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.domain.register.error.RegisterErrorType
 import io.mockk.every
@@ -22,11 +23,17 @@ class UploadFileUseCaseTest {
     fun `파일을 업로드하고 파일의 url을 정상적으로 반환한다`() = runTest {
         // given
         every {
-            repository.uploadFile(any(), any(), any(), any())
+            repository.uploadFile(any(), any(), any(), any(), any())
         } returns flowOf(Result.Success(TEST_FILE_URL))
 
         // when
-        val result = usecase(TEST_PRESIGNED_URL, TestFile, TEST_FILE_NAME, TestMime).last()
+        val result = usecase(
+            TEST_PRESIGNED_URL,
+            TestFile,
+            TEST_FILE_NAME,
+            TestMime,
+            FileCategory.PROFILE_IMAGE,
+        ).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -38,11 +45,17 @@ class UploadFileUseCaseTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
         every {
-            repository.uploadFile(any(), any(), any(), any())
+            repository.uploadFile(any(), any(), any(), any(), any())
         } returns flowOf(Result.Error(expectedError))
 
         // when
-        val result = usecase(TEST_PRESIGNED_URL, TestFile, TEST_FILE_NAME, TestMime).last()
+        val result = usecase(
+            TEST_PRESIGNED_URL,
+            TestFile,
+            TEST_FILE_NAME,
+            TestMime,
+            FileCategory.PROFILE_IMAGE,
+        ).last()
 
         // then
         assertTrue(result is Result.Error)

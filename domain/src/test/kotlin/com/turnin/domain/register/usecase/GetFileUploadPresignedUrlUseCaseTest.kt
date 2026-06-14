@@ -3,6 +3,7 @@ package com.turnin.domain.register.usecase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import com.turnin.domain.register.error.RegisterErrorType
@@ -22,11 +23,11 @@ class GetFileUploadPresignedUrlUseCaseTest {
     fun `사전 정의된 url 요청 성공 테스트`() = runTest {
         // given
         every {
-            repository.getFileUploadPresignedUrl(any(), any())
+            repository.getFileUploadPresignedUrl(any(), any(), any())
         } returns flowOf(Result.Success(TestPresignedUrl))
 
         // when
-        val result = usecase("fileName", Mime.IMAGE_JPEG).last()
+        val result = usecase("fileName", Mime.IMAGE_JPEG, FileCategory.PROFILE_IMAGE).last()
 
         // then
         val success = (result as Result.Success)
@@ -38,11 +39,11 @@ class GetFileUploadPresignedUrlUseCaseTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
         every {
-            repository.getFileUploadPresignedUrl(any(), any())
+            repository.getFileUploadPresignedUrl(any(), any(), any())
         } returns flowOf(Result.Error(expectedError))
 
         // when
-        val result = usecase("fileName", Mime.IMAGE_JPEG).last()
+        val result = usecase("fileName", Mime.IMAGE_JPEG, FileCategory.PROFILE_IMAGE).last()
 
         // then
         val errorResult = result as Result.Error

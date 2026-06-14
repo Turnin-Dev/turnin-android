@@ -1,6 +1,7 @@
 package com.turnin.domain.register.usecase
 
 import com.turnin.core.domain.common.Result
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import com.turnin.domain.register.error.RegisterErrorType
@@ -22,14 +23,14 @@ class GetFileUrlUseCaseTest {
     fun `파일 업로드 후 정상적으로 파일의 url을 반환한다`() = runTest {
         // given
         every {
-            getFileUploadPresignedUrlUseCase(any(), any())
+            getFileUploadPresignedUrlUseCase(any(), any(), any())
         } returns flowOf(Result.Success(TestPresignedUrl))
         every {
-            uploadFileUseCase(any(), any(), any(), any())
+            uploadFileUseCase(any(), any(), any(), any(), any())
         } returns flowOf(Result.Success(TEST_FILE_URL))
 
         // when
-        val result = usecase(TestByteArray, "name", Mime.IMAGE_JPEG).last()
+        val result = usecase(TestByteArray, "name", Mime.IMAGE_JPEG, FileCategory.PROFILE_IMAGE).last()
 
         // then
         assertTrue(result is Result.Success)
@@ -41,14 +42,14 @@ class GetFileUrlUseCaseTest {
         // given
         val expectedError = RegisterErrorType.Unexpected(null)
         every {
-            getFileUploadPresignedUrlUseCase(any(), any())
+            getFileUploadPresignedUrlUseCase(any(), any(), any())
         } returns flowOf(Result.Success(TestPresignedUrl))
         every {
-            uploadFileUseCase(any(), any(), any(), any())
+            uploadFileUseCase(any(), any(), any(), any(), any())
         } returns flowOf(Result.Error(expectedError))
 
         // when
-        val result = usecase(TestByteArray, "name", Mime.IMAGE_JPEG).last()
+        val result = usecase(TestByteArray, "name", Mime.IMAGE_JPEG, FileCategory.PROFILE_IMAGE).last()
 
         // then
         assertTrue(result is Result.Error)
@@ -60,14 +61,14 @@ class GetFileUrlUseCaseTest {
         // given
         val expectedError = RegisterErrorType.Unexpected(null)
         every {
-            getFileUploadPresignedUrlUseCase(any(), any())
+            getFileUploadPresignedUrlUseCase(any(), any(), any())
         } returns flowOf(Result.Error(expectedError))
         every {
-            uploadFileUseCase(any(), any(), any(), any())
+            uploadFileUseCase(any(), any(), any(), any(), any())
         } returns flowOf(Result.Success(TEST_FILE_URL))
 
         // when
-        val result = usecase(TestByteArray, "name", Mime.IMAGE_JPEG).last()
+        val result = usecase(TestByteArray, "name", Mime.IMAGE_JPEG, FileCategory.PROFILE_IMAGE).last()
 
         // then
         assertTrue(result is Result.Error)

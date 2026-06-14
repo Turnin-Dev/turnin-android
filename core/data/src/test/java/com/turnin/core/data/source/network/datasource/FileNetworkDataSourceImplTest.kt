@@ -6,6 +6,7 @@ import com.turnin.core.data.source.network.api.FileApi
 import com.turnin.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.turnin.core.data.source.network.error.NetworkErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
+import com.turnin.core.domain.file.model.FileCategory
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.net.HttpURLConnection
@@ -45,7 +46,11 @@ class FileNetworkDataSourceImplTest {
         )
 
         // when
-        val result = dataSource.getFileUploadPresignedUrl("my-image.jpg", "image/jpeg")
+        val result = dataSource.getFileUploadPresignedUrl(
+            "my-image.jpg",
+            "image/jpeg",
+            FileCategory.PROFILE_IMAGE,
+        )
 
         // then
         assertTrue(result is NetworkResult.Success)
@@ -60,10 +65,10 @@ class FileNetworkDataSourceImplTest {
         // given
         val mockApi: FileApi = mockk()
         dataSource = FileNetworkDataSourceImpl(mockApi, testOkHttpClient)
-        coEvery { mockApi.getFileUploadPresignedUrl(any(), any()) } throws JsonDataException("smile")
+        coEvery { mockApi.getFileUploadPresignedUrl(any(), any(), any()) } throws JsonDataException("smile")
 
         // when
-        val result = dataSource.getFileUploadPresignedUrl("asd", "asd")
+        val result = dataSource.getFileUploadPresignedUrl("asd", "asd", FileCategory.PROFILE_IMAGE)
 
         // then
         assertTrue(result is NetworkResult.Error)
@@ -81,7 +86,11 @@ class FileNetworkDataSourceImplTest {
         )
 
         // when
-        val result = dataSource.getFileUpdatePresignedUrl("my-image.jpg", "image/jpeg")
+        val result = dataSource.getFileUpdatePresignedUrl(
+            "my-image.jpg",
+            "image/jpeg",
+            FileCategory.PROFILE_IMAGE,
+        )
 
         // then
         assertTrue(result is NetworkResult.Success)
@@ -96,10 +105,10 @@ class FileNetworkDataSourceImplTest {
         // given
         val mockApi: FileApi = mockk()
         dataSource = FileNetworkDataSourceImpl(mockApi, testOkHttpClient)
-        coEvery { mockApi.getFileUpdatePresignedUrl(any(), any()) } throws JsonDataException("smile")
+        coEvery { mockApi.getFileUpdatePresignedUrl(any(), any(), any()) } throws JsonDataException("smile")
 
         // when
-        val result = dataSource.getFileUpdatePresignedUrl("asd", "asd")
+        val result = dataSource.getFileUpdatePresignedUrl("asd", "asd", FileCategory.PROFILE_IMAGE)
 
         // then
         assertTrue(result is NetworkResult.Error)

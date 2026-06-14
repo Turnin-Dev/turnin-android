@@ -7,6 +7,7 @@ import com.turnin.core.data.source.network.error.toCommonErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import io.mockk.coEvery
@@ -30,11 +31,15 @@ class FileRepositoryImplTest {
     fun `getFileUploadPresignedUrl() 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getFileUploadPresignedUrl(any(), any())
+            dataSource.getFileUploadPresignedUrl(any(), any(), any())
         } returns NetworkResult.Success(mockPresignedUrlResponse)
 
         // when
-        val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+        val result = repository.getFileUploadPresignedUrl(
+            "a.jpg",
+            Mime.IMAGE_JPEG,
+            FileCategory.PROFILE_IMAGE,
+        ).last()
 
         // then
         Assert.assertTrue(result is Result.Success)
@@ -46,11 +51,15 @@ class FileRepositoryImplTest {
         // given
         val expected = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.getFileUploadPresignedUrl(any(), any())
+            dataSource.getFileUploadPresignedUrl(any(), any(), any())
         } returns NetworkResult.Error(error = expected, message = mockErrorMessage)
 
         // when
-        val result = repository.getFileUploadPresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+        val result = repository.getFileUploadPresignedUrl(
+            "a.jpg",
+            Mime.IMAGE_JPEG,
+            FileCategory.PROFILE_IMAGE,
+        ).last()
 
         // then
         Assert.assertTrue(result is Result.Error)
@@ -65,11 +74,15 @@ class FileRepositoryImplTest {
     fun `getFileUpdatePresignedUrl() 성공 테스트`() = runTest {
         // given
         coEvery {
-            dataSource.getFileUpdatePresignedUrl(any(), any())
+            dataSource.getFileUpdatePresignedUrl(any(), any(), any())
         } returns NetworkResult.Success(mockPresignedUrlResponse)
 
         // when
-        val result = repository.getFileUpdatePresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+        val result = repository.getFileUpdatePresignedUrl(
+            "a.jpg",
+            Mime.IMAGE_JPEG,
+            FileCategory.PROFILE_IMAGE,
+        ).last()
 
         // then
         Assert.assertTrue(result is Result.Success)
@@ -81,11 +94,15 @@ class FileRepositoryImplTest {
         // given
         val expected = NetworkErrorType.Unexpected(null)
         coEvery {
-            dataSource.getFileUpdatePresignedUrl(any(), any())
+            dataSource.getFileUpdatePresignedUrl(any(), any(), any())
         } returns NetworkResult.Error(error = expected, message = mockErrorMessage)
 
         // when
-        val result = repository.getFileUpdatePresignedUrl("a.jpg", Mime.IMAGE_JPEG).last()
+        val result = repository.getFileUpdatePresignedUrl(
+            "a.jpg",
+            Mime.IMAGE_JPEG,
+            FileCategory.PROFILE_IMAGE,
+        ).last()
 
         // then
         Assert.assertTrue(result is Result.Error)
