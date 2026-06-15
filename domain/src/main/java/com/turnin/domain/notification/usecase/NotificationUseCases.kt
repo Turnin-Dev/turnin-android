@@ -13,4 +13,14 @@ class NotificationUseCases @Inject constructor(
      * @see MarkAsReadUseCase
      */
     val markAsRead: MarkAsReadUseCase,
+    /**
+     * 공지 알림 조회
+     * @see GetAnnouncementsUseCase
+     */
+    val getAnnouncements: GetAnnouncementsUseCase,
+    /**
+     * 공지 알림 읽음 처리
+     * @see markAnnouncementAsRead
+     */
+    val markAnnouncementAsRead: MarkAnnouncementAsReadUseCase,
 )
