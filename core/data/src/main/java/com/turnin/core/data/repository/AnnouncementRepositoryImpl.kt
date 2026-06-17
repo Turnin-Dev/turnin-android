@@ -14,6 +14,7 @@ import com.turnin.core.domain.model.AnnouncementId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 class AnnouncementRepositoryImpl @Inject constructor(
     private val announcementNetworkDataSource: AnnouncementNetworkDataSource,
@@ -41,24 +42,14 @@ class AnnouncementRepositoryImpl @Inject constructor(
             }
         }
 
-    override fun markAsRead(announcementId: AnnouncementId): Flow<Result<Unit, CommonErrorType>> =
-        safeResultFlow<Unit, CommonErrorType>(
-            ioDispatcher,
-            { CommonErrorType.Unexpected(it) },
-        ) {
-            emit(Result.Loading)
+    override suspend fun markAsRead(announcementId: AnnouncementId): Result<Unit, CommonErrorType> =
+        withContext(ioDispatcher) {
             when (val result = announcementNetworkDataSource.markAsRead(announcementId)) {
-                is NetworkResult.Success -> {
-                    emit(Result.Success(Unit))
-                }
+                is NetworkResult.Success -> Result.Success(Unit)
 
                 is NetworkResult.Error -> {
-                    emit(
-                        Result.Error(
-                            error = result.error.toCommonErrorType(),
-                            message = result.message,
-                        ),
-                    )
+                    val error = result.error.toCommonErrorType()
+                    Result.Error(error = error, message = result.message)
                 }
             }
         }

@@ -9,14 +9,14 @@ import com.turnin.core.domain.model.AnnouncementId
  * @property title 제목
  * @property content 내용
  * @property targetAudience 수신 대상
- * @property read 읽음 여부
+ * @property isRead 읽음 여부
  * @property createdAt 생성 일자
  */
 data class Announcement(
     val id: AnnouncementId,
     val title: String,
     val content: String,
-    val targetAudience: String,
-    val read: Boolean,
+    val targetAudience: AnnouncementAudience,
+    val isRead: Boolean,
     val createdAt: Long,
 )

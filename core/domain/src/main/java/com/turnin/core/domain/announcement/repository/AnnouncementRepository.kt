@@ -20,5 +20,5 @@ interface AnnouncementRepository {
      *
      * @param announcementId 공지 ID
      */
-    fun markAsRead(announcementId: AnnouncementId): Flow<Result<Unit, CommonErrorType>>
+    suspend fun markAsRead(announcementId: AnnouncementId): Result<Unit, CommonErrorType>
 }

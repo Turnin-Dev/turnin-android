@@ -70,7 +70,7 @@ class AnnouncementRepositoryImplTest {
         coEvery { dataSource.markAsRead(announcementId) } returns NetworkResult.Success(Unit)
 
         // when
-        val result = repository.markAsRead(announcementId).last()
+        val result = repository.markAsRead(announcementId)
 
         // then
         assertTrue(result is Result.Success)
@@ -87,7 +87,7 @@ class AnnouncementRepositoryImplTest {
         )
 
         // when
-        val result = repository.markAsRead(announcementId).last()
+        val result = repository.markAsRead(announcementId)
 
         // then
         assertTrue(result is Result.Error)
@@ -100,7 +100,7 @@ class AnnouncementRepositoryImplTest {
             title = "테스트 공지",
             content = "내용",
             targetAudience = "ALL",
-            read = false,
+            isRead = false,
             createdAt = 1715820000000,
         )
     }
