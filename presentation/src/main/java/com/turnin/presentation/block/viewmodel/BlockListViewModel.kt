@@ -54,6 +54,7 @@ class BlockListViewModel @Inject constructor(
             pagingData.filter { it.id !in removedIds }
                 .map { it.copy(loading = it.id in loadingIds) }
         }
+            .cachedIn(viewModelScope)
 
     /**
      * 차단 해제

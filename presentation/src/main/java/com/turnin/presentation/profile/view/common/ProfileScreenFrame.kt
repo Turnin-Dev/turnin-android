@@ -18,6 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +60,12 @@ fun ProfileScreenFrame(
     val pullToRefreshState = rememberPullToRefreshState()
     val lazyListState = rememberLazyListState()
 
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(isRefreshing, isManualRefresh) {
+        if (!isRefreshing) isManualRefresh = false
+    }
+
     Column(modifier) {
         // TopBar
         topBar()
@@ -62,8 +73,11 @@ fun ProfileScreenFrame(
         PullToRefreshBox(
             modifier = Modifier.fillMaxSize(),
             state = pullToRefreshState,
-            isRefreshing = isRefreshing,
-            onRefresh = { onRefresh() },
+            isRefreshing = isManualRefresh,
+            onRefresh = {
+                isManualRefresh = true
+                onRefresh()
+            },
             indicator = { TurninIndicator(isRefreshing, pullToRefreshState) },
         ) {
             LazyColumn(

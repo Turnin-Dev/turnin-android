@@ -119,6 +119,7 @@ class FriendListViewModel @Inject constructor(
                 )
             }
         }
+            .cachedIn(viewModelScope)
 
     /** 친구 요청 목록 페이징 데이터 */
     val requestersPagingData = isInitRequestersPagingData

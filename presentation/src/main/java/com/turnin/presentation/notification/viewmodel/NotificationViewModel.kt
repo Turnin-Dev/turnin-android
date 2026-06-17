@@ -56,6 +56,7 @@ class NotificationViewModel @Inject constructor(
                 it.copy(isRead = isRead)
             }
         }
+            .cachedIn(viewModelScope)
 
     private val _announcementUiState = MutableStateFlow(AnnouncementState())
     val announcementUiState = _announcementUiState.asStateFlow()

@@ -114,7 +114,7 @@ fun NotificationScreen(
             )
         },
         announcements = {
-            Announcements(
+            AnnouncementList(
                 modifier = Modifier.fillMaxSize(),
                 announcements = announcementState.announcements,
                 isRefreshing = announcementState.loading,
@@ -228,7 +228,7 @@ private fun NotificationList(
  * @param onAnnouncementClick 공지 클릭 시 수행할 작업
  */
 @Composable
-private fun Announcements(
+private fun AnnouncementList(
     modifier: Modifier = Modifier,
     announcements: List<UiAnnouncement>,
     isRefreshing: Boolean,
