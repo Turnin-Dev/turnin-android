@@ -7,6 +7,7 @@ import com.turnin.core.data.source.network.dto.file.response.PresignedUrlRespons
 import com.turnin.core.data.source.network.error.NetworkErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.data.source.network.util.networkCall
+import com.turnin.core.domain.file.model.FileCategory
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -16,21 +17,23 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class FileNetworkDataSourceImpl @Inject constructor(
     private val fileApi: FileApi,
-    @DefaultOkHttpClient private val okHttpClient: OkHttpClient,
+    @param:DefaultOkHttpClient private val okHttpClient: OkHttpClient,
 ) : FileNetworkDataSource {
     private val tag = this::class.java.simpleName
 
     override suspend fun getFileUploadPresignedUrl(
         fileName: String,
         mime: String,
+        fileCategory: FileCategory,
     ): NetworkResult<PresignedUrlResponse> =
-        networkCall { fileApi.getFileUploadPresignedUrl(fileName, mime) }
+        networkCall { fileApi.getFileUploadPresignedUrl(fileName, mime, fileCategory) }
 
     override suspend fun getFileUpdatePresignedUrl(
         newFileName: String,
         mime: String,
+        fileCategory: FileCategory,
     ): NetworkResult<PresignedUrlResponse> =
-        networkCall { fileApi.getFileUpdatePresignedUrl(newFileName, mime) }
+        networkCall { fileApi.getFileUpdatePresignedUrl(newFileName, mime, fileCategory) }
 
     override fun uploadFile(
         presignedUrl: String,

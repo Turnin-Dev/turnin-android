@@ -2,6 +2,7 @@ package com.turnin.domain.register.usecase
 
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.flatMapResult
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import com.turnin.domain.register.error.RegisterErrorType
@@ -19,13 +20,20 @@ internal class GetFileUrlUseCase @Inject internal constructor(
     private val getFileUploadPresignedUrlUseCase: GetFileUploadPresignedUrlUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
 ) {
+    /**
+     * @param file [ByteArray]타입의 파일
+     * @param fileName 파일명
+     * @param mime [Mime]
+     * @param fileCategory 파일 카테고리
+     */
     operator fun invoke(
         file: ByteArray,
         fileName: String,
         mime: Mime,
+        fileCategory: FileCategory,
     ): Flow<Result<String?, RegisterErrorType>> =
-        getFileUploadPresignedUrlUseCase(fileName, mime)
+        getFileUploadPresignedUrlUseCase(fileName, mime, fileCategory)
             .flatMapResult { result: PresignedUrl ->
-                uploadFileUseCase(result.presignedUrl, file, fileName, mime)
+                uploadFileUseCase(result.presignedUrl, file, fileName, mime, fileCategory)
             }
 }

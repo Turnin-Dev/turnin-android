@@ -87,10 +87,9 @@ class FeedRepositoryImplTest {
 
         // when
         // Repository 호출 및 데이터 수집
-        // PagingData는 수집하기 전까지 내부 로직이 돌아가지 않으므로 collect 처리
-        val pagingDataFlow = repository.getFeeds()
-        val snapshot = pagingDataFlow.asSnapshot {
-            scrollTo(index = 1)
+        // PagingData는 수집하기 전까지 내부 로직이 돌아가지 않으므로 수집 처리
+        val snapshot = repository.getFeeds().asSnapshot {
+            scrollTo(index = 0)
         }
 
         advanceUntilIdle()

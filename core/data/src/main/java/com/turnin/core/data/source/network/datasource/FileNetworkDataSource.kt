@@ -2,6 +2,7 @@ package com.turnin.core.data.source.network.datasource
 
 import com.turnin.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.turnin.core.data.source.network.util.NetworkResult
+import com.turnin.core.domain.file.model.FileCategory
 
 /** File 네트워크 데이터 소스 */
 
@@ -11,11 +12,13 @@ interface FileNetworkDataSource {
      *
      * @param fileName 파일 이름
      * @param mime 파일 형태
+     * @param fileCategory 파일 카테고리
      * @return 성공 시 [PresignedUrlResponse], 실패 시 [NetworkResult.Error]
      */
     suspend fun getFileUploadPresignedUrl(
         fileName: String,
         mime: String,
+        fileCategory: FileCategory,
     ): NetworkResult<PresignedUrlResponse>
 
     /**
@@ -23,11 +26,13 @@ interface FileNetworkDataSource {
      *
      * @param newFileName 새로운 파일 이름
      * @param mime 파일 형태
+     * @param fileCategory 파일 카테고리
      * @return 성공 시 [PresignedUrlResponse], 실패 시 [NetworkResult.Error]
      */
     suspend fun getFileUpdatePresignedUrl(
         newFileName: String,
         mime: String,
+        fileCategory: FileCategory,
     ): NetworkResult<PresignedUrlResponse>
 
     /**

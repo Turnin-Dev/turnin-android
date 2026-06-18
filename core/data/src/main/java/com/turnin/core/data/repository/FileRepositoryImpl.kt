@@ -10,6 +10,7 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.safeResultFlow
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import javax.inject.Inject
@@ -18,12 +19,19 @@ import kotlinx.coroutines.flow.Flow
 
 class FileRepositoryImpl @Inject constructor(
     private val fileNetworkDataSource: FileNetworkDataSource,
-    @IO private val ioDispatcher: CoroutineDispatcher,
+    @param:IO private val ioDispatcher: CoroutineDispatcher,
 ) : FileRepository {
-    override fun getFileUploadPresignedUrl(fileName: String, mime: Mime): Flow<Result<PresignedUrl, CommonErrorType>> =
+    override fun getFileUploadPresignedUrl(
+        fileName: String,
+        mime: Mime,
+        fileCategory: FileCategory,
+    ): Flow<Result<PresignedUrl, CommonErrorType>> =
         safeResultFlow<PresignedUrl, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
-            when (val result = fileNetworkDataSource.getFileUploadPresignedUrl(fileName, mime.type)) {
+            when (
+                val result =
+                    fileNetworkDataSource.getFileUploadPresignedUrl(fileName, mime.type, fileCategory)
+            ) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -38,10 +46,14 @@ class FileRepositoryImpl @Inject constructor(
     override fun getFileUpdatePresignedUrl(
         newFileName: String,
         mime: Mime,
+        fileCategory: FileCategory,
     ): Flow<Result<PresignedUrl, CommonErrorType>> =
         safeResultFlow<PresignedUrl, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
-            when (val result = fileNetworkDataSource.getFileUpdatePresignedUrl(newFileName, mime.type)) {
+            when (
+                val result =
+                    fileNetworkDataSource.getFileUpdatePresignedUrl(newFileName, mime.type, fileCategory)
+            ) {
                 is NetworkResult.Success -> {
                     emit(Result.Success(result.data.toDomainModel()))
                 }
@@ -58,12 +70,13 @@ class FileRepositoryImpl @Inject constructor(
         file: ByteArray,
         fileName: String,
         mime: Mime,
+        fileCategory: FileCategory,
     ): Flow<Result<String?, CommonErrorType>> =
         safeResultFlow<String?, CommonErrorType>(ioDispatcher, { CommonErrorType.Unexpected(it) }) {
             emit(Result.Loading)
             when (val result = fileNetworkDataSource.uploadFile(presignedUrl, file, mime.type)) {
                 is NetworkResult.Success -> {
-                    val imageUrl = createImageUrl(fileName)
+                    val imageUrl = createFileUrl(fileName, fileCategory)
                     if (result.data) {
                         emit(Result.Success(imageUrl))
                     } else {
@@ -78,9 +91,22 @@ class FileRepositoryImpl @Inject constructor(
             }
         }
 
-    private fun createImageUrl(fileName: String): String = buildString {
-        append(AppConfig.cloudStorageServerUrl.trimEnd('/'))
-        append('/')
-        append(fileName.trimStart('/'))
+    /**
+     * 파일 카테고리와 파일명으로 파일 URL을 생성한다.
+     *
+     * @param fileName 파일명
+     * @param fileCategory 파일 카테고리
+     */
+    private fun createFileUrl(
+        fileName: String,
+        fileCategory: FileCategory,
+    ): String {
+        val newFileName = "${fileCategory.prefix}/$fileName"
+
+        return buildString {
+            append(AppConfig.cloudStorageServerUrl.trimEnd('/'))
+            append('/')
+            append(newFileName.trimStart('/'))
+        }
     }
 }

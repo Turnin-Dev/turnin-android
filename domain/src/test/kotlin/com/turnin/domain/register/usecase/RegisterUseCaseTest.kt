@@ -35,7 +35,7 @@ class RegisterUseCaseTest {
             authRepository.register(TestRegister)
         } returns flowOf(Result.Success(TestRegisterResult))
         every {
-            getFileUrlUseCase(any(), any(), any())
+            getFileUrlUseCase(any(), any(), any(), any())
         } returns flowOf(Result.Success(TEST_FILE_URL))
 
         // when
@@ -60,7 +60,7 @@ class RegisterUseCaseTest {
             authRepository.register(TestRegisterWithNullFile)
         } returns flowOf(Result.Success(TestRegisterResult))
         every {
-            getFileUrlUseCase(any(), any(), any())
+            getFileUrlUseCase(any(), any(), any(), any())
         } returns flowOf(Result.Success(TEST_FILE_URL))
 
         // when
@@ -86,7 +86,7 @@ class RegisterUseCaseTest {
             authRepository.register(TestRegister)
         } returns flowOf(Result.Success(TestRegisterResult))
         every {
-            getFileUrlUseCase(any(), any(), any())
+            getFileUrlUseCase(any(), any(), any(), any())
         } returns flowOf(Result.Error(expectedError))
 
         // when

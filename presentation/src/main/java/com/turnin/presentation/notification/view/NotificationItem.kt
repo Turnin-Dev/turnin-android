@@ -1,5 +1,7 @@
 package com.turnin.presentation.notification.view
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,10 +14,15 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.component.avatar.TurninAvatar
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
@@ -35,6 +42,7 @@ import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
  * @param title 제목
  * @param message 내용
  * @param imageUrl 이미지 URL
+ * @param isExpanded 컨텐츠 확장 여부
  * @param onClick 알림 항목 클릭 시 콜백
  */
 @Composable
@@ -46,6 +54,7 @@ fun NotificationItem(
     title: String?,
     message: String,
     imageUrl: String?,
+    isExpanded: Boolean? = null,
     onClick: () -> Unit,
 ) {
     Column(
@@ -58,7 +67,8 @@ fun NotificationItem(
                 },
             )
             .clickableSingle(onClick = onClick)
-            .padding(ContainerPaddingValues),
+            .padding(ContainerPaddingValues)
+            .animateContentSize(tween(150)),
         verticalArrangement = Arrangement.spacedBy(ItemColumnGapDp),
         horizontalAlignment = Alignment.Start,
     ) {
@@ -71,6 +81,7 @@ fun NotificationItem(
             title = title,
             message = message,
             imageUrl = imageUrl,
+            isExpanded = isExpanded,
         )
     }
 }
@@ -103,6 +114,7 @@ private fun Date(
  * @param title 제목
  * @param message 내용
  * @param imageUrl 이미지 URL
+ * @param isExpanded 컨텐츠 확장 여부
  */
 @Composable
 private fun Contents(
@@ -111,6 +123,7 @@ private fun Contents(
     title: String?,
     message: String,
     imageUrl: String?,
+    isExpanded: Boolean? = null,
 ) {
     Row(
         modifier = modifier,
@@ -141,12 +154,23 @@ private fun Contents(
                 )
             }
             // 내용
-            Text(
-                text = message,
-                style = TurninTheme.typography.body4,
-                fontWeight = FontWeight.Normal,
-                color = TurninTheme.colorScheme.textNormal,
-            )
+            if (isExpanded == null) {
+                Text(
+                    text = message,
+                    style = TurninTheme.typography.body4,
+                    fontWeight = FontWeight.Normal,
+                    color = TurninTheme.colorScheme.textNormal,
+                )
+            } else {
+                Text(
+                    text = message,
+                    style = TurninTheme.typography.body4,
+                    fontWeight = FontWeight.Normal,
+                    color = TurninTheme.colorScheme.textNormal,
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
@@ -224,6 +248,26 @@ private fun NotificationItemReadPreview() {
             message = "이미 읽은 알림입니다. 배경색이 다릅니다.",
             imageUrl = null,
             onClick = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun ExpandedNotificationItemPreview() {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    TurninAppTheme {
+        NotificationItem(
+            modifier = Modifier.background(Color.LightGray),
+            notiType = NotificationType.FRIEND_ACCEPT,
+            isRead = true,
+            date = "2024.03.28",
+            title = "읽은 알림",
+            message = "이미 읽은 알림입니다. 배경색이 다릅니다.".repeat(10),
+            imageUrl = null,
+            isExpanded = isExpanded,
+            onClick = { isExpanded = !isExpanded },
         )
     }
 }

@@ -26,7 +26,9 @@ import com.turnin.core.presentation.common.navigation.navigateToBlockList
 import com.turnin.core.presentation.common.navigation.navigateToCropProfileImage
 import com.turnin.core.presentation.common.navigation.navigateToLogin
 import com.turnin.core.presentation.common.navigation.navigateToNotificationSetting
+import com.turnin.core.presentation.common.navigation.navigateToPrivacyPolicy
 import com.turnin.core.presentation.common.navigation.navigateToQna
+import com.turnin.core.presentation.common.navigation.navigateToTermsOfService
 import com.turnin.core.presentation.common.navigation.navigateToVersionInfo
 import com.turnin.core.presentation.feature.image.SimpleImageCropper
 import com.turnin.core.presentation.feature.image.rememberImageBitmap
@@ -154,8 +156,8 @@ fun NavGraphBuilder.settingNavigation(
                     .fillMaxSize()
                     .background(TurninTheme.colorScheme.backgroundNormal),
                 versionName = viewModel.appVersion,
-                onServiceTermClick = { },
-                onPrivacyPolicyClick = { },
+                onServiceTermClick = { appNavController.navigateToTermsOfService() },
+                onPrivacyPolicyClick = { appNavController.navigateToPrivacyPolicy() },
                 onBackPressed = { appNavController.popBackStack() },
             )
         }

@@ -7,6 +7,7 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.flatMapResult
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.ImageFileDetail
 import com.turnin.core.domain.model.DisplayId
 import com.turnin.core.domain.model.Introduce
@@ -36,7 +37,7 @@ internal class RegisterUseCase @Inject internal constructor(
         introduce: Introduce?,
     ): Flow<Result<RegisterResult, RegisterErrorType>> {
         val getImageUrlFlow = imageFileDetail?.let {
-            getFileUrlUseCase(it.bytes, it.name, it.mime)
+            getFileUrlUseCase(it.bytes, it.name, it.mime, FileCategory.PROFILE_IMAGE)
         } ?: flowOf(Result.Success(null))
 
         return getImageUrlFlow.flatMapResult { profileImageUrl ->

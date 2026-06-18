@@ -3,6 +3,7 @@ package com.turnin.domain.register.usecase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import com.turnin.domain.register.error.RegisterErrorType
@@ -13,9 +14,18 @@ import kotlinx.coroutines.flow.Flow
 internal class GetFileUploadPresignedUrlUseCase @Inject constructor(
     private val fileRepository: FileRepository,
 ) {
-    operator fun invoke(fileName: String, mime: Mime): Flow<Result<PresignedUrl, RegisterErrorType>> =
+    /**
+     * @param fileName 파일명
+     * @param mime [Mime]
+     * @param fileCategory 파일 카테고리
+     */
+    operator fun invoke(
+        fileName: String,
+        mime: Mime,
+        fileCategory: FileCategory,
+    ): Flow<Result<PresignedUrl, RegisterErrorType>> =
         fileRepository
-            .getFileUploadPresignedUrl(fileName, mime)
+            .getFileUploadPresignedUrl(fileName, mime, fileCategory)
             .mapError { commonError ->
                 RegisterErrorType.CommonError(commonError)
             }
