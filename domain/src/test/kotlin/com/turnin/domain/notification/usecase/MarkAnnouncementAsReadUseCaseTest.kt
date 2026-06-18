@@ -8,6 +8,7 @@ import com.turnin.domain.notification.error.NotificationErrorType
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -46,6 +47,7 @@ class MarkAnnouncementAsReadUseCaseTest {
         assertTrue(result is Result.Error)
         val error = (result as Result.Error).error
         assertTrue(error is NotificationErrorType.CommonError)
+        assertEquals(commonError, (error as NotificationErrorType.CommonError).error)
     }
 
     @Test

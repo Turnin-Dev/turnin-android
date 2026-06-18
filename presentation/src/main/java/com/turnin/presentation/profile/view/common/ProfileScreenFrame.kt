@@ -62,7 +62,7 @@ fun ProfileScreenFrame(
 
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(isRefreshing, isManualRefresh) {
+    LaunchedEffect(isRefreshing) {
         if (!isRefreshing) isManualRefresh = false
     }
 
@@ -78,7 +78,7 @@ fun ProfileScreenFrame(
                 isManualRefresh = true
                 onRefresh()
             },
-            indicator = { TurninIndicator(isRefreshing, pullToRefreshState) },
+            indicator = { TurninIndicator(isManualRefresh, pullToRefreshState) },
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

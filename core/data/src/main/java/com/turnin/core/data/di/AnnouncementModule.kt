@@ -33,7 +33,7 @@ class AnnouncementModule {
 interface AnnouncementBindModule {
     @Binds
     @Singleton
-    fun bindsAnnounceNetworkDataSource(
+    fun bindsAnnouncementNetworkDataSource(
         impl: AnnouncementNetworkDataSourceImpl,
     ): AnnouncementNetworkDataSource
 

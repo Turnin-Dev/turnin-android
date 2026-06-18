@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -236,44 +238,81 @@ private fun AnnouncementList(
     onRefresh: () -> Unit,
     onAnnouncementClick: (UiAnnouncement) -> Unit,
 ) {
+    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(isRefreshing) {
+        if (!isRefreshing) isManualRefresh = false
+    }
+
     RefreshableLazyColumn(
         modifier = modifier,
-        isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
+        isRefreshing = isManualRefresh,
+        onRefresh = {
+            isManualRefresh = true
+            onRefresh()
+        },
         contentPadding = ListContentPadding,
     ) {
-        item {
-            error?.let {
-                FooterError(
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = error.asString().ifEmpty {
-                        stringResource(R.string.notification_error_unexpected)
-                    },
-                    onRetry = onRefresh,
-                )
+        when {
+            // 1) 에러가 발생한 경우
+            error != null -> {
+                item {
+                    FooterError(
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = error.asString().ifEmpty {
+                            stringResource(R.string.notification_error_unexpected)
+                        },
+                        onRetry = onRefresh,
+                    )
+                }
             }
-        }
 
-        items(
-            items = announcements,
-            key = { it.id },
-        ) { announcement ->
-            var isExpanded by remember { mutableStateOf(false) }
+            // 2) 새로고침 시
+            isRefreshing -> {
+                item {
+                    Column {
+                        NotificationItemSkeleton()
+                        NotificationItemSkeleton()
+                    }
+                }
+            }
 
-            NotificationItem(
-                modifier = Modifier.fillMaxWidth(),
-                notiType = NotificationType.NOTICE,
-                isRead = announcement.isRead,
-                date = announcement.createdAt,
-                title = announcement.title,
-                message = announcement.content,
-                imageUrl = null,
-                isExpanded = isExpanded,
-                onClick = {
-                    isExpanded = !isExpanded
-                    onAnnouncementClick(announcement)
-                },
-            )
+            // 3) 공지가 비어있는 경우
+            !isRefreshing && announcements.isEmpty() -> {
+                item {
+                    EmptyGuidance(
+                        modifier = Modifier
+                            .fillParentMaxSize()
+                            .wrapContentSize(Alignment.Center),
+                        title = stringResource(R.string.notification_screen_announcement_empty_guidance),
+                    )
+                }
+            }
+
+            // 4) 정상적으로 목록 표시
+            else -> {
+                items(
+                    items = announcements,
+                    key = { it.id },
+                ) { announcement ->
+                    var isExpanded by remember { mutableStateOf(false) }
+
+                    NotificationItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        notiType = NotificationType.NOTICE,
+                        isRead = announcement.isRead,
+                        date = announcement.createdAt,
+                        title = announcement.title,
+                        message = announcement.content,
+                        imageUrl = null,
+                        isExpanded = isExpanded,
+                        onClick = {
+                            isExpanded = !isExpanded
+                            onAnnouncementClick(announcement)
+                        },
+                    )
+                }
+            }
         }
     }
 }
