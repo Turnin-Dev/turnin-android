@@ -15,8 +15,10 @@ import org.junit.Test
 class AnnouncementNetworkDataSourceImplTest {
     @get:Rule
     val testRule = ServerTestRule()
+
     private val announcementApi: AnnouncementApi
         get() = testRule.createNetworkApi<AnnouncementApi>(testRule.moshi)
+
     private lateinit var dataSource: AnnouncementNetworkDataSource
 
     @Before
@@ -70,7 +72,7 @@ class AnnouncementNetworkDataSourceImplTest {
                 "title": "테스트 공지",
                 "content": "공지 내용입니다.",
                 "targetAudience": "ALL",
-                "read": false,
+                "isRead": false,
                 "createdAt": 1715820000000
               }
             ]
