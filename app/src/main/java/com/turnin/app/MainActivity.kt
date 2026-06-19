@@ -171,19 +171,17 @@ class MainActivity : ComponentActivity() {
                 flow = snackbarController.events,
                 key1 = snackbarHostState,
                 onEvent = { event ->
-                    coroutineScope.launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.currentSnackbarData?.dismiss()
 
-                        val result =
-                            snackbarHostState.showSnackbar(
-                                message = event.message.asString(context),
-                                actionLabel = event.action?.name,
-                                duration = SnackbarDuration.Short,
-                            )
+                    val result =
+                        snackbarHostState.showSnackbar(
+                            message = event.message.asString(context),
+                            actionLabel = event.action?.name,
+                            duration = SnackbarDuration.Short,
+                        )
 
-                        if (result == SnackbarResult.ActionPerformed) {
-                            event.action?.action?.invoke()
-                        }
+                    if (result == SnackbarResult.ActionPerformed) {
+                        event.action?.action?.invoke()
                     }
                 },
             )

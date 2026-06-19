@@ -32,6 +32,7 @@ import com.turnin.core.designsystem.component.button.TurninSolidButton
 import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.presentation.R
+import com.turnin.core.presentation.ui.util.LockScreenOrientation
 
 /**
  * 기본 웹뷰
@@ -45,6 +46,7 @@ import com.turnin.core.presentation.R
 fun DefaultWebView(
     modifier: Modifier = Modifier,
     url: String,
+    lockScreenOrientation: Boolean = true,
     javaScriptEnabled: Boolean = true,
     allowedHosts: Set<String> = setOf(
         "google.com",
@@ -53,6 +55,10 @@ fun DefaultWebView(
         "accounts.google.com",
     ),
 ) {
+    if (lockScreenOrientation) {
+        LockScreenOrientation()
+    }
+
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
     val webViewRef = remember { mutableStateOf<WebView?>(null) }
