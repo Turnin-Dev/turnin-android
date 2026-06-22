@@ -1,53 +1,52 @@
-# turnin-android
+<h1 align="center">Turnin (턴인)</h1>
 
-# Documents
+> 나를 위한 키워드 중심의 SNS
 
-| No | Title                                                |
-|:--:|:-----------------------------------------------------|
-| 1  | [Project Structure](#1-project-structure-processing) |
-| 2  | [Dependency Direction](#2-dependency-direction)      |
+<img width="128" height="128" alt="logo-app-large" src="https://github.com/user-attachments/assets/581c8546-e7ce-4beb-96e3-5da8fabd3b7f" />
 
-## 1. Project Structure (processing...)
+## Description
 
-```
-app/                         # <APP 모듈>
-├── navigation/              # 모든 네비게이션 라우터들이 위치
-├── ...                      # 기타 파일 (MainActivity.kt 등)
+'나'에게 집중하고 '나'를 구성하고 있는 키워드들을 작성해보세요.
 
-core/                         # <Core 모듈>
-├── common                      # <Core/Common 모듈>
-├── data/                       # <Core/Data 모듈>
-├── designsystem/               # <Core/DesignSystem 모듈>
-├── domain/                     # <Core/Domain 모듈>
-├── presentation/               # <Core/Presentation 모듈>
+'나'와 유사한 키워드를 가진 또 다른 사람을 만나볼 수 있어요.
 
-data/                        # <Data 모듈>
-├── shared                      # 공통 기능 (선택사항)
-├── feature 1                   # 기능 1
-├── feature 2                   # 기능 2
-├── ...
+이제 타인으로 향한 시선 대신 '나'의 시선으로 전환해봐요.
 
-domain/                      # <Domain 모듈>
-├── shared                      # 공통 기능 (선택사항)
-├── feature 1                   # 기능 1
-├── feature 2                   # 기능 2
-├── ...
+## Demo
+[![Turnin 시연 영상 유튜브 링크](http://img.youtube.com/vi/uLR1RNqJ1Mw/0.jpg)](https://youtube.com/shorts/N4EdEMpy_WA?feature=share)
 
-presentation/                # <Presentation(feature) 모듈>
-├── shared                      # 공통 기능 (선택사항)
-├── feature 1                   # 기능 1
-├── feature 2                   # 기능 2
-├── ...
-```
+## Main Feature
+### 계정
+- 소셜로그인 / 회원가입
+- 로그아웃 / 탈퇴
+- 계정 정보 수정
 
-1. core 모듈을 제외한 모듈은 계층 별 모듈 구조 형태이며, 각 모듈 내부에서는 기능 별로 패키지가 구분되어 있다.
-2. 기본적으로 클린아키텍처를 따른다.
-3. 각 기능은 core 모듈을 의존한다. (계층 별로 의존 가능)
-4. `data`, `domain`, `presentation` 의존성 방향은 항상 아래와 같다.
-   (`data` -> `domain` <- `presentation`)
+### 메인 기능
+- 키워드 등록, 조회, 수정, 삭제
+- 홈 피드 조회
+- 사용자 키워드 탐색 (유사 키워드 탐색)
 
-## 2. Dependency Direction
+### 신고/차단
+- 프로필 신고, 차단
+- 키워드 신고
 
+### 친구 시스템
+- 친구 목록 조회
+- 친구 요청과 거절 및 요청 취소
+
+### 부가 기능
+- 차단 사용자 목록 조회
+- 푸시 알림
+- 알림 목록 조회
+
+## Tech Stack
+- Minimum SDK 17
+- **Language & Core**: Kotlin, Kotlin Coroutines & Flow
+- **Library & Framework**: Jetpack Compose, Hilt, Retrofit, Room, DataStore, Moshi, Timber, Coil, Firebase, JUnit4, MockK
+- **Architecture**: Clean Architecture (+ MVVM / MVI)
+- **Lint**: Ktlint
+
+## Architecture & Modularization
 ```mermaid
 graph TB
     subgraph :core
@@ -76,5 +75,3 @@ graph TB
     classDef android-library fill: #9BF6FF
     classDef jvm-library fill: #BDB2FF
 ```
-
-(`:core:common`과 `:core:designsystem`는 필요에 맞게 사용)
