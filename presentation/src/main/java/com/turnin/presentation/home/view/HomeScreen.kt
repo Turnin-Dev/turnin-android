@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -144,7 +144,7 @@ fun HomeScreen(
     onNotificationClick: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
+    val lazyListState = feeds.rememberLazyListState()
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing by remember {
         derivedStateOf {
@@ -439,3 +439,9 @@ private val testFeedsPagingData = MutableStateFlow(
         },
     ),
 )
+
+@Composable
+private fun <T : Any> LazyPagingItems<T>.rememberLazyListState(): LazyListState = when (itemCount) {
+    0 -> remember(this) { LazyListState(0, 0) }
+    else -> androidx.compose.foundation.lazy.rememberLazyListState()
+}
