@@ -74,7 +74,7 @@ class MainViewModel @Inject constructor(
         observeNetworkConnectivity()
     }
 
-    // onResume에서 호출
+    // 알림 상태 동기화 - onResume에서 호출
     fun syncNotificationState() {
         viewModelScope.launch {
             val isLoggedIn = loggedIn.first { it != null }
@@ -107,9 +107,7 @@ class MainViewModel @Inject constructor(
         notificationSyncManager.sync()
     }
 
-    /**
-     * 사용자 데이터를 미리 로드한다.
-     */
+    // 사용자 데이터를 미리 로드한다.
     private fun preloadUserData() {
         if (userRepository.myProfile.value == null) {
             userRepository.getMyProfileRefresh()
