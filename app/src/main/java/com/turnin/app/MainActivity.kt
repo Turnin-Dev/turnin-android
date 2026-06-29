@@ -28,20 +28,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.util.Consumer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.turnin.app.navigation.AppNavigation
 import com.turnin.app.util.notification.NotificationPermissionManager
+import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.designsystem.component.snackbar.TurninSnackbar
 import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
@@ -52,10 +55,14 @@ import com.turnin.core.presentation.common.snackbar.SnackbarController
 import com.turnin.core.presentation.common.util.ObserveAsEvents
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val tag = this::class.java.simpleName
+
     @Inject
     lateinit var snackbarController: SnackbarController
 
@@ -103,11 +110,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // 코루틴 디버깅 활성화
+        if (BuildConfig.DEBUG) {
+            System.setProperty("kotlinx.coroutines.debug", "on")
+        }
+
         isFromSystemSetting = savedInstanceState?.getBoolean(KEY_FROM_SYSTEM_SETTING) ?: false
 
         setContent {
             val context = LocalContext.current
-            val coroutineScope = rememberCoroutineScope()
             val appNavController = rememberNavController()
             val navBackStackEntry by appNavController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
@@ -156,6 +167,7 @@ class MainActivity : ComponentActivity() {
             }
 
             // ------------------------------ Snackbar ------------------------------
+            val lifecycleOwner = LocalLifecycleOwner.current
             val snackbarHostState = remember(isAuthScreen) { SnackbarHostState() }
             val snackbarBottomPadding = remember {
                 derivedStateOf {
@@ -167,26 +179,33 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            ObserveAsEvents(
-                flow = snackbarController.events,
-                key1 = snackbarHostState,
-                onEvent = { event ->
-                    coroutineScope.launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
+            LaunchedEffect(lifecycleOwner.lifecycle, snackbarHostState) {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    withContext(Dispatchers.Main.immediate) {
+                        snackbarController.events.collect { event ->
+                            AppLogger.d(tag, "Snackbar event received: ${event.message}")
 
-                        val result =
-                            snackbarHostState.showSnackbar(
-                                message = event.message.asString(context),
-                                actionLabel = event.action?.name,
-                                duration = SnackbarDuration.Short,
-                            )
+                            if (!isAuthScreen) {
+                                try {
+                                    val result =
+                                        snackbarHostState.showSnackbar(
+                                            message = event.message.asString(context),
+                                            actionLabel = event.action?.name,
+                                            duration = SnackbarDuration.Short,
+                                        )
 
-                        if (result == SnackbarResult.ActionPerformed) {
-                            event.action?.action?.invoke()
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        event.action?.action?.invoke()
+                                    }
+                                } catch (e: CancellationException) {
+                                    AppLogger.d(tag, "Snackbar Coroutine Cancelled")
+                                    throw e
+                                }
+                            }
                         }
                     }
-                },
-            )
+                }
+            }
 
             // ------------------------------ Main ------------------------------
             TurninAppTheme {
