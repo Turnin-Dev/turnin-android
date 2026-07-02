@@ -45,7 +45,9 @@ jobs:
 
             # 4. Gradle 설정
             -   name: Setup Gradle
-                uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
+                uses: gradle/actions/setup-gradle@v4
+                with:
+                    cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
 
             # 5. ktlint 검사
             -   name: Run ktlint
@@ -53,7 +55,7 @@ jobs:
 
             # 6. Unit Test 실행
             -   name: Run Unit Tests
-                run: ./gradlew test
+                run: ./gradlew testDebugUnitTest
 
             # 7. Debug APK 빌드
             -   name: Build Debug APK
