@@ -20,15 +20,19 @@ jobs:
                     java-version: '17'
                     distribution: 'temurin'
 
-            # 3. Gradle 설정
+            # 3. local.properties 동적 생성
+            -   name: Generate local.properties
+                run: echo "${{ secrets.LOCAL_PROPERTIES }}" > local.properties
+
+            # 4. Gradle 설정
             -   name: Setup Gradle
                 uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
 
-            # 4. 서명 설정
+            # 5. 서명 설정
             -   name: Decode Keystore
                 run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
 
-            # 5. Release APK 빌드
+            # 6. Release APK 빌드
             -   name: Build Release APK
                 env:
                     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -41,7 +45,7 @@ jobs:
                       -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
                       -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
-            # 6. Release AAB 빌드 (Play Store 배포 시 주석 해제)
+            # 7. Release AAB 빌드 (Play Store 배포 시 주석 해제)
             #            -   name: Build Release AAB
             #                env:
             #                    KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -54,7 +58,7 @@ jobs:
             #                      -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             #                      -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
-            # 7. Firebase App Distribution 배포
+            # 8. Firebase App Distribution 배포
             -   name: Deploy to Firebase App Distribution
                 uses: wzieba/Firebase-Distribution-Github-Action@bd494989dd4bec0343f78adee87fe66e48279ad6 # v1
                 with:
@@ -68,7 +72,7 @@ jobs:
                         Author: ${{ github.actor }}
                         ${{ github.event.head_commit.message }}
 
-            # 8. Play Store 배포 (내부 테스트 트랙, Play Store 배포 시 주석 해제)
+            # 9. Play Store 배포 (내부 테스트 트랙, Play Store 배포 시 주석 해제)
             # - name: Deploy to Play Store (Internal Track)
             #   uses: r0adkll/upload-google-play@v1
             #   with:
@@ -78,7 +82,7 @@ jobs:
             #     track: internal
             #     status: completed
 
-            # 9. Keystore 삭제 (보안)
+            # 10. Keystore 삭제 (보안)
             -   name: Clean up Keystore
                 if: always()
                 run: rm -f app/keystore.jks
