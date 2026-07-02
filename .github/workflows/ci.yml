@@ -25,9 +25,14 @@ jobs:
                     java-version: '17'
                     distribution: 'temurin'
 
-            # 3. local.properties 동적 생성
+            # 3. 필수 파일 동적 생성 (local.properties, google-services.json 등)
             -   name: Generate local.properties
                 run: echo "${{ secrets.LOCAL_PROPERTIES }}" > local.properties
+
+            -   name: Decode & Generate Debug google-services.json
+                run: |
+                    mkdir -p app/src/debug
+                    echo "${{ secrets.GOOGLE_SERVICES_DEBUG_JSON_BASE64 }}" | base64 --decode > app/src/debug/google-services.json
 
             # 4. Gradle 설정
             -   name: Setup Gradle
