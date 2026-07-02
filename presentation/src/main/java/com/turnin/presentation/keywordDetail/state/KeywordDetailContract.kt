@@ -1,0 +1,48 @@
+package com.turnin.presentation.keywordDetail.state
+
+import com.turnin.core.presentation.common.viewmodel.BaseUiEffect
+import com.turnin.core.presentation.common.viewmodel.BaseUiEvent
+import com.turnin.core.presentation.common.viewmodel.BaseUiState
+import com.turnin.core.presentation.ui.util.UiText
+import com.turnin.presentation.keywordDetail.model.UiKeywordDetail
+
+class KeywordDetailContract {
+    /**
+     * 키워드 상세정보 모달 UI 상태 클래스
+     *
+     * @property myKeyword 내 키워드 여부
+     * @property keywordDetail 키워드 상세 정보
+     * @property loading 로딩
+     * @property fullScreenLoading 전체 화면 로딩
+     * @property error 에러 상태
+     */
+    data class UiState(
+        val myKeyword: Boolean = false,
+        val keywordDetail: UiKeywordDetail? = null,
+        val loading: Boolean = false,
+        val fullScreenLoading: Boolean = false,
+        val error: UiText? = null,
+    ) : BaseUiState
+
+    sealed interface UiEvent : BaseUiEvent {
+        /** 키워드 상세정보 새로고침 이벤트 */
+        data object OnRefresh : UiEvent
+
+        /** 키워드 신고 이벤트 */
+        data object OnReport : UiEvent
+
+        /** 키워드 삭제 이벤트 */
+        data object OnDelete : UiEvent
+    }
+
+    sealed interface UiEffect : BaseUiEffect {
+        /** 신고 화면 이동 일회성 이벤트 */
+        data class NavigateToReport(
+            val userId: Long?,
+            val userKeywordId: Long?,
+        ) : UiEffect
+
+        /** 화면 닫기 일회성 이벤트 */
+        data object CloseScreen : UiEffect
+    }
+}

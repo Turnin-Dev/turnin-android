@@ -1,0 +1,32 @@
+package com.turnin.domain.register.usecase
+
+import com.turnin.core.domain.common.Result
+import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.model.FileCategory
+import com.turnin.core.domain.file.model.Mime
+import com.turnin.core.domain.file.model.PresignedUrl
+import com.turnin.domain.register.error.RegisterErrorType
+import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+
+/** 파일 업로드에 사용할 사전 정의된 url을 요청한다. */
+internal class GetFileUploadPresignedUrlUseCase @Inject constructor(
+    private val fileRepository: FileRepository,
+) {
+    /**
+     * @param fileName 파일명
+     * @param mime [Mime]
+     * @param fileCategory 파일 카테고리
+     */
+    operator fun invoke(
+        fileName: String,
+        mime: Mime,
+        fileCategory: FileCategory,
+    ): Flow<Result<PresignedUrl, RegisterErrorType>> =
+        fileRepository
+            .getFileUploadPresignedUrl(fileName, mime, fileCategory)
+            .mapError { commonError ->
+                RegisterErrorType.CommonError(commonError)
+            }
+}

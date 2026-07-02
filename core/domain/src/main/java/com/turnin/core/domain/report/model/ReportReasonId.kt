@@ -1,0 +1,17 @@
+package com.turnin.core.domain.report.model
+
+/** 신고 사유 ID */
+@JvmInline
+value class ReportReasonId private constructor(val value: Long) {
+    /** 신고 사유 ID */
+    companion object {
+        operator fun invoke(value: Long): ReportReasonId = ReportReasonId(value)
+    }
+
+    init {
+        validate()
+    }
+
+    fun validate() {
+    }
+}

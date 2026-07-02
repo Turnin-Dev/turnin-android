@@ -1,0 +1,230 @@
+package com.turnin.presentation.register
+
+import android.widget.Toast
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import androidx.navigation.toRoute
+import com.turnin.core.designsystem.theme.TurninTheme
+import com.turnin.core.presentation.common.navigation.SubGraph
+import com.turnin.core.presentation.common.navigation.navigateToPrivacyPolicy
+import com.turnin.core.presentation.common.navigation.navigateToTermsOfService
+import com.turnin.core.presentation.common.util.LaunchedUiEffectHandler
+import com.turnin.core.presentation.common.viewmodel.sharedViewModel
+import com.turnin.core.presentation.feature.image.SimpleImageCropper
+import com.turnin.core.presentation.feature.image.SinglePhotoPicker
+import com.turnin.presentation.R
+import com.turnin.presentation.register.view.RegisterCommonScreen
+import com.turnin.presentation.register.view.TermsAgreementScreen
+import com.turnin.presentation.register.viewmodel.RegisterViewModel
+import kotlin.reflect.KType
+
+fun NavGraphBuilder.registerNavigation(
+    navController: NavHostController,
+    navigateToMain: () -> Unit,
+) {
+    navigation<SubGraph.Register.Root>(startDestination = SubGraph.Register.TermsAgreement) {
+        animatedComposableForRegister<SubGraph.Register.TermsAgreement> {
+            TermsAgreementScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(TurninTheme.colorScheme.backgroundNormal),
+                onNavigateToNext = { navController.navigate(SubGraph.Register.DisplayId) },
+                onNavigateToTermsOfService = { navController.navigateToTermsOfService() },
+                onNavigateToPrivacyPolicy = { navController.navigateToPrivacyPolicy() },
+            )
+        }
+
+        animatedComposableForRegister<SubGraph.Register.DisplayId> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
+
+            LaunchedUiEffectHandler(
+                effectFlow = registerViewModel.registerEventState,
+                onConsumeEffect = { registerViewModel.onConsumeEventState() },
+                onEffect = { effect ->
+                    if (effect.navigateToNextScreen) {
+                        navController.navigate(SubGraph.Register.Name)
+                    }
+                },
+            )
+
+            RegisterCommonScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(TurninTheme.colorScheme.backgroundNormal),
+                title = R.string.register_screen_display_id_title,
+                subTitle = R.string.register_screen_display_id_sub_title,
+                placeholder = R.string.register_screen_display_id_placeholder,
+                text = displayIdState.displayId,
+                onTextChanged = registerViewModel::onDisplayIdChanged,
+                errorMessage = displayIdState.displayIdError?.asString(),
+                loading = displayIdState.loading,
+                enabledNext = displayIdState.canNext,
+                onBackPressed = { navController.popBackStack() },
+                onNextWithValue = { displayId ->
+                    registerViewModel.checkDisplayIdExists(displayId)
+                },
+            )
+        }
+
+        animatedComposableForRegister<SubGraph.Register.Name> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val nameState by registerViewModel.nameState.collectAsStateWithLifecycle()
+
+            RegisterCommonScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(TurninTheme.colorScheme.backgroundNormal),
+                title = R.string.register_screen_name_title,
+                subTitle = R.string.register_screen_name_sub_title,
+                placeholder = R.string.register_screen_name_placeholder,
+                text = nameState.name,
+                onTextChanged = registerViewModel::onNameChanged,
+                errorMessage = nameState.nameError?.asString(),
+                loading = nameState.loading,
+                enabledNext = nameState.canNext,
+                onBackPressed = { navController.popBackStack() },
+                onNextWithValue = { _ ->
+                    navController.navigate(SubGraph.Register.Profile)
+                },
+            )
+        }
+
+        animatedComposableForRegister<SubGraph.Register.Profile> { backStackEntry ->
+            val registerEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<SubGraph.Register.Root>()
+            }
+            val registerArgs = registerEntry.toRoute<SubGraph.Register.Root>()
+            val argProvider = registerArgs.provider
+            val argProviderId = registerArgs.providerId
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
+            val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
+            var photoPickerOpen by remember { mutableStateOf(false) }
+            val context = LocalContext.current
+
+            SinglePhotoPicker(
+                open = photoPickerOpen,
+                onSelected = { selectedImage, uri ->
+                    if (selectedImage != null) {
+                        registerViewModel.selectOriginalImage(selectedImage)
+                    }
+                },
+                onClose = { photoPickerOpen = false },
+            )
+
+            LaunchedUiEffectHandler(
+                effectFlow = registerViewModel.registerEventState,
+                onConsumeEffect = { registerViewModel.onConsumeEventState() },
+                onEffect = { event ->
+                    when {
+                        event.navigateToNextScreen -> {
+                            navigateToMain()
+                        }
+
+                        event.navigateToCropImageScreen -> {
+                            navController.navigate(
+                                SubGraph.Register.CropProfileImage,
+                            )
+                        }
+
+                        event.error != null -> {
+                            Toast
+                                .makeText(context, event.error.asString(context), Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                },
+            )
+
+            RegisterCommonScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(TurninTheme.colorScheme.backgroundNormal),
+                title = R.string.register_screen_profile_title,
+                subTitle = R.string.register_screen_profile_sub_title,
+                placeholder = R.string.register_screen_profile_placeholder,
+                buttonTitle = R.string.register_screen_btn_start,
+                text = profileState.introduce,
+                onTextChanged = registerViewModel::onIntroduceChanged,
+                errorMessage = profileState.introduceError?.asString(),
+                singleLine = false,
+                loading = profileState.loading,
+                enabledNext = profileState.canNext,
+                profileImage = profileState.image,
+                onProfileImageClick = { photoPickerOpen = true },
+                onBackPressed = { navController.popBackStack() },
+                onNextWithValue = {
+                    registerViewModel.register(
+                        provider = argProvider,
+                        providerId = argProviderId,
+                        image = profileState.image,
+                    )
+                },
+            )
+        }
+
+        animatedComposableForRegister<SubGraph.Register.CropProfileImage> { backStackEntry ->
+            val registerViewModel: RegisterViewModel =
+                backStackEntry.sharedViewModel(navController, true)
+            val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(profileState.originalImage) {
+                if (profileState.originalImage == null) {
+                    navController.popBackStack()
+                }
+            }
+
+            SimpleImageCropper(
+                modifier = Modifier.fillMaxSize(),
+                image = profileState.originalImage,
+                onCrop = { croppedImage ->
+                    registerViewModel.selectProfileImage(croppedImage)
+                    navController.popBackStack()
+                },
+                onCancel = { navController.popBackStack() },
+            )
+        }
+    }
+}
+
+private inline fun <reified T : Any> NavGraphBuilder.animatedComposableForRegister(
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    noinline sizeTransform: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> @JvmSuppressWildcards SizeTransform?)? = null,
+    noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
+) {
+    composable<T>(
+        enterTransition = { slideInHorizontally { it } },
+        exitTransition = { slideOutHorizontally { -it } },
+        popEnterTransition = { slideInHorizontally { -it } },
+        popExitTransition = { slideOutHorizontally { it } },
+        typeMap = typeMap,
+        deepLinks = deepLinks,
+        sizeTransform = sizeTransform,
+        content = content,
+    )
+}

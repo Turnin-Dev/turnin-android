@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Avatar -->
+    <string name="avatar_placeholder_content_desc">사진</string>
+    <!-- TopBar -->
+    <string name="top_bar_btn_back_pressed">뒤로 가기</string>
+    <string name="top_bar_logo">로고</string>
+    <!-- Menu -->
+    <string name="menu_btn_cancel">취소</string>
+    <!-- Logo -->
+    <string name="logo_content_desc">로고</string>
+    <!-- Bottom Modal Sheet Content -->
+    <string name="bottom_modal_sheet_content_cancel">취소</string>
+    <!-- Simple Modal -->
+    <string name="simple_modal_btn_accept">확인</string>
+    <string name="simple_modal_btn_cancel">취소</string>
+</resources>

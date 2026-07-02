@@ -1,0 +1,83 @@
+package com.turnin.core.data.source.local.memory
+
+import com.turnin.core.data.cleaner.Clearable
+import com.turnin.core.data.source.network.dto.discover.response.DiscoverContextCursorPageResponse
+import com.turnin.core.domain.discover.model.DiscoverCacheKey
+import com.turnin.core.domain.model.UserId
+import com.turnin.core.domain.model.UserKeywordId
+import com.turnin.core.domain.user.model.CoreUserProfile
+import com.turnin.core.domain.userKeyword.model.UserKeywordDetail
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import dagger.multibindings.IntoSet
+import javax.inject.Singleton
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+
+@Module
+@InstallIn(SingletonComponent::class)
+object MemoryCacheModule {
+    // ------------------------------ Multi Binding ------------------------------
+    @Provides
+    @IntoSet
+    fun provideCoreUserProfileCacheClearable(
+        cache: MemoryCache<UserId, CoreUserProfile>,
+    ): Clearable = Clearable { cache.clear() }
+
+    @Provides
+    @IntoSet
+    fun provideUserKeywordDetailListCacheClearable(
+        cache: MemoryCache<UserId, List<UserKeywordDetail>>,
+    ): Clearable = Clearable { cache.clear() }
+
+    @Provides
+    @IntoSet
+    fun provideUserKeywordDetailCacheClearable(
+        cache: MemoryCache<UserKeywordId, UserKeywordDetail>,
+    ): Clearable = Clearable { cache.clear() }
+
+    @Provides
+    @IntoSet
+    fun provideDiscoverContextCacheClearable(
+        cache: MemoryCache<DiscoverCacheKey, DiscoverContextCursorPageResponse>,
+    ): Clearable = Clearable { cache.clear() }
+
+    // ------------------------------ Provide Module ------------------------------
+    @Provides
+    @Singleton
+    fun provideCoreUserProfileMemoryCache(): MemoryCache<UserId, CoreUserProfile> =
+        LruMemoryCache(
+            maxSize = 10,
+            ttl = 3.minutes,
+            name = "CoreUserProfile",
+        )
+
+    @Provides
+    @Singleton
+    fun provideUserKeywordDetailListMemoryCache(): MemoryCache<UserId, List<UserKeywordDetail>> =
+        LruMemoryCache(
+            maxSize = 10,
+            ttl = 5.minutes,
+            name = "UserKeywordDetailList",
+        )
+
+    @Provides
+    @Singleton
+    fun provideUserKeywordDetailMemoryCache(): MemoryCache<UserKeywordId, UserKeywordDetail> =
+        LruMemoryCache(
+            maxSize = 50,
+            ttl = 5.minutes,
+            name = "UserKeywordDetail",
+        )
+
+    @Provides
+    @Singleton
+    fun provideDiscoverContextMemoryCache(): MemoryCache<DiscoverCacheKey, DiscoverContextCursorPageResponse> =
+        LruMemoryCache(
+            maxSize = 10,
+            ttl = 1.hours,
+            name = "DiscoverContext",
+        )
+}
