@@ -24,10 +24,19 @@ jobs:
             -   name: Generate local.properties
                 run: echo "${{ secrets.LOCAL_PROPERTIES }}" > local.properties
 
-            -   name: Decode & Generate Release google-services.json
+            -   name: Decode & Generate google-services.json
                 run: |
+                    # debug 폴더 생성 및 파일 생성
+                    mkdir -p app/src/debug
+                    echo "${{ secrets.GOOGLE_SERVICES_DEBUG_JSON_BASE64 }}" | base64 --decode > app/src/debug/google-services.json
+
+                    # release 폴더 생성 및 파일 생성
                     mkdir -p app/src/release
                     echo "${{ secrets.GOOGLE_SERVICES_RELEASE_JSON_BASE64 }}" | base64 --decode > app/src/release/google-services.json
+
+                    # 3. releaseTest 폴더 생성 및 파일 복사 (디버그용 파일로 복사)
+                    mkdir -p app/src/releaseTest
+                    cp app/src/debug/google-services.json app/src/releaseTest/google-services.json
 
             # 4. Gradle 설정
             -   name: Setup Gradle
