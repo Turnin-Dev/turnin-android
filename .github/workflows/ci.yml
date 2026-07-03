@@ -60,3 +60,15 @@ jobs:
             # 7. Debug APK 빌드
             -   name: Build Debug APK
                 run: ./gradlew assembleDebug
+
+            # 8. 실패 시 리포트 업로드
+            -   name: Upload test reports
+                if: failure()
+                uses: actions/upload-artifact@v4
+                with:
+                    name: test-reports
+                    path: |
+                        app/build/reports/tests/
+                        app/build/reports/ktlint/
+                    retention-days: 7
+                    if-no-files-found: warn
