@@ -45,7 +45,7 @@ jobs:
 
             # 4. Gradle 설정
             -   name: Setup Gradle
-                uses: gradle/actions/setup-gradle@v4
+                uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
                 with:
                     cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
 
@@ -64,7 +64,7 @@ jobs:
             # 8. 실패 시 리포트 업로드
             -   name: Upload test reports
                 if: failure()
-                uses: actions/upload-artifact@v4
+                uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
                 with:
                     name: test-reports
                     path: |
