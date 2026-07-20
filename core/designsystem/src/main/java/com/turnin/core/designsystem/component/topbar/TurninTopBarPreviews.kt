@@ -1,10 +1,16 @@
 package com.turnin.core.designsystem.component.topbar
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.turnin.core.designsystem.R
 import com.turnin.core.designsystem.component.button.TurninIconButton
 import com.turnin.core.designsystem.component.icon.TurninIconSize
@@ -18,7 +24,10 @@ private fun TurninLogoTopBarPreview() {
         TurninLogoTopBar()
         HorizontalDivider()
         TurninLogoTopBar(
-            optionSlot = {
+            leftSlot = {
+                Box(Modifier.size(40.dp).background(Color.LightGray))
+            },
+            rightSlot = {
                 TurninIconButton(
                     icon = TurninIcons.Outlined.Normal.Settings,
                     contentDescription = stringResource(R.string.top_bar_btn_back_pressed),
@@ -29,7 +38,7 @@ private fun TurninLogoTopBarPreview() {
         )
         HorizontalDivider()
         TurninLogoTopBar(
-            optionSlot = {
+            rightSlot = {
                 TurninIconButton(
                     icon = TurninIcons.Outlined.Normal.Settings,
                     contentDescription = stringResource(R.string.top_bar_btn_back_pressed),

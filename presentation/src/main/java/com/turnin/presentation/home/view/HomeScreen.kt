@@ -183,7 +183,7 @@ fun HomeScreen(
                         start = ScreenTokens.HorizontalPadding,
                         end = ScreenTokens.HorizontalPaddingWithTouchTarget,
                     ),
-                optionSlot = {
+                rightSlot = {
                     TurninIconButton(
                         icon = TurninIcons.Outlined.Normal.Bell,
                         iconSize = TurninIconSize.Normal,
