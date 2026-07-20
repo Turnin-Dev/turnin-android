@@ -31,4 +31,10 @@ class HomeViewModel @Inject constructor(
             }
         }
         .cachedIn(viewModelScope)
+
+    fun loadAllFeeds() {
+    }
+
+    fun loadFriendFeeds() {
+    }
 }

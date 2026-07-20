@@ -46,6 +46,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.turnin.core.designsystem.component.avatar.TurninAvatar
 import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.dropDownMenu.TurninDropDownMenuItem
+import com.turnin.core.designsystem.component.dropDownMenu.TurninDropDownMenus
 import com.turnin.core.designsystem.component.icon.TurninIconSize
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
 import com.turnin.core.designsystem.component.topbar.TurninLogoTopBar
@@ -54,6 +56,8 @@ import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
 import com.turnin.core.designsystem.util.icon.Bell
+import com.turnin.core.designsystem.util.icon.Profile
+import com.turnin.core.designsystem.util.icon.Thunder
 import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.domain.common.error.PagingApiCallException
@@ -145,6 +149,7 @@ fun HomeScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = feeds.rememberLazyListState()
+
     var isManualRefresh by rememberSaveable { mutableStateOf(false) }
     val isRefreshing by remember {
         derivedStateOf {
@@ -159,6 +164,24 @@ fun HomeScreen(
         }
     }
 
+    var dropDownMenuExpanded by remember { mutableStateOf(false) }
+    val dropDownMenuItemTotalString = stringResource(R.string.home_screen_drop_down_menu_item_total)
+    val dropDownMenuItemFriendString = stringResource(R.string.home_screen_drop_down_menu_item_friend)
+    val dropDownMenuItems = remember {
+        listOf(
+            TurninDropDownMenuItem(
+                value = dropDownMenuItemTotalString,
+                icon = TurninIcons.Outlined.Normal.Thunder,
+            ),
+            TurninDropDownMenuItem(
+                value = dropDownMenuItemFriendString,
+                icon = TurninIcons.Outlined.Normal.Profile,
+            ),
+        )
+    }
+    var selectedDropDownMenuItem by remember { mutableStateOf(dropDownMenuItems[0]) }
+
+    // 새로고침 후 수동 새로고침 초기화
     LaunchedEffect(isRefreshing) {
         if (!isRefreshing) isManualRefresh = false
     }
@@ -183,6 +206,18 @@ fun HomeScreen(
                         start = ScreenTokens.HorizontalPadding,
                         end = ScreenTokens.HorizontalPaddingWithTouchTarget,
                     ),
+                leftSlot = {
+                    TurninDropDownMenus(
+                        expanded = dropDownMenuExpanded,
+                        items = dropDownMenuItems,
+                        selectedItem = selectedDropDownMenuItem,
+                        onExpandedChange = { dropDownMenuExpanded = it },
+                        onItemClick = { item ->
+                            selectedDropDownMenuItem = item
+                            dropDownMenuExpanded = false
+                        },
+                    )
+                },
                 rightSlot = {
                     TurninIconButton(
                         icon = TurninIcons.Outlined.Normal.Bell,
