@@ -1,6 +1,7 @@
 package com.turnin.core.data.source.network.api
 
 import com.turnin.core.data.source.network.dto.feed.FeedCursorPageResponse
+import com.turnin.core.domain.feed.model.FeedType
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,8 +12,8 @@ interface FeedApi {
      */
     @GET(NetworkApiPath.Feed.ROUTE)
     suspend fun getFeeds(
-        @Query("cursorScore") cursorScore: Double?,
-        @Query("cursorUserKeywordId") cursorUserKeywordId: Long?,
+        @Query("feed_type") feedType: FeedType,
+        @Query("cursor") cursor: String?,
         @Query("size") size: Int,
     ): Response<FeedCursorPageResponse>
 }

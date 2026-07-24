@@ -11,6 +11,7 @@ import com.turnin.core.data.source.local.database.entity.toDomainModel
 import com.turnin.core.data.source.network.datasource.FeedNetworkDataSource
 import com.turnin.core.domain.feed.model.Feed
 import com.turnin.core.domain.feed.model.FeedPagingTokens
+import com.turnin.core.domain.feed.model.FeedType
 import com.turnin.core.domain.feed.repository.FeedRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +22,8 @@ class FeedRepositoryImpl @Inject constructor(
     private val feedNetworkDataSource: FeedNetworkDataSource,
     private val database: TurninDatabase,
 ) : FeedRepository {
-    override fun getFeeds(): Flow<PagingData<Feed>> {
-        val pagingSourceFactory = { database.feedDao().getPagingSource() }
+    override fun getFeeds(type: FeedType): Flow<PagingData<Feed>> {
+        val pagingSourceFactory = { database.feedDao().getPagingSource(type) }
         val pageSize = FeedPagingTokens.PAGE_SIZE
 
         return Pager(
@@ -31,6 +32,7 @@ class FeedRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize,
             ),
             remoteMediator = FeedRemoteMediator(
+                feedType = type,
                 feedNetworkDataSource = feedNetworkDataSource,
                 database = database,
             ),

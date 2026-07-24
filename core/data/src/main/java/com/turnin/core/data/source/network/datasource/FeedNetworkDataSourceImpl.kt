@@ -4,20 +4,21 @@ import com.turnin.core.data.source.network.api.FeedApi
 import com.turnin.core.data.source.network.dto.feed.FeedCursorPageResponse
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.data.source.network.util.networkCall
+import com.turnin.core.domain.feed.model.FeedType
 import javax.inject.Inject
 
 class FeedNetworkDataSourceImpl @Inject constructor(
     private val feedApi: FeedApi,
 ) : FeedNetworkDataSource {
     override suspend fun getFeeds(
-        cursorScore: Double?,
-        cursorUserKeywordId: Long?,
+        feedType: FeedType,
+        cursor: String?,
         size: Int,
     ): NetworkResult<FeedCursorPageResponse> =
         networkCall {
             feedApi.getFeeds(
-                cursorScore = cursorScore,
-                cursorUserKeywordId = cursorUserKeywordId,
+                feedType = feedType,
+                cursor = cursor,
                 size = size,
             )
         }
