@@ -23,6 +23,7 @@ import com.turnin.core.data.source.network.error.toCommonErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.feed.model.FeedType
 import com.turnin.core.domain.model.KeywordDescription
 import com.turnin.core.domain.model.KeywordId
 import com.turnin.core.domain.model.KeywordName
@@ -533,6 +534,7 @@ class UserKeywordRepositoryImplTest {
             updatedAt = 1000L,
         )
         private val TestFeedEntity = FeedEntity(
+            type = FeedType.ALL,
             userKeywordId = TestUserKeywordDetailResponse.userKeywordId,
             keywordId = TestUserKeywordDetailResponse.keywordId,
             keyword = TestUserKeywordDetailResponse.keywordName,
@@ -541,8 +543,7 @@ class UserKeywordRepositoryImplTest {
             userName = TestUserKeywordDetailResponse.userInfo.userName,
             profileImageUrl = TestUserKeywordDetailResponse.userInfo.profileImageUrl,
             createdAt = TestUserKeywordDetailResponse.createdAt,
-            score = 50.0,
-            similarity = 0.8,
+            sortOrder = 0,
         )
         private val TestMyProfileEntity = MyProfileEntity(
             userId = TestUserId.value,
