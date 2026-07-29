@@ -63,6 +63,28 @@ data class TurninDropDownMenuItem(
 )
 
 /**
+ * Turnin DropDownMenus (상태 이용 버전)
+ *
+ * @param modifier [Modifier]
+ * @param dropDownMenuState 드롭다운 메뉴 상태 [DropDownMenuState]
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TurninDropDownMenus(
+    modifier: Modifier = Modifier,
+    dropDownMenuState: DropDownMenuState,
+) {
+    TurninDropDownMenus(
+        modifier = modifier,
+        expanded = dropDownMenuState.expanded,
+        items = dropDownMenuState.items,
+        selectedItem = dropDownMenuState.items[dropDownMenuState.selectedIndex],
+        onExpandedChange = { dropDownMenuState.changeExpanded(it) },
+        onItemClick = { item -> dropDownMenuState.select(item) },
+    )
+}
+
+/**
  * Turnin DropDownMenus
  *
  * @param modifier [Modifier]
@@ -187,7 +209,7 @@ private fun ExposedDropdownMenuBoxScope.DropDownMenus(
         modifier = Modifier
             .turninShadow(
                 type = TurninShadowType.Custom(
-                    blur = 8.dp,
+                    blur = 10.dp,
                     alpha = if (isSystemInDarkTheme()) 0.8f else 0.08f,
                     lightColor = Color.Black,
                     darkColor = Color.Black,

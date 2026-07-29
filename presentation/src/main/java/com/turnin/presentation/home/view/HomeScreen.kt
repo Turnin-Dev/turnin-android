@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,11 +44,14 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.turnin.core.designsystem.component.avatar.TurninAvatar
 import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.dropDownMenu.DropDownMenuState
 import com.turnin.core.designsystem.component.dropDownMenu.TurninDropDownMenuItem
 import com.turnin.core.designsystem.component.dropDownMenu.TurninDropDownMenus
+import com.turnin.core.designsystem.component.dropDownMenu.rememberDropDownMenuState
 import com.turnin.core.designsystem.component.icon.TurninIconSize
 import com.turnin.core.designsystem.component.skeleton.SkeletonBox
 import com.turnin.core.designsystem.component.topbar.TurninLogoTopBar
@@ -134,7 +138,9 @@ private fun HomeScreenFrame(
  * 홈 화면
  *
  * @param modifier [Modifier]
- * @param feeds 피드 리스트
+ * @param feeds 피드 리스트 (전체 유형)
+ * @param dropDownMenuState 드롭다운 메뉴 상태
+ * @param lazyListState LazyList 상태 값
  * @param onFeedClick 피드 클릭 시 콜백
  * @param onUserClick 사용자 클릭 시 콜백
  * @param onNotificationClick 알림 클릭 시 콜백
@@ -143,43 +149,27 @@ private fun HomeScreenFrame(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     feeds: LazyPagingItems<UiFeed>,
+    dropDownMenuState: DropDownMenuState,
+    lazyListState: LazyListState,
     onFeedClick: (UiFeed) -> Unit,
     onUserClick: (UserProfileArgs) -> Unit,
     onNotificationClick: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val lazyListState = feeds.rememberLazyListState()
 
-    var isManualRefresh by rememberSaveable { mutableStateOf(false) }
-    val isRefreshing by remember {
+    var isManualRefresh by rememberSaveable(feeds) { mutableStateOf(false) }
+    val isRefreshing by remember(feeds) {
         derivedStateOf {
             isManualRefresh && feeds.loadState.refresh is LoadState.Loading
         }
     }
-    var isRefreshTriggered by remember { mutableStateOf(false) }
-    val isFirstItemScrolled by remember {
+    var isRefreshTriggered by remember(feeds) { mutableStateOf(false) }
+    val isFirstItemScrolled by remember(lazyListState) {
         derivedStateOf {
             lazyListState.firstVisibleItemIndex > 0 ||
                 lazyListState.firstVisibleItemScrollOffset > 0
         }
     }
-
-    var dropDownMenuExpanded by remember { mutableStateOf(false) }
-    val dropDownMenuItemTotalString = stringResource(R.string.home_screen_drop_down_menu_item_total)
-    val dropDownMenuItemFriendString = stringResource(R.string.home_screen_drop_down_menu_item_friend)
-    val dropDownMenuItems = remember {
-        listOf(
-            TurninDropDownMenuItem(
-                value = dropDownMenuItemTotalString,
-                icon = TurninIcons.Outlined.Normal.Thunder,
-            ),
-            TurninDropDownMenuItem(
-                value = dropDownMenuItemFriendString,
-                icon = TurninIcons.Outlined.Normal.Profile,
-            ),
-        )
-    }
-    var selectedDropDownMenuItem by remember { mutableStateOf(dropDownMenuItems[0]) }
 
     // 새로고침 후 수동 새로고침 초기화
     LaunchedEffect(isRefreshing) {
@@ -207,16 +197,7 @@ fun HomeScreen(
                         end = ScreenTokens.HorizontalPaddingWithTouchTarget,
                     ),
                 leftSlot = {
-                    TurninDropDownMenus(
-                        expanded = dropDownMenuExpanded,
-                        items = dropDownMenuItems,
-                        selectedItem = selectedDropDownMenuItem,
-                        onExpandedChange = { dropDownMenuExpanded = it },
-                        onItemClick = { item ->
-                            selectedDropDownMenuItem = item
-                            dropDownMenuExpanded = false
-                        },
-                    )
+                    TurninDropDownMenus(dropDownMenuState = dropDownMenuState)
                 },
                 rightSlot = {
                     TurninIconButton(
@@ -260,7 +241,8 @@ fun HomeScreen(
             ) {
                 pagingItem(
                     pagingItems = feeds,
-                    key = feeds.itemKey { it.userKeywordId },
+                    key = feeds.itemKey { "${it.userKeywordId}_${it.sortOrder}" },
+                    contentType = feeds.itemContentType { "FEED_ITEM" },
                     skeletonCount = 10,
                     skeleton = {
                         FeedSkeleton()
@@ -290,6 +272,9 @@ fun HomeScreen(
                             errorMessage = errorMessage,
                             onRetry = { feeds.retry() },
                         )
+                    },
+                    emptyGuidance = {
+                        // TODO: 친구 페이징에서만 필요
                     },
                 ) { idx ->
                     val feed = feeds[idx]
@@ -453,6 +438,12 @@ private fun FeedSkeletonPreview() {
 @Composable
 private fun HomeScreenPreview() {
     val feeds = testFeedsPagingData.collectAsLazyPagingItems()
+    val dropDownMenuState = rememberDropDownMenuState(
+        items = listOf(
+            TurninDropDownMenuItem(value = "전체", icon = TurninIcons.Outlined.Normal.Thunder),
+            TurninDropDownMenuItem(value = "친구", icon = TurninIcons.Outlined.Normal.Profile),
+        ),
+    )
 
     TurninAppTheme {
         HomeScreen(
@@ -460,6 +451,8 @@ private fun HomeScreenPreview() {
                 .fillMaxSize()
                 .background(TurninTheme.colorScheme.backgroundNormal),
             feeds = feeds,
+            dropDownMenuState = dropDownMenuState,
+            lazyListState = rememberLazyListState(),
             onFeedClick = {},
             onUserClick = {},
             onNotificationClick = {},
@@ -474,9 +467,3 @@ private val testFeedsPagingData = MutableStateFlow(
         },
     ),
 )
-
-@Composable
-private fun <T : Any> LazyPagingItems<T>.rememberLazyListState(): LazyListState = when (itemCount) {
-    0 -> remember(this) { LazyListState(0, 0) }
-    else -> androidx.compose.foundation.lazy.rememberLazyListState()
-}

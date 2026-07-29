@@ -33,6 +33,7 @@ class FeedRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, FeedEntity>,
     ): MediatorResult {
+        AppLogger.d(tag, "load() called: loadType=$loadType, feedType=$feedType, this=${this.hashCode()}")
         return try {
             val cursor: FeedCursor? = when (loadType) {
                 LoadType.REFRESH -> null
@@ -63,6 +64,7 @@ class FeedRemoteMediator(
 
             when (response) {
                 is NetworkResult.Error -> {
+                    AppLogger.d(tag, "Network Response Error: ${response.error}")
                     MediatorResult.Error(
                         PagingApiCallException(
                             error = response.error.toCommonErrorType(),
@@ -72,6 +74,7 @@ class FeedRemoteMediator(
                 }
 
                 is NetworkResult.Success -> {
+                    AppLogger.d(tag, "Network Response Success")
                     val data = response.data
                     val items = data.items
                     val nextCursor = data.nextCursor
@@ -82,6 +85,7 @@ class FeedRemoteMediator(
                         if (loadType == LoadType.REFRESH) {
                             database.feedDao().clearByType(feedType)
                             database.feedRemoteKeyDao().clearByType(feedType)
+                            AppLogger.d(tag, "Clear Feed Cache")
                         }
 
                         if (items.isNotEmpty()) {
@@ -97,6 +101,7 @@ class FeedRemoteMediator(
 
                             // 데이터 저장
                             database.feedDao().upsertAll(entities)
+                            AppLogger.d(tag, "Upsert Feed Cache")
 
                             // 서버에서 받은 nextCursor를 키로 저장
                             // 만약 nextCursor가 null이라면 저장하지 않음
@@ -108,6 +113,8 @@ class FeedRemoteMediator(
                             }
                         }
                     }
+
+                    AppLogger.d(tag, "transaction committed")
                     MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 }
             }

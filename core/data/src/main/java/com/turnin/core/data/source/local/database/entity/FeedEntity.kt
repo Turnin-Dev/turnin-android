@@ -65,4 +65,5 @@ fun FeedEntity.toDomainModel(): Feed =
         userName = Name(userName),
         profileImageUrl = profileImageUrl,
         createdAt = createdAt,
+        sortOrder = sortOrder,
     )

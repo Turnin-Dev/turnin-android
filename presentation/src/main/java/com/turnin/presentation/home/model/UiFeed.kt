@@ -14,6 +14,7 @@ import com.turnin.core.domain.feed.model.Feed
  * @property keyword 키워드 명
  * @property description 키워드 내용
  * @property createdAt 키워드 생성 일자
+ * @property sortOrder 정렬 순서
  */
 data class UiFeed(
     val userKeywordId: Long,
@@ -24,6 +25,7 @@ data class UiFeed(
     val keyword: String,
     val description: String,
     val createdAt: String,
+    val sortOrder: Int,
 ) {
     companion object {
         val sample = UiFeed(
@@ -37,6 +39,7 @@ data class UiFeed(
                 "제5항에 의하여 법률이 확정된 후 또는 제4항에 의한 확정법률이 정부에 이송된 후" +
                 "5일 이내에 대통령이 공포하지 아니할 때에는 국회의장이 이를 공포한다.",
             createdAt = "2026.01.01",
+            sortOrder = 0,
         )
     }
 }
@@ -51,4 +54,5 @@ fun Feed.toUiModel(): UiFeed =
         keyword = keyword.value,
         description = description.value,
         createdAt = createdAt.toRelativeTime(false),
+        sortOrder = sortOrder,
     )

@@ -15,7 +15,7 @@
 
     <!-- Home Screen -->
     <string name="home_screen_notification">알림</string>
-    <string name="home_screen_drop_down_menu_item_total">전체</string>
+    <string name="home_screen_drop_down_menu_item_all">전체</string>
     <string name="home_screen_drop_down_menu_item_friend">친구</string>
     <!-- Home Screen Error-->
     <string name="home_screen_error_message_default">문제가 발생했어요. 다시 시도해주세요.</string>

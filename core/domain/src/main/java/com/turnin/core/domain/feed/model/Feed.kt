@@ -18,6 +18,7 @@ import com.turnin.core.domain.model.UserKeywordId
  * @property keyword 키워드 명
  * @property description 키워드 내용
  * @property createdAt 키워드 생성 일자
+ * @property sortOrder 정렬 순서
  */
 data class Feed(
     val userKeywordId: UserKeywordId,
@@ -28,4 +29,5 @@ data class Feed(
     val keyword: KeywordName,
     val description: KeywordDescription,
     val createdAt: Long,
+    val sortOrder: Int,
 )
