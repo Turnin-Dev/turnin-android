@@ -37,9 +37,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -67,6 +69,7 @@ import com.turnin.core.designsystem.util.token.ScreenTokens
 import com.turnin.core.domain.common.error.PagingApiCallException
 import com.turnin.core.presentation.common.error.asUiText
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
+import com.turnin.core.presentation.common.util.rememberPagingMediatorRefreshing
 import com.turnin.core.presentation.ui.component.error.FooterError
 import com.turnin.core.presentation.ui.component.indicator.TurninIndicator
 import com.turnin.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
@@ -171,6 +174,8 @@ fun HomeScreen(
         }
     }
 
+    val isPagingRefreshing = rememberPagingMediatorRefreshing(feeds)
+
     // 새로고침 후 수동 새로고침 초기화
     LaunchedEffect(isRefreshing) {
         if (!isRefreshing) isManualRefresh = false
@@ -243,6 +248,7 @@ fun HomeScreen(
                     pagingItems = feeds,
                     key = feeds.itemKey { "${it.userKeywordId}_${it.sortOrder}" },
                     contentType = feeds.itemContentType { "FEED_ITEM" },
+                    isPagingMediatorRefreshing = isPagingRefreshing,
                     skeletonCount = 10,
                     skeleton = {
                         FeedSkeleton()
@@ -273,8 +279,11 @@ fun HomeScreen(
                             onRetry = { feeds.retry() },
                         )
                     },
-                    emptyGuidance = {
-                        // TODO: 친구 페이징에서만 필요
+                    lastContent = {
+                        // 일단 소진이 비교적 빠른 친구 피드 목록에서만 사용
+                        if (dropDownMenuState.selectedIndex == 1) {
+                            FeedLastContent()
+                        }
                     },
                 ) { idx ->
                     val feed = feeds[idx]
@@ -409,6 +418,22 @@ private fun FeedSkeleton() {
             SkeletonBox(Modifier.size(247.dp, 16.dp))
         }
     }
+}
+
+/**
+ * 피드의 마지막 컨텐츠
+ *
+ * 더 이상 로드할 피드가 없을 때 마지막으로 표시된다.
+ */
+@Composable
+private fun FeedLastContent(modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier.fillMaxWidth(),
+        text = "•",
+        textAlign = TextAlign.Center,
+        fontSize = 15.sp,
+        color = TurninTheme.colorScheme.textAssist2,
+    )
 }
 
 private val FeedAvatarSize = 28.dp
