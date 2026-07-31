@@ -69,7 +69,7 @@ class NetworkModule {
     @TokenOkHttpClient
     @Singleton
     @Provides
-    fun providerTokenOkHttpClient(
+    fun provideTokenOkHttpClient(
         tokenAuthenticator: TokenAuthenticator,
         tokenInterceptor: TokenInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
@@ -83,6 +83,15 @@ class NetworkModule {
         .addInterceptor(tokenInterceptor)
         .addNetworkInterceptor(cacheInterceptor)
         .commonTimeout()
+        .build()
+
+    @FileOkHttpClient
+    @Singleton
+    @Provides
+    fun provideFileOkHttpClient(
+        @TokenOkHttpClient okHttpClient: OkHttpClient,
+    ): OkHttpClient = okHttpClient.newBuilder()
+        .fileTimeout()
         .build()
 
     // ------------------------------ Interceptor ------------------------------
@@ -149,8 +158,19 @@ annotation class DefaultOkHttpClient
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenOkHttpClient
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FileOkHttpClient
+
 // ------------------------------ Utils ------------------------------
 private fun OkHttpClient.Builder.commonTimeout(): OkHttpClient.Builder =
+    this
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .callTimeout(15, TimeUnit.SECONDS)
+
+private fun OkHttpClient.Builder.fileTimeout(): OkHttpClient.Builder =
     this
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
