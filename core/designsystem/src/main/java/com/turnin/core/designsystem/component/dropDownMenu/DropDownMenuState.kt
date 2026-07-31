@@ -20,6 +20,10 @@ class DropDownMenuState(
     initialItems: List<TurninDropDownMenuItem>,
     initialSelectedIndex: Int = 0,
 ) {
+    init {
+        require(initialItems.isNotEmpty()) { "items must be empty" }
+    }
+
     /** 드롭다운 메뉴 확장 여부 */
     var expanded by mutableStateOf(false)
         private set
@@ -29,7 +33,9 @@ class DropDownMenuState(
         private set
 
     /** 선택된 드롭다운 메뉴 항목 */
-    var selectedIndex by mutableIntStateOf(initialSelectedIndex)
+    var selectedIndex by mutableIntStateOf(
+        initialSelectedIndex.takeIf { it in initialItems.indices } ?: 0,
+    )
         private set
 
     /**
@@ -54,6 +60,7 @@ class DropDownMenuState(
      * @param index 선택할 항목의 인덱스
      */
     fun select(index: Int) {
+        if (index !in items.indices) return
         selectedIndex = index
         expanded = false
     }
@@ -64,9 +71,7 @@ class DropDownMenuState(
      * @param item 선택할 항목
      */
     fun select(item: TurninDropDownMenuItem) {
-        val findItemIndex = items.indexOf(item)
-        selectedIndex = findItemIndex
-        expanded = false
+        select(items.indexOf(item))
     }
 
     companion object {

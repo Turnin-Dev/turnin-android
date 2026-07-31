@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -32,8 +32,8 @@ fun <T : Any> rememberPagingMediatorRefreshing(
     pagingItems: LazyPagingItems<T>,
     timeoutMillis: Long = 3000L,
 ): Boolean {
-    var isRefreshing by remember { mutableStateOf(false) }
-    var pendingSnapshotUpdate by remember { mutableStateOf(false) }
+    var isRefreshing by rememberSaveable { mutableStateOf(false) }
+    var pendingSnapshotUpdate by rememberSaveable { mutableStateOf(false) }
 
     val mediatorRefresh = pagingItems.loadState.mediator?.refresh
 
@@ -41,8 +41,11 @@ fun <T : Any> rememberPagingMediatorRefreshing(
         when (mediatorRefresh) {
             is LoadState.Loading -> isRefreshing = true
             is LoadState.NotLoading -> if (isRefreshing) pendingSnapshotUpdate = true
+            is LoadState.Error -> {
+                isRefreshing = false
+                pendingSnapshotUpdate = false
+            }
             null -> isRefreshing = false
-            else -> Unit
         }
     }
 
