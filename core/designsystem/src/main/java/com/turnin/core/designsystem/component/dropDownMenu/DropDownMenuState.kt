@@ -21,7 +21,7 @@ class DropDownMenuState(
     initialSelectedIndex: Int = 0,
 ) {
     init {
-        require(initialItems.isNotEmpty()) { "items must be empty" }
+        require(initialItems.isNotEmpty()) { "items must not be empty" }
     }
 
     /** 드롭다운 메뉴 확장 여부 */
