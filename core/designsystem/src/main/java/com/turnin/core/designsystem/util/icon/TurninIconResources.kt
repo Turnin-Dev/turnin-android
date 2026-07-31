@@ -52,6 +52,9 @@ val TurninIcons.Filled.Normal.Send: TurninIconType
 val TurninIcons.Filled.Normal.Exclamation: TurninIconType
     get() = TurninIconType(R.drawable.ic_filled_normal_exclamation)
 
+val TurninIcons.Filled.Normal.Thunder: TurninIconType
+    get() = TurninIconType(R.drawable.ic_filled_normal_thunder)
+
 // ------------------------------ Filled (Bold) ------------------------------
 
 val TurninIcons.Filled.Bold.Report: TurninIconType
@@ -65,6 +68,9 @@ val TurninIcons.Filled.Bold.Edit: TurninIconType
 
 val TurninIcons.Filled.Bold.Send: TurninIconType
     get() = TurninIconType(R.drawable.ic_filled_bold_send)
+
+val TurninIcons.Filled.Bold.Thunder: TurninIconType
+    get() = TurninIconType(R.drawable.ic_filled_bold_thunder)
 
 // ------------------------------ Outlined (Normal) ------------------------------
 
@@ -122,6 +128,9 @@ val TurninIcons.Outlined.Normal.Send: TurninIconType
 val TurninIcons.Outlined.Normal.Exclamation: TurninIconType
     get() = TurninIconType(R.drawable.ic_outlined_normal_exclamation)
 
+val TurninIcons.Outlined.Normal.Thunder: TurninIconType
+    get() = TurninIconType(R.drawable.ic_outlined_normal_thunder)
+
 // ------------------------------ Outlined (Bold) ------------------------------
 
 val TurninIcons.Outlined.Bold.Search: TurninIconType
@@ -144,6 +153,9 @@ val TurninIcons.Outlined.Bold.Edit: TurninIconType
 
 val TurninIcons.Outlined.Bold.Send: TurninIconType
     get() = TurninIconType(R.drawable.ic_outlined_bold_send)
+
+val TurninIcons.Outlined.Bold.Thunder: TurninIconType
+    get() = TurninIconType(R.drawable.ic_outlined_bold_thunder)
 
 // ------------------------------ Default (Normal) ------------------------------
 

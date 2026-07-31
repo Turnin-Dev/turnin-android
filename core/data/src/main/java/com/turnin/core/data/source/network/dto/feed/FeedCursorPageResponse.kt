@@ -9,5 +9,5 @@ import com.turnin.core.data.source.network.util.CursorPageResponse
 @JsonClass(generateAdapter = true)
 data class FeedCursorPageResponse(
     override val items: List<FeedResponse>,
-    override val nextCursor: FeedCursorResponse?,
-) : CursorPageResponse<FeedResponse, FeedCursorResponse>
+    override val nextCursor: String?,
+) : CursorPageResponse<FeedResponse, String>
