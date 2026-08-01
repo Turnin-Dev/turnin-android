@@ -10,10 +10,12 @@ import com.turnin.core.domain.file.model.FileCategory
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.net.HttpURLConnection
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
+import okhttp3.mockwebserver.SocketPolicy
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -158,6 +160,70 @@ class FileNetworkDataSourceImplTest {
         assertTrue(result is NetworkResult.Error)
         assertEquals(
             NetworkErrorType.Network.UploadFileFailed,
+            (result as NetworkResult.Error).error,
+        )
+    }
+
+    @Test
+    fun `uploadFile() 실패 테스트 - 타임아웃 발생 시 TimeOut 에러를 반환한다`() = runTest {
+        // given
+        val fileContent = "test file content".toByteArray()
+        val mimeType = "image/jpeg"
+        val presignedUrl = testRule.server.url("/upload").toString()
+
+        // 타임아웃을 짧게 설정한 클라이언트 생성
+        val shortTimeoutClient = OkHttpClient.Builder()
+            .connectTimeout(50, TimeUnit.MILLISECONDS)
+            .readTimeout(50, TimeUnit.MILLISECONDS)
+            .writeTimeout(50, TimeUnit.MILLISECONDS)
+            .build()
+
+        dataSource = FileNetworkDataSourceImpl(fileApi, shortTimeoutClient)
+
+        testRule.server.enqueue(
+            MockResponse().apply {
+                socketPolicy = SocketPolicy.NO_RESPONSE
+            },
+        )
+
+        // when
+        val result = dataSource.uploadFile(presignedUrl, fileContent, mimeType)
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Exception.TimeOut,
+            (result as NetworkResult.Error).error,
+        )
+    }
+
+    @Test
+    fun `uploadFile() 실패 테스트 - callTimeout 초과 시 TimeOut 에러를 반환한다`() = runTest {
+        // given
+        val fileContent = "test file content".toByteArray()
+        val mimeType = "image/jpeg"
+        val presignedUrl = testRule.server.url("/upload").toString()
+
+        // callTimeout만 짧게 설정한 클라이언트 생성 (connect/read/write는 넉넉하게 유지)
+        val shortCallTimeoutClient = OkHttpClient.Builder()
+            .callTimeout(50, TimeUnit.MILLISECONDS)
+            .build()
+
+        dataSource = FileNetworkDataSourceImpl(fileApi, shortCallTimeoutClient)
+
+        testRule.server.enqueue(
+            MockResponse().apply {
+                socketPolicy = SocketPolicy.NO_RESPONSE
+            },
+        )
+
+        // when
+        val result = dataSource.uploadFile(presignedUrl, fileContent, mimeType)
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Exception.TimeOut,
             (result as NetworkResult.Error).error,
         )
     }

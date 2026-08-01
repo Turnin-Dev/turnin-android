@@ -57,6 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
@@ -182,11 +183,13 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(lifecycleOwner.lifecycle, snackbarHostState) {
                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     withContext(Dispatchers.Main.immediate) {
-                        snackbarController.events.collect { event ->
+                        snackbarController.events.collectLatest { event ->
                             AppLogger.d(tag, "Snackbar event received: ${event.message}")
 
                             if (!isAuthScreen) {
                                 try {
+                                    snackbarHostState.currentSnackbarData?.dismiss()
+
                                     val result =
                                         snackbarHostState.showSnackbar(
                                             message = event.message.asString(context),

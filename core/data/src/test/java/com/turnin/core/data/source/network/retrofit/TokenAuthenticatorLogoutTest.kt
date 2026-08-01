@@ -1,5 +1,6 @@
 package com.turnin.core.data.source.network.retrofit
 
+import com.turnin.core.data.MockLog
 import com.turnin.core.data.eventBus.AuthEventBusImpl
 import com.turnin.core.data.source.local.datastore.DataStoreKey
 import com.turnin.core.data.source.local.datastore.DataStoreManager
@@ -47,6 +48,8 @@ class TokenAuthenticatorLogoutTest {
 
     @Before
     fun setUp() {
+        MockLog.mock()
+
         // MockWebServer 설정
         mockWebServer = MockWebServer()
         mockWebServer.start()
@@ -84,9 +87,13 @@ class TokenAuthenticatorLogoutTest {
 
     @After
     fun teardown() {
-        Dispatchers.resetMain()
-        mockWebServer.close()
-        clearAllMocks()
+        try {
+            Dispatchers.resetMain()
+            mockWebServer.close()
+            clearAllMocks()
+        } finally {
+            MockLog.cleanUp()
+        }
     }
 
     @Test

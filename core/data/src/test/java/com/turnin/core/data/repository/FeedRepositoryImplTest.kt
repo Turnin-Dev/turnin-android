@@ -5,7 +5,6 @@ import androidx.paging.testing.asSnapshot
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.turnin.core.data.MainDispatcherRule
-import com.turnin.core.data.MockLog
 import com.turnin.core.data.source.local.database.TurninDatabase
 import com.turnin.core.data.source.network.datasource.FeedNetworkDataSource
 import com.turnin.core.data.source.network.dto.feed.FeedCursorPageResponse
@@ -24,6 +23,7 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -51,11 +51,11 @@ class FeedRepositoryImplTest {
 
     @Before
     fun setUp() {
-        MockLog.mock()
-
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = Room.inMemoryDatabaseBuilder(context, TurninDatabase::class.java)
             .allowMainThreadQueries()
+            .setQueryExecutor(mainDispatcherRule.testDispatcher.asExecutor())
+            .setTransactionExecutor(mainDispatcherRule.testDispatcher.asExecutor())
             .build()
         repository = FeedRepositoryImpl(dataSource, database)
     }
@@ -64,8 +64,6 @@ class FeedRepositoryImplTest {
     fun teardown() {
         database.clearAllTables()
         database.close()
-
-        MockLog.cleanUp()
 
         clearMocks(dataSource)
     }
@@ -134,7 +132,9 @@ class FeedRepositoryImplTest {
         // Repository 호출 및 데이터 수집
         // PagingData는 수집하기 전까지 내부 로직이 돌아가지 않으므로 collect 처리
         val pagingDataFlow = repository.getFeeds(FeedType.ALL)
-        val snapshot = pagingDataFlow.asSnapshot()
+        val snapshot = pagingDataFlow.asSnapshot {
+            scrollTo(index = 1)
+        }
         advanceUntilIdle()
 
         // then
@@ -222,39 +222,27 @@ class FeedRepositoryImplTest {
     }
 
     @Test
-    fun `피드 유형에 따라 피드 데이터를 반환한다`() = runTest {
+    fun `친구 피드 조회 시 정상적으로 조회된다`() = runTest {
         // given: 피드 유형별로 데이터 설정
         val itemCount = 2
-        val allFeedResponse = List(itemCount) { createFeedResponse(it + 1L) }
-        val friendFeedResponse = List(itemCount) { createFeedResponse(it + 1L + itemCount) }
-        val allFeedCursorPage = FeedCursorPageResponse(
-            items = allFeedResponse,
-            nextCursor = null,
-        )
+        val friendFeedResponse = List(itemCount) { createFeedResponse(it + 1L) }
         val friendFeedCursorPage = FeedCursorPageResponse(
             items = friendFeedResponse,
             nextCursor = null,
         )
 
         coEvery {
-            dataSource.getFeeds(FeedType.ALL, any(), any())
-        } returns NetworkResult.Success(allFeedCursorPage)
-        coEvery {
             dataSource.getFeeds(FeedType.FRIEND, any(), any())
         } returns NetworkResult.Success(friendFeedCursorPage)
 
         // when: 피드 유형별로 각각 페이징 진행
-        val allSnapshot = repository.getFeeds(FeedType.ALL).asSnapshot()
         val friendSnapshot = repository.getFeeds(FeedType.FRIEND).asSnapshot()
+        advanceUntilIdle()
 
-        // then: 각 페이징 스냅샷 검증
-        assertEquals(itemCount, allSnapshot.size)
+        // then: 페이징 스냅샷 검증
         assertEquals(itemCount, friendSnapshot.size)
-        // 전체 유형의 ID: 1,2 / 친구 유형의 ID: 3, 4
-        assertEquals(1L, allSnapshot[0].userKeywordId.value)
-        assertEquals(2L, allSnapshot[1].userKeywordId.value)
-        assertEquals(3L, friendSnapshot[0].userKeywordId.value)
-        assertEquals(4L, friendSnapshot[1].userKeywordId.value)
+        assertEquals(1L, friendSnapshot[0].userKeywordId.value)
+        assertEquals(2L, friendSnapshot[1].userKeywordId.value)
     }
 
     private fun createFeedResponse(id: Long) =

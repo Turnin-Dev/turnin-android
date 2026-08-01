@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 
 @Singleton
 class SnackbarControllerImpl @Inject constructor() : SnackbarController {
-    private val _events = Channel<SnackbarEvent>(Channel.BUFFERED)
+    private val _events = Channel<SnackbarEvent>(Channel.CONFLATED)
     override val events: Flow<SnackbarEvent>
         get() = _events.receiveAsFlow()
 
