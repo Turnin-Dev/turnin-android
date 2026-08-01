@@ -198,6 +198,37 @@ class FileNetworkDataSourceImplTest {
     }
 
     @Test
+    fun `uploadFile() 실패 테스트 - callTimeout 초과 시 TimeOut 에러를 반환한다`() = runTest {
+        // given
+        val fileContent = "test file content".toByteArray()
+        val mimeType = "image/jpeg"
+        val presignedUrl = testRule.server.url("/upload").toString()
+
+        // callTimeout만 짧게 설정한 클라이언트 생성 (connect/read/write는 넉넉하게 유지)
+        val shortCallTimeoutClient = OkHttpClient.Builder()
+            .callTimeout(50, TimeUnit.MILLISECONDS)
+            .build()
+
+        dataSource = FileNetworkDataSourceImpl(fileApi, shortCallTimeoutClient)
+
+        testRule.server.enqueue(
+            MockResponse().apply {
+                socketPolicy = SocketPolicy.NO_RESPONSE
+            },
+        )
+
+        // when
+        val result = dataSource.uploadFile(presignedUrl, fileContent, mimeType)
+
+        // then
+        assertTrue(result is NetworkResult.Error)
+        assertEquals(
+            NetworkErrorType.Exception.TimeOut,
+            (result as NetworkResult.Error).error,
+        )
+    }
+
+    @Test
     fun `uploadFile() 실패 테스트 - 잘못된 mime 입력 시 Error를 반환한다`() = runTest {
         // Given
         val fileContent = "test file content".toByteArray()

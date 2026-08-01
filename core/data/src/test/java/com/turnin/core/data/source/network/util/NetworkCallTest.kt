@@ -55,9 +55,11 @@ class NetworkCallTest {
 
     @After
     fun teardown() {
-        server.shutdown()
-
-        MockLog.cleanUp()
+        try {
+            server.shutdown()
+        } finally {
+            MockLog.cleanUp()
+        }
     }
 
     @Test

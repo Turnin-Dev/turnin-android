@@ -8,6 +8,7 @@ import com.turnin.core.data.source.network.error.NetworkErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.data.source.network.util.networkCall
 import com.turnin.core.domain.file.model.FileCategory
+import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
@@ -69,11 +70,15 @@ class FileNetworkDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             AppLogger.e(tag, e, "File upload failed")
-            val errorType = when (e) {
-                is SocketTimeoutException -> NetworkErrorType.Exception.TimeOut
+            val errorType = when {
+                e is SocketTimeoutException -> NetworkErrorType.Exception.TimeOut
+                e is InterruptedIOException && e.isTimeout() -> NetworkErrorType.Exception.TimeOut
                 else -> NetworkErrorType.Network.UploadFileFailed
             }
             NetworkResult.Error(errorType)
         }
     }
+
+    private fun InterruptedIOException.isTimeout(): Boolean =
+        message?.equals("timeout", ignoreCase = true) == true
 }

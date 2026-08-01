@@ -99,7 +99,9 @@ class NetworkModule {
     @Provides
     fun provideFileUploadOkHttpClient(
         @DefaultOkHttpClient okHttpClient: OkHttpClient,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient = okHttpClient.newBuilder()
+        .apply { interceptors().remove(httpLoggingInterceptor) }
         .fileTimeout()
         .build()
 

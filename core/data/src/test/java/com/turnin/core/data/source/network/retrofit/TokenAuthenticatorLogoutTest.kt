@@ -87,11 +87,13 @@ class TokenAuthenticatorLogoutTest {
 
     @After
     fun teardown() {
-        Dispatchers.resetMain()
-        mockWebServer.close()
-
-        clearAllMocks()
-        MockLog.cleanUp()
+        try {
+            Dispatchers.resetMain()
+            mockWebServer.close()
+            clearAllMocks()
+        } finally {
+            MockLog.cleanUp()
+        }
     }
 
     @Test

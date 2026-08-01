@@ -46,17 +46,21 @@ class ServerTestRule : ExternalResource() {
     }
 
     override fun after() {
-        // MockWebServer
-        _server?.shutdown()
-        _server = null
-
-        // Timber
-        if (Timber.Forest.forest().contains(mockTree)) {
-            Timber.Forest.uproot(mockTree)
+        try {
+            // MockWebServer
+            _server?.shutdown()
+        } finally {
+            _server = null
+            try {
+                // Timber
+                if (Timber.Forest.forest().contains(mockTree)) {
+                    Timber.Forest.uproot(mockTree)
+                }
+            } finally {
+                // Log Mock
+                MockLog.cleanUp()
+            }
         }
-
-        // Log Mock
-        MockLog.cleanUp()
     }
 
     /**

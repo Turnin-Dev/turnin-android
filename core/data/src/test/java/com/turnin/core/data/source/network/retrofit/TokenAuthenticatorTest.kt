@@ -70,9 +70,12 @@ class TokenAuthenticatorTest {
 
     @After
     fun tearDown() {
-        mockWebServer.shutdown()
-        clearAllMocks()
-        MockLog.cleanUp()
+        try {
+            mockWebServer.shutdown()
+            clearAllMocks()
+        } finally {
+            MockLog.cleanUp()
+        }
     }
 
     @Test
