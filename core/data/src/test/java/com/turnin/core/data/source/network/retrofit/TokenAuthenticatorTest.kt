@@ -1,5 +1,6 @@
 package com.turnin.core.data.source.network.retrofit
 
+import com.turnin.core.data.MockLog
 import com.turnin.core.data.source.local.datastore.DataStoreKey
 import com.turnin.core.data.source.local.datastore.DataStoreManager
 import com.turnin.core.data.source.network.api.RefreshTokenApi
@@ -39,6 +40,8 @@ class TokenAuthenticatorTest {
 
     @Before
     fun setUp() {
+        MockLog.mock()
+
         // MockWebServer 설정
         mockWebServer = MockWebServer()
         mockWebServer.start()
@@ -69,6 +72,7 @@ class TokenAuthenticatorTest {
     fun tearDown() {
         mockWebServer.shutdown()
         clearAllMocks()
+        MockLog.cleanUp()
     }
 
     @Test

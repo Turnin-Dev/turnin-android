@@ -5,6 +5,11 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 
+/**
+ * 기본 로그를 모킹한다.
+ *
+ * **만약, [ServerTestRule]을 사용중이라면 이를 사용할 필요가 없다.**
+ */
 object MockLog {
     fun mock() {
         mockkStatic(Log::class)
