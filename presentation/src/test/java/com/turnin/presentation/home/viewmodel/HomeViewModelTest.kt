@@ -83,26 +83,27 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `initialLoadFriendsPagingData 호출 시 friendsPagingData가 로드된다`() = runTest(dispatcherRule.testDispatcher) {
-        // given
-        val expectedFeeds = createFeeds(3)
-        every { getFeedsUseCase(FeedType.ALL) } returns flowOf(PagingData.empty())
-        every { getFeedsUseCase(FeedType.FRIEND) } returns flowOf(PagingData.from(expectedFeeds))
+    fun `initialLoadFriendsPagingData 호출 시 friendsPagingData가 로드된다`() =
+        runTest(dispatcherRule.testDispatcher) {
+            // given
+            val expectedFeeds = createFeeds(3)
+            every { getFeedsUseCase(FeedType.ALL) } returns flowOf(PagingData.empty())
+            every { getFeedsUseCase(FeedType.FRIEND) } returns flowOf(PagingData.from(expectedFeeds))
 
-        viewModel = HomeViewModel(getFeedsUseCase)
-        val expectedUiFeeds = expectedFeeds.map { it.toUiModel() }
+            viewModel = HomeViewModel(getFeedsUseCase)
+            val expectedUiFeeds = expectedFeeds.map { it.toUiModel() }
 
-        // when
-        viewModel.initialLoadFriendsPagingData()
-        advanceUntilIdle()
+            // when
+            viewModel.initialLoadFriendsPagingData()
+            advanceUntilIdle()
 
-        val actualList = viewModel.friendsPagingData.first()
-            .collectDataForTest(dispatcherRule.testDispatcher, dispatcherRule.testDispatcher)
+            val actualList = viewModel.friendsPagingData.first()
+                .collectDataForTest(dispatcherRule.testDispatcher, dispatcherRule.testDispatcher)
 
-        // then
-        assertEquals(expectedUiFeeds.size, actualList.size)
-        assertEquals(expectedUiFeeds, actualList)
-    }
+            // then
+            assertEquals(expectedUiFeeds.size, actualList.size)
+            assertEquals(expectedUiFeeds, actualList)
+        }
 
     @Test
     fun `friendsPagingData 에러 발생 시 빈 페이징 데이터를 반환한다`() = runTest(dispatcherRule.testDispatcher) {
@@ -132,7 +133,7 @@ class HomeViewModelTest {
             keywordId = KeywordId.from(it.toLong() + 1),
             keyword = KeywordName.from("Keyword$it"),
             description = KeywordDescription("Description$it"),
-            createdAt = System.currentTimeMillis(),
+            createdAt = 0L,
             sortOrder = it,
         )
     }

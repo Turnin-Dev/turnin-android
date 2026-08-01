@@ -13,11 +13,15 @@ object MockLog {
         every { Log.d(any(), any()) } returns 0
         every { Log.d(any(), any(), any()) } returns 0
         every { Log.i(any(), any()) } returns 0
+        every { Log.i(any(), any(), any()) } returns 0
         every { Log.w(any(), any<String>()) } returns 0
-        every { Log.e(any(), any()) } returns 0
-        every { Log.isLoggable(any<String>(), any()) } returns true
-        every { Log.e(any(), any(), any()) } returns 0
         every { Log.w(any(), any<String>(), any()) } returns 0
+        every { Log.w(any(), any<Throwable>()) } returns 0
+        every { Log.e(any(), any()) } returns 0
+        every { Log.e(any(), any(), any()) } returns 0
+        every { Log.println(any(), any(), any()) } returns 0
+        every { Log.isLoggable(any(), any()) } returns true
+        every { Log.getStackTraceString(any()) } returns ""
     }
 
     fun cleanUp() {

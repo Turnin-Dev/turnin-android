@@ -1,13 +1,14 @@
 package com.turnin.core.data.source.network.datasource
 
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.data.di.DefaultOkHttpClient
+import com.turnin.core.data.di.FileUploadOkHttpClient
 import com.turnin.core.data.source.network.api.FileApi
 import com.turnin.core.data.source.network.dto.file.response.PresignedUrlResponse
 import com.turnin.core.data.source.network.error.NetworkErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.data.source.network.util.networkCall
 import com.turnin.core.domain.file.model.FileCategory
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -17,7 +18,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class FileNetworkDataSourceImpl @Inject constructor(
     private val fileApi: FileApi,
-    @param:DefaultOkHttpClient private val okHttpClient: OkHttpClient,
+    @param:FileUploadOkHttpClient private val okHttpClient: OkHttpClient,
 ) : FileNetworkDataSource {
     private val tag = this::class.java.simpleName
 
@@ -35,6 +36,7 @@ class FileNetworkDataSourceImpl @Inject constructor(
     ): NetworkResult<PresignedUrlResponse> =
         networkCall { fileApi.getFileUpdatePresignedUrl(newFileName, mime, fileCategory) }
 
+    // TODO: 추후 서버에서 내려주는 값(헤더 스펙)으로 설정하도록 수정 예정
     override fun uploadFile(
         presignedUrl: String,
         file: ByteArray,
@@ -67,7 +69,11 @@ class FileNetworkDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             AppLogger.e(tag, e, "File upload failed")
-            NetworkResult.Error(NetworkErrorType.Network.UploadFileFailed)
+            val errorType = when (e) {
+                is SocketTimeoutException -> NetworkErrorType.Exception.TimeOut
+                else -> NetworkErrorType.Network.UploadFileFailed
+            }
+            NetworkResult.Error(errorType)
         }
     }
 }

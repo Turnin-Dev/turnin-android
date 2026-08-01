@@ -94,6 +94,15 @@ class NetworkModule {
         .fileTimeout()
         .build()
 
+    @FileUploadOkHttpClient
+    @Singleton
+    @Provides
+    fun provideFileUploadOkHttpClient(
+        @DefaultOkHttpClient okHttpClient: OkHttpClient,
+    ): OkHttpClient = okHttpClient.newBuilder()
+        .fileTimeout()
+        .build()
+
     // ------------------------------ Interceptor ------------------------------
 
     @Singleton
@@ -161,6 +170,10 @@ annotation class TokenOkHttpClient
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class FileOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FileUploadOkHttpClient
 
 // ------------------------------ Utils ------------------------------
 private fun OkHttpClient.Builder.commonTimeout(): OkHttpClient.Builder =

@@ -29,6 +29,9 @@ class ServerTestRule : ExternalResource() {
     }
 
     override fun before() {
+        // Log Mock
+        MockLog.mock()
+
         // MockWebServer
         _server?.shutdown()
         _server = MockWebServer().apply { start() }
@@ -48,6 +51,9 @@ class ServerTestRule : ExternalResource() {
         if (Timber.Forest.forest().contains(mockTree)) {
             Timber.Forest.uproot(mockTree)
         }
+
+        // Log Mock
+        MockLog.cleanUp()
     }
 
     /**
