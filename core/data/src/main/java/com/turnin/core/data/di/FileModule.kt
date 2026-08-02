@@ -21,7 +21,7 @@ class FileModule {
     @Provides
     fun provideFileApi(
         retrofit: Retrofit.Builder,
-        @DefaultOkHttpClient okHttpClient: OkHttpClient,
+        @FileOkHttpClient okHttpClient: OkHttpClient,
     ): FileApi =
         retrofit.client(okHttpClient).build().create(FileApi::class.java)
 }

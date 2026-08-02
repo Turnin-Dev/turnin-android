@@ -2,6 +2,7 @@ package com.turnin.core.data.source.network.util
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.turnin.core.data.MockLog
 import com.turnin.core.data.source.network.error.CommonErrorResponse
 import com.turnin.core.data.source.network.error.NetworkErrorType
 import java.util.concurrent.TimeUnit
@@ -28,6 +29,8 @@ class NetworkCallTest {
 
     @Before
     fun setUp() {
+        MockLog.mock()
+
         server = MockWebServer()
         server.start()
 
@@ -52,7 +55,11 @@ class NetworkCallTest {
 
     @After
     fun teardown() {
-        server.shutdown()
+        try {
+            server.shutdown()
+        } finally {
+            MockLog.cleanUp()
+        }
     }
 
     @Test

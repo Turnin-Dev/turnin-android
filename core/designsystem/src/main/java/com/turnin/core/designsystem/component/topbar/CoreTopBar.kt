@@ -1,6 +1,8 @@
 package com.turnin.core.designsystem.component.topbar
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,12 +28,73 @@ object TurninTopBarTokens {
 }
 
 /**
+ * Slot 기반의 Core TopBar
+ *
+ * 좌, 우, 중앙에 슬롯이 존재하며, 각 슬롯에 원하는 컴포넌트를 넣어 사용할 수 있다.
+ *
+ * 만약 좌, 우 중 한 슬롯만 사용하게 되면 그에 맞게 정렬된다. 단, 중앙 슬롯은 무조건 중앙에서만 위치한다.
+ *
+ * (보편적이고 어느정도의 제약이 갖춰진 탑바를 사용하려면 [CoreTopBar]를 사용해야 한다.)
+ *
+ * @param modifier [Modifier]
+ * @param leftSlot 왼쪽에 위치한 슬롯
+ * @param rightSlot 오른쪽에 위치한 슬롯
+ * @param centerSlot 중앙에 위치한 슬롯
+ */
+@Composable
+internal fun SlotBasedCoreTopBar(
+    modifier: Modifier = Modifier,
+    leftSlot: @Composable (RowScope.() -> Unit)? = null,
+    centerSlot: @Composable (BoxScope.() -> Unit)? = null,
+    rightSlot: @Composable (RowScope.() -> Unit)? = null,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = TurninTopBarTokens.Height),
+        contentAlignment = Alignment.Center,
+    ) {
+        // 좌우 영역
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = when {
+                leftSlot != null && rightSlot != null -> Arrangement.SpaceBetween
+                leftSlot != null -> Arrangement.Start
+                rightSlot != null -> Arrangement.End
+                else -> Arrangement.Center
+            },
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                leftSlot?.invoke(this)
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+            ) {
+                rightSlot?.invoke(this)
+            }
+        }
+
+        // 중앙 영역
+        Box(contentAlignment = Alignment.Center) {
+            centerSlot?.invoke(this)
+        }
+    }
+}
+
+/**
  * 모든 TopBar 의 기본이 되는 Core TopBar
  *
  * [CoreTopBar]의 모든 파라미터는 전부 `Nullable` 이며,
  * null 로 유지하면 해당 요소는 활성화되지 않는다. (시각적으로도 활성화되지 않음)
  *
- * **(단, [logoSlot]을 사용할 땐 나머지 파라미터를 활성화하지 않는다.)**
+ * (좀 더 자유롭고 제약이 느슨한 탑바를 사용하려면 [SlotBasedCoreTopBar]를 사용해야 한다.)
+ *
+ * **(참고: [logoSlot]을 사용할 땐 나머지 파라미터를 활성화하지 않는다.)**
  *
  * @param modifier [Modifier]
  * @param title 탑바 타이틀

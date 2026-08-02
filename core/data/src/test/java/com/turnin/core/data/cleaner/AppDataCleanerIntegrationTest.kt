@@ -8,6 +8,7 @@ import com.turnin.core.data.source.local.database.entity.MyKeywordEntity
 import com.turnin.core.data.source.local.database.entity.MyProfileEntity
 import com.turnin.core.data.source.local.datastore.DataStoreKey
 import com.turnin.core.data.source.local.datastore.DataStoreManager
+import com.turnin.core.domain.feed.model.FeedType
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -88,13 +89,14 @@ class AppDataCleanerIntegrationTest {
     private suspend fun insertRoomDBDummyData() {
         database.feedRemoteKeyDao().upsert(
             FeedRemoteKeyEntity(
-                cursorScore = 1.0,
-                cursorUserKeywordId = 1L,
+                type = FeedType.ALL,
+                cursor = "test-cursor",
             ),
         )
         database.feedDao().upsertAll(
             listOf(
                 FeedEntity(
+                    type = FeedType.ALL,
                     userKeywordId = 1L,
                     userId = 1L,
                     userName = "name",
@@ -103,8 +105,7 @@ class AppDataCleanerIntegrationTest {
                     keyword = "",
                     description = "",
                     createdAt = 1L,
-                    score = 1.0,
-                    similarity = 1.0,
+                    sortOrder = 0,
                 ),
             ),
         )

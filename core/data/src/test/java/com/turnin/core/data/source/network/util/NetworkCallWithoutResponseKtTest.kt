@@ -2,6 +2,7 @@ package com.turnin.core.data.source.network.util
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.turnin.core.data.MockLog
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -20,6 +21,8 @@ class NetworkCallWithoutResponseKtTest {
 
     @Before
     fun setUp() {
+        MockLog.mock()
+
         server = MockWebServer()
         server.start()
 
@@ -36,7 +39,11 @@ class NetworkCallWithoutResponseKtTest {
 
     @After
     fun teardown() {
-        server.shutdown()
+        try {
+            server.shutdown()
+        } finally {
+            MockLog.cleanUp()
+        }
     }
 
     @Test

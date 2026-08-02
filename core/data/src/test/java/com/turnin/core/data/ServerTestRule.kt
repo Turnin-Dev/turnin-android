@@ -13,6 +13,9 @@ import timber.log.Timber
  * 네트워크 관련 로직 테스트 룰
  *
  * [okhttp3.mockwebserver.MockWebServer], [com.squareup.moshi.Moshi], [timber.log.Timber] 가 포함되어 있다.
+ *
+ * 추가로 [MockLog]가 설정 되어있기 때문에,
+ * [ServerTestRule] 테스트 룰을 사용한다면 [MockLog]를 별도로 적용해줄 필요가 없다.
  */
 class ServerTestRule : ExternalResource() {
     private var _server: MockWebServer? = null
@@ -29,6 +32,9 @@ class ServerTestRule : ExternalResource() {
     }
 
     override fun before() {
+        // Log Mock
+        MockLog.mock()
+
         // MockWebServer
         _server?.shutdown()
         _server = MockWebServer().apply { start() }
@@ -40,13 +46,20 @@ class ServerTestRule : ExternalResource() {
     }
 
     override fun after() {
-        // MockWebServer
-        _server?.shutdown()
-        _server = null
-
-        // Timber
-        if (Timber.Forest.forest().contains(mockTree)) {
-            Timber.Forest.uproot(mockTree)
+        try {
+            // MockWebServer
+            _server?.shutdown()
+        } finally {
+            _server = null
+            try {
+                // Timber
+                if (Timber.Forest.forest().contains(mockTree)) {
+                    Timber.Forest.uproot(mockTree)
+                }
+            } finally {
+                // Log Mock
+                MockLog.cleanUp()
+            }
         }
     }
 

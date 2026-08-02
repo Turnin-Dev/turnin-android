@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.turnin.core.presentation.common.util.rememberPagingMediatorRefreshing
 
 /**
  * [LazyPagingItems]의 로딩 상태(초기 로딩, 추가 로딩, 에러)를
@@ -17,6 +18,10 @@ import androidx.paging.compose.LazyPagingItems
  * @param pagingItems 페이징 아이템
  * @param key [LazyColumn] key
  * @param contentType [LazyColumn] contentType
+ * @param isPagingMediatorRefreshing RemoteMediator 사용 시 [rememberPagingMediatorRefreshing]의
+ *   반환값을 전달해야 한다. mediator.refresh가 끝난 뒤에도 itemSnapshotList가 아직 갱신되지 않은
+ *   구간(stale 구간)을 로딩 중으로 취급해 이전 데이터가 잠깐 노출되는 것을 방지한다.
+ *   RemoteMediator를 쓰지 않는 Pager라면 생략(기본값 false).
  * @param skeletonCount 표시할 스켈레톤 개수
  * @param skeleton 스켈레톤 뷰
  * @param initialError 초기 에러 뷰
@@ -30,6 +35,7 @@ fun <T : Any> LazyListScope.pagingItem(
     pagingItems: LazyPagingItems<T>,
     key: ((Int) -> Any)? = null,
     contentType: (Int) -> Any? = { null },
+    isPagingMediatorRefreshing: Boolean = false,
     skeletonCount: Int = 5,
     skeleton: @Composable (LazyItemScope.(Int) -> Unit),
     initialError: @Composable (LazyItemScope.(Throwable) -> Unit),
@@ -47,7 +53,7 @@ fun <T : Any> LazyListScope.pagingItem(
     val isInitialState = sourceStates.refresh is LoadState.NotLoading &&
         !sourceStates.refresh.endOfPaginationReached
 
-    val isRefreshLoading = refreshState is LoadState.Loading
+    val isRefreshLoading = refreshState is LoadState.Loading || isPagingMediatorRefreshing
     val isRefreshError = refreshState is LoadState.Error
     val isInitialError = refreshState is LoadState.Error && itemCount == 0
     val isAppendLoading = appendState is LoadState.Loading
@@ -56,7 +62,8 @@ fun <T : Any> LazyListScope.pagingItem(
     val isItemsEmpty = isInitialState &&
         refreshState is LoadState.NotLoading &&
         appendState is LoadState.NotLoading &&
-        itemCount == 0
+        itemCount == 0 &&
+        !isPagingMediatorRefreshing
     val isEndOfReached = appendState is LoadState.NotLoading &&
         appendState.endOfPaginationReached
 
