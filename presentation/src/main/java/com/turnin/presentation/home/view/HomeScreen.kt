@@ -49,7 +49,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.turnin.core.designsystem.component.avatar.TurninAvatar
+import com.turnin.core.designsystem.component.button.TurninButtonStyle
 import com.turnin.core.designsystem.component.button.TurninIconButton
+import com.turnin.core.designsystem.component.button.TurninOutlinedButton
 import com.turnin.core.designsystem.component.dropDownMenu.DropDownMenuState
 import com.turnin.core.designsystem.component.dropDownMenu.TurninDropDownMenuItem
 import com.turnin.core.designsystem.component.dropDownMenu.TurninDropDownMenus
@@ -61,6 +63,7 @@ import com.turnin.core.designsystem.component.topbar.TurninTopBarTokens
 import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.click.clickableSingleWithoutRipple
+import com.turnin.core.designsystem.util.icon.Arrow2Right
 import com.turnin.core.designsystem.util.icon.Bell
 import com.turnin.core.designsystem.util.icon.Profile
 import com.turnin.core.designsystem.util.icon.Thunder
@@ -70,6 +73,7 @@ import com.turnin.core.domain.common.error.PagingApiCallException
 import com.turnin.core.presentation.common.error.asUiText
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
 import com.turnin.core.presentation.common.util.rememberPagingMediatorRefreshing
+import com.turnin.core.presentation.ui.component.EmptyGuidance
 import com.turnin.core.presentation.ui.component.error.FooterError
 import com.turnin.core.presentation.ui.component.indicator.TurninIndicator
 import com.turnin.core.presentation.ui.component.lazycolumn.RefreshableLazyColumn
@@ -147,6 +151,7 @@ private fun HomeScreenFrame(
  * @param onFeedClick 피드 클릭 시 콜백
  * @param onUserClick 사용자 클릭 시 콜백
  * @param onNotificationClick 알림 클릭 시 콜백
+ * @param onNavigateToDiscover 탐색 화면으로 이동 콜백
  */
 @Composable
 fun HomeScreen(
@@ -157,6 +162,7 @@ fun HomeScreen(
     onFeedClick: (UiFeed) -> Unit,
     onUserClick: (UserProfileArgs) -> Unit,
     onNotificationClick: () -> Unit,
+    onNavigateToDiscover: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -278,6 +284,15 @@ fun HomeScreen(
                             errorMessage = errorMessage,
                             onRetry = { feeds.retry() },
                         )
+                    },
+                    emptyGuidance = {
+                        // 일단 소진이 비교적 빠른 친구 피드 목록에서만 사용
+                        if (dropDownMenuState.selectedIndex == 1) {
+                            FriendFeedsEmptyGuidance(
+                                modifier = Modifier.fillMaxSize(),
+                                onClick = onNavigateToDiscover,
+                            )
+                        }
                     },
                     lastContent = {
                         // 일단 소진이 비교적 빠른 친구 피드 목록에서만 사용
@@ -436,6 +451,41 @@ private fun FeedLastContent(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * 친구 피드 화면 전용 빈화면 가이드
+ *
+ * @param modifier [Modifier]
+ * @param onClick CTA 역할의 버튼 클릭 시 수행할 콜백
+ */
+@Composable
+private fun FriendFeedsEmptyGuidance(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
+    ) {
+        EmptyGuidance(
+            modifier = Modifier.fillMaxWidth(),
+            title = stringResource(
+                R.string.home_screen_friend_empty_guidance_title,
+            ),
+            description = stringResource(
+                R.string.home_screen_friend_empty_guidance_description,
+            ),
+        )
+
+        TurninOutlinedButton(
+            text = stringResource(R.string.home_screen_friend_empty_guidance_btn),
+            style = TurninButtonStyle.Medium,
+            icon = TurninIcons.Default.Bold.Arrow2Right,
+            onClick = onClick,
+        )
+    }
+}
+
 private val FeedAvatarSize = 28.dp
 
 // ------------------------------ Previews ------------------------------
@@ -461,6 +511,37 @@ private fun FeedSkeletonPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
+private fun EmptyHomeScreenPreview() {
+    val feeds = testEmptyFeedsPagingData.collectAsLazyPagingItems()
+    val dropDownMenuState = rememberDropDownMenuState(
+        items = listOf(
+            TurninDropDownMenuItem(value = "전체", icon = TurninIcons.Outlined.Normal.Thunder),
+            TurninDropDownMenuItem(value = "친구", icon = TurninIcons.Outlined.Normal.Profile),
+        ),
+    )
+
+    LaunchedEffect(Unit) {
+        dropDownMenuState.select(1)
+    }
+
+    TurninAppTheme {
+        HomeScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(TurninTheme.colorScheme.backgroundNormal),
+            feeds = feeds,
+            dropDownMenuState = dropDownMenuState,
+            lazyListState = rememberLazyListState(),
+            onFeedClick = {},
+            onUserClick = {},
+            onNotificationClick = {},
+            onNavigateToDiscover = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
 private fun HomeScreenPreview() {
     val feeds = testFeedsPagingData.collectAsLazyPagingItems()
     val dropDownMenuState = rememberDropDownMenuState(
@@ -481,6 +562,7 @@ private fun HomeScreenPreview() {
             onFeedClick = {},
             onUserClick = {},
             onNotificationClick = {},
+            onNavigateToDiscover = {},
         )
     }
 }
@@ -490,5 +572,11 @@ private val testFeedsPagingData = MutableStateFlow(
         List(40) {
             UiFeed.sample.copy(userKeywordId = it + 1L)
         },
+    ),
+)
+
+private val testEmptyFeedsPagingData = MutableStateFlow(
+    PagingData.from(
+        emptyList<UiFeed>(),
     ),
 )

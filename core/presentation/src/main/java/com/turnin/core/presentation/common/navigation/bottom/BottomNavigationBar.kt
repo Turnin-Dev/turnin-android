@@ -32,7 +32,6 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -46,6 +45,7 @@ import com.turnin.core.designsystem.util.icon.TurninIconType
 import com.turnin.core.designsystem.util.icon.TurninIcons
 import com.turnin.core.presentation.R
 import com.turnin.core.presentation.common.navigation.SubGraph
+import com.turnin.core.presentation.common.navigation.navigateToBottomBarItem
 
 /**
  * 바텀 네비게이션 바 공개용 토큰 값들
@@ -186,18 +186,8 @@ private fun navigateWithOption(
             inclusive = false,
         )
     } else {
-        // 현재 선택된 탭과 다르다면 그냥 navigate 수행
-        // 첫 번째 화면만 스택에 쌓이므로 뒤로가기 시 첫 번째 화면으로 이동한다.
-        navController.navigate(currentRoute) {
-            navController.graph.findStartDestination().route?.let {
-                popUpTo(it) {
-                    saveState = true
-                }
-            }
-
-            launchSingleTop = true
-            restoreState = true
-        }
+        // 바텀바 아이템으로 이동
+        navController.navigateToBottomBarItem(currentRoute)
     }
 }
 

@@ -1,6 +1,7 @@
 package com.turnin.core.presentation.common.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.turnin.core.presentation.common.navigation.args.UserProfileArgs
 import com.turnin.core.presentation.ui.model.UiSocialLoginProvider
 
@@ -126,4 +127,20 @@ fun NavController.navigateToTermsOfService() {
 
 fun NavController.navigateToPrivacyPolicy() {
     navigate(Screens.PrivacyPolicy)
+}
+
+// ------------------------------ BottomBar Item ------------------------------
+fun NavController.navigateToBottomBarItem(route: SubGraph) {
+    // 현재 선택된 탭과 다르다면 그냥 navigate 수행
+    // 첫 번째 화면만 스택에 쌓이므로 뒤로가기 시 첫 번째 화면으로 이동한다.
+    navigate(route) {
+        graph.findStartDestination().route?.let {
+            popUpTo(it) {
+                saveState = true
+            }
+        }
+
+        launchSingleTop = true
+        restoreState = true
+    }
 }

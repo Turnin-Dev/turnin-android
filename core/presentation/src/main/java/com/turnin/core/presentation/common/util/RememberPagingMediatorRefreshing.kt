@@ -30,7 +30,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun <T : Any> rememberPagingMediatorRefreshing(
     pagingItems: LazyPagingItems<T>,
-    timeoutMillis: Long = 3000L,
+    timeoutMillis: Long = 1000L,
 ): Boolean {
     var isRefreshing by rememberSaveable { mutableStateOf(false) }
     var pendingSnapshotUpdate by rememberSaveable { mutableStateOf(false) }

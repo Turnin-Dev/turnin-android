@@ -44,6 +44,7 @@ fun BottomNavigation(
         ) {
             homeNavigation(
                 appNavController = appNavController,
+                bottomNavController = bottomNavController,
                 onCheckPermission = onCheckPermission,
             )
 
