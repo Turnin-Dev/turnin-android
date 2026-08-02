@@ -26,7 +26,12 @@ import com.turnin.core.presentation.ui.util.PreviewLightDarkWithBackground
 /**
  * 빈 화면 안내 뷰
  *
+ * 모든 파라미터는 선택 사항이다. 단, 단일 타이틀인 경우에만 형태가 약간 다르다.
+ *
  * @param modifier [Modifier]
+ * @param icon 아이콘
+ * @param title 주 제목
+ * @param description 부가 설명
  */
 @Composable
 fun EmptyGuidance(
