@@ -27,6 +27,7 @@ fun HomeRoute(
     onNavigateToKeywordDetail: (userId: Long, userKeywordId: Long) -> Unit,
     onNavigateToUserProfile: (UserProfileArgs) -> Unit,
     onNavigateToNotification: () -> Unit,
+    onNavigateToDiscover: () -> Unit,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val allFeeds = viewModel.allFeedsPagingData.collectAsLazyPagingItems()
@@ -76,6 +77,9 @@ fun HomeRoute(
         },
         onNotificationClick = {
             onNavigateToNotification()
+        },
+        onNavigateToDiscover = {
+            onNavigateToDiscover()
         },
     )
 }
