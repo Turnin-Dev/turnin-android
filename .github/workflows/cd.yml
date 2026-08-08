@@ -61,10 +61,10 @@ jobs:
                     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
                 run: |
                     ./gradlew assembleRelease bundleRelease \
-                      -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
-                      -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-                      -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-                      -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+                      -Pandroid.injected.signing.store.file="${{ github.workspace }}/app/keystore.jks" \
+                      -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+                      -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+                      -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
 
             # 7. Firebase App Distribution 배포
             -   name: Deploy to Firebase App Distribution
@@ -82,7 +82,7 @@ jobs:
 
             # 8. Play Store 배포 (비공개 테스트 트랙)
             -   name: Deploy to Play Store (Closed Testing)
-                uses: r0adkll/upload-google-play@v1
+                uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5
                 with:
                     serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
                     packageName: com.turnin.app
