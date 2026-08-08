@@ -53,33 +53,20 @@ jobs:
             -   name: Decode Keystore
                 run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore.jks
 
-            # 6. Release APK 빌드
-            -   name: Build Release APK
+            # 6. Release APK & AAB 빌드
+            -   name: Build Release APK & AAB
                 env:
                     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
                     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
                     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
                 run: |
-                    ./gradlew assembleRelease \
-                      -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
-                      -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-                      -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-                      -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+                    ./gradlew assembleRelease bundleRelease \
+                      -Pandroid.injected.signing.store.file="${{ github.workspace }}/app/keystore.jks" \
+                      -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+                      -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+                      -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
 
-            # 7. Release AAB 빌드 (Play Store 배포 시 주석 해제)
-            #            -   name: Build Release AAB
-            #                env:
-            #                    KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-            #                    KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-            #                    KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-            #                run: |
-            #                    ./gradlew bundleRelease \
-            #                      -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/keystore.jks \
-            #                      -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            #                      -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            #                      -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-
-            # 8. Firebase App Distribution 배포
+            # 7. Firebase App Distribution 배포
             -   name: Deploy to Firebase App Distribution
                 uses: wzieba/Firebase-Distribution-Github-Action@bd494989dd4bec0343f78adee87fe66e48279ad6 # v1
                 with:
@@ -93,17 +80,17 @@ jobs:
                         Author: ${{ github.actor }}
                         ${{ github.event.head_commit.message }}
 
-            # 9. Play Store 배포 (내부 테스트 트랙, Play Store 배포 시 주석 해제)
-            # - name: Deploy to Play Store (Internal Track)
-            #   uses: r0adkll/upload-google-play@v1
-            #   with:
-            #     serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
-            #     packageName: com.turnin.app
-            #     releaseFiles: app/build/outputs/bundle/release/app-release.aab
-            #     track: internal
-            #     status: completed
+            # 8. Play Store 배포 (비공개 테스트 트랙)
+            -   name: Deploy to Play Store (Closed Testing)
+                uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5
+                with:
+                    serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
+                    packageName: com.turnin.app
+                    releaseFiles: app/build/outputs/bundle/release/app-release.aab
+                    track: alpha
+                    status: completed
 
-            # 10. Keystore 삭제 (보안)
+            # 9. Keystore 삭제 (보안)
             -   name: Clean up Keystore
                 if: always()
                 run: rm -f app/keystore.jks
