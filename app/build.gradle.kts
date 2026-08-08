@@ -89,6 +89,10 @@ android {
             configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
             }
+
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
 
         create("releaseTest") {
