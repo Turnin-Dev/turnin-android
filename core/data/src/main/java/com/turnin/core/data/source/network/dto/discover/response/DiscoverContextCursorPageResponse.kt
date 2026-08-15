@@ -9,5 +9,5 @@ import com.turnin.core.data.source.network.util.CursorPageResponse
 @JsonClass(generateAdapter = true)
 data class DiscoverContextCursorPageResponse(
     override val items: List<DiscoverContextResponse>,
-    override val nextCursor: Long?,
-) : CursorPageResponse<DiscoverContextResponse, Long>
+    override val nextCursor: String?,
+) : CursorPageResponse<DiscoverContextResponse, String>
