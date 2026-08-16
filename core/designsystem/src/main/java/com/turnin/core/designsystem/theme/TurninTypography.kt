@@ -158,8 +158,8 @@ fun body2(): TextStyle = TextStyle(
 @Composable
 fun bodyContent(): TextStyle = TextStyle(
     fontSize = 15.sp,
-    lineHeight = 22.5.sp,
-    letterSpacing = 0.em,
+    lineHeight = 25.6.sp,
+    letterSpacing = 0.01.em,
     fontWeight = FontWeight.Normal,
     fontFamily = pretendard,
     lineHeightStyle = lineHeightStyle,

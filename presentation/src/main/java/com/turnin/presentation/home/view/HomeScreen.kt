@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
+import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -295,10 +297,7 @@ fun HomeScreen(
                         }
                     },
                     lastContent = {
-                        // 일단 소진이 비교적 빠른 친구 피드 목록에서만 사용
-                        if (dropDownMenuState.selectedIndex == 1) {
-                            FeedLastContent()
-                        }
+                        FeedLastContent()
                     },
                 ) { idx ->
                     val feed = feeds[idx]
@@ -318,6 +317,8 @@ fun HomeScreen(
                             },
                         )
                     }
+
+                    HomeFeedDivider(Modifier.fillMaxWidth())
                 }
             }
         },
@@ -337,7 +338,12 @@ private fun Feed(
     feed: UiFeed,
     onUserClick: () -> Unit,
 ) {
-    Column(modifier = modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
+    Column(
+        modifier = modifier.padding(
+            horizontal = ScreenTokens.HorizontalPadding,
+            vertical = 20.dp,
+        ),
+    ) {
         // 사용자 정보 일부, 생성 일자
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -398,40 +404,58 @@ private fun Feed(
 }
 
 @Composable
+private fun HomeFeedDivider(modifier: Modifier = Modifier) {
+    HorizontalDivider(
+        modifier = modifier,
+        thickness = 0.5.dp,
+        color = TurninTheme.colorScheme.lineDivider,
+    )
+}
+
+@Composable
 private fun FeedSkeleton() {
-    Column(modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
-        // 사용자 정보 일부, 생성 일자
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+    Column {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = ScreenTokens.HorizontalPadding,
+                vertical = 20.dp,
+            ),
         ) {
-            // 사용자 정보 일부
+            // 사용자 정보 일부, 생성 일자
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SkeletonBox(Modifier.size(FeedAvatarSize), CircleShape)
-                SkeletonBox(Modifier.size(63.dp, 12.dp))
+                // 사용자 정보 일부
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SkeletonBox(Modifier.size(FeedAvatarSize), CircleShape)
+                    SkeletonBox(Modifier.size(63.dp, 12.dp))
+                }
+
+                // 생성 일자
+                SkeletonBox(Modifier.size(49.dp, 12.dp))
             }
 
-            // 생성 일자
-            SkeletonBox(Modifier.size(49.dp, 12.dp))
+            Spacer(Modifier.height(16.dp))
+
+            // 키워드
+            SkeletonBox(Modifier.size(100.dp, 28.dp))
+
+            Spacer(Modifier.height(8.dp))
+
+            // 키워드 내용
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                SkeletonBox(Modifier.size(262.dp, 16.dp))
+                SkeletonBox(Modifier.size(262.dp, 16.dp))
+                SkeletonBox(Modifier.size(247.dp, 16.dp))
+            }
         }
 
-        Spacer(Modifier.height(16.dp))
-
-        // 키워드
-        SkeletonBox(Modifier.size(100.dp, 28.dp))
-
-        Spacer(Modifier.height(8.dp))
-
-        // 키워드 내용
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            SkeletonBox(Modifier.size(262.dp, 16.dp))
-            SkeletonBox(Modifier.size(262.dp, 16.dp))
-            SkeletonBox(Modifier.size(247.dp, 16.dp))
-        }
+        HomeFeedDivider(Modifier.fillMaxWidth())
     }
 }
 
@@ -511,6 +535,68 @@ private fun FeedSkeletonPreview() {
 
 @PreviewLightDarkWithBackground
 @Composable
+private fun SkeletonHomeScreenPreview() {
+    val feeds = testLoadingFeedsPagingData.collectAsLazyPagingItems()
+    val dropDownMenuState = rememberDropDownMenuState(
+        items = listOf(
+            TurninDropDownMenuItem(value = "전체", icon = TurninIcons.Outlined.Normal.Thunder),
+            TurninDropDownMenuItem(value = "친구", icon = TurninIcons.Outlined.Normal.Profile),
+        ),
+    )
+
+    LaunchedEffect(Unit) {
+        dropDownMenuState.select(0)
+    }
+
+    TurninAppTheme {
+        HomeScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(TurninTheme.colorScheme.backgroundNormal),
+            feeds = feeds,
+            dropDownMenuState = dropDownMenuState,
+            lazyListState = rememberLazyListState(),
+            onFeedClick = {},
+            onUserClick = {},
+            onNotificationClick = {},
+            onNavigateToDiscover = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
+private fun EndOfPagingHomeScreenPreview() {
+    val feeds = testLastFeedsPagingData.collectAsLazyPagingItems()
+    val dropDownMenuState = rememberDropDownMenuState(
+        items = listOf(
+            TurninDropDownMenuItem(value = "전체", icon = TurninIcons.Outlined.Normal.Thunder),
+            TurninDropDownMenuItem(value = "친구", icon = TurninIcons.Outlined.Normal.Profile),
+        ),
+    )
+
+    LaunchedEffect(Unit) {
+        dropDownMenuState.select(0)
+    }
+
+    TurninAppTheme {
+        HomeScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(TurninTheme.colorScheme.backgroundNormal),
+            feeds = feeds,
+            dropDownMenuState = dropDownMenuState,
+            lazyListState = rememberLazyListState(),
+            onFeedClick = {},
+            onUserClick = {},
+            onNotificationClick = {},
+            onNavigateToDiscover = {},
+        )
+    }
+}
+
+@PreviewLightDarkWithBackground
+@Composable
 private fun EmptyHomeScreenPreview() {
     val feeds = testEmptyFeedsPagingData.collectAsLazyPagingItems()
     val dropDownMenuState = rememberDropDownMenuState(
@@ -578,5 +664,27 @@ private val testFeedsPagingData = MutableStateFlow(
 private val testEmptyFeedsPagingData = MutableStateFlow(
     PagingData.from(
         emptyList<UiFeed>(),
+    ),
+)
+
+private val testLoadingFeedsPagingData = MutableStateFlow(
+    PagingData.from(
+        data = emptyList<UiFeed>(),
+        sourceLoadStates = LoadStates(
+            refresh = LoadState.Loading,
+            prepend = LoadState.NotLoading(endOfPaginationReached = true),
+            append = LoadState.NotLoading(endOfPaginationReached = true),
+        ),
+    ),
+)
+
+private val testLastFeedsPagingData = MutableStateFlow(
+    PagingData.from(
+        data = listOf(UiFeed.sample),
+        sourceLoadStates = LoadStates(
+            refresh = LoadState.NotLoading(endOfPaginationReached = false),
+            prepend = LoadState.NotLoading(endOfPaginationReached = true),
+            append = LoadState.NotLoading(endOfPaginationReached = true),
+        ),
     ),
 )
