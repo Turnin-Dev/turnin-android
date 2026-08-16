@@ -46,16 +46,16 @@ class DiscoverRepositoryImplTest {
     fun `탐색 컨텍스트 조회 - 성공 테스트`() = runTest {
         // given: 2페이지까지 페이지네이션 가능한 테스트 데이터 설정
         val pageSize = 5
-        val expectedCursorPage1 = createCursorPageResponse(nextCursor = 5L, pageSize)
+        val expectedCursorPage1 = createCursorPageResponse(nextCursor = "cursor-5", pageSize)
         val expectedCursorPage2 = createCursorPageResponse(nextCursor = null, pageSize)
 
         coEvery {
             dataSource.getDiscoverContexts(any(), any(), any())
         } answers {
-            val cursor = secondArg<Long?>()
+            val cursor = secondArg<String?>()
             when (cursor) {
                 null -> NetworkResult.Success(expectedCursorPage1)
-                5L -> NetworkResult.Success(expectedCursorPage2)
+                "cursor-5" -> NetworkResult.Success(expectedCursorPage2)
                 else -> NetworkResult.Success(
                     DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
                 )
@@ -125,15 +125,15 @@ class DiscoverRepositoryImplTest {
         // given
         val pageSize = DiscoverPagingTokens.PAGE_SIZE
         val userId = UserId(1L)
-        val page1Response = createCursorPageResponse(nextCursor = 5L, pageSize)
+        val page1Response = createCursorPageResponse(nextCursor = "cursor-5", pageSize)
         val page2Response = createCursorPageResponse(nextCursor = null, pageSize)
 
         coEvery {
             dataSource.getDiscoverContexts(any(), any(), any())
         } answers {
-            when (secondArg<Long?>()) {
+            when (secondArg<String?>()) {
                 null -> NetworkResult.Success(page1Response)
-                5L -> NetworkResult.Success(page2Response)
+                "cursor-5" -> NetworkResult.Success(page2Response)
                 else -> NetworkResult.Success(
                     DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
                 )
@@ -144,7 +144,7 @@ class DiscoverRepositoryImplTest {
         repository.getDiscoverContexts(userId).asSnapshot()
 
         // then
-        assertEquals(page2Response, memoryCache[DiscoverCacheKey(userId, 5L)])
+        assertEquals(page2Response, memoryCache[DiscoverCacheKey(userId, "cursor-5")])
     }
 
     @Test
@@ -152,17 +152,17 @@ class DiscoverRepositoryImplTest {
         // given
         val pageSize = DiscoverPagingTokens.PAGE_SIZE
         val userId = UserId(1L)
-        val page1Response = createCursorPageResponse(nextCursor = 5L, pageSize)
-        val page2Response = createCursorPageResponse(nextCursor = 10L, pageSize)
+        val page1Response = createCursorPageResponse(nextCursor = "cursor-5", pageSize)
+        val page2Response = createCursorPageResponse(nextCursor = "cursor-10", pageSize)
         val page3Response = createCursorPageResponse(nextCursor = null, pageSize)
 
         coEvery {
             dataSource.getDiscoverContexts(any(), any(), any())
         } answers {
-            when (secondArg<Long?>()) {
+            when (secondArg<String?>()) {
                 null -> NetworkResult.Success(page1Response)
-                5L -> NetworkResult.Success(page2Response)
-                10L -> NetworkResult.Success(page3Response)
+                "cursor-5" -> NetworkResult.Success(page2Response)
+                "cursor-10" -> NetworkResult.Success(page3Response)
                 else -> NetworkResult.Success(
                     DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
                 )
@@ -173,24 +173,24 @@ class DiscoverRepositoryImplTest {
         repository.getDiscoverContexts(userId).asSnapshot()
 
         // then
-        assertNull(memoryCache[DiscoverCacheKey(userId, 10L)])
+        assertNull(memoryCache[DiscoverCacheKey(userId, "cursor-10")])
     }
 
     @Test
     fun `캐시 무효화 - 1페이지와 2페이지 캐시를 삭제한다`() {
         // given
         val userId = UserId(1L)
-        val page1Response = createCursorPageResponse(nextCursor = 5L, pageSize = 5)
+        val page1Response = createCursorPageResponse(nextCursor = "cursor-5", pageSize = 5)
         val page2Response = createCursorPageResponse(nextCursor = null, pageSize = 5)
         memoryCache[DiscoverCacheKey(userId, null)] = page1Response
-        memoryCache[DiscoverCacheKey(userId, 5L)] = page2Response
+        memoryCache[DiscoverCacheKey(userId, "cursor-5")] = page2Response
 
         // when
         repository.invalidateCache(userId)
 
         // then
         assertNull(memoryCache[DiscoverCacheKey(userId, null)])
-        assertNull(memoryCache[DiscoverCacheKey(userId, 5L)])
+        assertNull(memoryCache[DiscoverCacheKey(userId, "cursor-5")])
     }
 
     @Test
@@ -198,13 +198,13 @@ class DiscoverRepositoryImplTest {
         // given
         val userId = UserId(1L)
         val page2Response = createCursorPageResponse(nextCursor = null, pageSize = 5)
-        memoryCache[DiscoverCacheKey(userId, 5L)] = page2Response
+        memoryCache[DiscoverCacheKey(userId, "cursor-5")] = page2Response
 
         // when
         repository.invalidateCache(userId)
 
         // then: 1페이지 캐시가 없으면 2페이지 커서를 알 수 없으므로 2페이지 캐시는 남아있어야 한다
-        assertNotNull(memoryCache[DiscoverCacheKey(userId, 5L)])
+        assertNotNull(memoryCache[DiscoverCacheKey(userId, "cursor-5")])
     }
 
     companion object {
@@ -214,7 +214,7 @@ class DiscoverRepositoryImplTest {
          * 목록 데이터는 중요하지 않고 다음 커서를 직접 설정해서 테스트를 진행한다.
          */
         private fun createCursorPageResponse(
-            nextCursor: Long?,
+            nextCursor: String?,
             pageSize: Int,
         ): DiscoverContextCursorPageResponse = DiscoverContextCursorPageResponse(
             items = List(pageSize) {

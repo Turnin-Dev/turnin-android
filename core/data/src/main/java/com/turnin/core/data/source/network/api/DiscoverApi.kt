@@ -17,7 +17,7 @@ interface DiscoverApi {
      */
     suspend fun getDiscoverContexts(
         @Query("userId") userId: Long,
-        @Query("cursor") cursor: Long?,
+        @Query("cursor") cursor: String?,
         @Query("size") size: Int,
     ): Response<DiscoverContextCursorPageResponse>
 }

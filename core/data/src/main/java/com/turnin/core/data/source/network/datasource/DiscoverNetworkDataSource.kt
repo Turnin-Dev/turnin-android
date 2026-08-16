@@ -18,7 +18,7 @@ interface DiscoverNetworkDataSource {
      */
     suspend fun getDiscoverContexts(
         userId: Long,
-        cursor: Long?,
+        cursor: String?,
         size: Int,
     ): NetworkResult<DiscoverContextCursorPageResponse>
 }

@@ -35,7 +35,7 @@ class DiscoverRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize,
             ),
             pagingSourceFactory = {
-                TurninCursorPagingSource<Long, DiscoverContextResponse>(
+                TurninCursorPagingSource<String, DiscoverContextResponse>(
                     apiCall = { nextCursor ->
                         fetchWithCache(
                             userId = userId,
@@ -73,7 +73,7 @@ class DiscoverRepositoryImpl @Inject constructor(
      */
     private suspend fun fetchWithCache(
         userId: UserId,
-        cursor: Long?,
+        cursor: String?,
         pageSize: Int,
     ): NetworkResult<DiscoverContextCursorPageResponse> {
         // 1페이지 캐시의 nextCursor와 현재 cursor가 일치하면 2페이지로 판단
