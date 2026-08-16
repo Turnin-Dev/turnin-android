@@ -10,5 +10,5 @@ import com.turnin.core.domain.model.UserId
  */
 data class DiscoverCacheKey(
     val userId: UserId,
-    val cursor: Long?,
+    val cursor: String?,
 )
