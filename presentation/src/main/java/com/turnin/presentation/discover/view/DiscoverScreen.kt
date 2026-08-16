@@ -34,8 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
+import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -387,6 +390,9 @@ private fun LazyListScope.users(
                 },
             )
         },
+        lastContent = {
+            DiscoverLastContent()
+        },
     ) { idx ->
         val user = discoverContexts[idx]
         user?.let {
@@ -435,6 +441,28 @@ private fun ReDiscoverFab(
                 onClick()
             }
         },
+    )
+}
+
+/**
+ * 탐색 피드 마지막 컨텐츠
+ *
+ * 더 이상 로드할 탐색 피드가 없을 때 마지막으로 표시된다.
+ */
+@Composable
+private fun DiscoverLastContent(modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier.fillMaxWidth(),
+        text = buildString {
+            append("\n")
+            append(stringResource(R.string.discover_screen_last_content_1))
+            append("\n")
+            append("\n")
+            append(stringResource(R.string.discover_screen_last_content_2))
+        },
+        textAlign = TextAlign.Center,
+        fontSize = 15.sp,
+        color = TurninTheme.colorScheme.textAssist2,
     )
 }
 
@@ -490,6 +518,24 @@ private fun DiscoverScreenPreview() {
     }
 }
 
+@PreviewLightDarkWithBackground
+@Composable
+private fun EndOfPagingDiscoverScreenPreview() {
+    val discoverContexts = testLastDiscoverContextsPagingData.collectAsLazyPagingItems()
+
+    TurninAppTheme {
+        DiscoverScreen(
+            modifier = Modifier.fillMaxSize(),
+            uiState = DiscoverContract.UiState(
+                currentDiscoverTarget = UiDiscoverContext.sample,
+                histories = listOf(UiDiscoverContext.sample),
+            ),
+            discoverContexts = discoverContexts,
+            onUiEvent = {},
+        )
+    }
+}
+
 private val testDiscoverContexts = List(20) {
     val id = it + 1L
     UiDiscoverContext(
@@ -512,3 +558,14 @@ private val testDiscoverContexts = List(20) {
 
 private val testDiscoverContextsPaging =
     MutableStateFlow(PagingData.from(testDiscoverContexts))
+
+private val testLastDiscoverContextsPagingData = MutableStateFlow(
+    PagingData.from(
+        data = listOf(testDiscoverContexts.first()),
+        sourceLoadStates = LoadStates(
+            refresh = LoadState.NotLoading(endOfPaginationReached = false),
+            prepend = LoadState.NotLoading(endOfPaginationReached = true),
+            append = LoadState.NotLoading(endOfPaginationReached = true),
+        ),
+    ),
+)
