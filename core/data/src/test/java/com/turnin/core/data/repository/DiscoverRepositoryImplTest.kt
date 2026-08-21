@@ -46,8 +46,8 @@ class DiscoverRepositoryImplTest {
     fun `탐색 컨텍스트 조회 - 성공 테스트`() = runTest {
         // given: 2페이지까지 페이지네이션 가능한 테스트 데이터 설정
         val pageSize = 5
-        val expectedCursorPage1 = createCursorPageResponse(nextCursor = "cursor-5", pageSize)
-        val expectedCursorPage2 = createCursorPageResponse(nextCursor = null, pageSize)
+        val expectedCursorPage1 = createCursorPageResponse("cursor-5", pageSize, startUserId = 1L)
+        val expectedCursorPage2 = createCursorPageResponse(null, pageSize, startUserId = 6L)
 
         coEvery {
             dataSource.getDiscoverContexts(any(), any(), any())
@@ -85,6 +85,33 @@ class DiscoverRepositoryImplTest {
 
         // then
         assertTrue(exception is PagingApiCallException)
+    }
+
+    @Test
+    fun `탐색 컨텍스트 조회 - 중복된 사용자 조회 시 제외하고 반환한다`() = runTest {
+        // given: 중복된 2개의 페이지 생성
+        val pageSize = 5
+        val expectedCursorPage1 = createCursorPageResponse("cursor-5", pageSize, startUserId = 1L)
+        val expectedCursorPage2 = createCursorPageResponse(null, pageSize, startUserId = 1L)
+
+        coEvery {
+            dataSource.getDiscoverContexts(any(), any(), any())
+        } answers {
+            val cursor = secondArg<String?>()
+            when (cursor) {
+                null -> NetworkResult.Success(expectedCursorPage1)
+                "cursor-5" -> NetworkResult.Success(expectedCursorPage2)
+                else -> NetworkResult.Success(
+                    DiscoverContextCursorPageResponse(items = emptyList(), nextCursor = null),
+                )
+            }
+        }
+
+        // when
+        val discoverContexts = repository.getDiscoverContexts(UserId(1L)).asSnapshot()
+
+        // then: 중복된 사용자는 제외하고 반환한다 (10명 중 5명이 중복)
+        assertEquals(5, discoverContexts.size)
     }
 
     @Test
@@ -216,11 +243,12 @@ class DiscoverRepositoryImplTest {
         private fun createCursorPageResponse(
             nextCursor: String?,
             pageSize: Int,
+            startUserId: Long = 1L,
         ): DiscoverContextCursorPageResponse = DiscoverContextCursorPageResponse(
             items = List(pageSize) {
                 DiscoverContextResponse(
                     user = DiscoverUserResponse(
-                        userId = it.toLong(),
+                        userId = it.toLong() + startUserId,
                         userName = "name$it",
                         displayId = "did$it",
                         profileImageUrl = null,
