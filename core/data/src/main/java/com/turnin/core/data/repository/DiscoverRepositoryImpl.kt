@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.data.paging.TurninCursorPagingSource
 import com.turnin.core.data.source.local.memory.MemoryCache
 import com.turnin.core.data.source.network.datasource.DiscoverNetworkDataSource
@@ -11,6 +12,7 @@ import com.turnin.core.data.source.network.dto.discover.response.DiscoverContext
 import com.turnin.core.data.source.network.dto.discover.response.DiscoverContextResponse
 import com.turnin.core.data.source.network.dto.discover.response.toDomainModel
 import com.turnin.core.data.source.network.util.NetworkResult
+import com.turnin.core.data.source.network.util.map
 import com.turnin.core.domain.discover.model.DiscoverCacheKey
 import com.turnin.core.domain.discover.model.DiscoverContext
 import com.turnin.core.domain.discover.model.DiscoverPagingTokens
@@ -24,6 +26,8 @@ class DiscoverRepositoryImpl @Inject constructor(
     private val discoverNetworkDataSource: DiscoverNetworkDataSource,
     private val memoryCache: MemoryCache<DiscoverCacheKey, DiscoverContextCursorPageResponse>,
 ) : DiscoverRepository {
+    private val tag = this::class.java.simpleName
+
     override fun getDiscoverContexts(
         userId: UserId,
     ): Flow<PagingData<DiscoverContext>> {
@@ -35,13 +39,20 @@ class DiscoverRepositoryImpl @Inject constructor(
                 initialLoadSize = pageSize,
             ),
             pagingSourceFactory = {
+                val seenUserIds = mutableSetOf<Long>()
+                AppLogger.d(tag, "New PagingSource created, seenUserIds reset")
+
                 TurninCursorPagingSource<String, DiscoverContextResponse>(
                     apiCall = { nextCursor ->
                         fetchWithCache(
                             userId = userId,
                             cursor = nextCursor,
                             pageSize = pageSize,
-                        )
+                        ).map { pageResponse ->
+                            pageResponse.copy(
+                                items = pageResponse.items.filter { seenUserIds.add(it.user.userId) },
+                            )
+                        }
                     },
                 )
             },

@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
     private val usecases: DiscoverUseCases,
@@ -43,7 +44,6 @@ class DiscoverViewModel @Inject constructor(
         refreshMyKeywords()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val discoverContexts = uiState
         .map { it.currentDiscoverTarget?.user?.userId }
         .distinctUntilChanged()
