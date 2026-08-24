@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/ic_layered_shape_animated.xml -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/splash_logo_shape">
+
+    <!-- ============================= -->
+    <!-- 2번 레이어 (테두리) : 먼저 출발 -->
+    <!-- 왼쪽 하단(pivot)을 기준으로 축소했다가, 스프링으로 튕기며 -->
+    <!-- 원래 크기(1.0)로 확대 -> 오른쪽 상단이 튕기는 것처럼 보임 -->
+    <!-- ============================= -->
+    <target android:name="group_layer2">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+
+                <!-- 출발 : 살짝 작아짐 (anticipation) -->
+                <set android:ordering="together">
+                    <objectAnimator
+                        android:propertyName="scaleX"
+                        android:valueFrom="1.0"
+                        android:valueTo="0.85"
+                        android:duration="150"
+                        android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                    <objectAnimator
+                        android:propertyName="scaleY"
+                        android:valueFrom="1.0"
+                        android:valueTo="0.85"
+                        android:duration="150"
+                        android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                </set>
+
+                <!-- 스프링 효과로 튕기며 원래 크기로 복귀 -->
+                <set android:ordering="together">
+                    <objectAnimator
+                        android:propertyName="scaleX"
+                        android:valueFrom="0.85"
+                        android:valueTo="1.0"
+                        android:duration="500"
+                        android:interpolator="@anim/spring_overshoot"/>
+                    <objectAnimator
+                        android:propertyName="scaleY"
+                        android:valueFrom="0.85"
+                        android:valueTo="1.0"
+                        android:duration="500"
+                        android:interpolator="@anim/spring_overshoot"/>
+                </set>
+            </set>
+        </aapt:attr>
+    </target>
+
+    <!-- ============================= -->
+    <!-- 1번 레이어 (가운데, 흰색) : 뒤따라 출발 -->
+    <!-- ============================= -->
+    <target android:name="group_layer1">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+
+                <!-- 2번 레이어보다 100ms 늦게 출발 -->
+                <set android:ordering="together">
+                    <objectAnimator
+                        android:propertyName="scaleX"
+                        android:valueFrom="1.0"
+                        android:valueTo="0.85"
+                        android:duration="150"
+                        android:startOffset="100"
+                        android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                    <objectAnimator
+                        android:propertyName="scaleY"
+                        android:valueFrom="1.0"
+                        android:valueTo="0.85"
+                        android:duration="150"
+                        android:startOffset="100"
+                        android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                </set>
+
+                <!-- 스프링 효과로 튕기며 원래 크기로 복귀 (2번 레이어보다 항상 100ms 뒤따라감) -->
+                <set android:ordering="together">
+                    <objectAnimator
+                        android:propertyName="scaleX"
+                        android:valueFrom="0.85"
+                        android:valueTo="1.0"
+                        android:duration="500"
+                        android:interpolator="@anim/spring_overshoot"/>
+                    <objectAnimator
+                        android:propertyName="scaleY"
+                        android:valueFrom="0.85"
+                        android:valueTo="1.0"
+                        android:duration="500"
+                        android:interpolator="@anim/spring_overshoot"/>
+                </set>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
