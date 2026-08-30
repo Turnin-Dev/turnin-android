@@ -20,15 +20,18 @@ import com.turnin.core.designsystem.R
  *
  * @param lightRes 로고 리소스 (라이트 모드)
  * @param darkRes 로고 리소스 (다크 모드)
- * @param ratio 1:N 비율 (N == [ratio])
+ * @param ratio 1:N 비율 (N == [ratio]), **반드시 로고 리소스 원본 비율과 맞춰줘야 한다(세로/가로)**
  */
 enum class TurninLogoType(
     @field:DrawableRes val lightRes: Int,
     @field:DrawableRes val darkRes: Int,
     val ratio: Double,
 ) {
-    Icon(lightRes = R.drawable.logo_icon, darkRes = R.drawable.logo_icon, ratio = 1.24),
-    Text(lightRes = R.drawable.logo_text_light, darkRes = R.drawable.logo_text_dark, ratio = 0.239),
+    // logo_icon.xml: 50 x 38
+    Icon(lightRes = R.drawable.logo_icon, darkRes = R.drawable.logo_icon, ratio = 0.76),
+
+    // logo_text_light/dark.xml: 172 x 44
+    Text(lightRes = R.drawable.logo_text_light, darkRes = R.drawable.logo_text_dark, ratio = 0.256),
     App(lightRes = R.drawable.logo_app, darkRes = R.drawable.logo_app, ratio = 1.0),
 }
 

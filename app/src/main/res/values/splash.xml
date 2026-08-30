@@ -5,5 +5,6 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo_animated</item>
         <item name="postSplashScreenTheme">@style/Theme.Turnin</item>
         <item name="windowSplashScreenBackground">#FF6451</item>
+        <item name="windowSplashScreenAnimationDuration">750</item>
     </style>
 </resources>
