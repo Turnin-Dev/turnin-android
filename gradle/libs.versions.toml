@@ -31,6 +31,7 @@ robolectric = "4.15.1"
 googleGMS = "4.4.4"
 firebaseBom = "34.10.0"
 firebaseCrashlyticsPlugin = "3.0.7"
+firebasePerformanceMonitoringPlugin = "2.0.2"
 googleId = "1.2.0"
 credentials = "1.5.0"
 kakaoSdk = "2.21.7"
@@ -102,6 +103,8 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
+
 # Kakao SDK
 kakao-sdk-v2-all = { module = "com.kakao.sdk:v2-all", version.ref = "kakaoSdk" }
 kakao-sdk-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSdk" }
@@ -160,6 +163,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformanceMonitoringPlugin"}
 
 # Turnin Plugins
 turnin-android-application = { id = "turnin.android.application" }
