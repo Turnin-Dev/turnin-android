@@ -1,7 +1,9 @@
 package com.turnin.core.data.di
 
 import com.turnin.core.data.analytics.FirebaseAnalyticsTracker
+import com.turnin.core.data.analytics.FirebasePerformanceTracer
 import com.turnin.core.domain.util.analytics.AnalyticsTracker
+import com.turnin.core.domain.util.analytics.PerformanceTracer
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,10 @@ interface AnalyticsModule {
     fun bindsAnalyticsTracker(
         impl: FirebaseAnalyticsTracker,
     ): AnalyticsTracker
+
+    @Binds
+    @Singleton
+    fun bindsPerformanceTracer(
+        impl: FirebasePerformanceTracer,
+    ): PerformanceTracer
 }
