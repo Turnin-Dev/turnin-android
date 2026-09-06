@@ -1,8 +1,6 @@
 package com.turnin.core.presentation.common.analytics
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
 /**
  * 여러 추적 기능이 통합된 화면 성능 추적기
