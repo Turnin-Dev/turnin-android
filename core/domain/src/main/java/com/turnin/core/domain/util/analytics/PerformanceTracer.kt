@@ -6,10 +6,10 @@ package com.turnin.core.domain.util.analytics
 interface PerformanceTracer {
     /**
      * 성능 측정 시작
-     * @param name trace 이름
+     * @param name trace 이름 [TraceName]
      * @return [PerformanceTrace]
      */
-    fun startTrace(name: String): PerformanceTrace
+    fun startTrace(name: TraceName): PerformanceTrace
 }
 
 /**
@@ -21,7 +21,7 @@ interface PerformanceTrace {
     /**
      * 속성 추가
      */
-    fun putAttribute(key: String, value: String)
+    fun putAttribute(key: TraceAttribute, value: String)
 
     /**
      * 성능 측정 중단

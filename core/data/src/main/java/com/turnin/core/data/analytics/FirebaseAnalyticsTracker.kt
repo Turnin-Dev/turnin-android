@@ -33,9 +33,10 @@ class FirebaseAnalyticsTracker @Inject constructor(
             }
 
             is AnalyticsEvent.ScreenDwellTime -> {
+                // 전송시에는 ms -> s 단위로 변환
                 firebaseAnalytics.logEvent(EVENT_SCREEN_DWELL_TIME) {
                     param(FirebaseAnalytics.Param.SCREEN_NAME, event.screenName)
-                    param(PARAM_DWELL_TIME, event.dwellTimeMs)
+                    param(PARAM_DWELL_TIME, event.dwellTimeMs / 1000)
                 }
             }
         }
