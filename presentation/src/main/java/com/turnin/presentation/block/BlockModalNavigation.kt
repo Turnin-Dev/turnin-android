@@ -11,6 +11,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.util.ObserveAsEvents
 import com.turnin.core.presentation.common.viewmodel.sharedViewModel
@@ -35,6 +36,8 @@ fun NavGraphBuilder.blockModalNavigation(
 ) {
     navigation<SubGraph.BlockModal.Root>(startDestination = SubGraph.BlockModal.SelectBlockModalReason) {
         dialog<SubGraph.BlockModal.SelectBlockModalReason> { backStackEntry ->
+            ScreenTrackers(SubGraph.BlockModal.SelectBlockModalReason.analyticsName)
+
             val viewModel: BlockModalViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val sheetState = rememberModalBottomSheetState()
@@ -76,6 +79,8 @@ fun NavGraphBuilder.blockModalNavigation(
         }
 
         dialog<SubGraph.BlockModal.InputBlockModalReason> { backStackEntry ->
+            ScreenTrackers(SubGraph.BlockModal.InputBlockModalReason.analyticsName)
+
             val viewModel: BlockModalViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val sheetState = rememberModalBottomSheetState()
@@ -113,6 +118,8 @@ fun NavGraphBuilder.blockModalNavigation(
         }
 
         dialog<SubGraph.BlockModal.BlockModalResult> { backStackEntry ->
+            ScreenTrackers(SubGraph.BlockModal.BlockModalResult.analyticsName)
+
             val viewModel: BlockModalViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val sheetState = rememberModalBottomSheetState()

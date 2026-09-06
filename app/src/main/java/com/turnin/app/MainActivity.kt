@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -48,6 +49,10 @@ import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.designsystem.component.snackbar.TurninSnackbar
 import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
+import com.turnin.core.domain.util.analytics.AnalyticsTracker
+import com.turnin.core.domain.util.analytics.PerformanceTracer
+import com.turnin.core.presentation.common.analytics.LocalAnalyticsTracker
+import com.turnin.core.presentation.common.analytics.LocalPerformanceTracer
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.bottom.BottomNavigationBarTokens
 import com.turnin.core.presentation.common.navigation.navigateToLogin
@@ -69,6 +74,12 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var notificationPermissionManager: NotificationPermissionManager
+
+    @Inject
+    lateinit var analyticsTracker: AnalyticsTracker
+
+    @Inject
+    lateinit var performanceTracer: PerformanceTracer
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -211,33 +222,38 @@ class MainActivity : ComponentActivity() {
             }
 
             // ------------------------------ Main ------------------------------
-            TurninAppTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    containerColor = TurninTheme.colorScheme.backgroundNormal,
-                    snackbarHost = {
-                        if (!isAuthScreen) {
-                            TurninSnackbar(
-                                modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
-                                snackbarHostState = snackbarHostState,
-                            )
-                        }
-                    },
-                    contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime),
-                ) { innerPadding ->
-                    val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
-
-                    AppNavigation(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        appNavController = appNavController,
-                        loggedIn = loggedIn,
-                        onCheckPermission = {
-                            // 알림 권한 요청
-                            requestNotificationPermissionIfNeeded()
+            CompositionLocalProvider(
+                LocalAnalyticsTracker provides analyticsTracker,
+                LocalPerformanceTracer provides performanceTracer,
+            ) {
+                TurninAppTheme {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = TurninTheme.colorScheme.backgroundNormal,
+                        snackbarHost = {
+                            if (!isAuthScreen) {
+                                TurninSnackbar(
+                                    modifier = Modifier.padding(bottom = snackbarBottomPadding.value),
+                                    snackbarHostState = snackbarHostState,
+                                )
+                            }
                         },
-                    )
+                        contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime),
+                    ) { innerPadding ->
+                        val loggedIn by mainViewModel.loggedIn.collectAsStateWithLifecycle()
+
+                        AppNavigation(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                            appNavController = appNavController,
+                            loggedIn = loggedIn,
+                            onCheckPermission = {
+                                // 알림 권한 요청
+                                requestNotificationPermissionIfNeeded()
+                            },
+                        )
+                    }
                 }
             }
         }

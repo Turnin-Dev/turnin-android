@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.turnin.core.designsystem.theme.TurninTheme
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToPrivacyPolicy
 import com.turnin.core.presentation.common.navigation.navigateToTermsOfService
@@ -45,6 +46,8 @@ fun NavGraphBuilder.registerNavigation(
 ) {
     navigation<SubGraph.Register.Root>(startDestination = SubGraph.Register.TermsAgreement) {
         animatedComposableForRegister<SubGraph.Register.TermsAgreement> {
+            ScreenTrackers(SubGraph.Register.TermsAgreement.analyticsName)
+
             TermsAgreementScreen(
                 modifier = Modifier
                     .fillMaxSize()
@@ -56,6 +59,8 @@ fun NavGraphBuilder.registerNavigation(
         }
 
         animatedComposableForRegister<SubGraph.Register.DisplayId> { backStackEntry ->
+            ScreenTrackers(SubGraph.Register.DisplayId.analyticsName)
+
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val displayIdState by registerViewModel.displayIdState.collectAsStateWithLifecycle()
@@ -90,6 +95,8 @@ fun NavGraphBuilder.registerNavigation(
         }
 
         animatedComposableForRegister<SubGraph.Register.Name> { backStackEntry ->
+            ScreenTrackers(SubGraph.Register.Name.analyticsName)
+
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val nameState by registerViewModel.nameState.collectAsStateWithLifecycle()
@@ -114,6 +121,8 @@ fun NavGraphBuilder.registerNavigation(
         }
 
         animatedComposableForRegister<SubGraph.Register.Profile> { backStackEntry ->
+            ScreenTrackers(SubGraph.Register.Profile.analyticsName)
+
             val registerEntry = remember(backStackEntry) {
                 navController.getBackStackEntry<SubGraph.Register.Root>()
             }
@@ -188,6 +197,8 @@ fun NavGraphBuilder.registerNavigation(
         }
 
         animatedComposableForRegister<SubGraph.Register.CropProfileImage> { backStackEntry ->
+            ScreenTrackers(SubGraph.Register.CropProfileImage.analyticsName)
+
             val registerViewModel: RegisterViewModel =
                 backStackEntry.sharedViewModel(navController, true)
             val profileState by registerViewModel.profileState.collectAsStateWithLifecycle()

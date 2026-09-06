@@ -4,6 +4,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToBottomBarItem
 import com.turnin.core.presentation.common.navigation.navigateToKeywordDetail
@@ -16,6 +17,8 @@ fun NavGraphBuilder.homeNavigation(
     onCheckPermission: () -> Unit,
 ) {
     composable<SubGraph.BottomNav.Home> {
+        ScreenTrackers(SubGraph.BottomNav.Home.analyticsName)
+
         LaunchedEffect(Unit) {
             onCheckPermission()
         }
