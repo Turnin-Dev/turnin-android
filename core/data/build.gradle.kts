@@ -181,15 +181,18 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    // Firebase - Monitoring
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.perf)
+    // Firebase - FCM
+    implementation(libs.firebase.messaging)
+
     // Credential Manager
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     // Kakao SDK
     implementation(libs.kakao.sdk.v2.user)
-
-    // FCM
-    implementation(libs.firebase.messaging)
 
     // Testing: JUnit, Coroutines Test, Android runner, Mockito
     androidTestImplementation(libs.androidx.test.runner)

@@ -4,6 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.Screens
 import com.turnin.core.presentation.common.navigation.deepLink.DeepLink
 import com.turnin.core.presentation.common.navigation.navigateToFriendsList
@@ -20,7 +22,9 @@ fun NavGraphBuilder.userProfileNavigation(
                 uriPattern = DeepLink.Pattern.PROFILE
             },
         ),
-    ) {
+    ) { backStackEntry ->
+        ScreenTrackers(backStackEntry.toRoute<Screens.UserProfile>().analyticsName)
+
         UserProfileRoute(
             onBackPressed = {
                 appNavController.popBackStack()

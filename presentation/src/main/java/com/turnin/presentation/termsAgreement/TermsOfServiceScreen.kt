@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import com.turnin.core.designsystem.component.topbar.TurninTopBar
 import com.turnin.core.designsystem.theme.TurninTheme
 import com.turnin.core.designsystem.util.token.ScreenTokens
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.Screens
 import com.turnin.core.presentation.common.webview.DefaultWebView
 import com.turnin.presentation.BuildConfig
@@ -57,6 +58,8 @@ fun NavGraphBuilder.termsOfServiceScreen(
         popEnterTransition = { slideIntoContainer(SlideDirection.Up, tween(300)) },
         popExitTransition = { slideOutOfContainer(SlideDirection.Down, tween(300)) },
     ) {
+        ScreenTrackers(Screens.TermsOfService.analyticsName)
+
         TermsOfServiceScreen(
             modifier = Modifier
                 .fillMaxSize()

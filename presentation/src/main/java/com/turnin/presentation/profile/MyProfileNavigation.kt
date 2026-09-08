@@ -3,28 +3,36 @@ package com.turnin.presentation.profile
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
+import com.turnin.core.presentation.common.navigation.Route
 import com.turnin.core.presentation.common.navigation.navigateToFriendsList
 import com.turnin.core.presentation.common.navigation.navigateToKeywordDetail
 import com.turnin.core.presentation.common.navigation.navigateToKeywordEdit
 import com.turnin.core.presentation.common.navigation.navigateToSetting
 import com.turnin.presentation.profile.route.MyProfileRoute
 
-inline fun <reified T : Any> NavGraphBuilder.myProfileNavigation(
-    appNavController: NavHostController,
+/**
+ * 바텀 네비게이션, 개별 화면 두 곳에서 사용된다.
+ */
+inline fun <reified T : Route> NavGraphBuilder.myProfileNavigation(
+    navController: NavHostController,
 ) {
-    composable<T> {
+    composable<T> { backStackEntry ->
+        ScreenTrackers(backStackEntry.toRoute<T>().analyticsName)
+
         MyProfileRoute(
             onSettingClick = {
-                appNavController.navigateToSetting()
+                navController.navigateToSetting()
             },
             onFriendsCountClick = { userId ->
-                appNavController.navigateToFriendsList(userId)
+                navController.navigateToFriendsList(userId)
             },
             onNavigateToKeywordAddScreen = {
-                appNavController.navigateToKeywordEdit(null)
+                navController.navigateToKeywordEdit(null)
             },
             onNavigateToKeywordDetail = { userId, userKeywordId ->
-                appNavController.navigateToKeywordDetail(userId, userKeywordId)
+                navController.navigateToKeywordDetail(userId, userKeywordId)
             },
         )
     }
