@@ -25,6 +25,12 @@ internal fun ScreenViewTracker(screenName: String) {
             AppLogger.d(TAG, "[ScreenView] SCREEN_VIEW fired -> screenName=$screenName")
             analyticsTracker.logEvent(AnalyticsEvent.ScreenView(screenName))
         }
+        // 회전으로 인한 일회성 스킵 신호. 소비 후 반드시 리셋해야
+        // 재방문 시에도 정상 이벤트 발행됨.
+        // 이 리셋 구문이 없다면 화면 회전 후 영원한 기록 누락 버그가 발생함.
+        // (isRotated는 Bundle이 아닌 NavBackStackEntry 범위 내에 저장됨)
+        // 상세: docs/notes/remember-saveable-lifecycle.md
+        isRotated = false
     }
 
     DisposableEffect(screenName) {

@@ -16,9 +16,16 @@ import com.turnin.core.domain.util.analytics.AnalyticsEvent
  *
  * - 백그라운드로 나가있던 시간은 제외하고, 실제로 화면을 보고 있던 시간만 누적
  * - 여러 번 나눠서 전송하지 않고, 화면을 완전히 떠날 때(onDispose) 딱 1회만 전송
+ *
+ * @param screenName 화면 이름
+ * @param nowMs 현재 시각(ms)을 반환하는 함수. 기본값은 실제 시스템 시계이며,
+ * 테스트에서만 결정론적인 Fake 시계로 교체한다.
  */
 @Composable
-internal fun ScreenDwellTimeTracker(screenName: String) {
+internal fun ScreenDwellTimeTracker(
+    screenName: String,
+    nowMs: () -> Long = System::currentTimeMillis,
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalActivity.current
     val analyticsTracker = LocalAnalyticsTracker.current
@@ -30,7 +37,7 @@ internal fun ScreenDwellTimeTracker(screenName: String) {
 
     DisposableEffect(screenName, lifecycleOwner) {
         // 화면 진입 시점 = 첫 포그라운드 구간 시작
-        segmentStartMs.longValue = System.currentTimeMillis()
+        segmentStartMs.longValue = nowMs()
 
         AppLogger.d(
             TAG,
@@ -44,18 +51,20 @@ internal fun ScreenDwellTimeTracker(screenName: String) {
             when (event) {
                 Lifecycle.Event.ON_STOP -> {
                     // 백그라운드로 나간 경우, 이번 구간 시간만큼 누적하고 중단
-                    accumulatedMs.longValue += System.currentTimeMillis() - segmentStartMs.longValue
+                    accumulatedMs.longValue += nowMs() - segmentStartMs.longValue
+                    segmentStartMs.longValue = INACTIVE_SEGMENT
                     AppLogger.d(
                         TAG,
                         "[Dwell] ON_STOP  " +
                             "screenName=$screenName " +
-                            "accumulated=${accumulatedMs.longValue}ms",
+                            "accumulated=${accumulatedMs.longValue}ms " +
+                            "(segment 리셋)",
                     )
                 }
 
                 Lifecycle.Event.ON_START -> {
                     // 포그라운드로 복귀하는 경우, 새 구간 시작 시각만 갱신 (전송 X)
-                    segmentStartMs.longValue = System.currentTimeMillis()
+                    segmentStartMs.longValue = nowMs()
                     AppLogger.d(
                         TAG,
                         "[Dwell] ON_START " +
@@ -77,7 +86,10 @@ internal fun ScreenDwellTimeTracker(screenName: String) {
             val isRotating = activity?.isChangingConfigurations == true
 
             // 화면을 완전히 떠나는 시점 = 마지막 구간 누적 + 최종 전송 (1회만)
-            accumulatedMs.longValue += System.currentTimeMillis() - segmentStartMs.longValue
+            // 활성 구간에서만 누적
+            if (segmentStartMs.longValue != 0L) {
+                accumulatedMs.longValue += nowMs() - segmentStartMs.longValue
+            }
 
             if (isRotating) {
                 AppLogger.d(
@@ -109,3 +121,4 @@ internal fun ScreenDwellTimeTracker(screenName: String) {
 }
 
 private const val TAG = "ScreenTracking"
+private const val INACTIVE_SEGMENT = 0L
