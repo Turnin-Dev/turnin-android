@@ -19,8 +19,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.turnin.core.designsystem.component.loading.TurninLoadingScreen
 import com.turnin.core.designsystem.theme.TurninTheme
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToBlockList
 import com.turnin.core.presentation.common.navigation.navigateToCropProfileImage
@@ -52,6 +54,8 @@ fun NavGraphBuilder.settingNavigation(
 ) {
     navigation<SubGraph.Setting.Root>(startDestination = SubGraph.Setting.Main) {
         composable<SubGraph.Setting.Main> {
+            ScreenTrackers(SubGraph.Setting.Main.analyticsName)
+
             SettingRoute(
                 onNavigateToAccountInfo = { accountInfo ->
                     appNavController.navigate(
@@ -84,7 +88,9 @@ fun NavGraphBuilder.settingNavigation(
             )
         }
 
-        composable<SubGraph.Setting.AccountInfo> {
+        composable<SubGraph.Setting.AccountInfo> { backStackEntry ->
+            ScreenTrackers(backStackEntry.toRoute<SubGraph.Setting.AccountInfo>().analyticsName)
+
             val viewModel: AccountInfoViewModel = hiltViewModel()
 
             BackHandler {
@@ -103,6 +109,8 @@ fun NavGraphBuilder.settingNavigation(
         }
 
         composable<SubGraph.Setting.CropProfileImage> { backStackEntry ->
+            ScreenTrackers(backStackEntry.toRoute<SubGraph.Setting.CropProfileImage>().analyticsName)
+
             val accountInfoEntry = remember(backStackEntry) {
                 appNavController.getBackStackEntry<SubGraph.Setting.AccountInfo>()
             }
@@ -149,6 +157,8 @@ fun NavGraphBuilder.settingNavigation(
         }
 
         composable<SubGraph.Setting.VersionInfo> {
+            ScreenTrackers(SubGraph.Setting.VersionInfo.analyticsName)
+
             val viewModel: VersionInfoViewModel = hiltViewModel()
 
             VersionInfoScreen(
@@ -163,6 +173,8 @@ fun NavGraphBuilder.settingNavigation(
         }
 
         composable<SubGraph.Setting.Qna> { backStackEntry ->
+            ScreenTrackers(backStackEntry.toRoute<SubGraph.Setting.Qna>().analyticsName)
+
             val qnaUrl = backStackEntry.arguments?.getString("qnaUrl")
 
             LaunchedEffect(qnaUrl) {
@@ -179,6 +191,8 @@ fun NavGraphBuilder.settingNavigation(
         }
 
         composable<SubGraph.Setting.NotificationSetting> {
+            ScreenTrackers(SubGraph.Setting.NotificationSetting.analyticsName)
+
             val viewModel: NotificationSettingViewModel = hiltViewModel()
             val appSetting by viewModel.appSetting.collectAsStateWithLifecycle()
 

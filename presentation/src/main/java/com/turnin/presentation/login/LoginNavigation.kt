@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToRegister
 
@@ -13,6 +14,8 @@ fun NavGraphBuilder.loginNavigation(
 ) {
     navigation<SubGraph.Login.Root>(startDestination = SubGraph.Login.Main) {
         composable<SubGraph.Login.Main> {
+            ScreenTrackers(SubGraph.Login.Main.analyticsName)
+
             LoginRoute(
                 modifier = Modifier,
                 onNavigateMain = {

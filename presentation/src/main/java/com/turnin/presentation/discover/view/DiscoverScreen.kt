@@ -344,6 +344,9 @@ private fun HistoryBar(
 /**
  * 사용자 리스트
  *
+ * TODO: 페이징 키를 `사용자 ID` 대신 `탐색 피드 고유 ID`로 교체 예정
+ *  (현재는 리포지토리 단에서 사용자 ID 필터링이 임시적용 되어있음)
+ *
  * @param discoverContexts 탐색 컨텍스트 (페이징 데이터)
  * @param selectedDiscoverContext 선택된 탐색 컨텍스트
  * @param onFeedClick 탐색 피드 클릭 시 콜백

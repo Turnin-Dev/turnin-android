@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToBlockModal
 import com.turnin.core.presentation.common.util.ObserveAsEvents
@@ -32,6 +33,8 @@ fun NavGraphBuilder.reportNavigation(
 ) {
     navigation<SubGraph.Report.Root>(startDestination = SubGraph.Report.SelectReportBlock) {
         dialog<SubGraph.Report.SelectReportBlock> { backStackEntry ->
+            ScreenTrackers(SubGraph.Report.SelectReportBlock.analyticsName)
+
             val viewModel: ReportViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val sheetState = rememberModalBottomSheetState()
@@ -68,6 +71,8 @@ fun NavGraphBuilder.reportNavigation(
         }
 
         dialog<SubGraph.Report.SelectReportReason> { backStackEntry ->
+            ScreenTrackers(SubGraph.Report.SelectReportReason.analyticsName)
+
             val viewModel: ReportViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -117,6 +122,8 @@ fun NavGraphBuilder.reportNavigation(
         }
 
         dialog<SubGraph.Report.InputReportReason> { backStackEntry ->
+            ScreenTrackers(SubGraph.Report.InputReportReason.analyticsName)
+
             val viewModel: ReportViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -162,6 +169,8 @@ fun NavGraphBuilder.reportNavigation(
         }
 
         dialog<SubGraph.Report.ReportResult> { backStackEntry ->
+            ScreenTrackers(SubGraph.Report.ReportResult.analyticsName)
+
             val viewModel: ReportViewModel =
                 backStackEntry.sharedViewModel(navController, useHiltViewModel = true)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()

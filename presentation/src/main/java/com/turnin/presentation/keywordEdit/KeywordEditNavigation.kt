@@ -9,6 +9,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.Screens
 
 fun NavGraphBuilder.keywordEditNavigation(
@@ -19,7 +21,9 @@ fun NavGraphBuilder.keywordEditNavigation(
         exitTransition = exitTransition,
         popEnterTransition = enterTransition,
         popExitTransition = exitTransition,
-    ) {
+    ) { backStackEntry ->
+        ScreenTrackers(backStackEntry.toRoute<Screens.KeywordEdit>().analyticsName)
+
         KeywordEditRoute(
             onBackPressed = {
                 navController.popBackStack()

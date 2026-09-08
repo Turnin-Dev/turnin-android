@@ -1,6 +1,9 @@
 package com.turnin.core.data.source.network.util
 
 import com.turnin.core.data.source.network.error.NetworkErrorType
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * 네트워크 호출 결과 래퍼 클래스
@@ -29,4 +32,17 @@ sealed interface NetworkResult<out T> {
         val status: Int? = null,
         val message: String? = null,
     ) : NetworkResult<Nothing>
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <T, R> NetworkResult<T>.map(
+    crossinline transform: (T) -> R,
+): NetworkResult<R> {
+    contract {
+        callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
+    }
+    return when (this) {
+        is NetworkResult.Success -> NetworkResult.Success(transform(this.data))
+        is NetworkResult.Error -> this
+    }
 }

@@ -55,6 +55,9 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(kotlin("reflect"))
 
     // Test Fixtures
     testFixturesImplementation(libs.junit)
