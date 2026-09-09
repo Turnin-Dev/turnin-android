@@ -1,8 +1,6 @@
 <h1 align="center">Turnin (턴인)</h1>
 
-> 나를 위한 키워드 중심의 SNS
-
-<img width="128" height="128" alt="logo-app-large" src="https://github.com/user-attachments/assets/581c8546-e7ce-4beb-96e3-5da8fabd3b7f" />
+<img width="1920" height="1080" alt="Showcase #2" src="https://github.com/user-attachments/assets/45e115c0-bba3-4b50-93ac-09d14c245d89" />
 
 ## Description
 
@@ -13,7 +11,7 @@
 이제 타인으로 향한 시선 대신 '나'의 시선으로 전환해봐요.
 
 ## Demo
-[![Turnin 시연 영상 유튜브 링크](http://img.youtube.com/vi/uLR1RNqJ1Mw/0.jpg)](https://youtube.com/shorts/N4EdEMpy_WA?feature=share)
+[![Turnin 시연 영상](http://img.youtube.com/vi/uLR1RNqJ1Mw/0.jpg)](https://youtube.com/shorts/N4EdEMpy_WA?feature=share)
 
 ## Main Feature
 ### 계정
