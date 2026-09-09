@@ -3,6 +3,9 @@ name: Android CD
 on:
     push:
         branches: [ main ]
+        paths-ignore:
+            - '**.md'
+            - 'docs/**'
 
 permissions:
     contents: read
