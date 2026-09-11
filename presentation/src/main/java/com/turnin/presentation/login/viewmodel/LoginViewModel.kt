@@ -88,7 +88,9 @@ class LoginViewModel @Inject constructor(
                         it.copy(
                             loading = false,
                             isNavigating = true,
-                            event = LoginUiEvent.NavigateToMain,
+                            event = LoginUiEvent.NavigateToMain(
+                                loginCredentials.provider.toUiModel(),
+                            ),
                         )
                     }
                 }

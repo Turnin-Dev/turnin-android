@@ -9,7 +9,9 @@ sealed interface LoginUiEvent {
         val providerId: String,
     ) : LoginUiEvent
 
-    data object NavigateToMain : LoginUiEvent
+    data class NavigateToMain(
+        val provider: UiSocialLoginProvider,
+    ) : LoginUiEvent
 }
 
 /**
