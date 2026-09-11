@@ -26,6 +26,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.turnin.core.designsystem.theme.TurninTheme
+import com.turnin.core.domain.util.analytics.AnalyticsEvent
+import com.turnin.core.presentation.common.analytics.LocalAnalyticsTracker
 import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph
 import com.turnin.core.presentation.common.navigation.navigateToPrivacyPolicy
@@ -123,6 +125,7 @@ fun NavGraphBuilder.registerNavigation(
         animatedComposableForRegister<SubGraph.Register.Profile> { backStackEntry ->
             ScreenTrackers(SubGraph.Register.Profile.analyticsName)
 
+            val analyticsTracker = LocalAnalyticsTracker.current
             val registerEntry = remember(backStackEntry) {
                 navController.getBackStackEntry<SubGraph.Register.Root>()
             }
@@ -151,6 +154,7 @@ fun NavGraphBuilder.registerNavigation(
                 onEffect = { event ->
                     when {
                         event.navigateToNextScreen -> {
+                            analyticsTracker.logEvent(AnalyticsEvent.SignUp(argProvider.name))
                             navigateToMain()
                         }
 

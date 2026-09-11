@@ -5,6 +5,7 @@ import com.google.firebase.analytics.logEvent
 import com.turnin.core.domain.util.analytics.AnalyticsEvent
 import com.turnin.core.domain.util.analytics.AnalyticsTracker
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 /**
  * Firebase Analytics를 이용한 Analytics Tracker
@@ -34,9 +35,10 @@ class FirebaseAnalyticsTracker @Inject constructor(
 
             is AnalyticsEvent.ScreenDwellTime -> {
                 // 전송시에는 ms -> s 단위로 변환
+                val dwellTimeSec = (event.dwellTimeMs / 1000.0).roundToLong()
                 firebaseAnalytics.logEvent(EVENT_SCREEN_DWELL_TIME) {
                     param(FirebaseAnalytics.Param.SCREEN_NAME, event.screenName)
-                    param(PARAM_DWELL_TIME, event.dwellTimeMs / 1000)
+                    param(PARAM_DWELL_TIME, dwellTimeSec)
                 }
             }
         }
@@ -44,6 +46,6 @@ class FirebaseAnalyticsTracker @Inject constructor(
 
     companion object {
         private const val EVENT_SCREEN_DWELL_TIME = "screen_dwell_time"
-        private const val PARAM_DWELL_TIME = "duration_ms"
+        private const val PARAM_DWELL_TIME = "duration_sec"
     }
 }

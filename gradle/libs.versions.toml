@@ -1,7 +1,7 @@
 [versions]
 # Project
-projectVersionName = "1.0.0"
-projectVersionCode = "4"
+projectVersionName = "1.0.1"
+projectVersionCode = "5"
 projectTargetSdkVersion = "36"
 projectCompileSdkVersion = "36"
 projectMinSdkVersion = "26"

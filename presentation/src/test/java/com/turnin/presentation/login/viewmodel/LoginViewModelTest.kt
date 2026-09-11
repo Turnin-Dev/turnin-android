@@ -77,7 +77,7 @@ class LoginViewModelTest {
         advanceUntilIdle()
 
         // then
-        assertEquals(LoginUiEvent.NavigateToMain, viewModel.loginState.value.event)
+        assertEquals(LoginUiEvent.NavigateToMain(mockProvider), viewModel.loginState.value.event)
     }
 
     @Test
