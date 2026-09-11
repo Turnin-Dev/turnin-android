@@ -32,7 +32,7 @@ private const val TAG = "LoginRoute"
 fun LoginRoute(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel(),
-    onNavigateMain: () -> Unit,
+    onNavigateMain: (UiSocialLoginProvider) -> Unit,
     onNavigateRegister: (UiSocialLoginProvider, String) -> Unit,
 ) {
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
@@ -55,8 +55,8 @@ fun LoginRoute(
                     onNavigateRegister(event.provider, event.providerId)
                 }
 
-                LoginUiEvent.NavigateToMain -> {
-                    onNavigateMain()
+                is LoginUiEvent.NavigateToMain -> {
+                    onNavigateMain(event.provider)
                 }
             }
         },
