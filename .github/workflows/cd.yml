@@ -24,7 +24,7 @@ jobs:
             -   name: Set up JDK 17
                 uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
                 with:
-                    java-version: '17'
+                    java-version: '26'
                     distribution: 'temurin'
 
             # 3. 필수 파일 동적 생성 (local.properties, google-services.json 등)
