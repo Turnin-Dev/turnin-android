@@ -281,10 +281,10 @@ sealed interface Screens : Route {
     @Serializable
     data class UserProfile(
         val userId: Long,
-        val userName: String?,
-        val displayId: String?,
-        val profileImageUrl: String?,
-        val blockId: Long?,
+        val userName: String? = null,
+        val displayId: String? = null,
+        val profileImageUrl: String? = null,
+        val blockId: Long? = null,
         val forceRefresh: Boolean = false,
     ) : Screens {
         override val analyticsName: String = "user_profile"
