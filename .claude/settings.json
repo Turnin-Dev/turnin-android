@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/local.properties)",
+      "Edit(**/local.properties)",
+      "Read(**/.env)",
+      "Edit(**/.env)",
+      "Read(**/.env.*)",
+      "Edit(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Edit(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Edit(**/*.pem)",
+      "Read(**/*.key)",
+      "Edit(**/*.key)",
+      "Read(**/*.jks)",
+      "Edit(**/*.jks)",
+      "Read(**/*.keystore)",
+      "Edit(**/*.keystore)",
+      "Read(**/firebase-service-account*.json)",
+      "Edit(**/firebase-service-account*.json)",
+      "Read(**/google-services.json)",
+      "Edit(**/google-services.json)",
+      "Read(./app/src/release/**)",
+      "Edit(./app/src/release/**)",
+      "Read(./app/release/**)",
+      "Edit(./app/release/**)",
+      "Read(**/build/generated/**)",
+      "Read(**/build/intermediates/**)",
+      "Read(**/build/outputs/**)",
+      "Read(**/build/tmp/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_response.filePath // .tool_input.file_path'); case \"$f\" in *.kt|*.kts) command -v ktlint >/dev/null && ktlint -F --relative \"$f\" >/dev/null 2>&1;; esac; true",
+            "timeout": 30,
+            "statusMessage": "ktlint format"
+          }
+        ]
+      }
+    ]
+  }
+}

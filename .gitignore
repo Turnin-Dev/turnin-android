@@ -141,3 +141,12 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio
+
+# Claude Code personal settings
+.claude/settings.local.json
+
+# 민감 정보 및 릴리즈 산출물
+/app/release/
+.env
+.env.*
+secrets/

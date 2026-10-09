@@ -1,0 +1,13 @@
+local.properties
+.env
+.env.*
+secrets/
+*.pem
+*.key
+*.jks
+*.keystore
+firebase-service-account*.json
+google-services.json
+build/
+/app/src/release
+/app/release
