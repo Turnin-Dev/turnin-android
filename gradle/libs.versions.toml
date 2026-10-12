@@ -157,6 +157,8 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
@@ -170,3 +172,4 @@ turnin-android-application-compose = { id = "turnin.android.application.compose"
 turnin-android-library = { id = "turnin.android.library" }
 turnin-android-library-compose = { id = "turnin.android.library.compose" }
 turnin-jvm-library = { id = "turnin.jvm.library" }
+turnin-kmp-library = { id = "turnin.kmp.library" }
