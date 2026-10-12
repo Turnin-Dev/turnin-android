@@ -122,7 +122,6 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.core.domain)
     implementation(projects.core.presentation)
-    implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.presentation)
 

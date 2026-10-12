@@ -29,7 +29,6 @@ rootProject.name = "Turnin"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":domain")
-include(":data")
 include(":presentation")
 include(":core:designsystem")
 include(":core:data")
