@@ -8,7 +8,6 @@ import com.turnin.core.domain.userKeyword.model.UserKeyword
 import com.turnin.core.domain.userKeyword.model.toNonDetail
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.domain.profile.error.ProfileErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class GetUserKeywordsUseCase @Inject constructor(
+class GetUserKeywordsUseCase(
     private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**

@@ -9,7 +9,6 @@ import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.domain.keywordDetail.error.KeywordDetailErrorType
 import com.turnin.domain.keywordDetail.model.KeywordDetail
 import com.turnin.domain.keywordDetail.model.toKeywordDetail
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class RefreshKeywordDetailUseCase @Inject constructor(
+class RefreshKeywordDetailUseCase(
     private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**

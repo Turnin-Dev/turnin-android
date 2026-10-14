@@ -5,14 +5,13 @@ import com.turnin.core.domain.common.validation.ValidationErrorType
 import com.turnin.core.domain.common.validation.ValidationResult
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.Introduce
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /**
  * 소개 글 유효성을 검사한다.
  */
-class ValidateIntroduceUseCase @Inject constructor() {
+class ValidateIntroduceUseCase {
     operator fun invoke(introduce: String): Flow<ValidationResult<Introduce, ValidationErrorType>> = flow {
         emit(ValidationResult.Loading)
         try {

@@ -5,11 +5,10 @@ import com.turnin.core.domain.common.validation.ValidationErrorType
 import com.turnin.core.domain.common.validation.ValidationResult
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.KeywordName
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 
 /** 키워드 유효성 검사 */
-class ValidateKeywordUseCase @Inject constructor() {
+class ValidateKeywordUseCase {
     operator fun invoke(keyword: String): ValidationResult<String, ValidationErrorType> =
         try {
             val keyword = KeywordName(keyword)

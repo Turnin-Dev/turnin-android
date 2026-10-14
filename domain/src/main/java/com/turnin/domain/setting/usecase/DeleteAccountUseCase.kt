@@ -10,7 +10,6 @@ import com.turnin.core.domain.notification.repository.NotificationRepository
 import com.turnin.core.domain.util.DomainLogger
 import com.turnin.core.domain.util.catchAndLog
 import com.turnin.domain.setting.error.SettingErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.lastOrNull
@@ -20,7 +19,7 @@ import kotlinx.coroutines.flow.lastOrNull
  *
  * @see invoke
  */
-class DeleteAccountUseCase @Inject constructor(
+class DeleteAccountUseCase(
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
     private val socialAuthManagerFactory: SocialAuthManagerFactory,

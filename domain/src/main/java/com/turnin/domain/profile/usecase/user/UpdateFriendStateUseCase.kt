@@ -13,7 +13,6 @@ import com.turnin.core.domain.friend.repository.FriendRepository
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.profile.error.ProfileErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -24,7 +23,7 @@ import kotlinx.coroutines.flow.map
  *
  * @see invoke
  */
-class UpdateFriendStateUseCase @Inject constructor(
+class UpdateFriendStateUseCase(
     private val userRepository: UserRepository,
     private val friendRepository: FriendRepository,
 ) {

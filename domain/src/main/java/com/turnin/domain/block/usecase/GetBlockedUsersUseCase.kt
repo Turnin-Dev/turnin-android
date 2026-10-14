@@ -3,7 +3,6 @@ package com.turnin.domain.block.usecase
 import androidx.paging.PagingData
 import com.turnin.core.domain.block.model.BlockedUser
 import com.turnin.core.domain.block.repository.BlockRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetBlockedUsersUseCase @Inject constructor(
+class GetBlockedUsersUseCase(
     private val blockRepository: BlockRepository,
 ) {
     /**

@@ -6,7 +6,6 @@ import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.DisplayId
 import com.turnin.domain.register.error.RegisterErrorType
 import com.turnin.domain.register.model.ExistsResult
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.map
 /**
  * 사용자 표시 ID 중복검사
  */
-class CheckDisplayIdExistsUseCase @Inject constructor(
+class CheckDisplayIdExistsUseCase(
     private val authRepository: AuthRepository,
 ) {
     operator fun invoke(displayId: String): Flow<Result<ExistsResult, RegisterErrorType>> =

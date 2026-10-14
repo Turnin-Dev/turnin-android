@@ -1,8 +1,6 @@
 package com.turnin.domain.friend.usecase
 
-import javax.inject.Inject
-
-class FriendUseCases @Inject constructor(
+class FriendUseCases(
     /**
      * 나의 사용자 ID 조회
      */

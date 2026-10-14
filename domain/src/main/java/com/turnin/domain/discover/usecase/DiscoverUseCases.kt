@@ -1,8 +1,6 @@
 package com.turnin.domain.discover.usecase
 
-import javax.inject.Inject
-
-class DiscoverUseCases @Inject constructor(
+class DiscoverUseCases(
     /**
      * 나의 탐색 컨텍스트 조회
      * @see GetMyDiscoverContextUseCase

@@ -3,7 +3,6 @@ package com.turnin.domain.notification.usecase
 import androidx.paging.PagingData
 import com.turnin.core.domain.notification.model.Notification
 import com.turnin.core.domain.notification.repository.NotificationRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetNotificationsUseCase @Inject constructor(
+class GetNotificationsUseCase(
     private val notificationRepository: NotificationRepository,
 ) {
     /**

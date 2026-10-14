@@ -6,7 +6,6 @@ import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import com.turnin.domain.register.error.RegisterErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -16,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
  * 파일 업로드가 완료되면 파일의 url을 반환한다,
  * 파일 업로드가 정상적으로 이루어지지 않았을 경우 `null` 혹은 에러를 반환한다.
  */
-internal class GetFileUrlUseCase @Inject internal constructor(
+internal class GetFileUrlUseCase internal constructor(
     private val getFileUploadPresignedUrlUseCase: GetFileUploadPresignedUrlUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
 ) {

@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import com.turnin.core.domain.friend.model.FriendInfo
 import com.turnin.core.domain.friend.repository.FriendRepository
 import com.turnin.core.domain.model.UserId
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetFriendsUseCase @Inject constructor(
+class GetFriendsUseCase(
     private val friendRepository: FriendRepository,
 ) {
     /**

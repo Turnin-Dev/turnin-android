@@ -6,7 +6,6 @@ import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.BlockId
 import com.turnin.core.domain.model.UserId
 import com.turnin.domain.profile.error.ProfileErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -16,7 +15,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class DeleteBlockUseCase @Inject constructor(
+class DeleteBlockUseCase(
     private val blockRepository: BlockRepository,
 ) {
     /**

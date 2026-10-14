@@ -1,8 +1,6 @@
 package com.turnin.domain.keywordDetail.usecase
 
-import javax.inject.Inject
-
-class KeywordDetailUseCases @Inject constructor(
+class KeywordDetailUseCases(
     /** @see GetKeywordDetailUseCase */
     val getKeywordDetail: GetKeywordDetailUseCase,
     /** @see RefreshKeywordDetailUseCase */

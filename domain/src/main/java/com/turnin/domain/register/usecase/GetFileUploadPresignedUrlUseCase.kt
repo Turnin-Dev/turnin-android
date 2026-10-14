@@ -7,11 +7,10 @@ import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
 import com.turnin.domain.register.error.RegisterErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /** 파일 업로드에 사용할 사전 정의된 url을 요청한다. */
-internal class GetFileUploadPresignedUrlUseCase @Inject constructor(
+internal class GetFileUploadPresignedUrlUseCase(
     private val fileRepository: FileRepository,
 ) {
     /**

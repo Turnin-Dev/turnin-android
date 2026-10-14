@@ -1,8 +1,6 @@
 package com.turnin.domain.setting.usecase
 
-import javax.inject.Inject
-
-class AccountInfoUseCases @Inject constructor(
+class AccountInfoUseCases(
     /**
      * 계정 정보 업데이트
      *

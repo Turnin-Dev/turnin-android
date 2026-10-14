@@ -4,7 +4,6 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.domain.discover.error.DiscoverErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class RefreshMyKeywordsUseCase @Inject constructor(
+class RefreshMyKeywordsUseCase(
     private val repository: UserKeywordRepository,
 ) {
     /**

@@ -2,14 +2,13 @@ package com.turnin.domain.friend.usecase
 
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.repository.UserRepository
-import javax.inject.Inject
 
 /**
  * 나의 사용자 ID 캐시 조회
  *
  * @see invoke
  */
-class GetMyUserIdUseCase @Inject constructor(
+class GetMyUserIdUseCase(
     private val userRepository: UserRepository,
 ) {
     /**

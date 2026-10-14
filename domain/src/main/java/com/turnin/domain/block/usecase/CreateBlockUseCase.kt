@@ -9,7 +9,6 @@ import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.block.error.BlockErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class CreateBlockUseCase @Inject constructor(
+class CreateBlockUseCase(
     private val userRepository: UserRepository,
     private val blockRepository: BlockRepository,
 ) {

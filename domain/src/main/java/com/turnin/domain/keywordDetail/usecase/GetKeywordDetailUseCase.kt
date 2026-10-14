@@ -12,7 +12,6 @@ import com.turnin.core.domain.util.catchAndLog
 import com.turnin.domain.keywordDetail.error.KeywordDetailErrorType
 import com.turnin.domain.keywordDetail.model.KeywordDetail
 import com.turnin.domain.keywordDetail.model.toKeywordDetail
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -23,7 +22,7 @@ import kotlinx.coroutines.flow.last
  *
  * @see invoke
  */
-class GetKeywordDetailUseCase @Inject constructor(
+class GetKeywordDetailUseCase(
     private val userKeywordRepository: UserKeywordRepository,
     private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val logger: DomainLogger,

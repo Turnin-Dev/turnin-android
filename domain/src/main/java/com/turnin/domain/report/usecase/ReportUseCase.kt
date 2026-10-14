@@ -10,7 +10,6 @@ import com.turnin.core.domain.report.model.ReportReasonId
 import com.turnin.core.domain.report.repository.ReportRepository
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.report.error.ReportErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -20,7 +19,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class ReportUseCase @Inject constructor(
+class ReportUseCase(
     private val userRepository: UserRepository,
     private val reportRepository: ReportRepository,
 ) {

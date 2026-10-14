@@ -15,7 +15,6 @@ import com.turnin.core.domain.model.Name
 import com.turnin.core.domain.model.ProviderId
 import com.turnin.core.domain.model.SocialLoginProvider
 import com.turnin.domain.register.error.RegisterErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -24,7 +23,7 @@ import kotlinx.coroutines.flow.flowOf
  *
  * 회원가입에 성공하면 [RegisterResult]을 반환한다.
  */
-internal class RegisterUseCase @Inject internal constructor(
+internal class RegisterUseCase internal constructor(
     private val authRepository: AuthRepository,
     private val getFileUrlUseCase: GetFileUrlUseCase,
 ) {

@@ -5,7 +5,6 @@ import com.turnin.core.domain.common.validation.ValidationErrorType
 import com.turnin.core.domain.common.validation.ValidationResult
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.DisplayId
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.flow
  *
  * 사용자 표시 ID는 중복이 허용되지 않으므로 중복검사가 필요하다.
  */
-class ValidateDisplayIdUseCase @Inject constructor() {
+class ValidateDisplayIdUseCase {
     operator fun invoke(displayId: String): Flow<ValidationResult<DisplayId, ValidationErrorType>> =
         flow {
             emit(ValidationResult.Loading)

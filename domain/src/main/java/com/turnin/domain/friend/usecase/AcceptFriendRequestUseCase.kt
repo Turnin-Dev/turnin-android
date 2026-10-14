@@ -8,7 +8,6 @@ import com.turnin.core.domain.friend.model.PatchFriendStatus
 import com.turnin.core.domain.friend.repository.FriendRepository
 import com.turnin.core.domain.model.UserId
 import com.turnin.domain.friend.error.FriendErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class AcceptFriendRequestUseCase @Inject constructor(
+class AcceptFriendRequestUseCase(
     private val friendRepository: FriendRepository,
 ) {
     /**

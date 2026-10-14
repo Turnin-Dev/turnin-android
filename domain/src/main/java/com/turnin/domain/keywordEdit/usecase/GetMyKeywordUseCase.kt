@@ -4,7 +4,6 @@ import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.userKeyword.model.UserKeywordDetail
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.core.domain.util.DomainLogger
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @param invoke
  */
-class GetMyKeywordUseCase @Inject constructor(
+class GetMyKeywordUseCase(
     private val userKeywordRepository: UserKeywordRepository,
     private val logger: DomainLogger,
 ) {

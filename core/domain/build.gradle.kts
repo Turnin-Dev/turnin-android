@@ -8,7 +8,6 @@ kotlin {
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
-    api(libs.dagger.hilt.javax)
     implementation(libs.kotlinx.datetime)
 
     // Testing

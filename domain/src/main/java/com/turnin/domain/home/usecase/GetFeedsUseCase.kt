@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import com.turnin.core.domain.feed.model.Feed
 import com.turnin.core.domain.feed.model.FeedType
 import com.turnin.core.domain.feed.repository.FeedRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetFeedsUseCase @Inject constructor(
+class GetFeedsUseCase(
     private val feedRepository: FeedRepository,
 ) {
     /**

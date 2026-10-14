@@ -3,7 +3,6 @@ package com.turnin.domain.profile.usecase.my
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.profile.model.MyProfile
 import com.turnin.domain.profile.model.toMyProfile
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.map
  *
  * @see invoke
  */
-class GetMyProfileUseCase @Inject constructor(
+class GetMyProfileUseCase(
     private val userRepository: UserRepository,
 ) {
     /**

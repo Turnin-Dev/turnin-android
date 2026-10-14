@@ -5,7 +5,6 @@ import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.domain.keywordDetail.error.KeywordDetailErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class DeleteKeywordUseCase @Inject constructor(
+class DeleteKeywordUseCase(
     private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**

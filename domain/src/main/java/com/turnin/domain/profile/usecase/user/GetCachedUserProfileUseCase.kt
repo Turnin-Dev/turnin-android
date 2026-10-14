@@ -4,14 +4,13 @@ import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.profile.model.UserProfile
 import com.turnin.domain.profile.model.toUserProfile
-import javax.inject.Inject
 
 /**
  * 사용자 프로필 캐시 조회
  *
  * @see invoke
  */
-class GetCachedUserProfileUseCase @Inject constructor(
+class GetCachedUserProfileUseCase(
     private val userRepository: UserRepository,
 ) {
     /**

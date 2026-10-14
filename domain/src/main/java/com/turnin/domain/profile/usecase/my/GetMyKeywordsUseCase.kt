@@ -2,7 +2,6 @@ package com.turnin.domain.profile.usecase.my
 
 import com.turnin.core.domain.userKeyword.model.UserKeyword
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -10,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetMyKeywordsUseCase @Inject constructor(
+class GetMyKeywordsUseCase(
     private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**

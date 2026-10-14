@@ -7,7 +7,6 @@ import com.turnin.core.domain.common.validation.ValidationResult
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.DisplayId
 import com.turnin.domain.setting.error.SettingErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.map
  *
  * @see invoke
  */
-class ValidateDisplayIdRemoteUseCase @Inject constructor(
+class ValidateDisplayIdRemoteUseCase(
     private val authRepository: AuthRepository,
 ) {
     /**

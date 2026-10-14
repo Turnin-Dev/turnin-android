@@ -5,9 +5,8 @@ import com.turnin.domain.profile.usecase.my.GetMyKeywordsUseCase
 import com.turnin.domain.profile.usecase.my.GetMyProfileUseCase
 import com.turnin.domain.profile.usecase.my.RefreshMyKeywordsUseCase
 import com.turnin.domain.profile.usecase.my.RefreshMyProfileUseCase
-import javax.inject.Inject
 
-class MyProfileUseCases @Inject constructor(
+class MyProfileUseCases(
     /** @see GetCurrentMyProfileUseCase */
     val getCurrentMyProfile: GetCurrentMyProfileUseCase,
     /** @see GetMyProfileUseCase */

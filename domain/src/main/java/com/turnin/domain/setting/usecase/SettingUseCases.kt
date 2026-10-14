@@ -1,9 +1,8 @@
 package com.turnin.domain.setting.usecase
 
 import com.turnin.core.domain.auth.usecase.LogoutUseCase
-import javax.inject.Inject
 
-class SettingUseCases @Inject constructor(
+class SettingUseCases(
     /**
      * 로그아웃
      *

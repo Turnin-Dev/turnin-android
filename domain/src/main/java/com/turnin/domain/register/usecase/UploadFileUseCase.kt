@@ -6,11 +6,10 @@ import com.turnin.core.domain.file.FileRepository
 import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.domain.register.error.RegisterErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /** 파일을 업로드하고 파일의 url을 반환한다. */
-internal class UploadFileUseCase @Inject constructor(
+internal class UploadFileUseCase(
     private val fileRepository: FileRepository,
 ) {
     /**

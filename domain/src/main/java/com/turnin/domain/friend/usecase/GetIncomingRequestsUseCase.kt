@@ -3,7 +3,6 @@ package com.turnin.domain.friend.usecase
 import androidx.paging.PagingData
 import com.turnin.core.domain.friend.model.IncomingRequest
 import com.turnin.core.domain.friend.repository.FriendRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetIncomingRequestsUseCase @Inject constructor(
+class GetIncomingRequestsUseCase(
     private val friendRepository: FriendRepository,
 ) {
     /**

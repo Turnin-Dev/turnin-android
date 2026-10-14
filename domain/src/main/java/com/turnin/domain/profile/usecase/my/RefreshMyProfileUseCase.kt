@@ -4,7 +4,6 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.profile.error.ProfileErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class RefreshMyProfileUseCase @Inject constructor(
+class RefreshMyProfileUseCase(
     private val userRepository: UserRepository,
 ) {
     /**

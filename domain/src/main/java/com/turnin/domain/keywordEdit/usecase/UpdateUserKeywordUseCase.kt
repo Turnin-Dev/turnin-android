@@ -9,7 +9,6 @@ import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.userKeyword.model.PatchUserKeyword
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.domain.keywordEdit.error.KeywordEditErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class UpdateUserKeywordUseCase @Inject constructor(
+class UpdateUserKeywordUseCase(
     private val userKeywordRepository: UserKeywordRepository,
 ) {
     /**

@@ -7,7 +7,6 @@ import com.turnin.core.domain.common.coroutine.mapSuccess
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.eventBus.AuthEventBus
 import com.turnin.domain.login.error.LoginErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -28,7 +27,7 @@ import kotlinx.coroutines.flow.flowOf
  * @see invoke
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoginUseCase @Inject constructor(
+class LoginUseCase(
     private val authRepository: AuthRepository,
     private val authEventBus: AuthEventBus,
 ) {

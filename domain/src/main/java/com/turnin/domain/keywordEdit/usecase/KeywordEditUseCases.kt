@@ -1,8 +1,6 @@
 package com.turnin.domain.keywordEdit.usecase
 
-import javax.inject.Inject
-
-class KeywordEditUseCases @Inject constructor(
+class KeywordEditUseCases(
     /** @see AddUserKeywordUseCase */
     val add: AddUserKeywordUseCase,
     /** @see UpdateUserKeywordUseCase */

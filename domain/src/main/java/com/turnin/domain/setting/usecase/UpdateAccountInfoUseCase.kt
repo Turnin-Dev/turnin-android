@@ -15,7 +15,6 @@ import com.turnin.core.domain.user.model.UserPatch
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.setting.error.SettingErrorType
 import com.turnin.domain.setting.model.SettingProfileImagePatch
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -24,7 +23,7 @@ import kotlinx.coroutines.flow.map
  *
  * @see invoke
  */
-class UpdateAccountInfoUseCase @Inject constructor(
+class UpdateAccountInfoUseCase(
     private val fileRepository: FileRepository,
     private val userRepository: UserRepository,
 ) {

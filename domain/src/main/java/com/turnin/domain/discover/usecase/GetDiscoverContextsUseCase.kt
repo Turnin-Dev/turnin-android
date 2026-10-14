@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import com.turnin.core.domain.discover.model.DiscoverContext
 import com.turnin.core.domain.discover.repository.DiscoverRepository
 import com.turnin.core.domain.model.UserId
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class GetDiscoverContextsUseCase @Inject constructor(
+class GetDiscoverContextsUseCase(
     private val discoverRepository: DiscoverRepository,
 ) {
     /**

@@ -5,7 +5,6 @@ import com.turnin.core.domain.discover.model.DiscoverKeyword
 import com.turnin.core.domain.discover.model.DiscoverUser
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.filterNotNull
  *
  * @see invoke
  */
-class GetMyDiscoverContextUseCase @Inject constructor(
+class GetMyDiscoverContextUseCase(
     private val userRepository: UserRepository,
     private val userKeywordRepository: UserKeywordRepository,
 ) {

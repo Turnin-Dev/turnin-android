@@ -5,9 +5,8 @@ import com.turnin.domain.profile.usecase.user.GetCachedUserProfileUseCase
 import com.turnin.domain.profile.usecase.user.GetUserKeywordsUseCase
 import com.turnin.domain.profile.usecase.user.GetUserProfileUseCase
 import com.turnin.domain.profile.usecase.user.UpdateFriendStateUseCase
-import javax.inject.Inject
 
-class UserProfileUseCases @Inject constructor(
+class UserProfileUseCases(
     /**
      * 사용자 프로필 조회
      * @see GetUserProfileUseCase

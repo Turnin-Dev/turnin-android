@@ -1,8 +1,6 @@
 package com.turnin.domain.notification.usecase
 
-import javax.inject.Inject
-
-class NotificationUseCases @Inject constructor(
+class NotificationUseCases(
     /**
      * 알림 목록 조회
      * @see GetNotificationsUseCase

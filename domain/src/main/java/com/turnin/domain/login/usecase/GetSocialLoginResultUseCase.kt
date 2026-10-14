@@ -10,7 +10,6 @@ import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.SocialLoginProvider
 import com.turnin.domain.login.error.LoginErrorType
 import com.turnin.domain.login.model.LoginWithExistsUser
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -25,7 +24,7 @@ import kotlinx.coroutines.flow.onStart
  * 업스트림에서 받은 [LoginCredentials]을 다시 반환하고, 사용자 존재 여부를 [LoginWithExistsUser.isExistsUser]에 담아 반환한다.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class GetSocialLoginResultUseCase @Inject constructor(
+class GetSocialLoginResultUseCase(
     private val socialAuthManagerFactory: SocialAuthManagerFactory,
     private val authRepository: AuthRepository,
 ) {

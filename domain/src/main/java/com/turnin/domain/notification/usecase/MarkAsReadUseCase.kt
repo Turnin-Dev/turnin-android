@@ -5,7 +5,6 @@ import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.NotificationId
 import com.turnin.core.domain.notification.repository.NotificationRepository
 import com.turnin.domain.notification.error.NotificationErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 
 /**
@@ -13,7 +12,7 @@ import kotlinx.coroutines.CancellationException
  *
  * @see invoke
  */
-class MarkAsReadUseCase @Inject constructor(
+class MarkAsReadUseCase(
     private val notificationRepository: NotificationRepository,
 ) {
     /**

@@ -12,14 +12,13 @@ import com.turnin.core.domain.userKeyword.model.UserKeyword
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
 import com.turnin.core.domain.util.DomainLogger
 import com.turnin.domain.keywordEdit.error.KeywordEditErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 
 /** 사용자 키워드 추가 */
-class AddUserKeywordUseCase @Inject constructor(
+class AddUserKeywordUseCase(
     private val userRepository: UserRepository,
     private val userKeywordRepository: UserKeywordRepository,
     private val logger: DomainLogger,

@@ -5,14 +5,13 @@ import com.turnin.core.domain.common.validation.ValidationErrorType
 import com.turnin.core.domain.common.validation.ValidationResult
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.Introduce
-import javax.inject.Inject
 
 /**
  * 소개글 유효성 검사
  *
  * @see invoke
  */
-class ValidationIntroduceFormatUseCase @Inject constructor() {
+class ValidationIntroduceFormatUseCase {
     /**
      * 소개글 유효성 검사를 한다.
      *

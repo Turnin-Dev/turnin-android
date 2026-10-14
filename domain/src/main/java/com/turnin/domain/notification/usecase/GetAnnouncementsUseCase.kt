@@ -5,7 +5,6 @@ import com.turnin.core.domain.announcement.repository.AnnouncementRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.domain.notification.error.NotificationErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetAnnouncementsUseCase @Inject constructor(
+class GetAnnouncementsUseCase(
     private val announcementRepository: AnnouncementRepository,
 ) {
     /**

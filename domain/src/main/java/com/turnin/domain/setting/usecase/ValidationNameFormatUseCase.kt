@@ -5,14 +5,13 @@ import com.turnin.core.domain.common.validation.ValidationErrorType
 import com.turnin.core.domain.common.validation.ValidationResult
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.Name
-import javax.inject.Inject
 
 /**
  * 사용자 명 유효성 검사
  *
  * @see invoke
  */
-class ValidationNameFormatUseCase @Inject constructor() {
+class ValidationNameFormatUseCase {
     /**
      * 사용자 명 유효성 검사를 한다.
      *

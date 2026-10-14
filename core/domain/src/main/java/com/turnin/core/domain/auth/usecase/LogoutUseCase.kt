@@ -8,7 +8,6 @@ import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.notification.repository.NotificationRepository
 import com.turnin.core.domain.util.DomainLogger
 import com.turnin.core.domain.util.catchAndLog
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see invoke
  */
-class LogoutUseCase @Inject constructor(
+class LogoutUseCase(
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
     private val socialAuthManagerFactory: SocialAuthManagerFactory,

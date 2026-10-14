@@ -2,12 +2,11 @@ package com.turnin.domain.discover.usecase
 
 import com.turnin.core.domain.discover.repository.DiscoverRepository
 import com.turnin.core.domain.model.UserId
-import javax.inject.Inject
 
 /**
  * 탐색 캐시 무효화
  */
-class InvalidateCacheUseCase @Inject constructor(
+class InvalidateCacheUseCase(
     private val discoverRepository: DiscoverRepository,
 ) {
     /**

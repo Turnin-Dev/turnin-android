@@ -5,7 +5,6 @@ import com.turnin.core.domain.block.repository.BlockRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.domain.block.error.BlockErrorType
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @see invoke
  */
-class GetBlockReasonsUseCase @Inject constructor(
+class GetBlockReasonsUseCase(
     private val blockRepository: BlockRepository,
 ) {
     /**
