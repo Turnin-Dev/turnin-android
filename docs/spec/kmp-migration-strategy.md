@@ -28,7 +28,7 @@
 | 항목             | 규모                                                                          | 처리                                                             |
 |----------------|-----------------------------------------------------------------------------|----------------------------------------------------------------|
 | `javax.inject` | `@Inject` 사용 클래스 64개                                                        | 제거 후 Android는 Hilt `@Provides`로 등록 (3. 기술 결정 참고)               |
-| MockK 테스트      | 28개 파일                                                                      | 우선 `androidHostTest`로 이동해 그대로 유지, `commonTest` Fake 전환은 점진적으로  |
+| MockK 테스트      | 28개 파일                                                                      | **Mokkery** + `kotlin.test`로 바꿔 `commonTest`로 이동 (3. 기술 결정 테스트 항목 참고) |
 | JVM 전용 API     | `FileNameGenerator` (`java.time`, `UUID`), `this::class.java.simpleName` 6곳 | `kotlin.time` / `kotlin.uuid`(또는 kotlinx-datetime), TAG 상수로 대체 |
 | `PagingData`   | `paging-common` 3.3.6만 사용                                                   | paging-common은 3.3.0부터 iOS 타겟 지원 → **commonMain에 그대로 유지**      |
 | 로깅             | `DomainLogger` 인터페이스 존재                                                     | **그대로 사용**, 구현은 플랫폼별 (Android: Timber)                         |
@@ -48,18 +48,18 @@
 | 버전                                    | **Kotlin 2.3.21 / KSP 2.3.12 / Hilt 2.58**, AGP 8.13.2·Gradle 8.13 유지 (4. 버전 결정 근거 참고)                                                                                               |
 | 네트워크                                  | Android data: **Retrofit/OkHttp 유지**. 공지 API만 Retrofit → **Ktor Client** (직접 호출 방식)                                                                                                  |
 | 직렬화                                   | Android data: Moshi 유지. 공지 API DTO만 Moshi → **kotlinx.serialization**                                                                                                                |
-| DI                                    | **shared 코드는 DI 비의존(어노테이션 없는 일반 생성자)**. Android는 **Hilt 유지**, UseCase는 `:app/di/<feature>/`에서 `@Provides`로 등록 (기능 모듈화 시 각 `:feature:x`로 이동). iOS 진입점에서만 **Koin** 사용 (공지 기능 한정) |
+| DI                                    | **shared 코드는 DI 비의존(어노테이션 없는 일반 생성자)**. Android는 **Hilt 유지**, UseCase는 `:app/di/<feature>/`에서 `@Provides`로 등록 (기능 모듈화 시 각 `:feature:x`로 이동). 공유 data 객체(공지 Ktor 구현 등)는 commonMain **Koin** 모듈에서 정의하고, iOS는 Koin으로 직접, Android는 **Koin → Hilt 브릿지**로 받는다 (아래 DI 결정 배경 참고) |
 | domain 타겟                             | **android(`com.android.kotlin.multiplatform.library`) + iosArm64 + iosSimulatorArm64**                                                                                               |
 | Android 타겟 플러그인                       | `com.android.kotlin.multiplatform.library` (AGP 9부터 KMP와 `com.android.library` 병용 불가 → 지금부터 적용해 AGP 9 전환 시 재작업 방지). build type 미지원                                                   |
 | 로컬 DB / 설정                            | Android data에서 유지 (shared 이관 없음)                                                                                                                                                     |
 | 플랫폼 SDK (Firebase, Kakao, Google 로그인) | shared에는 인터페이스만, 구현은 각 플랫폼                                                                                                                                                           |
 | 로깅                                    | 기존 `DomainLogger` 인터페이스 사용 (Kermit 미도입)                                                                                                                                              |
 | Paging                                | `paging-common` KMP 지원 버전 사용, commonMain 유지                                                                                                                                          |
-| 테스트                                   | 신규 commonTest는 Fake + kotlin.test (MockK 미사용). 기존 MockK 테스트는 `androidHostTest`로 이동 후 점진 전환                                                                                           |
+| 테스트                                   | KMP 모듈 테스트는 `commonTest`에서 **Mokkery** + `kotlin.test` + `kotlinx-coroutines-test`로 작성 (Android 호스트·iOS 양쪽 실행). Mokkery는 Kotlin 컴파일러 플러그인이므로 Kotlin 버전업 시 함께 올린다 (Kotlin 2.3.21 → Mokkery 3.3.0) |
 | iOS 연동                                | 공식 튜토리얼의 **직접 연동** (`embedAndSignAppleFrameworkForXcode`). KMP 모듈이 3개(`:core:domain`, `:domain`, `:core:data`)이므로 umbrella `:shared` 도입 (코드 없이 export + iOS 진입점(Koin, Keychain)만 담당) |
 | iOS 검증                                | Xcode 26 설치 후, SwiftUI 최소 화면 1개에서 공지 UseCase 호출                                                                                                                                      |
 | 기능 모듈화 대비                             | 기능별 패키지 유지, 기능 간 내부 import 금지, Koin 모듈은 기능별 분리                                                                                                                                       |
-| 공지 배치                                 | 모델·Repository 인터페이스는 `:core:domain` 유지, Ktor 구현체는 `:core:data` commonMain, Hilt 바인딩은 `:core:data` androidMain (기능 모듈화 시 인터페이스는 `:domain`, 구현·바인딩은 `:data`로 이동)                       |
+| 공지 배치                                 | 모델·Repository 인터페이스는 `:core:domain` 유지, Ktor 구현체·Koin 모듈은 `:core:data` commonMain, Koin 브릿지·Hilt 바인딩은 `:core:data` androidMain (기능 모듈화 시 인터페이스는 `:domain`, 구현·바인딩은 `:data`로 이동)                       |
 | `:core:data` 플러그인                     | **`kotlin.multiplatform` + `com.android.library`** (`androidTarget` + iosArm64 + iosSimulatorArm64). build type·`BuildConfig`·Hilt Gradle Plugin을 그대로 쓰기 위함. 전용 convention plugin으로 구성 (아래 스파이크 결과 참고)        |
 
 ### `:core:data` KMP 전환 스파이크 결과
@@ -91,6 +91,50 @@
 - `javax.inject`는 JVM 전용이라 commonMain에서 사용할 수 없다. expect/actual + typealias로 `@Inject`를 유지하는 방법은
   Hilt(KSP2) 호환이 검증되지 않아 채택하지 않는다.
 
+### Koin → Hilt 브릿지
+
+공유 data 객체의 조립 방법(Ktor 클라이언트, 인증, Repository)은 commonMain Koin 모듈 한 곳에서 정의하고, Android는 브릿지로 받아 Hilt 그래프에 넣는다.
+
+```kotlin
+// :core:data androidMain
+object SharedKoinBridge : KoinComponent {
+    private val koinApp by lazy { koinApplication { modules(sharedDataModule) } }
+    override fun getKoin() = koinApp.koin
+
+    fun announcementRepository(): AnnouncementRepository = get()
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object SharedBridgeModule {
+    @Provides
+    @Singleton
+    fun provideAnnouncementRepository(): AnnouncementRepository = SharedKoinBridge.announcementRepository()
+}
+```
+
+- 참고 자료의 두 방식을 비교했다.
+    - jacobras/KMP-shared-DI: 공유 모듈 androidMain의 Hilt 모듈에서 `KoinJavaComponent.get(Class)`, `Application.onCreate`에서 전역 `startKoin`.
+    - ProAndroidDev(Bridging Two Worlds): androidMain의 `object KoinBridge : KoinComponent`에서 기능별 이름의 함수 + reified `get<T>()`, Hilt `@Provides @Singleton`.
+    - 런타임 비용은 같다 (Hilt가 한 번 요청할 때 Koin 조회 1회, 이후 캐시).
+- ProAndroidDev 방식을 따르되 **별도 Koin 컨텍스트(`koinApplication`)를 처음 쓸 때 생성**한다.
+    - 전역 `startKoin` 호출 순서에 의존하지 않는다 (Hilt 주입이 Koin 시작보다 먼저 일어나도 안전).
+    - 다른 Koin 사용처와 전역 컨텍스트가 충돌하지 않는다.
+- 브릿지 범위는 Koin이 생성하는 공유 data 객체로 한정한다. UseCase는 Retrofit/Room 기반 Repository(Hilt)에 의존하므로 `:app` `@Provides`를 유지한다.
+- Koin 정의 누락은 런타임에만 드러나므로 Koin 모듈 검증 테스트(`verify()`)를 둔다.
+- ViewModel 공유(CMP) 단계에서는 Hilt를 commonMain에서 쓸 수 없으므로 공유 범위(ViewModel → UseCase → Repository)의 DI를 KMP DI(Koin 등)로 옮긴다. UseCase가 DI 비의존 생성자라 Koin 모듈 작성만으로 전환할 수 있다.
+
+### 테스트 결정 배경
+
+| 방식                         | iOS 실행 | 현재 환경 (AGP 8.13, Kotlin 2.3.21)             | 비고                                       |
+|----------------------------|--------|---------------------------------------------|------------------------------------------|
+| MockK 유지 (`androidHostTest`) | X      | 가능                                          | 공유 코드의 iOS 동작을 검증하지 못함                      |
+| MocKMP                     | O      | **불가** (3.x는 AGP 8 비호환)                     | KSP 생성, 인터페이스·추상 클래스만 mock                 |
+| **Mokkery**                | O      | 가능 (3.3.0이 Kotlin 2.3.0–2.3.21 지원)          | 컴파일러 플러그인, MockK와 유사한 문법. final 클래스는 all-open 필요 |
+
+- MockK → Mokkery 변환: `mockk<T>()` → `mock<T>()`, `coEvery` → `everySuspend`, `coVerify` → `verifySuspend`, `just Runs` → `returns Unit`, JUnit → `kotlin.test`.
+- final 클래스(UseCase)를 mock하던 테스트는 실제 UseCase를 조립하고 Repository를 mock하는 방식으로 바꾼다.
+
 ## 4. 버전 결정 근거
 
 - Kotlin 2.1.10이 공식 지원하는 Xcode는 16.0 → Xcode 26 사용을 위해 Kotlin 버전업이 필요하다.
@@ -116,11 +160,11 @@
 | 단계                | 내용                                                                                                         |
 |-------------------|------------------------------------------------------------------------------------------------------------|
 | 0. 준비             | Kotlin/KSP/Hilt 버전업, KMP convention plugin 추가, version catalog 정리, `:core:data` KMP 전환 스파이크                |
-| 1. `:core:domain` + `:domain` | 두 모듈을 함께 KMP 전환 (android + iOS 타겟, commonMain). JVM 전용 API 대체, 테스트 `androidHostTest`로 이동, `@Inject` 제거 후 Hilt `@Provides`로 등록. `:domain`(JVM)이 KMP 전환된 `:core:domain`(android 타겟)을 소비할 수 없으므로 분리하지 않는다 |
+| 1. `:core:domain` + `:domain` | 두 모듈을 함께 KMP 전환 (android + iOS 타겟, commonMain). JVM 전용 API 대체, 테스트를 Mokkery로 바꿔 `commonTest`로 이동, `@Inject` 제거 후 Hilt `@Provides`로 등록. `:domain`(JVM)이 KMP 전환된 `:core:domain`(android 타겟)을 소비할 수 없으므로 분리하지 않는다 |
 | 2. `:core:data`   | KMP 전환 (기존 코드는 전부 androidMain 유지). Android 빌드·테스트가 그대로 통과하는지 확인                                            |
 | 3. 공지 API 전환 (실험) | **공지(Announcement)** API를 Retrofit → Ktor + serialization으로 전환, `:core:data` commonMain으로 이동 (인증·에러 처리 포함) |
-| 4. DI + iOS 검증    | `:shared` 구성, iOS용 Koin 모듈(공지 한정), Android는 Hilt 연결, iOS에서 공지 UseCase 호출                                   |
-| 5 이후              | Kotlin 2.4 + AGP 9 전환, 나머지 data 공유 여부 결정, presentation 공유(CMP) 결정, 기능 단위 모듈화                               |
+| 4. DI + iOS 검증    | `:shared` 구성, commonMain Koin 모듈(공지 한정), Android는 Koin → Hilt 브릿지 연결, iOS에서 공지 UseCase 호출                    |
+| 5 이후              | Kotlin 2.4 + AGP 9 전환, 나머지 data 공유 여부 결정, presentation 공유(CMP) 결정 (ViewModel 공유 시 공유 계층 DI를 KMP DI로 전환), 기능 단위 모듈화 |
 
 ## 7. 참고 자료
 
@@ -147,3 +191,10 @@
 - [Convert Your Native Project to KMP – Droids On Roids](https://proandroiddev.com/convert-your-native-project-to-kotlin-multiplatform-developers-guide-bce1ae20bd32) (
   umbrella 모듈 포함)
 - [Touchlab KaMPKit](https://github.com/touchlab/KaMPKit) (Ktor + Koin + iOS 연동 구조)
+- [jacobras/KMP-shared-DI](https://github.com/jacobras/KMP-shared-DI) (Koin + Hilt + Swinject 혼용)
+- [Bridging Two Worlds: KMP Dependencies with Koin in Android Native with Hilt – ProAndroidDev](https://proandroiddev.com/bridging-two-worlds-using-kmp-dependencies-with-koin-in-android-native-with-hilt-c1dc820cfccb)
+
+### 테스트
+
+- [Mokkery – Setup (Kotlin 버전 호환표)](https://mokkery.dev/docs/Setup) / [Limitations](https://mokkery.dev/docs/Limitations)
+- [MocKMP](https://github.com/kosi-libs/MocKMP)
