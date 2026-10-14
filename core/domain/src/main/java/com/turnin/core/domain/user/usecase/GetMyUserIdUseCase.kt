@@ -13,14 +13,14 @@ class GetMyUserIdUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val logger: DomainLogger,
 ) {
-    private val tag = this::class.java.simpleName
-
     suspend operator fun invoke(): UserId? =
         try {
             userRepository.getMyUserId()
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            logger.e(tag, e, "Error getting my user ID")
+            logger.e(TAG, e, "Error getting my user ID")
             null
         }
 }
+
+private const val TAG = "GetMyUserIdUseCase"

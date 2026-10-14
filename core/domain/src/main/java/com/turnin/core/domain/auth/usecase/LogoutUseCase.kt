@@ -25,8 +25,6 @@ class LogoutUseCase @Inject constructor(
     private val socialAuthManagerFactory: SocialAuthManagerFactory,
     private val logger: DomainLogger,
 ) {
-    private val tag = this::class.java.simpleName
-
     /**
      * 로그아웃을 수행한다.
      * (로그아웃 수행 시에는 로컬 데이터를 전부 삭제한다.)
@@ -67,7 +65,9 @@ class LogoutUseCase @Inject constructor(
 
         emit(Result.Success(Unit))
     }
-        .catchAndLog(logger, tag) { e ->
+        .catchAndLog(logger, TAG) { e ->
             emit(Result.Error(CommonErrorType.Unexpected(e)))
         }
 }
+
+private const val TAG = "LogoutUseCase"

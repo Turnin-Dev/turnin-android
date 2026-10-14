@@ -43,6 +43,7 @@ dataStore = "1.2.0"
 androidxNavigation = "2.9.5"
 androidxHilt = "1.2.0"
 kotlinxSerialization = "1.8.1"
+kotlinxDatetime = "0.8.0"
 androidTools = "31.8.0"
 desugar_jdk_libs = "2.1.5"
 splashScreen = "1.2.0"
@@ -118,6 +119,8 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 # Serialization
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+# Datetime
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-mock = { module = "com.squareup.retrofit2:retrofit-mock", version.ref = "retrofit" }

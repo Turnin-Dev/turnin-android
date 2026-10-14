@@ -19,8 +19,6 @@ class GetMyKeywordUseCase @Inject constructor(
     private val userKeywordRepository: UserKeywordRepository,
     private val logger: DomainLogger,
 ) {
-    private val tag = this::class.java.simpleName
-
     /**
      * 나의 키워드를 로컬에서 단발성으로 조회한다.
      */
@@ -30,8 +28,10 @@ class GetMyKeywordUseCase @Inject constructor(
             emitAll(userKeywordRepository.getMyDetailFromLocal(userKeywordIdVO))
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            logger.e(tag, e, "Unexpected error occurred.")
+            logger.e(TAG, e, "Unexpected error occurred.")
             emit(null)
         }
     }
 }
+
+private const val TAG = "GetMyKeywordUseCase"

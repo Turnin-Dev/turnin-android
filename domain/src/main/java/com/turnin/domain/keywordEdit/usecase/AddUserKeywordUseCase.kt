@@ -24,8 +24,6 @@ class AddUserKeywordUseCase @Inject constructor(
     private val userKeywordRepository: UserKeywordRepository,
     private val logger: DomainLogger,
 ) {
-    private val tag = this::class.java.simpleName
-
     /**
      * 사용자 키워드를 추가한다.
      *
@@ -63,9 +61,11 @@ class AddUserKeywordUseCase @Inject constructor(
                     emit(Result.Error(KeywordEditErrorType.ValidationError(e.toValidationErrorType())))
 
                 else -> {
-                    logger.e(tag, e, "Unexpected error occurred.")
+                    logger.e(TAG, e, "Unexpected error occurred.")
                     emit(Result.Error(error = KeywordEditErrorType.Unexpected(e)))
                 }
             }
         }
 }
+
+private const val TAG = "AddUserKeywordUseCase"

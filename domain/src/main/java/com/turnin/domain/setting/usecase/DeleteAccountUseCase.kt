@@ -26,8 +26,6 @@ class DeleteAccountUseCase @Inject constructor(
     private val socialAuthManagerFactory: SocialAuthManagerFactory,
     private val logger: DomainLogger,
 ) {
-    private val tag = this::class.java.simpleName
-
     /**
      * 계정을 삭제한다.
      *
@@ -72,7 +70,9 @@ class DeleteAccountUseCase @Inject constructor(
 
         emit(Result.Success(Unit))
     }
-        .catchAndLog(logger, tag) { e ->
+        .catchAndLog(logger, TAG) { e ->
             emit(Result.Error(SettingErrorType.Unexpected(e)))
         }
 }
+
+private const val TAG = "DeleteAccountUseCase"

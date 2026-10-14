@@ -28,8 +28,6 @@ class GetKeywordDetailUseCase @Inject constructor(
     private val getMyUserIdUseCase: GetMyUserIdUseCase,
     private val logger: DomainLogger,
 ) {
-    private val tag = this::class.java.simpleName
-
     /**
      * 키워드 상세 정보를 조회한다.
      *
@@ -56,7 +54,7 @@ class GetKeywordDetailUseCase @Inject constructor(
             emitAll(getUserKeywordDetail(userIdVO, userKeywordIdVO))
         }
     }
-        .catchAndLog(logger, tag) { e ->
+        .catchAndLog(logger, TAG) { e ->
             emit(Result.Error(KeywordDetailErrorType.Unexpected(e)))
         }
 
@@ -94,3 +92,5 @@ class GetKeywordDetailUseCase @Inject constructor(
                 KeywordDetailErrorType.CommonError(commonError)
             }
 }
+
+private const val TAG = "GetKeywordDetailUseCase"
