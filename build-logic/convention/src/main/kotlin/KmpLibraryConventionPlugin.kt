@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
  *
  * - 타겟: android(`com.android.kotlin.multiplatform.library`), iosArm64, iosSimulatorArm64
  * - Android 호스트 테스트(`androidHostTest`) 활성화
+ * - 테스트: `commonTest`에서 kotlin.test + Mokkery + kotlinx-coroutines-test
  * - `namespace`는 각 모듈의 `kotlin { androidLibrary { } }` 블록에서 지정한다.
  */
 class KmpLibraryConventionPlugin : Plugin<Project> {
@@ -20,6 +21,7 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("org.jetbrains.kotlin.multiplatform")
                 apply("com.android.kotlin.multiplatform.library")
+                apply("dev.mokkery")
             }
 
             extensions.configure<KotlinMultiplatformExtension> {
@@ -39,6 +41,7 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
 
                 sourceSets.commonTest.dependencies {
                     implementation(kotlin("test"))
+                    implementation(libs.findLibrary("kotlinx.coroutines.test").get())
                 }
             }
 

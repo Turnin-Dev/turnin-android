@@ -17,11 +17,5 @@ kotlin {
             // Paging3 (without android dependencies)
             implementation(libs.androidx.paging.common)
         }
-
-        getByName("androidHostTest").dependencies {
-            implementation(libs.junit)
-            implementation(libs.mockK)
-            implementation(libs.kotlinx.coroutines.test)
-        }
     }
 }

@@ -21,6 +21,7 @@ coil-compose = "2.7.0"
 ksp = "2.3.12"
 hiltJavax = "1"
 mockK = "1.14.2"
+mokkery = "3.3.0"
 appcompat = "1.7.1"
 material = "1.12.0"
 hilt = "2.58"
@@ -168,6 +169,7 @@ gms = { id = "com.google.gms.google-services", version.ref = "googleGMS" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformanceMonitoringPlugin"}
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 
 # Turnin Plugins
 turnin-android-application = { id = "turnin.android.application" }
