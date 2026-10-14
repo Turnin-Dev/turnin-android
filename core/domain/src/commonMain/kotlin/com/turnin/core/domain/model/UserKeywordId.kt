@@ -1,0 +1,13 @@
+package com.turnin.core.domain.model
+
+import kotlin.jvm.JvmInline
+
+@JvmInline
+value class UserKeywordId private constructor(val value: Long) {
+    /** 사용자 키워드 ID VO */
+    companion object {
+        fun from(value: Long): UserKeywordId = UserKeywordId(value)
+
+        operator fun invoke(value: Long): UserKeywordId = from(value)
+    }
+}

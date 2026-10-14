@@ -1,20 +1,27 @@
 plugins {
-    alias(libs.plugins.turnin.jvm.library)
+    alias(libs.plugins.turnin.kmp.library)
 }
 
 kotlin {
     jvmToolchain(17)
-}
 
-dependencies {
-    api(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.datetime)
+    androidLibrary {
+        namespace = "com.turnin.core.domain"
+    }
 
-    // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.mockK)
-    testImplementation(libs.kotlinx.coroutines.test)
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
 
-    // Paging3 (without android dependencies)
-    implementation(libs.androidx.paging.common)
+            // Paging3 (without android dependencies)
+            implementation(libs.androidx.paging.common)
+        }
+
+        getByName("androidHostTest").dependencies {
+            implementation(libs.junit)
+            implementation(libs.mockK)
+            implementation(libs.kotlinx.coroutines.test)
+        }
+    }
 }
