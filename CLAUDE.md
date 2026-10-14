@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   `./gradlew ktlintCheck` → `./gradlew testDebugUnitTest` → `./gradlew assembleDebug`
 - Sandboxed sessions: Gradle builds must run on a daemon started **outside** the Claude Code sandbox. A daemon spawned inside the sandbox cannot read `local.properties` or `build/{tmp,intermediates,outputs,generated}` (read-denied), so tasks fail with `Operation not permitted` (e.g. `:build-logic:convention:jar`). If you see that error, or the build reuses a sandboxed daemon, ask the user to run `! ./gradlew --stop && ./gradlew help`, then retry. Do not loosen the read-deny rules.
 - ktlint is a custom JavaExec task in `ktlint.gradle.kts` (not a plugin); style is configured in `.editorconfig` (ktlint_official, trailing commas, no star imports). Fix with `./gradlew ktlintFormat`.
-- Single module tests: `./gradlew :presentation:testDebugUnitTest` (or `:core:data:`). KMP domain modules: `./gradlew :domain:testAndroidHostTest :core:domain:testAndroidHostTest` (not covered by `testDebugUnitTest`); iOS compile check: `:domain:compileKotlinIosSimulatorArm64`.
+- Single module tests: `./gradlew :presentation:testDebugUnitTest` (or `:core:data:`). KMP modules run host tests via `testAndroidHostTest`; `turnin.kmp.library` also registers a `testDebugUnitTest` alias so CI runs them. iOS compile check: `:domain:compileKotlinIosSimulatorArm64`.
 - Build types: `debug`, `release`, `releaseTest` (release config + debug signing; `IS_RELEASE_TEST=true` points release at debug servers). No product flavors.
 
 ## Architecture
@@ -31,7 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Git
 
 - Branch: `<type>/PK-<n>-<desc>` (e.g. `feat/PK-153-add-event`), branched from and PR'd into `develop`. `develop` → `main` triggers release CD (Firebase App Distribution + Play alpha) — never PR features to `main`.
-- Commits: Conventional Commits with Korean subjects (`feat: 로그인/회원가입 분석 이벤트 추가`, `refactor(사용자 프로필): ...`). Every commit and PR title must include the PK JIRA key.
+- Commits: `[PK-<n>] <type>: <Korean subject>` — JIRA key in brackets first, then a Conventional Commits type (e.g. `[PK-143] feat: 공지 유스케이스 추가`, `[PK-143] refactor(사용자 프로필): ...`). Every commit and PR title must include the PK JIRA key.
 - After creating a new file, stage it with `git add <file>`. Never commit unless the user explicitly asks or approves the commit.
 - PRs use the Korean template in `.github/pull_request_template.md`.
 - Never bump `projectVersionName` / `projectVersionCode` in `gradle/libs.versions.toml` unless explicitly asked. But if a change looks like it warrants a version bump (e.g. preparing a release, or a `develop` → `main` PR), proactively suggest it — the user may forget.
