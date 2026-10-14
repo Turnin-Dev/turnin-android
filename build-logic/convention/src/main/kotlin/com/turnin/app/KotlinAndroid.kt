@@ -15,6 +15,18 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *, *>,
 ) {
+    configureAndroidCommon(commonExtension)
+    configureKotlin<KotlinAndroidProjectExtension>()
+}
+
+/**
+ * Android 공통 설정 (SDK 버전, Java 17, desugaring)
+ *
+ * Kotlin 플러그인 설정과 분리되어 있어 `kotlin.android`, `kotlin.multiplatform` 모듈 모두에서 사용한다.
+ */
+internal fun Project.configureAndroidCommon(
+    commonExtension: CommonExtension<*, *, *, *, *, *>,
+) {
     commonExtension.apply {
         compileSdk = libs.findVersion("projectCompileSdkVersion").get().requiredVersion.toInt()
 
@@ -28,8 +40,6 @@ internal fun Project.configureKotlinAndroid(
             targetCompatibility = JavaVersion.VERSION_17
         }
     }
-
-    configureKotlin<KotlinAndroidProjectExtension>()
 
     dependencies {
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())

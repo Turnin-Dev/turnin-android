@@ -178,3 +178,4 @@ turnin-android-library = { id = "turnin.android.library" }
 turnin-android-library-compose = { id = "turnin.android.library.compose" }
 turnin-jvm-library = { id = "turnin.jvm.library" }
 turnin-kmp-library = { id = "turnin.kmp.library" }
+turnin-kmp-android-library = { id = "turnin.kmp.android.library" }

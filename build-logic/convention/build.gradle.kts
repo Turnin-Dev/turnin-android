@@ -46,6 +46,11 @@ gradlePlugin {
             implementationClass = "JvmLibraryConventionPlugin"
         }
 
+        register("kmpAndroidLibrary") {
+            id = "turnin.kmp.android.library"
+            implementationClass = "KmpAndroidLibraryConventionPlugin"
+        }
+
         register("kmpLibrary") {
             id = "turnin.kmp.library"
             implementationClass = "KmpLibraryConventionPlugin"

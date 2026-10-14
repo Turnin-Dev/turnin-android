@@ -2,7 +2,7 @@ import java.util.Properties
 import kotlin.apply
 
 plugins {
-    alias(libs.plugins.turnin.android.library)
+    alias(libs.plugins.turnin.kmp.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -149,9 +149,9 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    add("kspAndroid", libs.hilt.compiler)
     testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.android.compiler)
+    add("kspAndroidTest", libs.hilt.android.compiler)
 
     // DataStore
     implementation(libs.androidx.dataStore.preference)
@@ -176,7 +176,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
-    ksp(libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
