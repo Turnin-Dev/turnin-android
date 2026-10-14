@@ -67,7 +67,7 @@ class RegisterIntegrationUseCaseTest {
     }
 
     @Test
-    fun `회원가입시 register 유스케이스에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `회원가입시 리프레쉬 토큰을 저장하는 과정에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val expectedError = CommonErrorType.Unexpected(null)
         every {
@@ -96,7 +96,7 @@ class RegisterIntegrationUseCaseTest {
     }
 
     @Test
-    fun `회원가입시 리프레쉬 토큰을 저장하는 과정에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
+    fun `회원가입시 register 유스케이스에서 에러 발생 시 정상적으로 에러를 반환한다`() = runTest {
         // given
         val commonError = CommonErrorType.Unexpected(null)
         every {
