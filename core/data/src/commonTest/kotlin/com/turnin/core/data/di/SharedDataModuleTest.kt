@@ -19,8 +19,8 @@ import kotlinx.coroutines.test.runTest
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class SharedDataModuleTest {
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `플랫폼 모듈의 재료로 공지 리포지토리를 조립해 요청까지 수행한다`() = runTest {
         // given: 플랫폼 모듈이 SharedQualifier로 재료를 제공 (Android: SharedDataKoin, iOS: :shared)

@@ -1,6 +1,8 @@
 # Custom Add
 .DS_Store
 .cxx
+# Kotlin 2.x 프로젝트 빌드 캐시 (KMP 등)
+.kotlin/
 
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
