@@ -1,6 +1,6 @@
 package com.turnin.core.data.source.network.error
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
 /**
  * 통합 에러 응답 바디
@@ -18,7 +18,7 @@ import com.squareup.moshi.JsonClass
  * @property message 에러 메시지
  * @property status 에러 코드 (보통 HTTP 상태 코드 형태)
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 data class CommonErrorResponse(
     val code: String,
     val message: String,

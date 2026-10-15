@@ -6,6 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.turnin.core.data.BuildConfig
 import com.turnin.core.data.source.local.datastore.DataStoreManager
 import com.turnin.core.data.source.network.api.RefreshTokenApi
+import com.turnin.core.data.source.network.policy.NetworkPolicy
 import com.turnin.core.data.source.network.retrofit.HttpCacheInterceptor
 import com.turnin.core.data.source.network.retrofit.TokenAuthenticator
 import com.turnin.core.data.source.network.retrofit.TokenInterceptor
@@ -20,7 +21,6 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import okhttp3.internal.platform.Platform
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -32,7 +32,7 @@ private val maskingLogger = HttpLoggingInterceptor.Logger { message ->
             "$1********$3",
         )
 
-    Platform.get().log(masked)
+    HttpLoggingInterceptor.Logger.DEFAULT.log(masked)
 }
 
 @Module
@@ -179,15 +179,14 @@ annotation class FileUploadOkHttpClient
 
 // ------------------------------ Utils ------------------------------
 private fun OkHttpClient.Builder.commonTimeout(): OkHttpClient.Builder =
-    this
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS)
-        .callTimeout(15, TimeUnit.SECONDS)
+    timeout(NetworkPolicy.Timeout.Default)
 
 private fun OkHttpClient.Builder.fileTimeout(): OkHttpClient.Builder =
+    timeout(NetworkPolicy.Timeout.File)
+
+private fun OkHttpClient.Builder.timeout(timeout: NetworkPolicy.Timeout): OkHttpClient.Builder =
     this
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .callTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(timeout.connectMillis, TimeUnit.MILLISECONDS)
+        .readTimeout(timeout.readMillis, TimeUnit.MILLISECONDS)
+        .writeTimeout(timeout.writeMillis, TimeUnit.MILLISECONDS)
+        .callTimeout(timeout.callMillis, TimeUnit.MILLISECONDS)

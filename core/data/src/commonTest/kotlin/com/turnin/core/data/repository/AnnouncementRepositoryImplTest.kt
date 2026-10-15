@@ -9,18 +9,19 @@ import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.announcement.repository.AnnouncementRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.model.AnnouncementId
-import io.mockk.coEvery
-import io.mockk.mockk
+import dev.mokkery.answering.returns
+import dev.mokkery.everySuspend
+import dev.mokkery.mock
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
 
 class AnnouncementRepositoryImplTest {
-    private val dataSource: AnnouncementNetworkDataSource = mockk()
+    private val dataSource: AnnouncementNetworkDataSource = mock()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = UnconfinedTestDispatcher()
@@ -28,10 +29,10 @@ class AnnouncementRepositoryImplTest {
         AnnouncementRepositoryImpl(dataSource, dispatcher)
 
     @Test
-    fun `getAnnouncements() 성공 테스트`() = runTest {
+    fun `getAnnouncements 성공 테스트`() = runTest {
         // given
         val mockResponses = listOf(mockAnnouncementResponse)
-        coEvery { dataSource.getAnnouncements() } returns NetworkResult.Success(mockResponses)
+        everySuspend { dataSource.getAnnouncements() } returns NetworkResult.Success(mockResponses)
 
         // when
         val result = repository.getAnnouncements().last()
@@ -45,11 +46,11 @@ class AnnouncementRepositoryImplTest {
     }
 
     @Test
-    fun `getAnnouncements() 실패 테스트`() = runTest {
+    fun `getAnnouncements 실패 테스트`() = runTest {
         // given
         val expectedError = NetworkErrorType.Network.HttpError(500)
         val expectedMessage = "Server Error"
-        coEvery { dataSource.getAnnouncements() } returns NetworkResult.Error(
+        everySuspend { dataSource.getAnnouncements() } returns NetworkResult.Error(
             error = expectedError,
             message = expectedMessage,
         )
@@ -64,10 +65,10 @@ class AnnouncementRepositoryImplTest {
     }
 
     @Test
-    fun `markAsRead() 성공 테스트`() = runTest {
+    fun `markAsRead 성공 테스트`() = runTest {
         // given
         val announcementId = AnnouncementId(1L)
-        coEvery { dataSource.markAsRead(announcementId) } returns NetworkResult.Success(Unit)
+        everySuspend { dataSource.markAsRead(announcementId) } returns NetworkResult.Success(Unit)
 
         // when
         val result = repository.markAsRead(announcementId)
@@ -77,11 +78,11 @@ class AnnouncementRepositoryImplTest {
     }
 
     @Test
-    fun `markAsRead() 실패 테스트`() = runTest {
+    fun `markAsRead 실패 테스트`() = runTest {
         // given
         val announcementId = AnnouncementId(1L)
         val expectedError = NetworkErrorType.Network.HttpError(400)
-        coEvery { dataSource.markAsRead(announcementId) } returns NetworkResult.Error(
+        everySuspend { dataSource.markAsRead(announcementId) } returns NetworkResult.Error(
             error = expectedError,
             message = "Bad Request",
         )

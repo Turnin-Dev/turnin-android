@@ -3,26 +3,15 @@ package com.turnin.core.data.source.network.util
 import android.util.MalformedJsonException
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.data.source.network.error.CommonErrorResponse
 import com.turnin.core.data.source.network.error.NetworkErrorType
+import com.turnin.core.data.source.network.policy.NetworkPolicy
+import com.turnin.core.data.source.network.policy.isConnectionFailure
+import com.turnin.core.data.source.network.policy.isTimeoutException
 import java.io.IOException
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import retrofit2.Response
-
-private val moshi: Moshi by lazy {
-    Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-}
-
-private val moshiAdapter by lazy {
-    moshi.adapter(CommonErrorResponse::class.java)
-}
 
 /**
  * 모든 네트워크 호출에 사용 되는 제네릭 함수
@@ -49,6 +38,8 @@ suspend fun <T> networkCallWithoutResponse(call: suspend () -> Response<T>): Net
 /**
  * 공통 네트워크 호출 로직
  *
+ * 예외 분류(타임아웃·연결 실패·IO)와 에러 생성은 Ktor `ktorNetworkCall`과 같은 기준을 사용한다.
+ *
  * @param call suspend function 이어야 하며, 반환 값은 Response 타입
  * @param handle [Response]응답을 처리하고 [T]타입에서 -> [R]타입으로 반환한다.
  * @return [NetworkResult]
@@ -60,41 +51,32 @@ private suspend fun <T, R> executeNetworkCall(
 ): NetworkResult<R> = try {
     val response = retry { call().throwIfRetryableError() }
     handle(response)
+} catch (e: CancellationException) {
+    throw e
 } catch (e: HttpException) {
-    handleHttpException(e)
-} catch (e: ConnectException) {
-    handleException(NetworkErrorType.Network.ConnectionFailed, e)
-} catch (e: SocketTimeoutException) {
-    handleException(NetworkErrorType.Exception.TimeOut, e)
+    httpErrorResult(e.code(), e.response()?.errorBody()?.readTextOrNull())
 } catch (e: JsonDataException) {
     handleException(NetworkErrorType.Exception.JsonData, e)
 } catch (e: JsonEncodingException) {
     handleException(NetworkErrorType.Exception.JsonEncoding, e)
 } catch (e: MalformedJsonException) {
     handleException(NetworkErrorType.Exception.MalformedJson, e)
-} catch (e: IOException) {
-    handleException(NetworkErrorType.Exception.IO, e)
-} catch (e: TimeoutException) {
-    handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: Exception) {
-    if (e is CancellationException) throw e
-    handleException(NetworkErrorType.Unexpected(e), e)
+    when {
+        e.isTimeoutException() -> handleException(NetworkErrorType.Exception.TimeOut, e)
+        e.isConnectionFailure() -> handleException(NetworkErrorType.Network.ConnectionFailed, e)
+        e is IOException -> handleException(NetworkErrorType.Exception.IO, e)
+        else -> handleException(NetworkErrorType.Unexpected(e), e)
+    }
 }
 
 /** 응답 처리 */
-private fun <T> handleResponse(response: Response<T>): NetworkResult<T> = when {
-    response.isSuccessful && response.body() != null -> {
-        NetworkResult.Success(response.body()!!)
-    }
-
-    else -> {
-        val errorResponse = parseServerError(response)
-        NetworkResult.Error(
-            error = NetworkErrorType.Network.HttpError(response.code()),
-            code = errorResponse?.code,
-            status = response.code(),
-            message = errorResponse?.message,
-        )
+private fun <T> handleResponse(response: Response<T>): NetworkResult<T> {
+    val body = response.body()
+    return if (response.isSuccessful && body != null) {
+        NetworkResult.Success(body)
+    } else {
+        httpErrorResult(response.code(), response.errorBody()?.readTextOrNull())
     }
 }
 
@@ -103,56 +85,20 @@ private fun <T> handleResponseWithoutBody(response: Response<T>): NetworkResult<
     if (response.isSuccessful) {
         NetworkResult.Success(Unit)
     } else {
-        val errorResponse = parseServerError(response)
-        NetworkResult.Error(
-            error = NetworkErrorType.Network.HttpError(response.code()),
-            code = errorResponse?.code,
-            status = response.code(),
-            message = errorResponse?.message,
-        )
+        httpErrorResult(response.code(), response.errorBody()?.readTextOrNull())
     }
 
-/** HTTP Exception 처리 */
-private fun handleHttpException(e: HttpException): NetworkResult.Error {
-    val errorResponse = parseServerErrorFromException(e)
-    return NetworkResult.Error(
-        error = NetworkErrorType.Network.HttpError(e.code()),
-        code = errorResponse?.code,
-        status = e.code(),
-        message = errorResponse?.message,
-    )
-}
-
-/** Exception 처리 */
+/** Exception 처리 (로그에는 원본 메시지, 결과에는 IP 마스킹된 메시지) */
 private fun handleException(errorType: NetworkErrorType, e: Throwable): NetworkResult.Error {
-    // 1. 로그에는 원본 메시지 전체 출력 (개발 확인용)
     AppLogger.e("NetworkCall", e, "Network exception occurred: ${e.message}")
-
-    // 2. IP 주소 패턴 (IPv4) 매칭 및 마스킹
-    val ipRegex = Regex("""\d{1,3}(\.\d{1,3}){3}""")
-    val maskedMessage = e.message?.replace(ipRegex, "XXX.XXX.XXX.XXX")
-
-    // 3. 마스킹된 메시지 반환
-    return NetworkResult.Error(error = errorType, message = maskedMessage)
+    return exceptionErrorResult(errorType, e)
 }
 
-/** HttpException에서 서버 에러 파싱 */
-private fun parseServerErrorFromException(e: HttpException): CommonErrorResponse? = runCatching {
-    e
-        .response()
-        ?.errorBody()
-        ?.source()
-        ?.let { source -> moshiAdapter.fromJson(source) }
-}.getOrNull()
+private fun okhttp3.ResponseBody.readTextOrNull(): String? = runCatching { string() }.getOrNull()
 
-/** 서버 에러 응답 파싱 */
-private fun <T> parseServerError(response: Response<T>): CommonErrorResponse? = runCatching {
-    response.errorBody()?.source()?.let { source -> moshiAdapter.fromJson(source) }
-}.getOrNull()
-
-/** 상태에 맞는 예외 발생 함수 */
+/** 재시도 가능한 상태 코드면 예외를 발생시켜 [retry]가 재시도하도록 한다. */
 private fun <T> Response<T>.throwIfRetryableError(): Response<T> {
-    if (!isSuccessful && code() in NetworkRetryPolicy.RETRYABLE_STATUS_CODES) {
+    if (!isSuccessful && NetworkPolicy.Retry.isRetryableStatus(code())) {
         throw HttpException(this)
     }
     return this

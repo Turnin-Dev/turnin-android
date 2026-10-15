@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.turnin.kmp.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 // Enable room auto-migrations
@@ -137,11 +138,44 @@ android {
 
 kotlin {
     jvmToolchain(17)
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.core.domain)
+
+            // Coroutine
+            implementation(libs.kotlinx.coroutines.core)
+
+            // Ktor & Serialization
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
+
+            // Koin (KMP 공유 객체 조립, Android는 Hilt 브릿지로 사용)
+            implementation(libs.koin.core)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+        // commonMain의 implementation 의존성은 Android 단위 테스트 컴파일 classpath에 전달되지 않으므로
+        // 테스트(commonTest·androidUnitTest)에서 직접 쓰는 의존성은 여기에 선언한다.
+        commonTest.dependencies {
+            implementation(projects.core.domain)
+            implementation(libs.koin.core)
+            implementation(libs.ktor.client.mock)
+        }
+    }
 }
 
 dependencies {
     implementation(projects.core.common)
-    implementation(projects.core.domain)
 
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)

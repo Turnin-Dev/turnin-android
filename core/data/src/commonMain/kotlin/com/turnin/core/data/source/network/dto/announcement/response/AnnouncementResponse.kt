@@ -1,9 +1,9 @@
 package com.turnin.core.data.source.network.dto.announcement.response
 
-import com.squareup.moshi.JsonClass
 import com.turnin.core.domain.announcement.model.Announcement
 import com.turnin.core.domain.announcement.model.AnnouncementAudience
 import com.turnin.core.domain.model.AnnouncementId
+import kotlinx.serialization.Serializable
 
 /**
  * 공지 응답 바디
@@ -15,7 +15,7 @@ import com.turnin.core.domain.model.AnnouncementId
  * @property isRead 읽음 여부
  * @property createdAt 생성 일자
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 data class AnnouncementResponse(
     val id: Long,
     val title: String,

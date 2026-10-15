@@ -1,6 +1,5 @@
 package com.turnin.core.data.repository
 
-import com.turnin.core.common.coroutine.IO
 import com.turnin.core.data.source.network.datasource.AnnouncementNetworkDataSource
 import com.turnin.core.data.source.network.dto.announcement.response.toDomainModel
 import com.turnin.core.data.source.network.error.toCommonErrorType
@@ -11,14 +10,13 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.safeResultFlow
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.model.AnnouncementId
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class AnnouncementRepositoryImpl @Inject constructor(
+class AnnouncementRepositoryImpl(
     private val announcementNetworkDataSource: AnnouncementNetworkDataSource,
-    @param:IO private val ioDispatcher: CoroutineDispatcher,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : AnnouncementRepository {
     override fun getAnnouncements(): Flow<Result<List<Announcement>, CommonErrorType>> =
         safeResultFlow<List<Announcement>, CommonErrorType>(

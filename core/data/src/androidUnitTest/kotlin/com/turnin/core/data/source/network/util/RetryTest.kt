@@ -111,6 +111,24 @@ class RetryTest {
     }
 
     @Test
+    fun `모든 재시도 전에 대기한다`() = runTest {
+        // Given: 두 번 실패 후 성공 (재시도 2회)
+        val mockBlock = mockk<suspend () -> String>()
+        coEvery { mockBlock() } throws
+            SocketTimeoutException() andThenThrows
+            SocketTimeoutException() andThen
+            "success"
+
+        // When
+        val startTime = testScheduler.currentTime
+        retry(attempt = 2, initialDelayMillis = 100, maxDelayMillis = 1000, factor = 2.0, block = mockBlock)
+
+        // Then: 1차 재시도 전 50~100ms + 2차 재시도 전 100~200ms 대기 (마지막 재시도 전에도 대기)
+        val totalDelay = testScheduler.currentTime - startTime
+        assertTrue("totalDelay=$totalDelay", totalDelay >= 150)
+    }
+
+    @Test
     fun `최대 지연 시간 제한 확인`() = runTest {
         // Given
         val expectedResult = "success"
