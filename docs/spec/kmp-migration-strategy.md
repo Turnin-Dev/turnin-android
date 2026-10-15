@@ -110,35 +110,35 @@
 
 ```kotlin
 // :core:data androidMain — Hilt가 생성·소유하는 별도 Koin 컨텍스트
-// 앱에 하나만 존재해야 한다 (인스턴스마다 Koin 컨테이너가 생성됨). 재료가 늘면 provider 인자와 SharedQualifier를 추가한다.
-class SharedDataKoin(platformModule: KoinModule) {
-    private val koin: Koin = koinApplication { modules(platformModule, sharedDataModule) }.koin
+// 앱에 하나만 존재해야 한다 (인스턴스마다 Koin 컨테이너가 생성됨). 재료가 늘면 provider 인자와 PlatformQualifier를 추가한다.
+class CommonDataKoinBridge(platformModule: KoinModule) {
+    private val koin: Koin = koinApplication { modules(platformModule, commonDataModule) }.koin
 
     fun announcementRepository(): AnnouncementRepository = koin.get()
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SharedDataBridgeModule {
+object CommonDataBridgeModule {
     @Provides
     @Singleton
-    fun provideSharedDataKoin(
+    fun provideCommonDataKoinBridge(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @IO ioDispatcher: CoroutineDispatcher,
-    ): SharedDataKoin = SharedDataKoin(
+    ): CommonDataKoinBridge = CommonDataKoinBridge(
         platformModule = module {
             // Koin은 반환 타입으로 조회하므로 타입을 명시한다.
-            single<HttpClient>(SharedQualifier.AuthHttpClient) {
+            single<HttpClient>(PlatformQualifier.AuthHttpClient) {
                 createHttpClient(OkHttp.create { preconfigured = tokenOkHttpClient }, BuildConfig.TURNIN_SERVER_URL)
             }
-            single<CoroutineDispatcher>(SharedQualifier.IoDispatcher) { ioDispatcher }
+            single<CoroutineDispatcher>(PlatformQualifier.IoDispatcher) { ioDispatcher }
         },
     )
 
     @Provides
     @Singleton
-    fun provideAnnouncementRepository(sharedDataKoin: SharedDataKoin): AnnouncementRepository =
-        sharedDataKoin.announcementRepository()
+    fun provideAnnouncementRepository(commonDataKoinBridge: CommonDataKoinBridge): AnnouncementRepository =
+        commonDataKoinBridge.announcementRepository()
 }
 ```
 

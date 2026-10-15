@@ -23,12 +23,12 @@ import org.koin.dsl.module
  *
  * - 전역 `startKoin` 대신 별도 Koin 컨텍스트를 사용해 시작 순서·다른 Koin 사용처와의 충돌에 영향을 받지 않는다.
  * - **앱에 하나만 존재해야 한다.** 인스턴스마다 Koin 컨테이너와 공유 객체가 따로 생성되므로,
- *   플랫폼 재료가 더 필요하면 [SharedDataBridgeModule.provideSharedDataKoin]의 인자와 [SharedQualifier]를 추가한다.
+ *   플랫폼 재료가 더 필요하면 [CommonDataBridgeModule.provideCommonDataKoinBridge]의 인자와 [PlatformQualifier]를 추가한다.
  *
- * @param platformModule 플랫폼이 제공하는 객체([SharedQualifier])를 담은 Koin 모듈
+ * @param platformModule 플랫폼이 제공하는 객체([PlatformQualifier])를 담은 Koin 모듈
  */
-class SharedDataKoin(platformModule: KoinModule) {
-    private val koin: Koin = koinApplication { modules(platformModule, sharedDataModule) }.koin
+class CommonDataKoinBridge(platformModule: KoinModule) {
+    private val koin: Koin = koinApplication { modules(platformModule, commonDataModule) }.koin
 
     /** 공지 리포지토리 */
     fun announcementRepository(): AnnouncementRepository = koin.get()
@@ -36,7 +36,7 @@ class SharedDataKoin(platformModule: KoinModule) {
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SharedDataBridgeModule {
+object CommonDataBridgeModule {
     /**
      * 플랫폼 재료는 Hilt → Koin, 공유 객체는 Koin → Hilt 방향으로만 흐른다.
      *
@@ -45,23 +45,23 @@ object SharedDataBridgeModule {
      */
     @Provides
     @Singleton
-    fun provideSharedDataKoin(
+    fun provideCommonDataKoinBridge(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @IO ioDispatcher: CoroutineDispatcher,
-    ): SharedDataKoin = SharedDataKoin(
+    ): CommonDataKoinBridge = CommonDataKoinBridge(
         platformModule = module {
-            single<HttpClient>(SharedQualifier.AuthHttpClient) {
+            single<HttpClient>(PlatformQualifier.AuthHttpClient) {
                 createHttpClient(
                     engine = OkHttp.create { preconfigured = tokenOkHttpClient },
                     baseUrl = BuildConfig.TURNIN_SERVER_URL,
                 )
             }
-            single<CoroutineDispatcher>(SharedQualifier.IoDispatcher) { ioDispatcher }
+            single<CoroutineDispatcher>(PlatformQualifier.IoDispatcher) { ioDispatcher }
         },
     )
 
     @Provides
     @Singleton
-    fun provideAnnouncementRepository(sharedDataKoin: SharedDataKoin): AnnouncementRepository =
-        sharedDataKoin.announcementRepository()
+    fun provideAnnouncementRepository(commonDataKoinBridge: CommonDataKoinBridge): AnnouncementRepository =
+        commonDataKoinBridge.announcementRepository()
 }

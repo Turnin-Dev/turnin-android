@@ -9,17 +9,17 @@ import org.koin.dsl.module
 /**
  * KMP 공유 data 객체 Koin 모듈
  *
- * 플랫폼 재료([SharedQualifier])는 플랫폼 모듈에서 제공해야 한다.
- * (Android: `SharedDataKoin`을 통해 Hilt에서 주입, iOS: `:shared`에서 직접 제공)
+ * 플랫폼 재료([PlatformQualifier])는 플랫폼 모듈에서 제공해야 한다.
+ * (Android: `CommonDataKoinBridge`을 통해 Hilt에서 주입, iOS: `:shared`에서 직접 제공)
  */
-val sharedDataModule = module {
+val commonDataModule = module {
     single<AnnouncementNetworkDataSource> {
-        AnnouncementNetworkDataSourceImpl(httpClient = get(SharedQualifier.AuthHttpClient))
+        AnnouncementNetworkDataSourceImpl(httpClient = get(PlatformQualifier.AuthHttpClient))
     }
     single<AnnouncementRepository> {
         AnnouncementRepositoryImpl(
             announcementNetworkDataSource = get(),
-            ioDispatcher = get(SharedQualifier.IoDispatcher),
+            ioDispatcher = get(PlatformQualifier.IoDispatcher),
         )
     }
 }
