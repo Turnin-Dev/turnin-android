@@ -31,7 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Git
 
 - Branch: `<type>/PK-<n>-<desc>` (e.g. `feat/PK-153-add-event`), branched from and PR'd into `develop`. `develop` → `main` triggers release CD (Firebase App Distribution + Play alpha) — never PR features to `main`.
-- Commits: Conventional Commits with Korean subjects (`feat: 로그인/회원가입 분석 이벤트 추가`, `refactor(사용자 프로필): ...`). Every commit and PR title must include the PK JIRA key.
+- Commits: `[PK-<n>] <type>: <Korean subject>` — JIRA key in brackets first, then a Conventional Commits type (e.g. `[PK-143] feat: 공지 유스케이스 추가`, `[PK-143] refactor(사용자 프로필): ...`). Every commit and PR title must include the PK JIRA key.
 - After creating a new file, stage it with `git add <file>`. Never commit unless the user explicitly asks or approves the commit.
 - PRs use the Korean template in `.github/pull_request_template.md`.
 - Never bump `projectVersionName` / `projectVersionCode` in `gradle/libs.versions.toml` unless explicitly asked. But if a change looks like it warrants a version bump (e.g. preparing a release, or a `develop` → `main` PR), proactively suggest it — the user may forget.
