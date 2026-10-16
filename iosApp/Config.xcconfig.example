@@ -1,3 +1,5 @@
 // 이 파일을 Config.xcconfig로 복사해 서버 URL을 입력한다. (Config.xcconfig는 git에서 제외)
 // xcconfig에서 '//'는 주석으로 처리되므로 'https:/$()/' 형태로 작성한다.
-TURNIN_SERVER_URL = https:/$()/your-debug-server.example.com
+// Debug/Release 구성 모두 이 파일을 쓰고, 값은 [config=...] 조건으로 나눈다.
+TURNIN_SERVER_URL[config=Debug] = https:/$()/your-debug-server.example.com
+TURNIN_SERVER_URL[config=Release] = https:/$()/your-release-server.example.com
