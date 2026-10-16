@@ -3,6 +3,7 @@ package com.turnin.core.data.source.network.ktor
 import com.turnin.core.data.source.network.policy.NetworkPolicy
 import com.turnin.core.data.source.network.util.networkJson
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
@@ -19,11 +20,13 @@ import io.ktor.serialization.kotlinx.json.json
  *
  * @param engine 플랫폼별 HTTP 엔진
  * @param baseUrl 서버 기본 URL
+ * @param configure 플랫폼별 추가 설정 (예: iOS의 `installBearerAuth`)
  */
 fun createHttpClient(
     engine: HttpClientEngine,
     baseUrl: String,
-): HttpClient = createHttpClient(engine, baseUrl, retryDelay = null)
+    configure: HttpClientConfig<*>.() -> Unit = {},
+): HttpClient = createHttpClient(engine, baseUrl, retryDelay = null, configure = configure)
 
 /**
  * @param retryDelay 재시도 지연 함수 (테스트에서 지연 시간 검증용, null이면 기본 delay)
@@ -32,6 +35,7 @@ internal fun createHttpClient(
     engine: HttpClientEngine,
     baseUrl: String,
     retryDelay: (suspend (Long) -> Unit)?,
+    configure: HttpClientConfig<*>.() -> Unit = {},
 ): HttpClient = HttpClient(engine) {
     // 상태 코드는 ktorNetworkCall에서 직접 처리한다.
     expectSuccess = false
@@ -61,4 +65,6 @@ internal fun createHttpClient(
     defaultRequest {
         url(baseUrl)
     }
+
+    configure()
 }

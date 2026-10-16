@@ -35,3 +35,7 @@ include(":core:data")
 include(":core:presentation")
 include(":core:domain")
 include(":core:common")
+// iOS 프레임워크 모듈은 Xcode가 있는 macOS에서만 빌드 가능하므로 macOS에서만 포함한다. (Linux CI 영향 차단)
+if (System.getProperty("os.name").startsWith("Mac")) {
+    include(":shared")
+}

@@ -1,0 +1,3 @@
+// 이 파일을 Config.xcconfig로 복사해 서버 URL을 입력한다. (Config.xcconfig는 git에서 제외)
+// xcconfig에서 '//'는 주석으로 처리되므로 'https:/$()/' 형태로 작성한다.
+TURNIN_SERVER_URL = https:/$()/your-debug-server.example.com

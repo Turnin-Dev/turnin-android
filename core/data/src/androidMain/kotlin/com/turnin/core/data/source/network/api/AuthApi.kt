@@ -5,7 +5,7 @@ import com.turnin.core.data.source.network.dto.auth.request.RegisterRequest
 import com.turnin.core.data.source.network.dto.auth.response.ExistsResponse
 import com.turnin.core.data.source.network.dto.auth.response.LoginResponse
 import com.turnin.core.data.source.network.dto.auth.response.RegisterResponse
-import com.turnin.core.data.source.network.retrofit.TokenResponse
+import com.turnin.core.data.source.network.dto.auth.response.TokenResponse
 import com.turnin.core.domain.model.SocialLoginProvider
 import retrofit2.Response
 import retrofit2.http.Body
