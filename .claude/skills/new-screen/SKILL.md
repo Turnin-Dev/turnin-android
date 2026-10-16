@@ -32,6 +32,8 @@ Then create (package names in lowerCamelCase, e.g. `keywordDetail`):
 - Wire it into `app/src/main/java/com/turnin/app/navigation/AppNavigation.kt` (or `BottomNavigation.kt` for a tab).
 
 **Tests**
-- Add unit tests for each UseCase (`domain/src/androidHostTest/...`) and the ViewModel (`presentation/src/test/...`), using MockK + coroutines-test and the fixtures in `core/presentation/src/testFixtures` — mirror the existing friend tests.
+- UseCase tests go in `domain/src/commonTest/kotlin/...`, using `kotlin.test` + Mokkery + coroutines-test (MockK is JVM-only). Kotlin/Native rules: no `()` in test names, use `encodeToByteArray()` instead of `toByteArray()`. Run with `./gradlew :domain:testDebugUnitTest` (iOS: `:domain:iosSimulatorArm64Test`).
+- ViewModel tests go in `presentation/src/test/...`, using MockK + coroutines-test and the fixtures in `core/presentation/src/testFixtures`.
+- Mirror the existing friend tests.
 
 Skip any data-layer/API work unless the user describes the endpoint; ask instead of inventing one. Finish by running `/verify`.
