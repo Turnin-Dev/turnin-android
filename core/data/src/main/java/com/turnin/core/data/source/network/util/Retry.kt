@@ -70,14 +70,11 @@ suspend fun <T> retry(
                 throw e
             }
 
-            // 재시도
-            val isLastAttempt = it < attempt - 1
-            if (isLastAttempt) {
-                val fullJitterDelay =
-                    calculateFullJitterDelay(it, initialDelayMillis, maxDelayMillis, factor)
-                AppLogger.d(TAG, "retry delay: $fullJitterDelay ms")
-                delay(fullJitterDelay)
-            }
+            // 재시도 전 대기 (마지막 시도 직전 포함, 모든 재시도 전에 대기)
+            val fullJitterDelay =
+                calculateFullJitterDelay(it, initialDelayMillis, maxDelayMillis, factor)
+            AppLogger.d(TAG, "retry delay: $fullJitterDelay ms")
+            delay(fullJitterDelay)
         }
     }
 
