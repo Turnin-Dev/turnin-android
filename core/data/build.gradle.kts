@@ -142,6 +142,7 @@ kotlin {
 dependencies {
     implementation(projects.core.common)
     implementation(projects.core.domain)
+    implementation(projects.shared.data)
 
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)

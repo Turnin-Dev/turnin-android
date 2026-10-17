@@ -4,11 +4,11 @@ sequenceDiagram
     participant Caller
     participant Retry
     participant NetworkCall
-    participant NetworkRetryPolicy
+    participant NetworkPolicy
     Caller ->> Retry: retry { call block }
     loop for each attempt
         Retry ->> NetworkCall: executeNetworkCall()
-        NetworkCall ->> NetworkRetryPolicy: 상태코드 재시도 가능 여부 확인
+        NetworkCall ->> NetworkPolicy: 상태코드 재시도 가능 여부 확인
         alt 성공
             NetworkCall -->> Retry: Response 반환
             Retry -->> Caller: 결과 반환
