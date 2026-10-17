@@ -9,7 +9,7 @@ Before writing anything, read the reference feature end to end so the output mat
 - `presentation/src/main/java/com/turnin/presentation/friend/` (Route, Navigation, viewmodel, state, model, view, error)
 - `domain/src/main/java/com/turnin/domain/friend/` (error, usecase incl. `FriendUseCases`)
 - `core/presentation/src/main/java/com/turnin/core/presentation/common/navigation/NavigationGraph.kt`
-- `ERROR_STRATEGY.md` and `docs/decisions/screen-analytics.md`
+- `ERROR_STRATEGY.md` and `docs/decisions/dl-4-screen-analytics.md`
 
 Then create (package names in lowerCamelCase, e.g. `keywordDetail`):
 
