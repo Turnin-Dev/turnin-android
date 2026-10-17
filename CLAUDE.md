@@ -2,6 +2,55 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Software Architecture Rules
+
+### Layer Structure (Clean Architecture)
+- Dependency direction: `data → domain ← presentation`. The domain layer must not import from any other layer.
+- domain: Business models, UseCases, and Repository interfaces only. No dependency on frameworks, databases, or networks.
+- data: Repository implementations and external data access. Convert external models ↔ domain models here.
+- presentation: Handles user input/output. Depends only on domain, never directly on data.
+- Convert models at layer boundaries. Never expose external models to inner layers.
+
+### Design Principles (SOLID)
+- SRP: A class or function has only one reason to change.
+- OCP: Design so behavior can be extended without modifying existing code.
+- LSP: Subtypes must be substitutable for their base types.
+- ISP: Keep interfaces small and role-focused.
+- DIP: Depend on abstractions, not concrete classes. Inject dependencies via constructors.
+
+### Data Flow
+- Maintain unidirectional flow: `Input (Event) → State change → State → Output`.
+- Manage state immutably, and mutate it only through a single entry point.
+- The output layer only renders state and contains no business logic.
+
+### Error Handling
+- Never swallow exceptions. Handle them, or convert them into a meaningful type and propagate.
+- Convert external exceptions into domain error types in the data layer.
+- Represent expected failures with types such as Result/Either; reserve exceptions for unexpected situations.
+
+### Testability
+- Inject all dependencies; avoid global state and direct singleton access.
+- Abstract external factors (time, randomness, network) so they can be replaced in tests.
+- Domain logic must be unit-testable without any framework.
+- Write tests in Given-When-Then structure, with one behavior verified per test.
+
+### General Code Principles
+- KISS / YAGNI: Implement only what is needed now, as simply as possible.
+- DRY: Remove duplication only when the meaning is the same; avoid premature abstraction.
+- Keep functions small and single-purpose. Make side effects explicit.
+- Extract magic numbers/strings into constants. Use comments only to explain "why".
+
+### Naming Conventions
+- Names reveal intent. Avoid abbreviations and vague names (`data`, `temp`, `manager`).
+- Classes/types are nouns; functions start with verbs. Booleans start with `is/has/can`.
+- Use consistent role suffixes: `~UseCase`, `~Repository`, `~DataSource`, `~Dto`.
+- Follow the language's existing conventions (case style, etc.).
+
+### Handling Exceptions
+- These rules are defaults, not absolute laws. Pragmatic exceptions are allowed when following a rule would add unreasonable complexity or cost.
+- Do not break a rule silently. When an exception seems warranted, explain which rule is affected and why, propose an alternative, and let me decide.
+- If I approve an exception, keep it minimal in scope and note it with a short comment explaining the reason.
+
 ## Build & verify
 
 - A root `local.properties` is required — Gradle configuration fails without it (Kakao keys, `*_TURNIN_SERVER_URL`, `*_GOOGLE_WEB_CLIENT_ID`, etc. are read into BuildConfig). `google-services.json` lives per build type in `app/src/{debug,release,releaseTest}/`. Never read or print these files.
