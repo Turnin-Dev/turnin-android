@@ -1,10 +1,11 @@
 package com.turnin.shared.presentation.feature.announcement
 
-import com.turnin.shared.domain.core.error.NetworkErrorType
 import com.turnin.shared.domain.core.result.Result
-import com.turnin.shared.domain.feature.announcement.error.AnnouncementErrorType
-import com.turnin.shared.domain.feature.announcement.model.Announcement
 import com.turnin.shared.domain.feature.announcement.usecase.AnnouncementUseCases
+import com.turnin.shared.presentation.feature.announcement.error.AnnouncementErrorReason
+import com.turnin.shared.presentation.feature.announcement.error.toReason
+import com.turnin.shared.presentation.feature.announcement.model.toUiModel
+import com.turnin.shared.presentation.feature.announcement.state.AnnouncementUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -18,12 +19,12 @@ class AnnouncementFacade(
     private val useCases: AnnouncementUseCases,
 ) {
     /** 공지 목록 조회 (로딩 → 성공/실패) */
-    fun announcements(): Flow<AnnouncementsState> =
+    fun announcements(): Flow<AnnouncementUiState> =
         useCases.getAnnouncements().map { result ->
             when (result) {
-                is Result.Loading -> AnnouncementsState.Loading
-                is Result.Success -> AnnouncementsState.Success(result.data.map { it.toItem() })
-                is Result.Error -> AnnouncementsState.Failure(result.error.toReason())
+                is Result.Loading -> AnnouncementUiState.Loading
+                is Result.Success -> AnnouncementUiState.Success(result.data.map { it.toUiModel() })
+                is Result.Error -> AnnouncementUiState.Failure(result.error.toReason())
             }
         }
 
@@ -37,60 +38,4 @@ class AnnouncementFacade(
             is Result.Error -> result.error.toReason()
             else -> null
         }
-}
-
-/** 공지 목록 상태 */
-sealed interface AnnouncementsState {
-    data object Loading : AnnouncementsState
-
-    data class Success(val items: List<AnnouncementItem>) : AnnouncementsState
-
-    data class Failure(val reason: AnnouncementErrorReason) : AnnouncementsState
-}
-
-/**
- * Swift용 공지 모델
- *
- * @property createdAtEpochMillis 생성 시각 (epoch millis)
- */
-data class AnnouncementItem(
-    val id: Long,
-    val title: String,
-    val content: String,
-    val isRead: Boolean,
-    val createdAtEpochMillis: Long,
-)
-
-/** 공지 요청 실패 사유 */
-enum class AnnouncementErrorReason {
-    /** 인증 필요 (토큰 없음·만료) */
-    UNAUTHORIZED,
-
-    /** 네트워크 연결·타임아웃 */
-    NETWORK,
-
-    /** 그 외 */
-    UNKNOWN,
-}
-
-private fun Announcement.toItem() = AnnouncementItem(
-    id = id.value,
-    title = title,
-    content = content,
-    isRead = isRead,
-    createdAtEpochMillis = createdAt,
-)
-
-private fun AnnouncementErrorType.toReason(): AnnouncementErrorReason = when (this) {
-    is AnnouncementErrorType.Network -> when (error) {
-        NetworkErrorType.Network.Unauthorized -> AnnouncementErrorReason.UNAUTHORIZED
-        NetworkErrorType.Network.ConnectionFailed,
-        NetworkErrorType.Exception.IO,
-        NetworkErrorType.Exception.TimeOut,
-        -> AnnouncementErrorReason.NETWORK
-
-        else -> AnnouncementErrorReason.UNKNOWN
-    }
-
-    is AnnouncementErrorType.Unexpected -> AnnouncementErrorReason.UNKNOWN
 }

@@ -3,7 +3,10 @@ package com.turnin.shared.domain.core.error
 import com.turnin.shared.domain.core.result.BaseError
 
 /**
- * 네트워크 에러 타입
+ * 네트워크 에러 타입 (domain 계층)
+ *
+ * 네트워크 요청이 "왜 실패했는지"의 의미만 표현한다. HTTP 상태 코드·Ktor 예외 같은 통신 세부 사항은 모르며,
+ * 그 변환은 data 계층(`:shared:data`)이 담당한다.
  *
  * `:core:domain`의 `CommonErrorType` 중 네트워크·예외 항목과 같은 구성이다.
  * (Android에서는 `CommonErrorType`으로 1:1 변환해 기존 에러 문구를 사용한다.)

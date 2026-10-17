@@ -2,9 +2,9 @@ package com.turnin.shared
 
 import com.turnin.shared.core.auth.AuthFacade
 import com.turnin.shared.data.core.network.auth.TokenStorage
-import com.turnin.shared.presentation.feature.announcement.AnnouncementErrorReason
 import com.turnin.shared.presentation.feature.announcement.AnnouncementFacade
-import com.turnin.shared.presentation.feature.announcement.AnnouncementsState
+import com.turnin.shared.presentation.feature.announcement.error.AnnouncementErrorReason
+import com.turnin.shared.presentation.feature.announcement.state.AnnouncementUiState
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestData
@@ -50,8 +50,8 @@ class SharedEntryPointTest {
 
         val states = announcements.announcements().toList()
 
-        assertEquals(AnnouncementsState.Loading, states.first())
-        val items = (states.last() as AnnouncementsState.Success).items
+        assertEquals(AnnouncementUiState.Loading, states.first())
+        val items = (states.last() as AnnouncementUiState.Success).announcements
         assertEquals(1L, items.single().id)
         assertEquals("공지", items.single().title)
         assertEquals("Bearer access", requests.single().headers[HttpHeaders.Authorization])
@@ -68,7 +68,7 @@ class SharedEntryPointTest {
 
         val state = announcements.announcements().last()
 
-        assertEquals(AnnouncementsState.Failure(AnnouncementErrorReason.UNAUTHORIZED), state)
+        assertEquals(AnnouncementUiState.Failure(AnnouncementErrorReason.UNAUTHORIZED), state)
         assertTrue(requests.any { it.url.encodedPath == REFRESH_PATH })
         assertFalse(auth.hasTokens())
         assertEquals(1, authFailures.size)
