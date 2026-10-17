@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.firebase.perf) apply false
+    alias(libs.plugins.mokkery) apply false
+    alias(libs.plugins.skie) apply false
 }
 
 apply(from = "ktlint.gradle.kts")
