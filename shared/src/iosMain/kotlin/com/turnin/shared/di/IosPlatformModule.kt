@@ -1,9 +1,10 @@
 package com.turnin.shared.di
 
 import com.turnin.shared.core.auth.AuthEvents
-import com.turnin.shared.core.network.auth.TokenStorage
-import com.turnin.shared.core.network.auth.installBearerAuth
-import com.turnin.shared.core.network.createHttpClient
+import com.turnin.shared.data.core.di.PlatformQualifier
+import com.turnin.shared.data.core.network.auth.TokenStorage
+import com.turnin.shared.data.core.network.auth.installBearerAuth
+import com.turnin.shared.data.core.network.createHttpClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.CoroutineDispatcher

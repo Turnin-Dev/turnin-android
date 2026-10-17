@@ -3,16 +3,15 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.HostManager
 
 /**
- * Android·iOS 공유 모듈
+ * 공유 모듈 umbrella (composition root)
  *
- * - 프로젝트의 다른 모듈에 의존하지 않는다. (Android 모듈이 이 모듈에 의존한다.)
- * - 기능별 Koin 모듈(`SharedModules`)을 제공한다. (Android: `:app`의 Koin 브릿지 → Hilt, iOS: `SharedSdk`)
- * - iOS에는 umbrella 프레임워크("Shared")로 제공하며, Swift 연동은 SKIE를 사용한다.
+ * - `:shared:domain`, `:shared:data`, `:shared:presentation`을 조립한다. 기능 코드는 두지 않는다.
+ * - 기능별 Koin 모듈 목록(`sharedModules`)을 제공한다. (Android: `:app`의 Koin 브릿지 → Hilt, iOS: `SharedEntryPoint`)
+ * - iOS에는 umbrella 프레임워크("Shared") 하나로 제공하며, Swift 연동은 SKIE를 사용한다.
+ * - 프로젝트의 Android 모듈에 의존하지 않는다. (Android 모듈이 shared 모듈에 의존한다.)
  */
 plugins {
     alias(libs.plugins.turnin.kmp.library)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.mokkery)
 }
 
 kotlin {
@@ -27,24 +26,16 @@ kotlin {
             baseName = "Shared"
             isStatic = true
             binaryOption("bundleId", "com.turnin.shared")
+            // Swift에서 사용하는 Facade·상태 모델을 프레임워크 API로 내보낸다.
+            export(projects.shared.presentation)
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            // 공개 API(Flow, HttpClient, Koin Module)에 노출되는 타입은 api로 선언한다.
-            api(libs.kotlinx.coroutines.core)
-            api(libs.ktor.client.core)
-            api(libs.koin.core)
-
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.kotlinx.serialization.json)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
+            api(projects.shared.domain)
+            api(projects.shared.data)
+            api(projects.shared.presentation)
         }
 
         iosMain.dependencies {

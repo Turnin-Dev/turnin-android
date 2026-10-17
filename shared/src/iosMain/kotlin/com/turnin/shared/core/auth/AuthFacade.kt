@@ -1,6 +1,6 @@
 package com.turnin.shared.core.auth
 
-import com.turnin.shared.core.network.auth.TokenStorage
+import com.turnin.shared.data.core.network.auth.TokenStorage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.authProvider
 import io.ktor.client.plugins.auth.providers.BearerAuthProvider

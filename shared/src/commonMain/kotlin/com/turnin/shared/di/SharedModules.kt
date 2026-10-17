@@ -1,6 +1,6 @@
 package com.turnin.shared.di
 
-import com.turnin.shared.feature.announcement.di.announcementModule
+import com.turnin.shared.data.core.di.PlatformQualifier
 import org.koin.core.module.Module
 
 /**
