@@ -1,11 +1,8 @@
 package com.turnin.presentation.notification.viewmodel
 
 import androidx.paging.PagingData
-import com.turnin.core.domain.announcement.model.Announcement
-import com.turnin.core.domain.announcement.model.AnnouncementAudience
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
-import com.turnin.core.domain.model.AnnouncementId
 import com.turnin.core.domain.model.NotificationId
 import com.turnin.core.domain.model.NotificationType
 import com.turnin.core.domain.model.UserId
@@ -16,6 +13,13 @@ import com.turnin.domain.notification.usecase.NotificationUseCases
 import com.turnin.presentation.notification.model.toUiModel
 import com.turnin.presentation.util.MockLog
 import com.turnin.presentation.util.collectDataForTest
+import com.turnin.shared.domain.core.error.NetworkErrorType
+import com.turnin.shared.domain.core.result.Result as SharedResult
+import com.turnin.shared.domain.feature.announcement.error.AnnouncementErrorType
+import com.turnin.shared.domain.feature.announcement.model.Announcement
+import com.turnin.shared.domain.feature.announcement.model.AnnouncementAudience
+import com.turnin.shared.domain.feature.announcement.model.AnnouncementId
+import com.turnin.shared.domain.feature.announcement.usecase.AnnouncementUseCases
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -41,14 +45,15 @@ class NotificationViewModelTest {
     val dispatcherRule = MainDispatcherRule()
 
     private val usecases: NotificationUseCases = mockk()
+    private val announcementUseCases: AnnouncementUseCases = mockk()
     private lateinit var viewModel: NotificationViewModel
 
     @Before
     fun setUp() {
         MockLog.mock()
         every { usecases.getNotifications() } answers { createTestPagingDataFlow() }
-        every { usecases.getAnnouncements() } returns flowOf(Result.Success(emptyList()))
-        viewModel = NotificationViewModel(usecases)
+        every { announcementUseCases.getAnnouncements() } returns flowOf(SharedResult.Success(emptyList()))
+        viewModel = NotificationViewModel(usecases, announcementUseCases)
     }
 
     @After
@@ -79,7 +84,7 @@ class NotificationViewModelTest {
         every { usecases.getNotifications() } returns flow {
             throw Exception("Test exception")
         }
-        viewModel = NotificationViewModel(usecases)
+        viewModel = NotificationViewModel(usecases, announcementUseCases)
 
         // when
         val pagingData = viewModel.notificationsPagingData.first()
@@ -190,7 +195,7 @@ class NotificationViewModelTest {
     fun `공지 목록 조회 성공 시 UI 상태가 정상적으로 업데이트된다`() = runTest {
         // given
         val announcements = listOf(testAnnouncement)
-        every { usecases.getAnnouncements() } returns flowOf(Result.Success(announcements))
+        every { announcementUseCases.getAnnouncements() } returns flowOf(SharedResult.Success(announcements))
 
         // when
         viewModel.getAnnouncements()
@@ -207,8 +212,8 @@ class NotificationViewModelTest {
     @Test
     fun `공지 목록 조회 실패 시 에러 상태가 반영된다`() = runTest {
         // given
-        val errorType = NotificationErrorType.CommonError(CommonErrorType.Unexpected(null))
-        every { usecases.getAnnouncements() } returns flowOf(Result.Error(errorType))
+        val errorType = AnnouncementErrorType.Network(NetworkErrorType.Unexpected(null))
+        every { announcementUseCases.getAnnouncements() } returns flowOf(SharedResult.Error(errorType))
 
         // when
         viewModel.getAnnouncements()
@@ -224,8 +229,8 @@ class NotificationViewModelTest {
     fun `공지 읽음 처리 시 해당 공지가 읽음 상태로 즉시 반영된다`() = runTest {
         // given
         val announcements = listOf(testAnnouncement.copy(isRead = false))
-        every { usecases.getAnnouncements() } returns flowOf(Result.Success(announcements))
-        coEvery { usecases.markAnnouncementAsRead(any()) } returns Result.Success(Unit)
+        every { announcementUseCases.getAnnouncements() } returns flowOf(SharedResult.Success(announcements))
+        coEvery { announcementUseCases.markAnnouncementAsRead(any()) } returns SharedResult.Success(Unit)
 
         viewModel.getAnnouncements()
         advanceUntilIdle()
@@ -241,15 +246,15 @@ class NotificationViewModelTest {
         val state = viewModel.announcementUiState.value
         val target = state.announcements.find { it.id == 1L }
         assertTrue(target?.isRead == true)
-        coVerify(exactly = 1) { usecases.markAnnouncementAsRead(1L) }
+        coVerify(exactly = 1) { announcementUseCases.markAnnouncementAsRead(1L) }
     }
 
     @Test
     fun `이미 읽은 공지는 네트워크 호출이 발생하지 않는다`() = runTest {
         // given
         val announcements = listOf(testAnnouncement.copy(isRead = true))
-        every { usecases.getAnnouncements() } returns flowOf(Result.Success(announcements))
-        coEvery { usecases.markAnnouncementAsRead(any()) } returns Result.Success(Unit)
+        every { announcementUseCases.getAnnouncements() } returns flowOf(SharedResult.Success(announcements))
+        coEvery { announcementUseCases.markAnnouncementAsRead(any()) } returns SharedResult.Success(Unit)
 
         viewModel.getAnnouncements()
         advanceUntilIdle()
@@ -262,7 +267,7 @@ class NotificationViewModelTest {
         advanceUntilIdle()
 
         // then
-        coVerify(exactly = 0) { usecases.markAnnouncementAsRead(any()) }
+        coVerify(exactly = 0) { announcementUseCases.markAnnouncementAsRead(any()) }
     }
 
     companion object {

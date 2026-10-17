@@ -33,6 +33,8 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+            // createHttpClient(OkHttpClient, ...)의 공개 API에 노출된다.
+            api(libs.okhttp)
         }
 
         iosMain.dependencies {

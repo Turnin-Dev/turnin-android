@@ -1,6 +1,6 @@
 package com.turnin.shared.di
 
-import com.turnin.shared.data.core.di.PlatformQualifier
+import com.turnin.shared.data.core.di.SharedQualifier
 import com.turnin.shared.data.core.network.createHttpClient
 import com.turnin.shared.domain.core.result.Result
 import com.turnin.shared.domain.feature.announcement.usecase.AnnouncementUseCases
@@ -24,7 +24,7 @@ import org.koin.dsl.module
 class SharedModulesTest {
     @Test
     fun `플랫폼 모듈의 재료로 공지 UseCase를 조립해 요청까지 수행한다`() = runTest {
-        // given: 플랫폼 모듈이 PlatformQualifier로 재료를 제공 (Android: Koin 브릿지, iOS: SharedEntryPoint)
+        // given: 플랫폼 모듈이 SharedQualifier로 재료를 제공 (Android: Koin 브릿지, iOS: SharedEntryPoint)
         val engine = MockEngine {
             respond(
                 content = """[{"id":1,"title":"공지","content":"내용","targetAudience":"ALL","isRead":false,"createdAt":0}]""",
@@ -36,10 +36,10 @@ class SharedModulesTest {
             modules(
                 listOf(
                     module {
-                        single<HttpClient>(PlatformQualifier.AuthHttpClient) {
+                        single<HttpClient>(SharedQualifier.AuthHttpClient) {
                             createHttpClient(engine, "https://turnin.test")
                         }
-                        single<CoroutineDispatcher>(PlatformQualifier.IoDispatcher) {
+                        single<CoroutineDispatcher>(SharedQualifier.IoDispatcher) {
                             UnconfinedTestDispatcher(testScheduler)
                         }
                     },

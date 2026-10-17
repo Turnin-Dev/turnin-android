@@ -125,6 +125,10 @@ dependencies {
     implementation(projects.data)
     implementation(projects.domain)
     implementation(projects.presentation)
+    implementation(projects.shared)
+
+    // Koin (공유 모듈 조립용, Hilt 브릿지에서만 사용)
+    implementation(libs.koin.core)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)

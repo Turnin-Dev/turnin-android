@@ -1,7 +1,7 @@
 package com.turnin.shared.di
 
 import com.turnin.shared.core.auth.AuthEvents
-import com.turnin.shared.data.core.di.PlatformQualifier
+import com.turnin.shared.data.core.di.SharedQualifier
 import com.turnin.shared.data.core.network.auth.TokenStorage
 import com.turnin.shared.data.core.network.auth.installBearerAuth
 import com.turnin.shared.data.core.network.createHttpClient
@@ -14,7 +14,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 /**
- * iOS 플랫폼 재료 모듈 ([PlatformQualifier]로 공유 기능 모듈에 제공)
+ * iOS 플랫폼 재료 모듈 ([SharedQualifier]로 공유 기능 모듈에 제공)
  *
  * Koin은 반환 타입으로 조회하므로 타입을 명시한다.
  *
@@ -28,11 +28,11 @@ internal fun iosPlatformModule(
     tokenStorage: TokenStorage,
 ): Module = module {
     single<TokenStorage> { tokenStorage }
-    single<HttpClient>(PlatformQualifier.AuthHttpClient) {
+    single<HttpClient>(SharedQualifier.AuthHttpClient) {
         val authEvents = get<AuthEvents>()
         createHttpClient(engine, baseUrl) {
             installBearerAuth(tokenStorage = get(), onAuthFailure = { authEvents.notifyAuthFailure() })
         }
     }
-    single<CoroutineDispatcher>(PlatformQualifier.IoDispatcher) { Dispatchers.IO }
+    single<CoroutineDispatcher>(SharedQualifier.IoDispatcher) { Dispatchers.IO }
 }

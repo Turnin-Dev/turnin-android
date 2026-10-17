@@ -1,8 +1,8 @@
 package com.turnin.presentation.notification.model
 
 import com.turnin.core.common.util.toRelativeTime
-import com.turnin.core.domain.announcement.model.Announcement
-import com.turnin.core.domain.announcement.model.AnnouncementAudience
+import com.turnin.shared.domain.feature.announcement.model.Announcement
+import com.turnin.shared.domain.feature.announcement.model.AnnouncementAudience
 
 /**
  * UI용 공지 모델

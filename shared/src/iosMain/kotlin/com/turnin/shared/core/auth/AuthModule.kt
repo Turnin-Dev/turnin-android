@@ -1,6 +1,6 @@
 package com.turnin.shared.core.auth
 
-import com.turnin.shared.data.core.di.PlatformQualifier
+import com.turnin.shared.data.core.di.SharedQualifier
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -10,7 +10,7 @@ internal val authModule: Module = module {
     factory {
         AuthFacade(
             tokenStorage = get(),
-            authHttpClient = get(PlatformQualifier.AuthHttpClient),
+            authHttpClient = get(SharedQualifier.AuthHttpClient),
             authEvents = get(),
         )
     }

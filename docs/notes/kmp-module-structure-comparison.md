@@ -38,7 +38,7 @@ iosApp      → umbrella 프레임워크 하나 (SwiftUI)
 ```
 shared/
 ├─ domain        core/(Result, 에러) + feature/<기능>/(model, repository IF, error, usecase)
-├─ data          core/(HttpClient, NetworkPolicy, BearerAuth, PlatformQualifier) + feature/<기능>/(dto, datasource, repository 구현, Koin)
+├─ data          core/(HttpClient, NetworkPolicy, BearerAuth, SharedQualifier) + feature/<기능>/(dto, datasource, repository 구현, Koin)
 ├─ presentation  feature/<기능>/ iOS Facade·Swift용 상태 모델 (추후 공유 ViewModel)
 └─ (umbrella)    sharedModules(UseCase Koin), SharedEntryPoint, iOS 프레임워크 export
 
