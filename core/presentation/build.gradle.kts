@@ -18,6 +18,7 @@ kotlin {
 dependencies {
     implementation(projects.core.common)
     implementation(projects.core.domain)
+    implementation(projects.shared.domain)
     implementation(projects.core.designsystem)
 
     implementation(libs.androidx.core.ktx)

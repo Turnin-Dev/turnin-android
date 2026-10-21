@@ -8,10 +8,10 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.data.source.network.error.CommonErrorResponse
 import com.turnin.core.data.source.network.error.NetworkErrorType
+import com.turnin.shared.data.core.network.policy.NetworkPolicy
+import com.turnin.shared.data.core.network.policy.isConnectionFailure
+import com.turnin.shared.data.core.network.policy.isTimeoutException
 import java.io.IOException
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import retrofit2.Response
@@ -62,23 +62,22 @@ private suspend fun <T, R> executeNetworkCall(
     handle(response)
 } catch (e: HttpException) {
     handleHttpException(e)
-} catch (e: ConnectException) {
-    handleException(NetworkErrorType.Network.ConnectionFailed, e)
-} catch (e: SocketTimeoutException) {
-    handleException(NetworkErrorType.Exception.TimeOut, e)
 } catch (e: JsonDataException) {
     handleException(NetworkErrorType.Exception.JsonData, e)
 } catch (e: JsonEncodingException) {
     handleException(NetworkErrorType.Exception.JsonEncoding, e)
 } catch (e: MalformedJsonException) {
     handleException(NetworkErrorType.Exception.MalformedJson, e)
-} catch (e: IOException) {
-    handleException(NetworkErrorType.Exception.IO, e)
-} catch (e: TimeoutException) {
-    handleException(NetworkErrorType.Exception.TimeOut, e)
+} catch (e: CancellationException) {
+    throw e
 } catch (e: Exception) {
-    if (e is CancellationException) throw e
-    handleException(NetworkErrorType.Unexpected(e), e)
+    // 연결 실패·타임아웃 분류는 Ktor와 같은 기준(NetworkExceptions)을 사용한다.
+    when {
+        e.isConnectionFailure() -> handleException(NetworkErrorType.Network.ConnectionFailed, e)
+        e.isTimeoutException() -> handleException(NetworkErrorType.Exception.TimeOut, e)
+        e is IOException -> handleException(NetworkErrorType.Exception.IO, e)
+        else -> handleException(NetworkErrorType.Unexpected(e), e)
+    }
 }
 
 /** 응답 처리 */
@@ -152,7 +151,7 @@ private fun <T> parseServerError(response: Response<T>): CommonErrorResponse? = 
 
 /** 상태에 맞는 예외 발생 함수 */
 private fun <T> Response<T>.throwIfRetryableError(): Response<T> {
-    if (!isSuccessful && code() in NetworkRetryPolicy.RETRYABLE_STATUS_CODES) {
+    if (!isSuccessful && NetworkPolicy.Retry.isRetryableStatus(code())) {
         throw HttpException(this)
     }
     return this

@@ -1,6 +1,13 @@
 # Custom Add
 .DS_Store
 .cxx
+# Kotlin 2.x 프로젝트 빌드 캐시 (KMP 등)
+.kotlin/
+# iOS (Xcode)
+xcuserdata/
+*.xcuserstate
+# 서버 URL 등 로컬 설정 (Config.xcconfig.example 참고)
+iosApp/Config.xcconfig
 
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio

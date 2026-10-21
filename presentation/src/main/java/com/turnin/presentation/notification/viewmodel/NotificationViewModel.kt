@@ -12,6 +12,8 @@ import com.turnin.domain.notification.usecase.NotificationUseCases
 import com.turnin.presentation.notification.error.asUiText
 import com.turnin.presentation.notification.model.toUiModel
 import com.turnin.presentation.notification.state.AnnouncementState
+import com.turnin.shared.domain.core.result.Result as SharedResult
+import com.turnin.shared.domain.feature.announcement.usecase.AnnouncementUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val usecases: NotificationUseCases,
+    private val announcementUseCases: AnnouncementUseCases,
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -112,22 +115,22 @@ class NotificationViewModel @Inject constructor(
      * 공지 목록 조회
      */
     fun getAnnouncements() {
-        usecases.getAnnouncements()
+        announcementUseCases.getAnnouncements()
             .onEach { result ->
                 when (result) {
-                    Result.Loading -> {
+                    SharedResult.Loading -> {
                         _announcementUiState.update {
                             it.copy(loading = true)
                         }
                     }
 
-                    is Result.Error -> {
+                    is SharedResult.Error -> {
                         _announcementUiState.update {
                             it.copy(loading = false, error = result.error.asUiText())
                         }
                     }
 
-                    is Result.Success -> {
+                    is SharedResult.Success -> {
                         _announcementUiState.update {
                             it.copy(
                                 loading = false,
@@ -162,8 +165,8 @@ class NotificationViewModel @Inject constructor(
 
         if (!currentIsRead) {
             viewModelScope.launch {
-                val result = usecases.markAnnouncementAsRead(announcementId)
-                if (result is Result.Error) {
+                val result = announcementUseCases.markAnnouncementAsRead(announcementId)
+                if (result is SharedResult.Error) {
                     AppLogger.e(tag, "공지 알림 읽음 처리 실패(announcementId: $announcementId): ${result.error}")
                 }
             }
