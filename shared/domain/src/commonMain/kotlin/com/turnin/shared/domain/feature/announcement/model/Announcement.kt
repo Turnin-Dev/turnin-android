@@ -8,7 +8,7 @@ package com.turnin.shared.domain.feature.announcement.model
  * @property content 내용
  * @property targetAudience 수신 대상
  * @property isRead 읽음 여부
- * @property createdAt 생성 일자
+ * @property createdAt 생성 일자 (epoch seconds)
  */
 data class Announcement(
     val id: AnnouncementId,

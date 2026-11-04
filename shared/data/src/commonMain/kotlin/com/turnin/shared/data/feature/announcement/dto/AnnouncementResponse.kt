@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
  * @property content 내용
  * @property targetAudience 수신 대상
  * @property isRead 읽음 여부
- * @property createdAt 생성 일자
+ * @property createdAt 생성 일자 (epoch seconds)
  */
 @Serializable
 internal data class AnnouncementResponse(

@@ -77,12 +77,21 @@ private struct AnnouncementRow: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
-            Text(Date(timeIntervalSince1970: TimeInterval(item.createdAtEpochMillis) / 1000), style: .date)
+            Text(Self.dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(item.createdAtEpochSeconds))))
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 4)
     }
+
+    // Android와 같은 yyyy.MM.dd 형식 (기기 시간대 기준). 행마다 만들지 않도록 공유한다.
+    // TODO: Android처럼 7일 이내는 상대 시간("n분 전")으로 표시 — UI 공유(CMP) 시 Android 로직과 함께 적용 예정
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter
+    }()
 }
 
 private extension AnnouncementErrorReason {
