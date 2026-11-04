@@ -56,7 +56,7 @@ class GetAnnouncementsUseCaseTest {
             content = "내용",
             targetAudience = AnnouncementAudience.ALL,
             isRead = false,
-            createdAt = 1715820000000,
+            createdAt = 1715820000,
         )
     }
 }

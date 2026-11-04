@@ -131,7 +131,7 @@ class AnnouncementNetworkDataSourceImplTest {
                 "content": "공지 내용입니다.",
                 "targetAudience": "ALL",
                 "isRead": false,
-                "createdAt": 1715820000000
+                "createdAt": 1715820000
               }
             ]
             """.trimIndent()

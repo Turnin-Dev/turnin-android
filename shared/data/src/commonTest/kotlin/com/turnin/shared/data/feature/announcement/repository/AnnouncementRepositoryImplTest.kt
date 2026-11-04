@@ -116,7 +116,7 @@ class AnnouncementRepositoryImplTest {
             content = "내용",
             targetAudience = "ALL",
             isRead = false,
-            createdAt = 1715820000000,
+            createdAt = 1715820000,
         )
     }
 }
