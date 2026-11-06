@@ -6,9 +6,9 @@ import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.runCatchingSafe
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.common.logger.DomainLogger
+import com.turnin.core.domain.common.logger.catchAndLog
 import com.turnin.core.domain.notification.repository.NotificationRepository
-import com.turnin.core.domain.util.DomainLogger
-import com.turnin.core.domain.util.catchAndLog
 import com.turnin.domain.setting.error.SettingErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

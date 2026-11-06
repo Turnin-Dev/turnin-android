@@ -9,10 +9,10 @@ import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.safeResultFlow
 import com.turnin.core.domain.common.error.CommonErrorType
-import com.turnin.core.domain.file.FileRepository
 import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
+import com.turnin.core.domain.file.repository.FileRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

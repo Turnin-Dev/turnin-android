@@ -11,10 +11,10 @@ import com.turnin.core.data.source.network.dto.block.response.toDomainModel
 import com.turnin.core.data.source.network.error.NetworkErrorType
 import com.turnin.core.data.source.network.error.toCommonErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
-import com.turnin.core.domain.block.model.BlockReasonId
 import com.turnin.core.domain.block.model.CreateBlock
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.model.BlockId
+import com.turnin.core.domain.model.BlockReasonId
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.model.CoreUserProfile
 import com.turnin.core.domain.userKeyword.model.UserKeywordDetail

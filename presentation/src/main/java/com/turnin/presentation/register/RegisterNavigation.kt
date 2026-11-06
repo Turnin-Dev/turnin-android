@@ -26,7 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.turnin.core.designsystem.theme.TurninTheme
-import com.turnin.core.domain.util.analytics.AnalyticsEvent
+import com.turnin.core.domain.common.analytics.AnalyticsEvent
 import com.turnin.core.presentation.common.analytics.LocalAnalyticsTracker
 import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph

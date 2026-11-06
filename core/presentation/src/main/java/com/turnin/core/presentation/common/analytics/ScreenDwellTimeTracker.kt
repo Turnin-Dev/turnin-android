@@ -9,7 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.domain.util.analytics.AnalyticsEvent
+import com.turnin.core.domain.common.analytics.AnalyticsEvent
 
 /**
  * 화면 체류시간(dwell time) 추적

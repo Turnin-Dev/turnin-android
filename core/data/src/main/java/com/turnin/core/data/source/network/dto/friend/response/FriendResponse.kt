@@ -3,8 +3,8 @@ package com.turnin.core.data.source.network.dto.friend.response
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.turnin.core.domain.friend.model.Friend
-import com.turnin.core.domain.friend.model.FriendId
 import com.turnin.core.domain.friend.model.FriendRequestStatus
+import com.turnin.core.domain.model.FriendId
 import com.turnin.core.domain.model.UserId
 
 /**

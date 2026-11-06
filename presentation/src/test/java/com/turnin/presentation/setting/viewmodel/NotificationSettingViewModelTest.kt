@@ -1,6 +1,6 @@
 package com.turnin.presentation.setting.viewmodel
 
-import com.turnin.core.domain.notification.NotificationSyncManager
+import com.turnin.core.domain.notification.util.NotificationSyncManager
 import com.turnin.core.domain.setting.model.AppSetting
 import com.turnin.core.domain.setting.model.ThemeMode
 import com.turnin.core.domain.setting.repository.SettingRepository

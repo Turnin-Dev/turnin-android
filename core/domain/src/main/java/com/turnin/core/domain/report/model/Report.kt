@@ -1,5 +1,6 @@
 package com.turnin.core.domain.report.model
 
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.model.UserKeywordId
 

@@ -1,4 +1,4 @@
-package com.turnin.core.domain.file
+package com.turnin.core.domain.file.util
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

@@ -1,4 +1,4 @@
-package com.turnin.core.domain.block.model
+package com.turnin.core.domain.model
 
 /** 차단 사유 ID VO*/
 @JvmInline

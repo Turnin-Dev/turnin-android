@@ -1,4 +1,4 @@
-package com.turnin.core.domain.report.model
+package com.turnin.core.domain.model
 
 /** 신고 사유 ID */
 @JvmInline

@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.domain.util.analytics.AnalyticsEvent
+import com.turnin.core.domain.common.analytics.AnalyticsEvent
 
 /**
  * 화면 방문 (조회 수) 기록 추적

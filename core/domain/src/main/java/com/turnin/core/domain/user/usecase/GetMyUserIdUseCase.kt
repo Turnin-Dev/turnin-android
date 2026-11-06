@@ -1,8 +1,8 @@
 package com.turnin.core.domain.user.usecase
 
+import com.turnin.core.domain.common.logger.DomainLogger
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.repository.UserRepository
-import com.turnin.core.domain.util.DomainLogger
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 

@@ -2,8 +2,8 @@ package com.turnin.core.data.analytics
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
-import com.turnin.core.domain.util.analytics.AnalyticsEvent
-import com.turnin.core.domain.util.analytics.AnalyticsTracker
+import com.turnin.core.domain.common.analytics.AnalyticsEvent
+import com.turnin.core.domain.common.analytics.AnalyticsTracker
 import javax.inject.Inject
 import kotlin.math.roundToLong
 

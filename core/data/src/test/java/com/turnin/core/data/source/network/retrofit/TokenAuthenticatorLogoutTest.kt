@@ -6,7 +6,7 @@ import com.turnin.core.data.source.local.datastore.DataStoreKey
 import com.turnin.core.data.source.local.datastore.DataStoreManager
 import com.turnin.core.data.source.network.api.NetworkApiPath
 import com.turnin.core.data.source.network.api.RefreshTokenApi
-import com.turnin.core.domain.eventBus.AuthEventBus
+import com.turnin.core.domain.common.eventBus.AuthEventBus
 import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.coEvery

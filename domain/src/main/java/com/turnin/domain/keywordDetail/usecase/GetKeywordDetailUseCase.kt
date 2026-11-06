@@ -3,12 +3,12 @@ package com.turnin.domain.keywordDetail.usecase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.mapSuccess
 import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.common.logger.DomainLogger
+import com.turnin.core.domain.common.logger.catchAndLog
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.user.usecase.GetMyUserIdUseCase
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
-import com.turnin.core.domain.util.DomainLogger
-import com.turnin.core.domain.util.catchAndLog
 import com.turnin.domain.keywordDetail.error.KeywordDetailErrorType
 import com.turnin.domain.keywordDetail.model.KeywordDetail
 import com.turnin.domain.keywordDetail.model.toKeywordDetail

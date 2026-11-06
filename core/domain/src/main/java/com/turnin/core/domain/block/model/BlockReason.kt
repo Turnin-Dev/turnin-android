@@ -1,5 +1,7 @@
 package com.turnin.core.domain.block.model
 
+import com.turnin.core.domain.model.BlockReasonId
+
 /**
  * 차단 사유
  *

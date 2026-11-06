@@ -1,7 +1,7 @@
 package com.turnin.presentation.report.model
 
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.domain.report.model.ReportReason
-import com.turnin.core.domain.report.model.ReportReasonId
 import com.turnin.core.presentation.ui.component.modal.SelectableReason
 
 /**

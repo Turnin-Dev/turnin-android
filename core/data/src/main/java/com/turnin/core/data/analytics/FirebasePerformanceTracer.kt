@@ -2,10 +2,10 @@ package com.turnin.core.data.analytics
 
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import com.turnin.core.domain.util.analytics.PerformanceTrace
-import com.turnin.core.domain.util.analytics.PerformanceTracer
-import com.turnin.core.domain.util.analytics.TraceAttribute
-import com.turnin.core.domain.util.analytics.TraceName
+import com.turnin.core.domain.common.analytics.PerformanceTrace
+import com.turnin.core.domain.common.analytics.PerformanceTracer
+import com.turnin.core.domain.common.analytics.TraceAttribute
+import com.turnin.core.domain.common.analytics.TraceName
 import javax.inject.Inject
 
 class FirebasePerformanceTracer @Inject constructor(

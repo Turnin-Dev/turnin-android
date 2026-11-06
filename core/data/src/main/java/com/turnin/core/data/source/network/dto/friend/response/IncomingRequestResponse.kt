@@ -1,9 +1,9 @@
 package com.turnin.core.data.source.network.dto.friend.response
 
 import com.squareup.moshi.JsonClass
-import com.turnin.core.domain.friend.model.FriendId
 import com.turnin.core.domain.friend.model.IncomingRequest
 import com.turnin.core.domain.model.DisplayId
+import com.turnin.core.domain.model.FriendId
 import com.turnin.core.domain.model.Name
 import com.turnin.core.domain.model.UserId
 

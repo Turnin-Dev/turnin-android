@@ -2,7 +2,7 @@ package com.turnin.core.data.source.network.dto.block.response
 
 import com.squareup.moshi.JsonClass
 import com.turnin.core.domain.block.model.BlockReason
-import com.turnin.core.domain.block.model.BlockReasonId
+import com.turnin.core.domain.model.BlockReasonId
 
 /**
  * 차단 사유 응답 바디

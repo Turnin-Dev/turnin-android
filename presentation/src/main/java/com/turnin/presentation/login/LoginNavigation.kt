@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.turnin.core.domain.util.analytics.AnalyticsEvent
+import com.turnin.core.domain.common.analytics.AnalyticsEvent
 import com.turnin.core.presentation.common.analytics.LocalAnalyticsTracker
 import com.turnin.core.presentation.common.analytics.ScreenTrackers
 import com.turnin.core.presentation.common.navigation.SubGraph

@@ -1,4 +1,4 @@
-package com.turnin.core.domain.notification
+package com.turnin.core.domain.notification.util
 
 /**
  * 알림 동기화 매니저 인터페이스

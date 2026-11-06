@@ -1,4 +1,4 @@
-package com.turnin.core.domain.util.analytics
+package com.turnin.core.domain.common.analytics
 
 enum class TraceName(val value: String) {
     SCREEN_RENDER("screen_render"),

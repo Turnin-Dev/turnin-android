@@ -1,5 +1,7 @@
 package com.turnin.core.domain.report.model
 
+import com.turnin.core.domain.model.ReportReasonId
+
 /**
  * 신고 사유
  *

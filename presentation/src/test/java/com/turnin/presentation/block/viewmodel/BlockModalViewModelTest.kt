@@ -2,8 +2,8 @@ package com.turnin.presentation.block.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.turnin.core.domain.block.model.BlockReason
-import com.turnin.core.domain.block.model.BlockReasonId
 import com.turnin.core.domain.common.Result
+import com.turnin.core.domain.model.BlockReasonId
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.presentation.MVIBaseViewModelTest
 import com.turnin.domain.block.error.BlockErrorType

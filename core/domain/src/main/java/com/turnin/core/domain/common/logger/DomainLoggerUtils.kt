@@ -1,4 +1,4 @@
-package com.turnin.core.domain.util
+package com.turnin.core.domain.common.logger
 
 import com.turnin.core.domain.common.BaseError
 import com.turnin.core.domain.common.Result

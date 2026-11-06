@@ -1,6 +1,6 @@
 package com.turnin.app.util.logger
 
-import com.turnin.core.domain.util.DomainLogger
+import com.turnin.core.domain.common.logger.DomainLogger
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -6,8 +6,8 @@ import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.auth.usecase.LogoutUseCase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
-import com.turnin.core.domain.eventBus.AuthEventBus
-import com.turnin.core.domain.notification.NotificationSyncManager
+import com.turnin.core.domain.common.eventBus.AuthEventBus
+import com.turnin.core.domain.notification.util.NotificationSyncManager
 import com.turnin.core.domain.user.repository.UserRepository
 import io.mockk.Runs
 import io.mockk.clearMocks

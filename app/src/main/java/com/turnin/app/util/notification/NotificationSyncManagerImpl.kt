@@ -3,8 +3,8 @@ package com.turnin.app.util.notification
 import com.turnin.core.common.coroutine.ApplicationScope
 import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.domain.common.Result
-import com.turnin.core.domain.notification.NotificationSyncManager
 import com.turnin.core.domain.notification.repository.NotificationRepository
+import com.turnin.core.domain.notification.util.NotificationSyncManager
 import com.turnin.core.domain.setting.model.NotificationSyncState
 import com.turnin.core.domain.setting.repository.SettingRepository
 import java.util.concurrent.atomic.AtomicReference
