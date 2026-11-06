@@ -49,8 +49,8 @@ import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.designsystem.component.snackbar.TurninSnackbar
 import com.turnin.core.designsystem.theme.TurninAppTheme
 import com.turnin.core.designsystem.theme.TurninTheme
-import com.turnin.core.domain.util.analytics.AnalyticsTracker
-import com.turnin.core.domain.util.analytics.PerformanceTracer
+import com.turnin.core.domain.common.analytics.AnalyticsTracker
+import com.turnin.core.domain.common.analytics.PerformanceTracer
 import com.turnin.core.presentation.common.analytics.LocalAnalyticsTracker
 import com.turnin.core.presentation.common.analytics.LocalPerformanceTracer
 import com.turnin.core.presentation.common.navigation.SubGraph

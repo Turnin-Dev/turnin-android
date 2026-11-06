@@ -1,6 +1,6 @@
 package com.turnin.app.util.notification
 
-import com.turnin.core.domain.notification.NotificationSyncManager
+import com.turnin.core.domain.notification.util.NotificationSyncManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

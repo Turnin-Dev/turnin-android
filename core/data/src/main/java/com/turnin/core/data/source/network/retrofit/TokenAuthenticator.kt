@@ -7,7 +7,7 @@ import com.turnin.core.data.source.network.api.NetworkApiPath
 import com.turnin.core.data.source.network.api.RefreshTokenApi
 import com.turnin.core.data.source.network.retrofit.RetrofitConstants.AUTHENTICATION
 import com.turnin.core.data.source.network.retrofit.RetrofitConstants.BEARER
-import com.turnin.core.domain.eventBus.AuthEventBus
+import com.turnin.core.domain.common.eventBus.AuthEventBus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

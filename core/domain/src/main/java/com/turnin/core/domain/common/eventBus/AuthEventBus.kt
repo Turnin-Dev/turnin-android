@@ -1,4 +1,4 @@
-package com.turnin.core.domain.eventBus
+package com.turnin.core.domain.common.eventBus
 
 import kotlinx.coroutines.flow.Flow
 

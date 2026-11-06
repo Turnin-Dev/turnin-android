@@ -5,7 +5,7 @@ import com.turnin.core.domain.auth.model.RegisterResult
 import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
-import com.turnin.core.domain.eventBus.AuthEventBus
+import com.turnin.core.domain.common.eventBus.AuthEventBus
 import com.turnin.core.domain.model.DisplayId
 import com.turnin.core.domain.model.Introduce
 import com.turnin.core.domain.model.Name

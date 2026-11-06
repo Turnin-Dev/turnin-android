@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.turnin.core.designsystem.theme.TurninAppTheme
-import com.turnin.core.domain.report.model.ReportReasonId
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.presentation.ui.component.modal.SelectReportBlockReasonModal
 import com.turnin.core.presentation.ui.util.UiText
 import com.turnin.presentation.report.model.UiReportReason

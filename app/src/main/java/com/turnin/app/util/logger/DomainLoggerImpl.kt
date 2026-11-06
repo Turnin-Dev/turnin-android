@@ -1,7 +1,7 @@
 package com.turnin.app.util.logger
 
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.domain.util.DomainLogger
+import com.turnin.core.domain.common.logger.DomainLogger
 import javax.inject.Inject
 
 class DomainLoggerImpl @Inject constructor() : DomainLogger {

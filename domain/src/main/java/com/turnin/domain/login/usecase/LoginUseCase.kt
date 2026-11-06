@@ -5,7 +5,7 @@ import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.mapSuccess
 import com.turnin.core.domain.common.error.mapError
-import com.turnin.core.domain.eventBus.AuthEventBus
+import com.turnin.core.domain.common.eventBus.AuthEventBus
 import com.turnin.domain.login.error.LoginErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi

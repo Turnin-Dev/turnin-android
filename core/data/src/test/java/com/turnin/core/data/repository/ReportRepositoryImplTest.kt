@@ -9,9 +9,9 @@ import com.turnin.core.data.source.network.error.toCommonErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.report.model.Report
-import com.turnin.core.domain.report.model.ReportReasonId
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

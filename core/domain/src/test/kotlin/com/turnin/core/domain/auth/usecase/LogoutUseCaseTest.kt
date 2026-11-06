@@ -5,9 +5,9 @@ import com.turnin.core.domain.auth.social.SocialAuthManager
 import com.turnin.core.domain.auth.social.SocialAuthManagerFactory
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.common.logger.DomainLogger
 import com.turnin.core.domain.model.SocialLoginProvider
 import com.turnin.core.domain.notification.repository.NotificationRepository
-import com.turnin.core.domain.util.DomainLogger
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

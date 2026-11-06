@@ -2,6 +2,7 @@ package com.turnin.domain.keywordEdit.usecase
 
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.common.logger.DomainLogger
 import com.turnin.core.domain.common.validation.CommonValidationException
 import com.turnin.core.domain.common.validation.toValidationErrorType
 import com.turnin.core.domain.model.KeywordDescription
@@ -10,7 +11,6 @@ import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.core.domain.userKeyword.model.CreateUserKeyword
 import com.turnin.core.domain.userKeyword.model.UserKeyword
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
-import com.turnin.core.domain.util.DomainLogger
 import com.turnin.domain.keywordEdit.error.KeywordEditErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

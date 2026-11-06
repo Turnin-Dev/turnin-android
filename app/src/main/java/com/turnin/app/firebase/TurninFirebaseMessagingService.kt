@@ -19,7 +19,7 @@ import com.turnin.core.common.fcm.FcmDataKey
 import com.turnin.core.common.logger.AppLogger
 import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.model.NotificationType
-import com.turnin.core.domain.notification.NotificationSyncManager
+import com.turnin.core.domain.notification.util.NotificationSyncManager
 import com.turnin.core.presentation.common.navigation.deepLink.DeepLink
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

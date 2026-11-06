@@ -2,9 +2,9 @@ package com.turnin.presentation.report.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import com.turnin.core.domain.common.Result
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.report.model.ReportReason
-import com.turnin.core.domain.report.model.ReportReasonId
 import com.turnin.core.domain.report.model.ReportReasons
 import com.turnin.core.presentation.MVIBaseViewModelTest
 import com.turnin.domain.report.error.ReportErrorType

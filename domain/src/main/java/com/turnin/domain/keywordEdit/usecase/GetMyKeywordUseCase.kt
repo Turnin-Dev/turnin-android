@@ -1,9 +1,9 @@
 package com.turnin.domain.keywordEdit.usecase
 
+import com.turnin.core.domain.common.logger.DomainLogger
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.userKeyword.model.UserKeywordDetail
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
-import com.turnin.core.domain.util.DomainLogger
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow

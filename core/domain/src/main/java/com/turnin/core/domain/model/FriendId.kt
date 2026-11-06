@@ -1,4 +1,4 @@
-package com.turnin.core.domain.friend.model
+package com.turnin.core.domain.model
 
 @JvmInline
 value class FriendId private constructor(val value: Long) {

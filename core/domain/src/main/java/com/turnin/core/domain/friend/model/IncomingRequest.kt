@@ -1,6 +1,7 @@
 package com.turnin.core.domain.friend.model
 
 import com.turnin.core.domain.model.DisplayId
+import com.turnin.core.domain.model.FriendId
 import com.turnin.core.domain.model.Name
 import com.turnin.core.domain.model.UserId
 

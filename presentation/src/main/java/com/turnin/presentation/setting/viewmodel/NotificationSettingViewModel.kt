@@ -3,7 +3,7 @@ package com.turnin.presentation.setting.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.domain.notification.NotificationSyncManager
+import com.turnin.core.domain.notification.util.NotificationSyncManager
 import com.turnin.core.domain.setting.model.AppSetting
 import com.turnin.core.domain.setting.model.ThemeMode
 import com.turnin.core.domain.setting.repository.SettingRepository

@@ -4,7 +4,7 @@ import com.turnin.core.data.repository.FileRepositoryImpl
 import com.turnin.core.data.source.network.api.FileApi
 import com.turnin.core.data.source.network.datasource.FileNetworkDataSource
 import com.turnin.core.data.source.network.datasource.FileNetworkDataSourceImpl
-import com.turnin.core.domain.file.FileRepository
+import com.turnin.core.domain.file.repository.FileRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

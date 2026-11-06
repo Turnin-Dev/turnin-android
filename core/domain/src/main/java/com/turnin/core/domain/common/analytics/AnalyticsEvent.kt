@@ -1,4 +1,4 @@
-package com.turnin.core.domain.util.analytics
+package com.turnin.core.domain.common.analytics
 
 /**
  * 애널리틱스 이벤트 목록

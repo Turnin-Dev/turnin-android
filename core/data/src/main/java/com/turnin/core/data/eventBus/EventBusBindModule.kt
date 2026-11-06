@@ -1,6 +1,6 @@
 package com.turnin.core.data.eventBus
 
-import com.turnin.core.domain.eventBus.AuthEventBus
+import com.turnin.core.domain.common.eventBus.AuthEventBus
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -9,7 +9,7 @@ import com.turnin.core.data.source.network.api.RefreshTokenApi
 import com.turnin.core.data.source.network.retrofit.HttpCacheInterceptor
 import com.turnin.core.data.source.network.retrofit.TokenAuthenticator
 import com.turnin.core.data.source.network.retrofit.TokenInterceptor
-import com.turnin.core.domain.eventBus.AuthEventBus
+import com.turnin.core.domain.common.eventBus.AuthEventBus
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

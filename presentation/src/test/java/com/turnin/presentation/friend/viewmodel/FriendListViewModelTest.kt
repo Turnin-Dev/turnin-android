@@ -4,11 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.turnin.core.domain.common.Result
-import com.turnin.core.domain.friend.model.FriendId
 import com.turnin.core.domain.friend.model.FriendInfo
 import com.turnin.core.domain.friend.model.FriendStatus
 import com.turnin.core.domain.friend.model.IncomingRequest
 import com.turnin.core.domain.model.DisplayId
+import com.turnin.core.domain.model.FriendId
 import com.turnin.core.domain.model.Name
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.presentation.FakeSnackbarController

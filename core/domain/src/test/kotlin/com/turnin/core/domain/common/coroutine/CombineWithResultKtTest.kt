@@ -1,8 +1,7 @@
-package com.turnin.core.domain.coroutine
+package com.turnin.core.domain.common.coroutine
 
 import com.turnin.core.domain.common.BaseError
 import com.turnin.core.domain.common.Result
-import com.turnin.core.domain.common.coroutine.combineWithResult
 import com.turnin.core.domain.common.error.CommonErrorType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

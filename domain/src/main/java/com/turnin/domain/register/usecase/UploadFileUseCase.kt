@@ -2,9 +2,9 @@ package com.turnin.domain.register.usecase
 
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.mapError
-import com.turnin.core.domain.file.FileRepository
 import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
+import com.turnin.core.domain.file.repository.FileRepository
 import com.turnin.domain.register.error.RegisterErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

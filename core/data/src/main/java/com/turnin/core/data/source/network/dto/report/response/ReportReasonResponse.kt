@@ -1,8 +1,8 @@
 package com.turnin.core.data.source.network.dto.report.response
 
 import com.squareup.moshi.JsonClass
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.domain.report.model.ReportReason
-import com.turnin.core.domain.report.model.ReportReasonId
 
 /**
  * 신고 사유 응답 바디

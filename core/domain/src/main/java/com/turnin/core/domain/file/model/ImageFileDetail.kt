@@ -1,6 +1,6 @@
 package com.turnin.core.domain.file.model
 
-import com.turnin.core.domain.file.FileNameGenerator
+import com.turnin.core.domain.file.util.FileNameGenerator
 
 /**
  * 이미지 파일 래퍼 클래스

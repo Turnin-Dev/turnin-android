@@ -3,10 +3,10 @@ package com.turnin.domain.report.usecase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.model.ReportReasonId
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.report.model.Report
-import com.turnin.core.domain.report.model.ReportReasonId
 import com.turnin.core.domain.report.repository.ReportRepository
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.report.error.ReportErrorType

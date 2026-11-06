@@ -1,4 +1,4 @@
-package com.turnin.core.domain.file
+package com.turnin.core.domain.file.repository
 
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType

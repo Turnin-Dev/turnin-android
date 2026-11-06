@@ -1,4 +1,4 @@
-package com.turnin.core.domain.util
+package com.turnin.core.domain.common.logger
 
 /**
  * 도메인 계층 전용 로거

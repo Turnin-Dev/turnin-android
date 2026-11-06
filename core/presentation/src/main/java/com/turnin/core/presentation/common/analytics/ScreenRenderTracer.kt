@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.withFrameNanos
 import com.turnin.core.common.logger.AppLogger
-import com.turnin.core.domain.util.analytics.TraceAttribute
-import com.turnin.core.domain.util.analytics.TraceName
+import com.turnin.core.domain.common.analytics.TraceAttribute
+import com.turnin.core.domain.common.analytics.TraceName
 
 /**
  * 화면 렌더링 성능 측정

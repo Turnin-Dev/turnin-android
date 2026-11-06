@@ -3,10 +3,10 @@ package com.turnin.domain.setting.usecase
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.flatMapResult
 import com.turnin.core.domain.common.error.mapError
-import com.turnin.core.domain.file.FileRepository
 import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.ImageFileDetail
 import com.turnin.core.domain.file.model.Mime
+import com.turnin.core.domain.file.repository.FileRepository
 import com.turnin.core.domain.model.DisplayId
 import com.turnin.core.domain.model.Introduce
 import com.turnin.core.domain.model.Name

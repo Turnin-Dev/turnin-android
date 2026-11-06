@@ -1,11 +1,11 @@
 package com.turnin.domain.block.usecase
 
-import com.turnin.core.domain.block.model.BlockReasonId
 import com.turnin.core.domain.block.model.CreateBlock
 import com.turnin.core.domain.block.repository.BlockRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
 import com.turnin.core.domain.common.error.mapError
+import com.turnin.core.domain.model.BlockReasonId
 import com.turnin.core.domain.model.UserId
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.block.error.BlockErrorType

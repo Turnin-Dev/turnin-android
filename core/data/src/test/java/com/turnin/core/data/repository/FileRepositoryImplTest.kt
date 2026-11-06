@@ -6,10 +6,10 @@ import com.turnin.core.data.source.network.error.NetworkErrorType
 import com.turnin.core.data.source.network.error.toCommonErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
-import com.turnin.core.domain.file.FileRepository
 import com.turnin.core.domain.file.model.FileCategory
 import com.turnin.core.domain.file.model.Mime
 import com.turnin.core.domain.file.model.PresignedUrl
+import com.turnin.core.domain.file.repository.FileRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

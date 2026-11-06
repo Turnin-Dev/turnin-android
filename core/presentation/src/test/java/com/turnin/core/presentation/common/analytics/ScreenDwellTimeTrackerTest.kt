@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.turnin.core.domain.util.analytics.AnalyticsEvent
+import com.turnin.core.domain.common.analytics.AnalyticsEvent
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

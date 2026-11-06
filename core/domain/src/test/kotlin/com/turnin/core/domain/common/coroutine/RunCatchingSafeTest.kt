@@ -1,4 +1,4 @@
-package com.turnin.core.domain.coroutine
+package com.turnin.core.domain.common.coroutine
 
 import com.turnin.core.domain.assertThrows
 import com.turnin.core.domain.common.coroutine.runCatchingSafe

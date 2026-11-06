@@ -2,6 +2,7 @@ package com.turnin.domain.keywordDetail.usecase
 
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.common.logger.DomainLogger
 import com.turnin.core.domain.model.KeywordDescription
 import com.turnin.core.domain.model.KeywordId
 import com.turnin.core.domain.model.KeywordName
@@ -12,7 +13,6 @@ import com.turnin.core.domain.user.usecase.GetMyUserIdUseCase
 import com.turnin.core.domain.userKeyword.model.UserInfo
 import com.turnin.core.domain.userKeyword.model.UserKeywordDetail
 import com.turnin.core.domain.userKeyword.repository.UserKeywordRepository
-import com.turnin.core.domain.util.DomainLogger
 import com.turnin.domain.keywordDetail.error.KeywordDetailErrorType
 import com.turnin.domain.keywordDetail.model.toKeywordDetail
 import io.mockk.Runs
