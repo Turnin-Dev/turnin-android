@@ -18,7 +18,7 @@ interface PingPongApi {
      * 핑퐁 질문/답변 목록 조회
      */
     @GET(NetworkApiPath.UserKeyword.PingPong.ROUTE)
-    fun getPingPongs(
+    suspend fun getPingPongs(
         @Path("userKeywordId") userKeywordId: Long,
         @Query("cursor") cursor: Long?,
         @Query("size") size: Int,
@@ -30,7 +30,7 @@ interface PingPongApi {
      * Rate Limit (동일 사용자 + 동일 게시물 기준): 1 req / 5s, 5 req / 60s
      */
     @POST(NetworkApiPath.UserKeyword.PingPong.ROUTE)
-    fun createPingPong(
+    suspend fun createPingPong(
         @Path("userKeywordId") userKeywordId: Long,
         @Body createPingPongRequest: CreatePingPongRequest,
     ): Response<PingPongResponse>
@@ -39,7 +39,7 @@ interface PingPongApi {
      * 핑퐁 답변 생성
      */
     @POST(NetworkApiPath.PingPong.ANSWER)
-    fun createAnswer(
+    suspend fun createAnswer(
         @Path("pingPongId") pingPongId: Long,
         @Body createAnswerRequest: CreatePingPongAnswerRequest,
     ): Response<PingPongAnswerResponse>
@@ -48,7 +48,7 @@ interface PingPongApi {
      * 핑퐁 삭제
      */
     @DELETE(NetworkApiPath.PingPong.ROUTE)
-    fun deletePingPong(
+    suspend fun deletePingPong(
         @Path("pingPongId") pingPongId: Long,
     ): Response<Unit>
 
@@ -56,7 +56,7 @@ interface PingPongApi {
      * 핑퐁 답변 삭제
      */
     @DELETE(NetworkApiPath.PingPong.ANSWER)
-    fun deletePingPongAnswer(
+    suspend fun deletePingPongAnswer(
         @Path("pingPongId") pingPongId: Long,
     ): Response<Unit>
 }

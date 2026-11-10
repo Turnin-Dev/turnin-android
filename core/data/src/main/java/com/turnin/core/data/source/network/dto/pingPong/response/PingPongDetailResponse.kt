@@ -1,6 +1,7 @@
 package com.turnin.core.data.source.network.dto.pingPong.response
 
 import com.squareup.moshi.JsonClass
+import com.turnin.core.domain.pingPong.model.PingPongDetail
 
 /**
  * 핑퐁 상세 응답 바디 (목록에서 사용하는 항목)
@@ -15,3 +16,10 @@ data class PingPongDetailResponse(
     val questioner: PingPongQuestionerResponse,
     val answer: PingPongAnswerResponse?,
 )
+
+fun PingPongDetailResponse.toDomainModel(): PingPongDetail =
+    PingPongDetail(
+        pingPong = pingPong.toDomainModel(),
+        questioner = questioner.toDomainModel(),
+        answer = answer?.toDomainModel(),
+    )
