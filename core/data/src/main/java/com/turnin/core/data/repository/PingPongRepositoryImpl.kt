@@ -14,6 +14,8 @@ import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.safeResultFlow
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.common.error.ContractErrorCode
+import com.turnin.core.domain.common.error.toServerErrorCode
 import com.turnin.core.domain.model.PingPongId
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.pingPong.model.PingPong
@@ -76,8 +78,7 @@ class PingPongRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    emit(result.toResultError())
                 }
             }
         }
@@ -98,8 +99,7 @@ class PingPongRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    emit(result.toResultError())
                 }
             }
         }
@@ -113,8 +113,7 @@ class PingPongRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    emit(result.toResultError())
                 }
             }
         }
@@ -128,9 +127,18 @@ class PingPongRepositoryImpl @Inject constructor(
                 }
 
                 is NetworkResult.Error -> {
-                    val error = result.error.toCommonErrorType()
-                    emit(Result.Error(error = error, message = result.message))
+                    emit(result.toResultError())
                 }
             }
         }
+
+    /**
+     * 같은 HTTP 상태코드가 여러 상황을 뜻하므로 서버 에러 코드를 [ContractErrorCode]로 함께 전달한다.
+     */
+    private fun NetworkResult.Error.toResultError(): Result.Error<CommonErrorType> =
+        Result.Error(
+            error = error.toCommonErrorType(),
+            message = message,
+            code = code?.toServerErrorCode() ?: ContractErrorCode.Unexpected,
+        )
 }

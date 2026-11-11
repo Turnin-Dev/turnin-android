@@ -14,6 +14,7 @@ import com.turnin.core.data.source.network.error.toCommonErrorType
 import com.turnin.core.data.source.network.util.NetworkResult
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.common.error.ContractErrorCode
 import com.turnin.core.domain.model.PingPongId
 import com.turnin.core.domain.model.UserKeywordId
 import com.turnin.core.domain.pingPong.model.PingPongAnswerContent
@@ -259,6 +260,40 @@ class PingPongRepositoryImplTest {
         // then
         val error = result as Result.Error
         assertEquals(CommonErrorType.Network.Forbidden, error.error)
+    }
+
+    @Test
+    fun `질문 삭제 - 서버 에러 코드를 계약된 에러 코드로 변환해 함께 반환한다`() = runTest {
+        // given
+        coEvery {
+            dataSource.deletePingPong(any())
+        } returns NetworkResult.Error(
+            error = NetworkErrorType.Network.HttpError(403),
+            code = "PP007",
+            status = 403,
+        )
+
+        // when
+        val result = repository.deletePingPong(TEST_PING_PONG_ID).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(ContractErrorCode.PingPong.PP007, error.code)
+    }
+
+    @Test
+    fun `질문 삭제 - 서버 에러 코드가 없으면 Unexpected 에러 코드를 반환한다`() = runTest {
+        // given
+        coEvery {
+            dataSource.deletePingPong(any())
+        } returns NetworkResult.Error(NetworkErrorType.Exception.TimeOut)
+
+        // when
+        val result = repository.deletePingPong(TEST_PING_PONG_ID).last()
+
+        // then
+        val error = result as Result.Error
+        assertEquals(ContractErrorCode.Unexpected, error.code)
     }
 
     @Test
