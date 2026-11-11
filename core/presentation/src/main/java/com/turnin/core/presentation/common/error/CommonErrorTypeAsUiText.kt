@@ -26,6 +26,7 @@ fun CommonErrorType.asUiText(): UiText = when (this) {
     CommonErrorType.Network.NotFound -> StringResource(R.string.common_error_network_not_found)
     CommonErrorType.Network.Conflict -> StringResource(R.string.common_error_network_conflict)
     CommonErrorType.Network.RequestTimeout -> StringResource(R.string.common_error_network_request_time_out)
+    CommonErrorType.Network.TooManyRequests -> StringResource(R.string.common_error_network_too_many_requests)
     is CommonErrorType.Network.ClientError -> StringResource(R.string.common_error_network_client, this.status)
     CommonErrorType.Network.BadGateway -> StringResource(R.string.common_error_network_bad_gateway)
     CommonErrorType.Network.ServiceUnavailable -> StringResource(R.string.common_error_network_service_unavailable)

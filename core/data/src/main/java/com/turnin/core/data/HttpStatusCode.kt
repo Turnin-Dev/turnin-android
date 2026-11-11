@@ -8,6 +8,7 @@ enum class HttpStatusCode(val code: Int) {
     NotFound(404),
     Conflict(409),
     RequestTimeout(408),
+    TooManyRequests(429),
     InternalServerError(500),
     BadGateway(502),
     ServiceUnavailable(503),
