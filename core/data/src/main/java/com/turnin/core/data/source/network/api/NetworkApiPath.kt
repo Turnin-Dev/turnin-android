@@ -30,6 +30,10 @@ object NetworkApiPath {
     object UserKeyword {
         const val ROUTE = "$BASE/user-keyword"
         const val DETAIL = "$ROUTE/{userKeywordId}/detail"
+
+        object PingPong {
+            const val ROUTE = "${UserKeyword.ROUTE}/{userKeywordId}/ping-pong"
+        }
     }
 
     object File {
@@ -78,5 +82,10 @@ object NetworkApiPath {
         const val TOKEN = "$ROUTE/token"
         const val DEACTIVATE_TOKEN = "$ROUTE/token/deactivate"
         const val READ = "$ROUTE/{notificationId}/read"
+    }
+
+    object PingPong {
+        const val ROUTE = "$BASE/ping-pong/{pingPongId}"
+        const val ANSWER = "$ROUTE/answer"
     }
 }
