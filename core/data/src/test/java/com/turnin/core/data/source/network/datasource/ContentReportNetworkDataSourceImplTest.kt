@@ -122,7 +122,7 @@ class ContentReportNetworkDataSourceImplTest {
 
     companion object {
         private val TestContentReportRequest = ContentReportRequest(
-            contentType = "PING_PONG",
+            contentType = "PING_PONG_QUESTION",
             contentId = 1L,
             reasonId = 2L,
             customReason = "reason",

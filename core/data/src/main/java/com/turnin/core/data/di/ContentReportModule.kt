@@ -1,8 +1,10 @@
 package com.turnin.core.data.di
 
+import com.turnin.core.data.repository.ContentReportRepositoryImpl
 import com.turnin.core.data.source.network.api.ContentReportApi
 import com.turnin.core.data.source.network.datasource.ContentReportNetworkDataSource
 import com.turnin.core.data.source.network.datasource.ContentReportNetworkDataSourceImpl
+import com.turnin.core.domain.contentReport.repository.ContentReportRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,4 +35,9 @@ interface ContentReportBindModule {
     fun bindsContentReportNetworkDataSource(
         impl: ContentReportNetworkDataSourceImpl,
     ): ContentReportNetworkDataSource
+
+    @Binds
+    fun bindsContentReportRepository(
+        impl: ContentReportRepositoryImpl,
+    ): ContentReportRepository
 }
