@@ -3,12 +3,12 @@ package com.turnin.domain.setting.usecase
 import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.error.CommonErrorType
+import com.turnin.core.domain.common.error.catchUnexpected
 import com.turnin.core.domain.user.repository.UserRepository
 import com.turnin.domain.setting.error.SettingErrorType
 import com.turnin.domain.setting.model.AccountInfo
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
@@ -62,5 +62,5 @@ class GetAccountInfoUseCase @Inject constructor(
 
         emit(result)
     }
-        .catch { emit(Result.Error(SettingErrorType.Unexpected(it))) }
+        .catchUnexpected(SettingErrorType::Unexpected)
 }

@@ -6,6 +6,7 @@ import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.auth.social.SocialAuthManagerFactory
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.mapSuccess
+import com.turnin.core.domain.common.error.catchUnexpected
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.model.SocialLoginProvider
 import com.turnin.domain.login.error.LoginErrorType
@@ -13,7 +14,6 @@ import com.turnin.domain.login.model.LoginWithExistsUser
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -66,8 +66,6 @@ class GetSocialLoginResultUseCase @Inject constructor(
                 }
             }
             .onStart { emit(Result.Loading) }
-            .catch { e ->
-                emit(Result.Error(error = LoginErrorType.LoginFailed, message = e.message))
-            }
+            .catchUnexpected { LoginErrorType.LoginFailed }
     }
 }
