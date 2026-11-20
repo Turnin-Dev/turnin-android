@@ -1,5 +1,7 @@
 package com.turnin.core.data.source.network.dto.contentReport.request
 
+import com.squareup.moshi.JsonClass
+
 /**
  * 콘텐츠 신고 요청 바디
  *
@@ -8,6 +10,7 @@ package com.turnin.core.data.source.network.dto.contentReport.request
  * @property reasonId 신고 사유 ID
  * @property customReason 기타 신고 사유
  */
+@JsonClass(generateAdapter = true)
 data class ContentReportRequest(
     val contentType: String,
     val contentId: Long,

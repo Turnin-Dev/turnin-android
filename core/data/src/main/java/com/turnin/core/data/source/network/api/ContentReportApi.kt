@@ -11,7 +11,7 @@ interface ContentReportApi {
      *
      * @param contentReportRequest 콘텐츠 신고 요청 바디
      */
-    @POST
+    @POST(NetworkApiPath.ContentReport.ROUTE)
     suspend fun createContentReport(
         @Body contentReportRequest: ContentReportRequest,
     ): Response<Unit>
