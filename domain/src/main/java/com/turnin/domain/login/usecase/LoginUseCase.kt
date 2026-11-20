@@ -4,13 +4,13 @@ import com.turnin.core.domain.auth.model.LoginCredentials
 import com.turnin.core.domain.auth.repository.AuthRepository
 import com.turnin.core.domain.common.Result
 import com.turnin.core.domain.common.coroutine.mapSuccess
+import com.turnin.core.domain.common.error.catchUnexpected
 import com.turnin.core.domain.common.error.mapError
 import com.turnin.core.domain.common.eventBus.AuthEventBus
 import com.turnin.domain.login.error.LoginErrorType
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 
@@ -63,7 +63,5 @@ class LoginUseCase @Inject constructor(
                     }
                 }
             }
-            .catch { e ->
-                emit(Result.Error(LoginErrorType.LoginFailed, e.message))
-            }
+            .catchUnexpected { LoginErrorType.LoginFailed }
 }

@@ -17,30 +17,45 @@ sealed interface CommonErrorType : BaseError {
 
     /** 네트워크에서 발생한 에러 타입 */
     sealed interface Network : CommonErrorType {
+        /** 잘못된 요청인 경우 (HTTP 400) */
         data object BadRequest : Network
 
+        /** 인증되지 않은 경우 (HTTP 401) */
         data object Unauthorized : Network
 
+        /** 접근 권한이 없는 경우 (HTTP 403) */
         data object Forbidden : Network
 
+        /** 리소스를 찾을 수 없는 경우 (HTTP 404) */
         data object NotFound : Network
 
+        /** 리소스가 충돌(중복)하는 경우 (HTTP 409) */
         data object Conflict : Network
 
+        /** 요청 시간이 초과된 경우 (HTTP 408) */
         data object RequestTimeout : Network
 
+        /** 요청 횟수 제한을 초과한 경우 (HTTP 429) */
+        data object TooManyRequests : Network
+
+        /** 서버 내부 오류인 경우 (HTTP 500) */
         data object InternalServerError : Network
 
+        /** 게이트웨이가 잘못된 응답을 받은 경우 (HTTP 502) */
         data object BadGateway : Network
 
+        /** 서비스를 일시적으로 사용할 수 없는 경우 (HTTP 503) */
         data object ServiceUnavailable : Network
 
+        /** 게이트웨이 응답 시간이 초과된 경우 (HTTP 504) */
         data object GatewayTimeout : Network
 
+        /** 따로 정의하지 않은 클라이언트 오류인 경우 (그 외 HTTP 4xx) */
         data class ClientError(
             val status: Int,
         ) : Network
 
+        /** 따로 정의하지 않은 서버 오류인 경우 (그 외 HTTP 5xx) */
         data class ServerError(
             val status: Int,
         ) : Network

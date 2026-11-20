@@ -22,6 +22,7 @@ fun NetworkErrorType.toCommonErrorType(): CommonErrorType = when (this) {
             HttpStatusCode.NotFound.code -> CommonErrorType.Network.NotFound
             HttpStatusCode.Conflict.code -> CommonErrorType.Network.Conflict
             HttpStatusCode.RequestTimeout.code -> CommonErrorType.Network.RequestTimeout
+            HttpStatusCode.TooManyRequests.code -> CommonErrorType.Network.TooManyRequests
             in 400..499 -> CommonErrorType.Network.ClientError(this.status)
             HttpStatusCode.BadGateway.code -> CommonErrorType.Network.BadGateway
             HttpStatusCode.ServiceUnavailable.code -> CommonErrorType.Network.ServiceUnavailable
